@@ -3,6 +3,8 @@ import Referal from "../models/referralModel.mjs"
 export const getUser = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
+
+    console.log("Отдаю инфу по пользователю", userId)
     if (userId) {
       const user = await User.findOne({ id: userId })
       if (user)
