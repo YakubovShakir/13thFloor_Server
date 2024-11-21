@@ -11,7 +11,6 @@ export const getUser = async (req, res) => {
         return res
           .status(200)
           .json({ userId: user.id, prestart: user.prestart })
-      console.log(user)
     }
   } catch (e) {
     console.log("Error while get user ", e)
@@ -39,7 +38,6 @@ export const updateUserPrestart = async (req, res) => {
     const result = await user.updateOne({
       prestart: true, // Обновляемое поле
     })
-    console.log(result)
     // Проверяем, было ли обновление успешным
     if (result.modifiedCount > 0) {
       return res
