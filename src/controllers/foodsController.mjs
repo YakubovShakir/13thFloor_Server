@@ -24,8 +24,8 @@ export const buyFood = async (req, res) => {
     const user = await User.findOne({ id: userId })
     const food = await Food.findOne({ food_id: foodId })
 
-    if (!user) return res.status(404).json({ error: "User not found" })
-    if (!food) return res.status(404).json({ error: "Food not found" })
+    if (!user) return res.status(404).json({ error: "User " })
+    if (!food) return res.status(404).json({ error: "Food " })
 
     const userParameters = await UserParameters.findOne({ id: userId })
 

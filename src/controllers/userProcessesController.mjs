@@ -20,7 +20,7 @@ export const addProcess = async (userId, type, typeId) => {
         break
       case "skill":
         console.log("добавляю процесс изучения навыка")
-        const training = await Skill.findOne({ skill_id: typeId })
+        const skill = await Skill.findOne({ skill_id: typeId })
         params = { ...params, active: false, duration: skill?.duration }
         await UserProcess.create(params)
         break
