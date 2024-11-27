@@ -1,22 +1,22 @@
 import express from "express"
 import cors from "cors"
 import connectDB from "./config/db.js"
-import usersRouter from "./routes/usersRoutes.mjs"
-import referralRouter from "./routes/referralRoutes.mjs"
-import foodsRouter from "./routes/foodsRoutes.mjs"
-import boostRouter from "./routes/boostsRoutes.mjs"
-import worksRouter from "./routes/worksRoutes.mjs"
-import skillsRouter from "./routes/skillsRoutes.mjs"
-import gameTimer from "./cron/cron.js"
+import usersRouter from "./routes/user/userRoutes.mjs"
+import referralRouter from "./routes/referral/referralRoutes.mjs"
+import foodsRouter from "./routes/food/foodRoutes.mjs"
+import boostRouter from "./routes/boost/boostRoutes.mjs"
+import worksRouter from "./routes/work/workRoutes.mjs"
+import skillsRouter from "./routes/skill/skillRoutes.mjs"
+import gameTimer from "./gameTimer/gameTimer.mjs"
 import dotenv from "dotenv"
 dotenv.config()
 
 const app = express()
-const corsOptions = {
-  origin: process.env.CORS_ORIGIN,
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, // Разрешаем отправку куки
-}
+// const corsOptions = {
+//   origin: process.env.CORS_ORIGIN,
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true,
+// }
 
 app.use(cors())
 app.use(express.json())
@@ -27,9 +27,10 @@ gameTimer.FoodProccess.start()
 console.log("Запустил процессы еды")
 gameTimer.SkillProccess.start()
 console.log("Запустил процессы изучения навыков")
-
 gameTimer.TrainingProccess.start()
 console.log("Запустил процессы тренировок")
+gameTimer.WorkProccess.start()
+console.log("Запустил процессы работы")
 
 app.use("/api/users/", usersRouter)
 app.use("/api/referrals/", referralRouter)
