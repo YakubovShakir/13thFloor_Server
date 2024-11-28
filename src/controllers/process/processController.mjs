@@ -1,21 +1,19 @@
 import process from "../../models/process/processModel.mjs"
-
 import User from "../../models/user/userModel.mjs"
+import startWork from "../work/functions/startWork.mjs"
+import startTraining from "../training/functions/startTraining.mjs"
+import buySkill from "../skill/functions/buySkill.mjs"
+import buyFood from "../food/functions/buyFood.mjs"
 
-import { startWork } from "../../utils/work/startWork.mjs"
-import { startTraining } from "../training/trainingController.mjs"
-
-export const processStart = async (req, res) => {
+export const startProcess = async (req, res) => {
   try {
     // Проверяем тип процесса
     const processType = req.params.type
 
     if (!["food", "work", "skill", "training", "sleep"].includes(processType))
       return res.status(400).json({ error: "Not valid type" })
-
     const userId = parseInt(req.query.userId)
-    if (!userId) res.status(400).json({ error: "Incorrect userId" })
-
+    if (!userId) return res.status(400).json({ error: "Incorrect userId" })
     const user = await User.findOne({ id: userId })
     if (!user) return res.status(404).json({ error: "user not found" })
 
@@ -23,20 +21,25 @@ export const processStart = async (req, res) => {
     switch (processType) {
       case "work":
         result = await startWork(userId)
-        return res.status(result.status).json(result.data)
-        break
       case "training":
         result = await startTraining(userId)
-        return res.status(result.status).json(result.data)
-
-        break
       case "sleep":
-        break
+      // result = await startTraining(userId)
+      // return res.status(result.status).json(result.data)
+      // break
       case "skill":
-        break
+        const skillId = parseInt(req.query.skillId)
+        if (!skillId)
+          return res.status(400).json({ error: "Incorrect skillId!" })
+        result = await buySkill(userId, skillId)
       case "food":
+        const foodId = parseInt(req.query.foodId)
+        if (!foodId) return res.status(400).json({ error: "Incorrect foodId!" })
+        result = await buyFood(userId, foodId)
         break
     }
+
+    return res.status(result.status).json(result.data)
   } catch {
     console.log("Error in startProcess - ", e)
   }
@@ -103,4 +106,11 @@ export const getUserActiveProcess = async (req, res) => {
   } catch (e) {
     console.log("Error while getUserActiveProcesses - ", e)
   }
+}
+
+export default {
+  startProcess,
+  stopActiveProcess,
+  getUserActiveProcess,
+  getUserProcesses,
 }

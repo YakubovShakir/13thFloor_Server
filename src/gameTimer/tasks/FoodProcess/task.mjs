@@ -9,35 +9,35 @@ export const FoodProccess = cron.schedule(
     try {
       //get All Food process
       let foodProcesses = await UserProcess.find({ type: "food" })
-      let food, userParameters
+      let food, user
 
       for (let process of foodProcesses) {
         // get User Parameters and Food
-        userParameters = await UserParameters.findOne({ id: process?.id })
+        user = await UserParameters.findOne({ id: process?.id })
         food = await Food.findOne({ food_id: process?.type_id })
 
         // Hungry restore
         const hungryRestore = food?.long_hungry_restore?.value / 60
         if (hungryRestore)
-          userParameters.hungry = Math.min(
+          user.hungry = Math.min(
             100,
-            userParameters.hungry + hungryRestore
+            user.hungry + hungryRestore
           )
 
         // MoodRestore
         const moodRestore = food?.long_mood_restore?.value / 60
         if (moodRestore)
-          userParameters.mood = Math.min(100, userParameters.mood + moodRestore)
+          user.mood = Math.min(100, user.mood + moodRestore)
 
         // Energy restore
         const energyRestore = food?.long_energy_restore?.value / 60
         if (energyRestore)
-          userParameters.energy = Math.min(
-            userParameters?.energy_capacity,
-            userParameters.energy + energyRestore
+          user.energy = Math.min(
+            user?.energy_capacity,
+            user.energy + energyRestore
           )
 
-        await userParameters.save()
+        await user.save()
 
         if (process?.duration > 1) {
           process.duration -= 1

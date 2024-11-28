@@ -1,4 +1,7 @@
-export const startWork = async (userId) => {
+import UserParameters from "../../../models/user/userParametersModel.mjs"
+import Work from "../../../models/work/workModel.mjs"
+
+const startWork = async (userId) => {
   try {
     // Получение параметров и работы
     const user = await UserParameters.findOne({ id: userId })
@@ -27,3 +30,5 @@ export const startWork = async (userId) => {
     console.log("ERR in buy work controller - ", e)
   }
 }
+
+export default startWork

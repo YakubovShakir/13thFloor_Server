@@ -1,5 +1,5 @@
 import addProcess from "./addProcess.mjs"
-import process from "../../models/process/processModel.mjs"
+import process from "../../../models/process/processModel.mjs"
 
 const addActiveProcess = async (userId, type, typeId, duration) => {
   const activeProcess = await process.findOne({

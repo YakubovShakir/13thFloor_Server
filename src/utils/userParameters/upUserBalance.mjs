@@ -1,7 +1,7 @@
 import UserParameters from "../models/user/userParametersModel.mjs"
 import LevelsParamters from "../models/level/levelParametersModel.mjs"
 
-export const upUserBalance = async (id, amount) => {
+const upUserBalance = async (id, amount) => {
   try {
     const user = await UserParameters.findOne({ id: id })
     const levels = await LevelsParamters.find({})
@@ -23,3 +23,5 @@ export const upUserBalance = async (id, amount) => {
     console.log("Error in upUserBalance - ", e)
   }
 }
+
+export default upUserBalance

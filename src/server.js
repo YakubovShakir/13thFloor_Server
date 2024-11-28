@@ -8,6 +8,7 @@ import boostRouter from "./routes/boost/boostRoutes.mjs"
 import worksRouter from "./routes/work/workRoutes.mjs"
 import skillsRouter from "./routes/skill/skillRoutes.mjs"
 import gameTimer from "./gameTimer/gameTimer.mjs"
+import processRouter from "./routes/process/processRoutes.mjs"
 import dotenv from "dotenv"
 dotenv.config()
 
@@ -32,8 +33,13 @@ console.log("Запустил процессы тренировок")
 gameTimer.WorkProccess.start()
 console.log("Запустил процессы работы")
 
+
+app.use("/api/process/", processRouter)
+
+
 app.use("/api/users/", usersRouter)
 app.use("/api/referrals/", referralRouter)
+
 app.use("/api/foods/", foodsRouter)
 app.use("/api/boosts/", boostRouter)
 app.use("/api/works/", worksRouter)

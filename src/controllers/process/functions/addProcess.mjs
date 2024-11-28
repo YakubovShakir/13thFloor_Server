@@ -1,4 +1,4 @@
-import process from "../../models/process/processModel.mjs"
+import process from "../../../models/process/processModel.mjs"
 
 const addProcess = async (userId, type, typeId, duration) => {
   try {
