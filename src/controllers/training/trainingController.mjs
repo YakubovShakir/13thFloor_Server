@@ -1,9 +1,7 @@
 import TrainingParameters from "../../models/training/trainingParameters.mjs"
 import User from "../../models/user/userModel.mjs"
 import UserParameters from "../../models/user/userParametersModel.mjs"
-import UserProcess from "../../models/process/processModel.mjs"
-import { addProcess, getUserProcesses } from "../process/processController.mjs"
-import addActiveProcess from "../../utils/process /addActiveProcess.mjs"
+import addActiveProcess from "../../utils/process/addActiveProcess.mjs"
 
 export const getUserTrainingParameters = async (req, res) => {
   try {
