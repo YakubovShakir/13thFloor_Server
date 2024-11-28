@@ -12,7 +12,7 @@ export const startProcess = async (req, res) => {
 
     if (!["food", "work", "skill", "training", "sleep"].includes(processType))
       return res.status(400).json({ error: "Not valid type" })
-    const userId = parseInt(req.query.userId)
+    const userId = parseInt(req.query.id)
     if (!userId) return res.status(400).json({ error: "Incorrect userId" })
     const user = await User.findOne({ id: userId })
     if (!user) return res.status(404).json({ error: "user not found" })
