@@ -8,7 +8,7 @@ import buyFood from "../food/functions/buyFood.mjs"
 export const startProcess = async (req, res) => {
   try {
     // Проверяем тип процесса
-    const processType = req.params.type
+    const processType = req.query.type
 
     if (!["food", "work", "skill", "training", "sleep"].includes(processType))
       return res.status(400).json({ error: "Not valid type" })
