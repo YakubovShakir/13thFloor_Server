@@ -28,12 +28,12 @@ export const startProcess = async (req, res) => {
       // return res.status(result.status).json(result.data)
       // break
       case "skill":
-        const skillId = parseInt(req.query.skillId)
+        const skillId = parseInt(req.query.typeId)
         if (!skillId)
           return res.status(400).json({ error: "Incorrect skillId!" })
         result = await buySkill(userId, skillId)
       case "food":
-        const foodId = parseInt(req.query.foodId)
+        const foodId = parseInt(req.query.typeId)
         if (!foodId) return res.status(400).json({ error: "Incorrect foodId!" })
         result = await buyFood(userId, foodId)
         break

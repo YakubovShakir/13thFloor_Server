@@ -20,10 +20,13 @@ export const buyWork = async (req, res) => {
     const work = await Work.findOne({ work_id: workId })
     if (!user || !work)
       return res.status(404).json({ error: "User or work not found" })
+  
+    // Проверка что пользователь покупает следующую работу по уровню
+    if (workId != (user?.work_id + 1)) return res.status(400).json({ error: "You can buy only a next work!" })
 
-    // Проверка что игрок покупает новую работу
-    if (workId <= user?.work_id)
-      return res.status(400).json({ error: "You can buy only a new work!" })
+
+      //  Проверка что хватает респекта 
+    if (work?.respect_required > user?.respect) return res.status(400).json({ error: "Not enough respect to buy this work!" })
 
     //Проверка на наличие необходимого навыка
     if (work?.skill_id_required) {
@@ -31,12 +34,12 @@ export const buyWork = async (req, res) => {
         skill_id: work?.skill_id_required,
       })
       if (!userRequierdSkill)
-        return res.status(400).json({ error: "Need Required Skill " })
+        return res.status(400).json({ error: "Need Required Skill!" })
     }
 
     // Проверка на достаточность баланса
     if (user?.coins < work?.coins_price)
-      return res.status(400).json({ error: "Balance not enough" })
+      return res.status(400).json({ error: "Balance not enough!" })
     else {
       user.coins -= work?.coins_price
       user.work_id = workId
