@@ -1,9 +1,6 @@
 import Work from "../../models/work/workModel.mjs"
 import UserParameters from "../../models/user/userParametersModel.mjs"
-import UserWorks from "../../models/user/userWorkModel.mjs"
-import UserProcess from "../../models/process/processModel.mjs"
-import { addProcess } from "../process/processController.mjs"
-import addActiveProcess from "../../utils/process /addActiveProcess.mjs"
+
 export const getWorks = async (req, res) => {
   try {
     const works = await Work.find({}).sort({ coins_price: 1 })

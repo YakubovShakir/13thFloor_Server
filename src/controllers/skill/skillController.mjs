@@ -2,7 +2,7 @@ import Skill from "../../models/skill/skillModel.mjs"
 import UserSkills from "../../models/user/userSkillModel.mjs"
 import UserParameters from "../../models/user/userParametersModel.mjs"
 import UserProcess from "../../models/process/processModel.mjs"
-import { addProcess } from "../process/processController.mjs"
+import addProcess from "../../utils/process/addProcess.mjs"
 export const getSkills = async (req, res) => {
   try {
     const skills = await Skill.find({}).sort({ coins_price: 1 })

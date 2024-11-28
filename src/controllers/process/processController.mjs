@@ -3,7 +3,7 @@ import process from "../../models/process/processModel.mjs"
 import User from "../../models/user/userModel.mjs"
 
 import { startWork } from "../../utils/work/startWork.mjs"
-import { startUserTraining } from "../training/trainingController.mjs"
+import { startTraining } from "../training/trainingController.mjs"
 
 export const processStart = async (req, res) => {
   try {
@@ -26,7 +26,7 @@ export const processStart = async (req, res) => {
         return res.status(result.status).json(result.data)
         break
       case "training":
-        result = await startUserTraining(userId)
+        result = await startTraining(userId)
         return res.status(result.status).json(result.data)
 
         break

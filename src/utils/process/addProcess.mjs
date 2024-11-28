@@ -1,6 +1,6 @@
 import process from "../../models/process/processModel.mjs"
 
-export const addProcess = async (userId, type, typeId, duration) => {
+const addProcess = async (userId, type, typeId, duration) => {
   try {
     if (!["work", "training", "sleep", "skill", "food"].includes(type))
       return console.log("utils->addProcess - not valid type of process")
@@ -27,3 +27,4 @@ export const addProcess = async (userId, type, typeId, duration) => {
     console.log("Error while add Process", e)
   }
 }
+export default addProcess
