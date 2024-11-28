@@ -35,11 +35,8 @@ console.log("Запустил процессы работы")
 
 
 app.use("/api/process/", processRouter)
-
-
 app.use("/api/users/", usersRouter)
 app.use("/api/referrals/", referralRouter)
-
 app.use("/api/foods/", foodsRouter)
 app.use("/api/boosts/", boostRouter)
 app.use("/api/works/", worksRouter)

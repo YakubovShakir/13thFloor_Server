@@ -46,15 +46,15 @@ export const startProcess = async (req, res) => {
 }
 
 export const stopActiveProcess = async (req, res) => {
-  const userId = parseInt(req.params.id)
-  if (!userId) return res.status(400).json({ error: "Id is not valid" })
+  const userId = parseInt(req.query.id)
+  if (!userId) return res.status(400).json({ error: "<id> is required!"})
 
   const user = await User.findOne({ id: userId })
-  if (!user) return res.status(404).json({ error: "User not found" })
+  if (!user) return res.status(404).json({ error: "User not found!" })
 
   const activeProcess = await process.findOne({ id: userId, active: true })
   if (!activeProcess)
-    return res.status(404).json({ error: "Active Process not found" })
+    return res.status(404).json({ error: "Active Process not found!" })
 
   await process.deleteOne({ id: userId, active: true })
   return res.status(200).json({ status: "ok" })
@@ -62,15 +62,14 @@ export const stopActiveProcess = async (req, res) => {
 
 export const getUserProcesses = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
-    if (!userId) return res.status(400).json({ error: "Id is not valid" })
+    const userId = parseInt(req.query.id)
+    if (!userId) return res.status(400).json({ error: "<id> is required!" })
+    const processType = req.query.type
+    if (!["food", "work", "skill", "training"].includes(processType))
+      return res.status(400).json({ error: "<type> is wrong!" })
 
     const user = await User.findOne({ id: userId })
     if (!user) return res.status(404).json({ error: "User not found" })
-
-    const processType = req.params.type
-    if (!["food", "work", "skill", "training"].includes(processType))
-      return res.status(400).json({ error: "Not valid type" })
 
     const processes = await process.find(
       {
@@ -88,11 +87,11 @@ export const getUserProcesses = async (req, res) => {
 
 export const getUserActiveProcess = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
-    if (!userId) return res.status(400).json({ error: "Id is not valid" })
+    const userId = parseInt(req.query.id)
+    if (!userId) return res.status(400).json({ error: "<id> is required!" })
 
     const user = await User.findOne({ id: userId })
-    if (!user) return res.status(404).json({ error: "User not found" })
+    if (!user) return res.status(404).json({ error: "User not found!" })
 
     const activeProcess = await process.findOne(
       {
@@ -108,7 +107,7 @@ export const getUserActiveProcess = async (req, res) => {
   }
 }
 
-export default {
+export default processController = {
   startProcess,
   stopActiveProcess,
   getUserActiveProcess,
