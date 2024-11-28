@@ -71,9 +71,7 @@ export const getUserSkills = async (req, res) => {
     if (!userId) return res.status(400).json({ error: "Query Not Valid" })
 
     const userSkills = await UserSkills.find({ id: userId })
-    if (userSkills.length != 0) {
-      return res.status(200).json({ skills: userSkills })
-    } else return res.status(404).json({ error: "User not have skill" })
+    return res.status(200).json({ skills: userSkills })
   } catch (e) {
     console.log("Error in getUserSkills - ", e)
   }

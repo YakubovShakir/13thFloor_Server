@@ -31,6 +31,7 @@ export const WorkProccess = cron.schedule(
           userParameters.mood -= moodCosts
           userParameters.energy -= energyCosts
           userParameters.hungry -= hungryCosts
+          console.log("UP user BALANCE ")
           await upUserBalance(userParameters?.id, coinReward)
 
           await userParameters.save()

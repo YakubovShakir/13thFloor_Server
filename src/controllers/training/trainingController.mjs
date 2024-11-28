@@ -3,6 +3,7 @@ import User from "../../models/user/userModel.mjs"
 import UserParameters from "../../models/user/userParametersModel.mjs"
 import UserProcess from "../../models/process/processModel.mjs"
 import { addProcess, getUserProcesses } from "../process/processController.mjs"
+import addActiveProcess from "../../utils/process /addActiveProcess.mjs"
 
 export const getUserTrainingParameters = async (req, res) => {
   try {
@@ -25,43 +26,24 @@ export const getUserTrainingParameters = async (req, res) => {
   }
 }
 
-export const startUserTraining = async (req, res) => {
+export const startTraining = async (userId) => {
   try {
-    const userId = parseInt(req.params.id)
-    if (!userId) return res.status(400).json({ error: "not valid id" })
+    //Получаем параметры пользователя, если параметров нет, тогда создаем их (проверка на то что сам юзер в базе должна быть в обработчике ручки)
+    const user = await UserParameters.findOne({ id: userId })
+    if (!user) user = await UserParameters.create({ id: userId })
 
-    const user = await User.findOne({ id: userId })
-    if (!user) return res.status(404).json({ error: "user not found" })
+    let training = await TrainingParameters.findOne({ level: user?.level })
+    const cond =
+      user?.energy >= training?.energy_spend &&
+      user?.hungry >= training?.hungry_spend
+    if (!cond)
+      return { status: 400, data: { error: "Not enough energy or hungry" } }
 
-    const parameters = await UserParameters.findOne({ id: userId })
-    if (!parameters) {
-      parameters = await UserParameters.create({ id: userId })
-    }
+    user.hungry -= training?.hungry_spend
+    user.energy -= training?.energy_spend
 
-    let tp = await TrainingParameters.findOne({ level: parameters?.level })
-    if (!tp) return res.status(404).json({ error: "tp not found" })
-
-    const activeProcess = await UserProcess.findOne({
-      id: userId,
-      active: true,
-    })
-    if (activeProcess)
-      return res.status(400).json({ error: "only 1 active process can be" })
-
-    // Cond parameters
-    if (
-      parameters?.energy < tp?.energy_spend ||
-      parameters?.hungry < tp?.hungry_spend
-    )
-      return res.status(400).json({ error: "Not enough energy or hungry" })
-
-    parameters.hungry -= tp?.hungry_spend
-    parameters.energy -= tp?.energy_spend
-
-    await parameters.save()
-
-    // addProcess
-    await addProcess(userId, "training", tp?.level)
+    await user.save()
+    await addActiveProcess(userId, "training", user?.level, training?.duration)
 
     return res.status(200).json({ status: "ok" })
   } catch (e) {

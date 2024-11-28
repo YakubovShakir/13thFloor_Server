@@ -3,7 +3,7 @@ import {
   getWorks,
   buyWork,
   startWork,
-} from "../../controllers/work/worksController.mjs"
+} from "../../controllers/work/workController.mjs"
 const router = express.Router()
 
 router.get("/all", getWorks)

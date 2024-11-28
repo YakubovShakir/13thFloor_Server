@@ -9,7 +9,7 @@ const schema = new mongoose.Schema({
   },
   type_id: { type: Number, required: true },
   duration: { type: Number, required: true },
-  seconds: { type: Number, require: true },
+  seconds: { type: String, require: true },
 })
 
 const process = mongoose.model("users_process", schema)
