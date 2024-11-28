@@ -21,6 +21,9 @@ export const buyWork = async (req, res) => {
     if (!user || !work)
       return res.status(404).json({ error: "User or work not found" })
   
+    // Проверка что у пользователя есть необходимый уровень для покупки работы 
+    if(user?.level < work?.work_id) return res.status(400).json({ error: "Insufficient level to purchase this work!" })
+      
     // Проверка что пользователь покупает следующую работу по уровню
     if (workId != (user?.work_id + 1)) return res.status(400).json({ error: "You can buy only a next work!" })
 
