@@ -1,5 +1,5 @@
-import UserParameters from "../models/user/userParametersModel.mjs"
-import LevelsParamters from "../models/level/levelParametersModel.mjs"
+import UserParameters from "../../models/user/userParametersModel.mjs"
+import LevelsParamters from "../../models/level/levelParametersModel.mjs"
 
 const upUserBalance = async (id, amount) => {
   try {

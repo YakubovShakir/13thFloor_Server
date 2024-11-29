@@ -3,7 +3,7 @@ import UserProcess from "../../../models/process/processModel.mjs"
 import Work from "../../../models/work/workModel.mjs"
 import UserParameters from "../../../models/user/userParametersModel.mjs"
 import cron from "node-cron"
-import { upUserBalance } from "../../../utils/upUserBalance.mjs"
+import upUserBalance from "../../../utils/userParameters/upUserBalance.mjs"
 
 export const WorkProccess = cron.schedule(
   "* * * * *",

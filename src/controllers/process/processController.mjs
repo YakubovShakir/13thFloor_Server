@@ -107,7 +107,7 @@ export const getUserActiveProcess = async (req, res) => {
   }
 }
 
-export default processController = {
+export default {
   startProcess,
   stopActiveProcess,
   getUserActiveProcess,

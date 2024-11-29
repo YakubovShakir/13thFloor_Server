@@ -3,10 +3,10 @@ import processController from "../../controllers/process/processController.mjs"
 
 const processRouter = express.Router()
 
-router.post("/start/", processController.startProcess)
-router.post("/stop/", processController.stopActiveProcess)
-router.get("/get/", processController.getUserProcesses)
-router.get("/getActive/", processController.getUserActiveProcess)
+processRouter.post("/start/", processController.startProcess)
+processRouter.post("/stop/", processController.stopActiveProcess)
+processRouter.get("/get/", processController.getUserProcesses)
+processRouter.get("/getActive/", processController.getUserActiveProcess)
 // router.post("/stop")
 
 export default processRouter
