@@ -2,6 +2,7 @@ import process from "../../models/process/processModel.mjs"
 import User from "../../models/user/userModel.mjs"
 import startWork from "../work/functions/startWork.mjs"
 import startTraining from "../training/functions/startTraining.mjs"
+import { startSleep }  from "../sleep/sleepController.mjs"
 import buySkill from "../skill/functions/buySkill.mjs"
 import buyFood from "../food/functions/buyFood.mjs"
 export const startProcess = async (req, res) => {

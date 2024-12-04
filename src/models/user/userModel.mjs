@@ -14,6 +14,26 @@ const schema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    personage: {
+      race: {
+        type: String,
+        required: true,
+        enum: ['asian', 'white', 'black']
+      },
+      gender: {
+        type: String,
+        required: true,
+        enum: ['male', 'female']
+      },
+      name: {
+        type: String,
+        required: true
+      },
+      complete: {
+        type: Boolean,
+        default: false
+      }
+    }
   },
   { timestamps: true }
 )
