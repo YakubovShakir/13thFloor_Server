@@ -4,7 +4,6 @@ import startWork from "../work/functions/startWork.mjs"
 import startTraining from "../training/functions/startTraining.mjs"
 import buySkill from "../skill/functions/buySkill.mjs"
 import buyFood from "../food/functions/buyFood.mjs"
-
 export const startProcess = async (req, res) => {
   try {
     // Проверяем тип процесса
@@ -21,26 +20,27 @@ export const startProcess = async (req, res) => {
     switch (processType) {
       case "work":
         result = await startWork(userId)
+        break
       case "training":
         result = await startTraining(userId)
+        break
       case "sleep":
-      // result = await startTraining(userId)
-      // return res.status(result.status).json(result.data)
-      // break
+      result = await startSleep(userId)
+      break
       case "skill":
         const skillId = parseInt(req.query.typeId)
         if (!skillId)
           return res.status(400).json({ error: "Incorrect skillId!" })
         result = await buySkill(userId, skillId)
+        break
       case "food":
         const foodId = parseInt(req.query.typeId)
         if (!foodId) return res.status(400).json({ error: "Incorrect foodId!" })
         result = await buyFood(userId, foodId)
         break
     }
-
-    return res.status(result.status).json(result.data)
-  } catch {
+    return res.status(result?.status).json(result?.data)
+  } catch (e) {
     console.log("Error in startProcess - ", e)
   }
 }
@@ -63,7 +63,9 @@ export const stopActiveProcess = async (req, res) => {
 export const getUserProcesses = async (req, res) => {
   try {
     const userId = parseInt(req.query.id)
+
     if (!userId) return res.status(400).json({ error: "<id> is required!" })
+
     const processType = req.query.type
     if (!["food", "work", "skill", "training"].includes(processType))
       return res.status(400).json({ error: "<type> is wrong!" })
@@ -78,7 +80,6 @@ export const getUserProcesses = async (req, res) => {
       },
       { _id: false }
     )
-
     return res.status(200).json({ processes })
   } catch (e) {
     console.log("Error while getUserProcesses - ", e)

@@ -21,7 +21,7 @@ const startTraining = async (userId) => {
       await user.save()
       await addActiveProcess(userId, "training", user?.level, training?.duration)
   
-      return res.status(200).json({ status: "ok" })
+      return {status: 200, data: { status: "ok"}}
     } catch (e) {
       console.log("Error while get parameters ", e)
     }

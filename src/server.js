@@ -7,8 +7,8 @@ import foodsRouter from "./routes/food/foodRoutes.mjs"
 import boostRouter from "./routes/boost/boostRoutes.mjs"
 import worksRouter from "./routes/work/workRoutes.mjs"
 import skillsRouter from "./routes/skill/skillRoutes.mjs"
-import gameTimer from "./gameTimer/gameTimer.mjs"
 import processRouter from "./routes/process/processRoutes.mjs"
+import levelsRouter from "./routes/level/levelRoutes.mjs"
 import dotenv from "dotenv"
 dotenv.config()
 
@@ -24,23 +24,15 @@ app.use(express.json())
 
 connectDB()
 
-gameTimer.FoodProccess.start()
-console.log("Запустил процессы еды")
-gameTimer.SkillProccess.start()
-console.log("Запустил процессы изучения навыков")
-gameTimer.TrainingProccess.start()
-console.log("Запустил процессы тренировок")
-gameTimer.WorkProccess.start()
-console.log("Запустил процессы работы")
-
 
 app.use("/api/process/", processRouter)
 app.use("/api/users/", usersRouter)
 app.use("/api/referrals/", referralRouter)
-app.use("/api/foods/", foodsRouter)
-app.use("/api/boosts/", boostRouter)
-app.use("/api/works/", worksRouter)
-app.use("/api/skills/", skillsRouter)
+app.use("/api/food/", foodsRouter)
+app.use("/api/boost/", boostRouter)
+app.use("/api/work/", worksRouter)
+app.use("/api/skill/", skillsRouter)
+app.use("/api/levels/", levelsRouter)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {

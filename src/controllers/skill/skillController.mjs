@@ -1,5 +1,5 @@
 import Skill from "../../models/skill/skillModel.mjs"
-import UserSkills from "../../models/user/userSkillModel.mjs"
+import UserSkill from "../../models/user/userSkillModel.mjs"
 
 export const getSkills = async (req, res) => {
   try {
@@ -16,7 +16,7 @@ export const getUserSkills = async (req, res) => {
 
     if (!userId) return res.status(400).json({ error: "Query Not Valid" })
 
-    const userSkills = await UserSkills.find({ id: userId })
+    const userSkills = await UserSkill.find({ id: userId })
     return res.status(200).json({ skills: userSkills })
   } catch (e) {
     console.log("Error in getUserSkills - ", e)

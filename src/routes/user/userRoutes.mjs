@@ -13,5 +13,4 @@ router.get("/user/:id", getUser)
 router.get("/parameters/:id", getUserParameters)
 router.get("/training-parameters/:id", getUserTrainingParameters)
 router.patch("/updatePrestart/:id", updateUserPrestart)
-
 export default router

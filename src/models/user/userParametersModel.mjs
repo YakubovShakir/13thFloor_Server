@@ -21,7 +21,7 @@ const userParameterSchema = new mongoose.Schema({
     mood: { type: Number, default: 1 },
     energy: { type: Number, default: 1 },
   },
-  work_id: { type: Number, default: 1 },
+  work_id: { type: Number, default: 0 },
 })
 
 const UserParameters = mongoose.model("users_parameters", userParameterSchema)

@@ -1,6 +1,6 @@
 import Work from "../../models/work/workModel.mjs"
 import UserParameters from "../../models/user/userParametersModel.mjs"
-
+import UserSkill from "../../models/user/userSkillModel.mjs"
 export const getWorks = async (req, res) => {
   try {
     const works = await Work.find({}).sort({ coins_price: 1 })
@@ -12,7 +12,7 @@ export const getWorks = async (req, res) => {
 
 export const buyWork = async (req, res) => {
   try {
-    const userId = parseInt(req.query.userId)
+    const userId = parseInt(req.query.id)
     const workId = parseInt(req.query.workId)
     if (!userId || !workId)
       return res.status(400).json({ error: "Query Not Valid" })
@@ -33,7 +33,7 @@ export const buyWork = async (req, res) => {
 
     //Проверка на наличие необходимого навыка
     if (work?.skill_id_required) {
-      const userRequierdSkill = await UserSkills.findOne({
+      const userRequierdSkill = await UserSkill.findOne({
         skill_id: work?.skill_id_required,
       })
       if (!userRequierdSkill)

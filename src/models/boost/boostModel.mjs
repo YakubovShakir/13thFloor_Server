@@ -5,7 +5,7 @@ const boostsSchema = new mongoose.Schema({
   name: { type: String, unique: true, required: true },
   stars_price: { type: Number, required: true },
   description: { type: String },
-  link: { type: String, unique: true },
+  link: { type: String },
   duration: { type: Number },
   type: { type: String },
 })

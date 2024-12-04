@@ -1,5 +1,5 @@
 import UserProcess from "../../../models/process/processModel.mjs"
-import UserSkills from "../../../models/user/userSkillModel.mjs"
+import UserSkill from "../../../models/user/userSkillModel.mjs"
 import cron from "node-cron"
 
 export const SkillProccess = cron.schedule(
@@ -14,7 +14,7 @@ export const SkillProccess = cron.schedule(
           process.duration -= 1
           await process.save()
         } else {
-          await UserSkills.create({
+          await UserSkill.create({
             id: process?.id,
             skill_id: process?.type_id,
           })

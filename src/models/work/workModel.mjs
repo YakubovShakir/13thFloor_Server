@@ -8,7 +8,7 @@ const workSchema = new mongoose.Schema({
   energy_cost_in_hour: { type: Number, required: true },
   mood_cost_in_hour: { type: Number, required: true },
   hungry_cost_in_hour: { type: Number, required: true },
-  skill_id_required: { type: String },
+  skill_id_required: { type: Number},
   respect_required: { type: Number },
   link: { type: String, unique: true },
 })

@@ -1,4 +1,5 @@
 import Food from "../../../models/food/foodModel.mjs"
+import process from "../../../models/process/processModel.mjs"
 import UserParameters from "../../../models/user/userParametersModel.mjs"
 import addProcess from "../../process/functions/addProcess.mjs"
 
@@ -13,12 +14,12 @@ const buyFood = async (userId, foodId) => {
       }
 
     // Проверка что у пользователя нет кулдауна на предмете
-    const process = await UserProcess.findOne({
+    const userProcess = await process.findOne({
       id: user?.id,
       type: "food",
       type_id: foodId,
     })
-    if (process) return { status: 400, data: { error: "Food in cooldown!" } }
+    if (userProcess) return { status: 400, data: { error: "Food in cooldown!" } }
 
     // Проверка на достаточность баланса
     if (user?.coins < food?.coins_price)

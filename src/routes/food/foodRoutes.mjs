@@ -3,6 +3,6 @@ import { getFoods } from "../../controllers/food/foodController.mjs"
 import buyFoods from "../../controllers/food/functions/buyFood.mjs"
 const router = express.Router()
 
-router.get("/all", getFoods)
-router.post("/buy", buyFoods)
+router.get("/getAll", getFoods)
+
 export default router

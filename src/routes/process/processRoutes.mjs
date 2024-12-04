@@ -7,6 +7,5 @@ processRouter.post("/start/", processController.startProcess)
 processRouter.post("/stop/", processController.stopActiveProcess)
 processRouter.get("/get/", processController.getUserProcesses)
 processRouter.get("/getActive/", processController.getUserActiveProcess)
-// router.post("/stop")
 
 export default processRouter

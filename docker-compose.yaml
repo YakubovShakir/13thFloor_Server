@@ -7,9 +7,9 @@ networks:
 services:
   database:
     image: mongo:5
-    volumes: 
-     - db-floor:/data/db
-     - 
+    volumes:
+      - db-floor:/data/db
+
     ports:
       - 27017:27017
 volumes:
