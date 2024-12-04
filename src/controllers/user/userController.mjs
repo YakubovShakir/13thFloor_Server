@@ -19,6 +19,32 @@ export const getUser = async (req, res) => {
     return res.status(404).json({ message: "User not found" })
   }
 }
+
+export const createUserPersonage = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id)
+    const { race, gender, name } = req.body
+    
+    if(userId) {
+      console.log('Creating personage', race, gender, name, userId)
+      await User.updateOne({
+        id: userId
+      }, {
+        $set: {
+          personage: {
+            race,
+            gender,
+            name
+          }
+        }
+      })
+    }
+  } catch(e) {
+    console.log("Error creating personage for user", e)
+    return res.status(404).json({ message: "User not found" })
+  }
+}
+
 export const updateUserPrestart = async (req, res) => {
   try {
     const userId = req.params.id

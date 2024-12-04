@@ -13,7 +13,7 @@ export const getSkills = async (req, res) => {
 export const getUserSkills = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
-
+    console.log(userId)
     if (!userId) return res.status(400).json({ error: "Query Not Valid" })
 
     const userSkills = await UserSkill.find({ id: userId })
