@@ -10,6 +10,8 @@ import skillsRouter from "./routes/skill/skillRoutes.mjs"
 import processRouter from "./routes/process/processRoutes.mjs"
 import levelsRouter from "./routes/level/levelRoutes.mjs"
 import dotenv from "dotenv"
+import ClothingItems from './models/clothing/migration.js'
+import Clothing from "./models/clothing/clothingModel.mjs"
 dotenv.config()
 
 const app = express()
@@ -23,6 +25,7 @@ app.use(cors())
 app.use(express.json())
 
 connectDB()
+  // .then(() => main())
 
 
 app.use("/api/process/", processRouter)
@@ -38,3 +41,11 @@ const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+// Migration
+// async function main() {
+//   for(const item of ClothingItems) {
+//     const clothes = new Clothing({...item, effect: {}})
+//     await clothes.save()
+//   }
+// }

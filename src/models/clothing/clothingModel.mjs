@@ -34,6 +34,8 @@ const clothingSchema = new mongoose.Schema({
   effect: {},
   male_link: { type: String, required: true},
   female_link: { type: String, required: true},
+  male_icon: { type: String, required: true},
+  female_icon: { type: String, required: true},
   respect: { type: Number, required: true },
   price: { type: Number, required: true },
   tier: { type: Number, required: true }

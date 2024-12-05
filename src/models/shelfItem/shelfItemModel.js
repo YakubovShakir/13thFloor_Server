@@ -19,4 +19,4 @@ const ShelfItem = new mongoose.Schema({
 
 const ShelfItemModel = mongoose.model("shelf_item", ShelfItem)
 
-module.exports = ShelfItemModel
+export default ShelfItemModel
