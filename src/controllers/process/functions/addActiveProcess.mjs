@@ -10,7 +10,6 @@ const addActiveProcess = async (userId, type, typeId, duration) => {
     activeProcess.type = type
     activeProcess.type_id = typeId
     activeProcess.duration = duration || 0
-    activeProcess.seconds = new Date().getUTCDate()
     await activeProcess.save()
   } else {
     await addProcess(userId, type, typeId, duration)

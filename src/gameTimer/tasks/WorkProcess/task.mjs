@@ -1,12 +1,33 @@
-
 import UserProcess from "../../../models/process/processModel.mjs"
 import Work from "../../../models/work/workModel.mjs"
 import UserParameters from "../../../models/user/userParametersModel.mjs"
 import cron from "node-cron"
 import upUserBalance from "../../../utils/userParameters/upUserBalance.mjs"
+import updateProcessTime from "../../../utils/updateProcessTime.js"
 
+const durationFunction = async (process, work, userParameters) => {
+  const moodCosts = work?.mood_cost_in_hour / 60
+  const hungryCosts = work?.hungry_cost_in_hour / 60
+  const energyCosts = work?.energy_cost_in_hour / 60
+  const coinReward = work?.coins_in_hour / 60
+  const cond =
+    userParameters?.mood >= moodCosts &&
+    userParameters?.energy >= energyCosts &&
+    userParameters?.hungry >= hungryCosts
+
+  if (cond) {
+    userParameters.mood -= moodCosts
+    userParameters.energy -= energyCosts
+    userParameters.hungry -= hungryCosts
+    await upUserBalance(userParameters?.id, coinReward)
+
+    await userParameters.save()
+  } else {
+    await process.deleteOne({ _id: process?._id })
+  }
+}
 export const WorkProccess = cron.schedule(
-  "* * * * *",
+  "* * * * * *",
   async () => {
     try {
       //get Work processes
@@ -18,26 +39,12 @@ export const WorkProccess = cron.schedule(
           return console.log(
             "Work process error work or userParameters not found"
           )
-
-        const moodCosts = work?.mood_cost_in_hour / 60
-        const hungryCosts = work?.hungry_cost_in_hour / 60
-        const energyCosts = work?.energy_cost_in_hour / 60
-        const coinReward = work?.coins_in_hour / 60
-        const cond =
-          userParameters?.mood >= moodCosts &&
-          userParameters?.energy >= energyCosts &&
-          userParameters?.hungry >= hungryCosts
-
-        if (cond) {
-          userParameters.mood -= moodCosts
-          userParameters.energy -= energyCosts
-          userParameters.hungry -= hungryCosts
-          await upUserBalance(userParameters?.id, coinReward)
-
-          await userParameters.save()
-        } else {
-          await process.deleteOne({ _id: process?._id })
-        }
+        updateProcessTime(
+          process,
+          () => durationFunction(process, work, userParameters),
+          null,
+          true
+        )
       }
     } catch (e) {
       console.log("Error when SkillProcess", e)
