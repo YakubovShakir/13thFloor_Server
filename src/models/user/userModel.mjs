@@ -35,6 +35,7 @@ const schema = new mongoose.Schema(
     shelf: [
       {
         id: { type: Number, required: true, unique: true },
+        // 0 - 5 | 0,1,2 - top 3, 
         cellIndex: { type: Number, required: true, unique: true }
       }
     ]

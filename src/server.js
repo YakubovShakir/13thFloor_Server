@@ -25,7 +25,7 @@ app.use(cors())
 app.use(express.json())
 
 connectDB()
-  // .then(() => main())
+  .then(() => main())
 
 
 app.use("/api/process/", processRouter)
@@ -42,10 +42,11 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
 
-// Migration
-// async function main() {
-//   for(const item of ClothingItems) {
-//     const clothes = new Clothing({...item, effect: {}})
-//     await clothes.save()
-//   }
-// }
+
+async function main() {
+  await Clothing.deleteMany()
+  for(const item of ClothingItems) {
+    const clothes = new Clothing({...item, effect: {}})
+    await clothes.save()
+  }
+}

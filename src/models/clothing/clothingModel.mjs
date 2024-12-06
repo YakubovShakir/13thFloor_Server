@@ -21,10 +21,10 @@ const clothingSchema = new mongoose.Schema({
       ru: { type: String, required: true },
       en: { type: String, required: true }
    },
-  tag: {
+  tag: [{
     type: String,
     enum: Object.values(ClothingCategories),
-  },
+  }],
   type: {
     type: String,
     enum: Object.values(ClothingTypes),
