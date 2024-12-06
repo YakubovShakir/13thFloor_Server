@@ -14,6 +14,7 @@ const schema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    // Current personage
     personage: {
       race: {
         type: String,
@@ -28,12 +29,16 @@ const schema = new mongoose.Schema(
       name: {
         type: String,
         required: true
-      },
-      complete: {
-        type: Boolean,
-        default: false
       }
-    }
+    },
+    // Current shelf state
+    shelf: [
+      {
+        id: { type: Number, required: true, unique: true },
+        // 0 - 5 | 0,1,2 - top 3, 
+        cellIndex: { type: Number, required: true, unique: true }
+      }
+    ]
   },
   { timestamps: true }
 )
