@@ -6,13 +6,14 @@ export const getUser = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
 
-    console.log("Отдаю инфу по пользователю", userId)
     if (userId) {
       const user = await User.findOne({ id: userId })
       if (user)
         return res
           .status(200)
           .json({ userId: user.id, prestart: user.prestart })
+    } else {
+      // User.create({}) !!! добавить авторег!
     }
   } catch (e) {
     console.log("Error while get user ", e)
@@ -24,22 +25,25 @@ export const createUserPersonage = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
     const { race, gender, name } = req.body
-    
-    if(userId) {
-      console.log('Creating personage', race, gender, name, userId)
-      await User.updateOne({
-        id: userId
-      }, {
-        $set: {
-          personage: {
-            race,
-            gender,
-            name
-          }
+
+    if (userId) {
+      console.log("Creating personage", race, gender, name, userId)
+      await User.updateOne(
+        {
+          id: userId,
+        },
+        {
+          $set: {
+            personage: {
+              race,
+              gender,
+              name,
+            },
+          },
         }
-      })
+      )
     }
-  } catch(e) {
+  } catch (e) {
     console.log("Error creating personage for user", e)
     return res.status(404).json({ message: "User not found" })
   }
@@ -82,8 +86,8 @@ export const updateUserPrestart = async (req, res) => {
 
 export const getLevelsParameters = async (req, res) => {
   try {
-    const levels = await LevelsParamters.find({}, {_id: false})
-    return res.status(200).json({levels})
+    const levels = await LevelsParamters.find({}, { _id: false })
+    return res.status(200).json({ levels })
   } catch (e) {
     console.log("Error in getLevelParameters", e)
   }

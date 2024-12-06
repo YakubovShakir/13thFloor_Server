@@ -24,7 +24,6 @@ app.use(express.json())
 
 connectDB()
 
-
 app.use("/api/process/", processRouter)
 app.use("/api/users/", usersRouter)
 app.use("/api/referrals/", referralRouter)

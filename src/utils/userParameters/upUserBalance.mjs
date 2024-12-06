@@ -1,13 +1,27 @@
 import UserParameters from "../../models/user/userParametersModel.mjs"
 import LevelsParamters from "../../models/level/levelParametersModel.mjs"
+import process from "../../models/process/processModel.mjs"
 
 const upUserBalance = async (id, amount) => {
   try {
     const user = await UserParameters.findOne({ id: id })
     const levels = await LevelsParamters.find({})
+    const robotBoost12 = await process.findOne({
+      id: id,
+      type: "boost",
+      type_id: 5,
+    })
+    const robotBoost24 = await process.findOne({
+      id: id,
+      type: "boost",
+      type_id: 6,
+    })
 
-    user.coins += amount
-    user.total_earned += amount
+    let earnRate = 1 // !!!
+    if (robotBoost12 || robotBoost24) earnRate = 1
+
+    user.coins += amount * earnRate
+    user.total_earned += amount * earnRate
 
     if (user?.level != 15) {
       const nextLevel = levels.find((level) => level?.level === user?.level + 1)

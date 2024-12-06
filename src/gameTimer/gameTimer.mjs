@@ -3,7 +3,7 @@ import { SkillProccess } from "./tasks/SkillProcess/task.mjs"
 import { WorkProccess } from "./tasks/WorkProcess/task.mjs"
 import { TrainingProccess } from "./tasks/TrainingProcess/task.mjs"
 import { SleepProccess } from "./tasks/SleepProcess/task.mjs"
-
+import BoostProccess from "./tasks/BoostProcess/task.mjs"
 import dotenv from "dotenv"
 dotenv.config()
 
@@ -14,9 +14,9 @@ const gameTimer = {
   SkillProccess,
   TrainingProccess,
   WorkProccess,
-  SleepProccess
+  SleepProccess,
+  BoostProccess,
 }
-
 
 connectDB()
 gameTimer.FoodProccess.start()
@@ -29,4 +29,6 @@ gameTimer.WorkProccess.start()
 console.log("Запустил процессы работы")
 gameTimer.SleepProccess.start()
 console.log("Запустил процессы сна")
+gameTimer.BoostProccess.start()
+console.log("Запустил процессы бустов")
 export default gameTimer
