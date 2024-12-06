@@ -19,7 +19,7 @@ const addProcess = async (userId, type, typeId, duration) => {
       type_id: typeId,
       duration: duration || 0,
       active: active[type],
-      seconds: new Date().getUTCDate(),
+      seconds: 0,
     }
 
     await process.create(params)
