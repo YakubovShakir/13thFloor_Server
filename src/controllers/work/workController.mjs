@@ -1,6 +1,7 @@
 import Work from "../../models/work/workModel.mjs"
 import UserParameters from "../../models/user/userParametersModel.mjs"
 import UserSkill from "../../models/user/userSkillModel.mjs"
+import process from "../../models/process/processModel.mjs"
 export const getWorks = async (req, res) => {
   try {
     const works = await Work.find({}).sort({ coins_price: 1 })
@@ -20,16 +21,22 @@ export const buyWork = async (req, res) => {
     const work = await Work.findOne({ work_id: workId })
     if (!user || !work)
       return res.status(404).json({ error: "User or work not found" })
-  
-    // Проверка что у пользователя есть необходимый уровень для покупки работы 
-    if(user?.level < work?.work_id) return res.status(400).json({ error: "Insufficient level to purchase this work!" })
-      
+
+    // Проверка что у пользователя есть необходимый уровень для покупки работы
+    if (user?.level < work?.work_id)
+      return res
+        .status(400)
+        .json({ error: "Insufficient level to purchase this work!" })
+
     // Проверка что пользователь покупает следующую работу по уровню
-    if (workId != (user?.work_id + 1)) return res.status(400).json({ error: "You can buy only a next work!" })
+    if (workId != user?.work_id + 1)
+      return res.status(400).json({ error: "You can buy only a next work!" })
 
-
-      //  Проверка что хватает респекта 
-    if (work?.respect_required > user?.respect) return res.status(400).json({ error: "Not enough respect to buy this work!" })
+    //  Проверка что хватает респекта
+    if (work?.respect_required > user?.respect)
+      return res
+        .status(400)
+        .json({ error: "Not enough respect to buy this work!" })
 
     //Проверка на наличие необходимого навыка
     if (work?.skill_id_required) {
@@ -46,6 +53,11 @@ export const buyWork = async (req, res) => {
     else {
       user.coins -= work?.coins_price
       user.work_id = workId
+      const currentWork = await process.findOne({ id: userId, type: "work" })
+      if (currentWork) {
+        currentWork.type_id = workId
+        await currentWork.save()
+      }
     }
 
     await user.save()
