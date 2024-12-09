@@ -1,0 +1,92 @@
+export default [
+  {
+    level: 1,
+    required_earned: 30,
+    energy_capacity: 500,
+    sleep_duration: 30,
+  },
+  {
+    level: 3,
+    energy_capacity: 1500,
+    required_earned: 500,
+    sleep_duration: 60,
+  },
+  {
+    level: 4,
+    energy_capacity: 2000,
+    required_earned: 1800,
+    sleep_duration: 80,
+  },
+  {
+    level: 5,
+    energy_capacity: 2500,
+    required_earned: 2200,
+    sleep_duration: 120,
+  },
+  {
+    level: 6,
+    energy_capacity: 3000,
+    required_earned: 5000,
+    sleep_duration: 180,
+  },
+  {
+    level: 7,
+    energy_capacity: 3300,
+    required_earned: 7000,
+    sleep_duration: 210,
+  },
+  {
+    level: 8,
+    energy_capacity: 3500,
+    required_earned: 13000,
+    sleep_duration: 250,
+  },
+  {
+    level: 9,
+    energy_capacity: 4200,
+    required_earned: 18000,
+    sleep_duration: 270,
+  },
+  {
+    level: 10,
+    energy_capacity: 4500,
+    required_earned: 25000,
+    sleep_duration: 310,
+  },
+  {
+    level: 2,
+    energy_capacity: 1000,
+    required_earned: 180,
+    sleep_duration: 45,
+  },
+  {
+    level: 13,
+    energy_capacity: 6000,
+    required_earned: 70000,
+    sleep_duration: 400,
+  },
+  {
+    level: 11,
+    energy_capacity: 5000,
+    required_earned: 32000,
+    sleep_duration: 350,
+  },
+  {
+    level: 14,
+    energy_capacity: 6300,
+    required_earned: 85000,
+    sleep_duration: 420,
+  },
+  {
+    level: 15,
+    energy_capacity: 6500,
+    required_earned: 100000,
+    sleep_duration: 480,
+  },
+  {
+    level: 12,
+    energy_capacity: 5500,
+    required_earned: 43000,
+    sleep_duration: 380,
+  },
+]
