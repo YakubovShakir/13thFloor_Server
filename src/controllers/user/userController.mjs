@@ -112,13 +112,12 @@ export const createUserPersonage = async (req, res) => {
         clothing_id: { $in: [5, 6, 7, getInitialHatByRace(race)] },
       })
     ).reduce((acc, cur) => {
-      console.log(acc, cur?.respect, "JOPA")
-
       acc += cur.respect
       return acc
     }, 0)
     userParam.respect = sumRespect
     await userParam.save()
+    return res.status(200).json({})
   } catch (e) {
     console.log("Error creating personage for user", e)
     return res.status(404).json({ message: "User not found" })
