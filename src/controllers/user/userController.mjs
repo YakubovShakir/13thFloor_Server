@@ -5,36 +5,38 @@ import UserClothing from "../../models/user/userClothingModel.mjs"
 import UserCurrentInventory from "../../models/user/userInventoryModel.js"
 import Clothing from "../../models/clothing/clothingModel.mjs"
 import ShelfItems from "../../models/shelfItem/shelfItemModel.js"
+import UserParameters from "../../models/user/userParametersModel.mjs"
 
-export const prebuildInitialInventory = (user_id) => new UserCurrentInventory({
-  user_id,
-  shelf: [],
-  // all tier 0 items, no offence
-  clothes: [
-    {
-      id: 1
-    },
-    {
-      id: 2
-    },
-    {
-      id: 3
-    },
-    {
-      id: 4
-    },
-    {
-      id: 5
-    },
-    {
-      id: 6
-    },
-    {
-      id: 7
-    }
-  ],
-  boosts: []
-}).save()
+export const prebuildInitialInventory = (user_id) =>
+  new UserCurrentInventory({
+    user_id,
+    shelf: [],
+    // all tier 0 items, no offence
+    clothes: [
+      {
+        id: 1,
+      },
+      {
+        id: 2,
+      },
+      {
+        id: 3,
+      },
+      {
+        id: 4,
+      },
+      {
+        id: 5,
+      },
+      {
+        id: 6,
+      },
+      {
+        id: 7,
+      },
+    ],
+    boosts: [],
+  }).save()
 
 export const getUser = async (req, res) => {
   try {
@@ -43,9 +45,11 @@ export const getUser = async (req, res) => {
     if (userId) {
       const user = await User.findOne({ id: userId })
       if (user)
-        return res
-          .status(200)
-          .json({ userId: user.id, prestart: user.prestart, personage: user.personage || null })
+        return res.status(200).json({
+          userId: user.id,
+          prestart: user.prestart,
+          personage: user.personage || null,
+        })
     }
   } catch (e) {
     console.log("Error while get user ", e)
@@ -92,14 +96,24 @@ export const createUserPersonage = async (req, res) => {
       top: 5,
       pants: 6,
       shoes: 7,
-      accessories: []
+      accessories: [],
     })
 
-    const userInitialInventory = 
+    const userInitialInventory = await userClothing.save()
+    const userParam = await UserParameters.findOne({ id: userId })
 
-    console.log(await userClothing.save())
+    const sumRespect = (
+      await Clothing.find({
+        clothing_id: { $in: [5, 6, 7, getInitialHatByRace(race)] },
+      })
+    ).reduce((acc, cur) => {
+      acc += cur.respect
+      return acc
+    }, 0)
+    userParam.respect = sumRespect
+    await userParam.save()
     console.log(await userInitialInventory.save())
-  } catch(e) {
+  } catch (e) {
     console.log("Error creating personage for user", e)
     return res.status(404).json({ message: "User not found" })
   }
@@ -109,17 +123,25 @@ export const getShopItems = async (req, res) => {
   // TODO: boosters
   try {
     const userId = parseInt(req.params.id)
-    const userInventory = await UserCurrentInventory.findOne({ user_id: userId })
+    const userInventory = await UserCurrentInventory.findOne({
+      user_id: userId,
+    })
     const { clothes } = userInventory
     console.log(clothes)
-    const clothingClean = (await Clothing.find({}, { _id: false }, { sort: { tier: 1 } })).filter(item => !clothes.map(c => c.id).includes(item.clothing_id))
-    const shelf = await ShelfItems.find({}, { _id: false }, { sort: { _id: 1 } })
-    
+    const clothingClean = (
+      await Clothing.find({}, { _id: false }, { sort: { tier: 1 } })
+    ).filter((item) => !clothes.map((c) => c.id).includes(item.clothing_id))
+    const shelf = await ShelfItems.find(
+      {},
+      { _id: false },
+      { sort: { _id: 1 } }
+    )
+
     return res.status(200).json({
       clothing: clothingClean,
-      shelf
+      shelf,
     })
-  } catch(err) {
+  } catch (err) {
     console.log("Failed to fetch shop items", err)
   }
 }
@@ -127,14 +149,13 @@ export const getShopItems = async (req, res) => {
 // export const equipClothes = async (req, res) => {
 //   try {
 //     const userId = parseInt(req.params.id)
-    
-    
+
 //     const userInventory = await UserCurrentInventory.findOne({ user_id: userId })
 //     const { clothes } = userInventory
 //     console.log(clothes)
 //     const clothingClean = (await Clothing.find({}, { _id: false }, { sort: { tier: 1 } })).filter(item => !clothes.map(c => c.id).includes(item.clothing_id))
 //     const shelf = await ShelfItems.find({}, { _id: false }, { sort: { _id: 1 } })
-    
+
 //     return res.status(200).json({
 //       clothing: clothingClean,
 //       shelf
@@ -149,59 +170,67 @@ export const getInventoryItems = async (req, res) => {
     const userId = parseInt(req.params.id)
     let userInventory = await UserCurrentInventory.findOne({ user_id: userId })
 
-    if(!userInventory) {
+    if (!userInventory) {
       userInventory = await prebuildInitialInventory(userId)
     }
 
     let { clothes, shelf } = userInventory
     clothes = await Promise.all(
-      clothes.map(c => Clothing.findOne({ clothing_id: c.id }))
+      clothes.map((c) => Clothing.findOne({ clothing_id: c.id }))
     )
     const currentlyUsedClothes = await UserClothing.findOne({ user_id: userId })
     const currentlyUsedShelf = (await User.findOne({ id: userId })).shelf
-    
+
     return res.status(200).json({
       clothes,
       shelf,
       currentlyUsedClothes,
-      currentlyUsedShelf
+      currentlyUsedShelf,
     })
-  } catch(err) {
+  } catch (err) {
     console.log("Failed to fetch shop items", err)
   }
 }
 
-export const getCurrentClothes = async(req, res) => {
+export const getCurrentClothes = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
-    if(userId) {
+    if (userId) {
       const userClothing = await UserClothing.findOne({ user_id: id })
 
       if (!userClothing) {
-        return res.status(404).json({ message: 'User has no clothing data' });
+        return res.status(404).json({ message: "User has no clothing data" })
       }
-  
+
       const clothingIds = [
         userClothing.hat,
         userClothing.top,
         userClothing.pants,
         userClothing.shoes,
         ...userClothing.accessories,
-      ];
-  
-      const clothingElements = await Clothing.find({ clothing_id: { $in: clothingIds } });
-  
+      ]
+
+      const clothingElements = await Clothing.find({
+        clothing_id: { $in: clothingIds },
+      })
+
       const response = {
         hat: clothingElements.find((el) => el.clothing_id === userClothing.hat),
         top: clothingElements.find((el) => el.clothing_id === userClothing.top),
-        pants: clothingElements.find((el) => el.clothing_id === userClothing.pants),
-        shoes: clothingElements.find((el) => el.clothing_id === userClothing.shoes),
-        accessories: clothingElements.filter((el) => userClothing.accessories.includes(el.clothing_id)),
-      };
-  
-      return res.status(200).json(response);
+        pants: clothingElements.find(
+          (el) => el.clothing_id === userClothing.pants
+        ),
+        shoes: clothingElements.find(
+          (el) => el.clothing_id === userClothing.shoes
+        ),
+        accessories: clothingElements.filter((el) =>
+          userClothing.accessories.includes(el.clothing_id)
+        ),
+      }
+
+      return res.status(200).json(response)
     }
-  } catch(err) {
+  } catch (err) {
     console.log("Error fetching clothes for user", err)
     return res.status(500).json({ message: "Something went wrong" })
   }
@@ -255,18 +284,23 @@ export const handleClothesUnequip = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
     const { clothing_id, type } = req.body
-
+    if (type !== "Accessory") return res.status(200).json({})
     const isClothingReal = await Clothing.findOne({ clothing_id })
-    const doesUserHaveIt = (await UserCurrentInventory.findOne({ user_id: userId })).clothes.find(c => c.id == clothing_id)
+    const doesUserHaveIt = (
+      await UserCurrentInventory.findOne({ user_id: userId })
+    ).clothes.find((c) => c.id == clothing_id)
     console.log(isClothingReal)
     console.log(doesUserHaveIt)
 
-    if(isClothingReal && doesUserHaveIt) {
-      await UserClothing.updateOne({ user_id: userId }, { $set: { [type.toLowerCase()]: null } })
+    if (isClothingReal && doesUserHaveIt) {
+      await UserClothing.updateOne(
+        { user_id: userId },
+        { $set: { [type.toLowerCase()]: null } }
+      )
     }
 
-    return res.status(200).json({ status: 'ok' })
-  } catch(e) {
+    return res.status(200).json({ status: "ok" })
+  } catch (e) {
     console.log("Error in handleClothesUnequip", e)
   }
 }
@@ -277,16 +311,21 @@ export const handleClothesEquip = async (req, res) => {
     const { clothing_id, type } = req.body
 
     const isClothingReal = await Clothing.findOne({ clothing_id })
-    const doesUserHaveIt = (await UserCurrentInventory.findOne({ user_id: userId })).clothes.find(c => c.id == clothing_id)
+    const doesUserHaveIt = (
+      await UserCurrentInventory.findOne({ user_id: userId })
+    ).clothes.find((c) => c.id == clothing_id)
 
     console.log(userId, clothing_id, type)
 
-    if(isClothingReal && doesUserHaveIt) {
-      await UserClothing.updateOne({ user_id: userId }, { $set: { [type.toLowerCase()]: parseInt(clothing_id) } })
+    if (isClothingReal && doesUserHaveIt) {
+      await UserClothing.updateOne(
+        { user_id: userId },
+        { $set: { [type.toLowerCase()]: parseInt(clothing_id) } }
+      )
     }
 
-    return res.status(200).json({ status: 'ok' })
-  } catch(e) {
+    return res.status(200).json({ status: "ok" })
+  } catch (e) {
     console.log("Error in handleClothesUnequip", e)
     return res.status(500).json({ error: true })
   }

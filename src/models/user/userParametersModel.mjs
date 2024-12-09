@@ -10,7 +10,7 @@ const userParameterSchema = new mongoose.Schema({
   energy: { type: Number, default: 150 },
   hungry: { type: Number, default: 100 },
   mood: { type: Number, default: 100 },
-  respect: { type: Number, default: 1 },
+  respect: { type: Number, default: 0 },
   recovery_ratios: {
     hungry: { type: Number, default: 1 },
     mood: { type: Number, default: 1 },
