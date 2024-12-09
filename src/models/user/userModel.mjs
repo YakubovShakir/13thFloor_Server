@@ -18,26 +18,26 @@ const schema = new mongoose.Schema(
     personage: {
       race: {
         type: String,
-        enum: ['asian', 'white', 'black'],
+        enum: ["asian", "white", "black"],
       },
       gender: {
         type: String,
-        enum: ['male', 'female'],
+        enum: ["male", "female"],
       },
       name: {
         type: String,
-      }
+      },
     },
     // Current shelf state
     shelf: [
       {
-        id: { type: Number, required: true, unique: true },
-        cellIndex: { type: Number, required: true, unique: true }
-      }
-    ]
+        id: { type: Number, required: true },
+        cellIndex: { type: Number, required: true },
+      },
+    ],
   },
   { timestamps: true }
-);
+)
 
 const User = mongoose.model("User", schema)
 
