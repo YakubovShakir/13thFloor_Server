@@ -8,7 +8,7 @@ export default [
     mood_cost_in_hour: 0.5,
     hungry_cost_in_hour: 1.25,
     skill_id_required: null,
-    respect_required: 100,
+    respect_required: 50,
     link: "https://13floorgame.ru/images/works/courier.png",
   },
   {

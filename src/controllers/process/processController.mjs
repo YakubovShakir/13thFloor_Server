@@ -118,7 +118,6 @@ export const getUserActiveProcess = async (req, res) => {
         activeProcessWithCoins = { ...activeProcess._doc }
         activeProcessWithCoins.coins_in_hour = work?.coins_in_hour || null
       }
-      console.log(activeProcess)
       return res
         .status(200)
         .json({ process: activeProcessWithCoins || activeProcess })

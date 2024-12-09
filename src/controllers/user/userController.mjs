@@ -90,29 +90,35 @@ export const createUserPersonage = async (req, res) => {
       return map[race]
     }
 
-    const userClothing = new UserClothing({
-      user_id: userId,
-      hat: getInitialHatByRace(race),
-      top: 5,
-      pants: 6,
-      shoes: 7,
-      accessories: [],
-    })
+    let userClothing = await UserClothing.findOne({ user_id: userId })
+    if (!userClothing) {
+      userClothing = new UserClothing({
+        user_id: userId,
+        hat: getInitialHatByRace(race),
+        top: 5,
+        pants: 6,
+        shoes: 7,
+        accessories: [],
+      })
+      await userClothing.save()
+    }
+    if (!(await UserCurrentInventory.findOne({ user_id: userId })))
+      await prebuildInitialInventory(userId)
 
-    const userInitialInventory = await userClothing.save()
-    const userParam = await UserParameters.findOne({ id: userId })
+    let userParam = await UserParameters.findOne({ id: userId })
 
     const sumRespect = (
       await Clothing.find({
         clothing_id: { $in: [5, 6, 7, getInitialHatByRace(race)] },
       })
     ).reduce((acc, cur) => {
+      console.log(acc, cur?.respect, "JOPA")
+
       acc += cur.respect
       return acc
     }, 0)
     userParam.respect = sumRespect
     await userParam.save()
-    console.log(await userInitialInventory.save())
   } catch (e) {
     console.log("Error creating personage for user", e)
     return res.status(404).json({ message: "User not found" })
