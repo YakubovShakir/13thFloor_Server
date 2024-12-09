@@ -12,7 +12,7 @@ export const ClothingCategories = {
   Casual: 'Casual',
   Sport: 'Sport',
   Office: 'Office',
-  Seasonal: 'Seasonal'
+  Event: 'Event'
 };
 
 const clothingSchema = new mongoose.Schema({

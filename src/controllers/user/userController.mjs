@@ -6,6 +6,36 @@ import UserCurrentInventory from "../../models/user/userInventoryModel.js"
 import Clothing from "../../models/clothing/clothingModel.mjs"
 import ShelfItems from "../../models/shelfItem/shelfItemModel.js"
 
+export const prebuildInitialInventory = (user_id) => new UserCurrentInventory({
+  user_id,
+  shelf: [],
+  // all tier 0 items, no offence
+  clothes: [
+    {
+      id: 1
+    },
+    {
+      id: 2
+    },
+    {
+      id: 3
+    },
+    {
+      id: 4
+    },
+    {
+      id: 5
+    },
+    {
+      id: 6
+    },
+    {
+      id: 7
+    }
+  ],
+  boosts: []
+}).save()
+
 export const getUser = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
@@ -65,35 +95,7 @@ export const createUserPersonage = async (req, res) => {
       accessories: []
     })
 
-    const userInitialInventory = new UserCurrentInventory({
-      user_id: userId,
-      shelf: [],
-      // all tier 0 items, no offence
-      clothes: [
-        {
-          id: 1
-        },
-        {
-          id: 2
-        },
-        {
-          id: 3
-        },
-        {
-          id: 4
-        },
-        {
-          id: 5
-        },
-        {
-          id: 6
-        },
-        {
-          id: 7
-        }
-      ],
-      boosts: []
-    })
+    const userInitialInventory = 
 
     console.log(await userClothing.save())
     console.log(await userInitialInventory.save())
@@ -145,7 +147,12 @@ export const getShopItems = async (req, res) => {
 export const getInventoryItems = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
-    const userInventory = await UserCurrentInventory.findOne({ user_id: userId })
+    let userInventory = await UserCurrentInventory.findOne({ user_id: userId })
+
+    if(!userInventory) {
+      userInventory = await prebuildInitialInventory(userId)
+    }
+
     let { clothes, shelf } = userInventory
     clothes = await Promise.all(
       clothes.map(c => Clothing.findOne({ clothing_id: c.id }))

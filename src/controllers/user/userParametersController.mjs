@@ -1,24 +1,47 @@
 import Clothing from "../../models/clothing/clothingModel.mjs"
 import UserClothing from "../../models/user/userClothingModel.mjs"
 import UserCurrentInventory from "../../models/user/userInventoryModel.js"
+import User from "../../models/user/userModel.mjs"
 import Users from "../../models/user/userModel.mjs"
 import UserParameters from "../../models/user/userParametersModel.mjs"
+import { prebuildInitialInventory } from "./userController.mjs"
 
 export const getUserParameters = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
-    if (!userId) return res.status(404).json({ error: "user not found" })
+    if (!userId) return res.status(400).json({ error: "bad request" })
 
-    let parameters = await UserParameters.findOne({ id: userId }, { _id: 0 })
     const user = await Users.findOne({ id: userId })
+    
+    if(!user) {
+      console.log('Registering user with ID', userId)
+      user = await (new User({ id: userId, prestart: true, personage: {}, shelf: [] })).save()
+    }
+    
+    let parameters = await UserParameters.findOne({ id: userId }, { _id: 0 })
 
     if (!parameters) {
       parameters = await UserParameters.create({ id: userId })
     }
 
-    const inventory = await UserCurrentInventory.findOne({ user_id: userId })
-    const userClothing = await UserClothing.findOne({ user_id: userId });
+    let inventory = await UserCurrentInventory.findOne({ user_id: userId })
+    let userClothing = await UserClothing.findOne({ user_id: userId });
+  
+    if(!inventory) {
+      await prebuildInitialInventory(userId)
+    }
 
+    if(!userClothing) {
+      await UserClothing.create({
+        user_id: userId,
+        hat: 4,
+        top: 5,
+        pants: 6,
+        shoes: 7,
+        accessories: []
+      })
+    }
+  
     const hat = await Clothing.findOne({ clothing_id: userClothing?.hat });
     const top = await Clothing.findOne({ clothing_id: userClothing?.top });
     const pants = await Clothing.findOne({ clothing_id: userClothing?.pants });

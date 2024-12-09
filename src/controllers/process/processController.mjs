@@ -5,6 +5,7 @@ import startTraining from "../training/functions/startTraining.mjs"
 import { startSleep }  from "../sleep/sleepController.mjs"
 import buySkill from "../skill/functions/buySkill.mjs"
 import buyFood from "../food/functions/buyFood.mjs"
+import Work from "../../models/work/workModel.mjs"
 export const startProcess = async (req, res) => {
   try {
     // Проверяем тип процесса
@@ -103,7 +104,19 @@ export const getUserActiveProcess = async (req, res) => {
       { _id: false }
     )
 
-    return res.status(200).json({ process: activeProcess })
+    if(activeProcess) {
+      let activeProcessWithCoins
+
+      if(activeProcess.type === "work") {
+        const work = await Work.findOne({ type_id: activeProcess.work_id })
+        activeProcessWithCoins = { ...activeProcess._doc };
+        activeProcessWithCoins.coins_in_hour = work?.coins_in_hour || null;
+      }
+      console.log(activeProcess)
+      return res.status(200).json({ process: activeProcessWithCoins || activeProcess })
+    } else {
+      return res.status(200).json({ process: null })
+    }
   } catch (e) {
     console.log("Error while getUserActiveProcesses - ", e)
   }

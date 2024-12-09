@@ -10,7 +10,7 @@ export const getUserTrainingParameters = async (req, res) => {
     const user = await User.findOne({ id: userId })
     if (!user) return res.status(404).json({ error: "user not found" })
 
-    const parameters = await UserParameters.findOne({ id: userId })
+    let parameters = await UserParameters.findOne({ id: userId })
     if (!parameters) {
       parameters = await UserParameters.create({ id: userId })
     }
