@@ -2,7 +2,7 @@ import process from "../../models/process/processModel.mjs"
 import User from "../../models/user/userModel.mjs"
 import startWork from "../work/functions/startWork.mjs"
 import startTraining from "../training/functions/startTraining.mjs"
-import { startSleep }  from "../sleep/sleepController.mjs"
+import { startSleep } from "../sleep/sleepController.mjs"
 import buySkill from "../skill/functions/buySkill.mjs"
 import buyFood from "../food/functions/buyFood.mjs"
 import Work from "../../models/work/workModel.mjs"
@@ -27,8 +27,8 @@ export const startProcess = async (req, res) => {
         result = await startTraining(userId)
         break
       case "sleep":
-      result = await startSleep(userId)
-      break
+        result = await startSleep(userId)
+        break
       case "skill":
         const skillId = parseInt(req.query.typeId)
         if (!skillId)
@@ -49,7 +49,7 @@ export const startProcess = async (req, res) => {
 
 export const stopActiveProcess = async (req, res) => {
   const userId = parseInt(req.query.id)
-  if (!userId) return res.status(400).json({ error: "<id> is required!"})
+  if (!userId) return res.status(400).json({ error: "<id> is required!" })
 
   const user = await User.findOne({ id: userId })
   if (!user) return res.status(404).json({ error: "User not found!" })
@@ -104,16 +104,18 @@ export const getUserActiveProcess = async (req, res) => {
       { _id: false }
     )
 
-    if(activeProcess) {
+    if (activeProcess) {
       let activeProcessWithCoins
 
-      if(activeProcess.type === "work") {
-        const work = await Work.findOne({ type_id: activeProcess.work_id })
-        activeProcessWithCoins = { ...activeProcess._doc };
-        activeProcessWithCoins.coins_in_hour = work?.coins_in_hour || null;
+      if (activeProcess.type === "work") {
+        const work = await Work.findOne({ work_id: activeProcess.type_id })
+        activeProcessWithCoins = { ...activeProcess._doc }
+        activeProcessWithCoins.coins_in_hour = work?.coins_in_hour || null
       }
       console.log(activeProcess)
-      return res.status(200).json({ process: activeProcessWithCoins || activeProcess })
+      return res
+        .status(200)
+        .json({ process: activeProcessWithCoins || activeProcess })
     } else {
       return res.status(200).json({ process: null })
     }
