@@ -23,7 +23,7 @@ const startWork = async (userId) => {
         data: { error: "Not enough Mood or Energy or Hungry" },
       }
 
-    await addActiveProcess(userId, "work", user?.work_id)
+    await addActiveProcess(userId, "work", user?.work_id, null, 59)
 
     return { status: 200, data: { status: "ok" } }
   } catch (e) {

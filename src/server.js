@@ -26,6 +26,10 @@ import Boost from "./models/boost/boostModel.mjs"
 import Work from "./models/work/workModel.mjs"
 import LevelsParameters from "./models/level/levelParametersModel.mjs"
 import TrainingParameters from "./models/training/trainingParameters.mjs"
+import UserParameters from "./models/user/userParametersModel.mjs"
+import UserCurrentInventory from "./models/user/userInventoryModel.js"
+import UserClothing from "./models/user/userClothingModel.mjs"
+import User from "./models/user/userModel.mjs"
 
 dotenv.config()
 
@@ -58,51 +62,102 @@ app.listen(PORT, () => {
 })
 
 async function main() {
-  //Clothing Migration
+  await Promise.all([
+    deleteAndInsertClothing(),
+    deleteAndInsertWork(),
+    deleteAndInsertFood(),
+    deleteAndInsertSkill(),
+    deleteAndInsertBoost(),
+    deleteAndInsertLevels(),
+    deleteAndInsertTraining(),
+    deleteUserParameters(),
+    deleteUserInventories(),
+    deleteUserClothing(),
+    deleteUsers(),
+  ])
+}
+
+async function deleteAndInsertClothing() {
   await Clothing.deleteMany()
-  for (const item of ClothingItems) {
-    const clothes = new Clothing({ ...item, effect: {} })
-    await clothes.save()
-  }
+  await Promise.all(
+    ClothingItems.map(async (item) => {
+      const clothes = new Clothing({ ...item, effect: {} })
+      await clothes.save()
+    })
+  )
+}
 
-  //Work Migration
+async function deleteAndInsertWork() {
   await Work.deleteMany()
-  for (const item of WorkItems) {
-    const work = new Work({ ...item, effect: {} })
-    await work.save()
-  }
+  await Promise.all(
+    WorkItems.map(async (item) => {
+      const work = new Work({ ...item, effect: {} })
+      await work.save()
+    })
+  )
+}
 
-  //Food Migration
+async function deleteAndInsertFood() {
   await Food.deleteMany()
-  for (const item of FoodItems) {
-    const food = new Food({ ...item, effect: {} })
-    await food.save()
-  }
+  await Promise.all(
+    FoodItems.map(async (item) => {
+      const food = new Food({ ...item, effect: {} })
+      await food.save()
+    })
+  )
+}
 
-  //Skill Migration
+async function deleteAndInsertSkill() {
   await Skill.deleteMany()
-  for (const item of SkillItems) {
-    const skill = new Skill({ ...item, effect: {} })
-    await skill.save()
-  }
+  await Promise.all(
+    SkillItems.map(async (item) => {
+      const skill = new Skill({ ...item, effect: {} })
+      await skill.save()
+    })
+  )
+}
 
-  //Boost Migration
+async function deleteAndInsertBoost() {
   await Boost.deleteMany()
-  for (const item of BoostItems) {
-    const boost = new Boost({ ...item, effect: {} })
-    await boost.save()
-  }
+  await Promise.all(
+    BoostItems.map(async (item) => {
+      const boost = new Boost({ ...item, effect: {} })
+      await boost.save()
+    })
+  )
+}
 
-  //Levels Migration
+async function deleteAndInsertLevels() {
   await LevelsParameters.deleteMany()
-  for (const item of LevelItems) {
-    const level = new LevelsParameters({ ...item, effect: {} })
-    await level.save()
-  }
-  //Training parameters Migration
+  await Promise.all(
+    LevelItems.map(async (item) => {
+      const level = new LevelsParameters({ ...item, effect: {} })
+      await level.save()
+    })
+  )
+}
+
+async function deleteAndInsertTraining() {
   await TrainingParameters.deleteMany()
-  for (const item of TrainingItems) {
-    const training = new TrainingParameters({ ...item, effect: {} })
-    await training.save()
-  }
+  await Promise.all(
+    TrainingItems.map(async (item) => {
+      const training = new TrainingParameters({ ...item, effect: {} })
+      await training.save()
+    })
+  )
+}
+
+async function deleteUserParameters() {
+  await UserParameters.deleteMany()
+}
+
+async function deleteUserInventories() {
+  await UserCurrentInventory.deleteMany()
+}
+
+async function deleteUserClothing() {
+  await UserClothing.deleteMany()
+}
+async function deleteUsers() {
+  await User.deleteMany()
 }
