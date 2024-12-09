@@ -35,7 +35,9 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-connectDB().then(() => main())
+connectDB().then(() => {
+  if (process.env.NODE_ENV === "test") main()
+})
 
 app.use("/api/process/", processRouter)
 app.use("/api/users/", usersRouter)
