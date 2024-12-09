@@ -16,12 +16,16 @@ import SkillItems from "./models/skill/migration.js"
 import FoodItems from "./models/food/migration.js"
 import BoostItems from "./models/boost/migration.js"
 import WorkItems from "./models/work/migration.js"
+import LevelItems from "./models/level/migration.js"
+import TrainingItems from "./models/training/migration.js"
 
 import Clothing from "./models/clothing/clothingModel.mjs"
 import Skill from "./models/skill/skillModel.mjs"
 import Food from "./models/food/foodModel.mjs"
 import Boost from "./models/boost/boostModel.mjs"
 import Work from "./models/work/workModel.mjs"
+import LevelsParameters from "./models/level/levelParametersModel.mjs"
+import TrainingParameters from "./models/training/trainingParameters.mjs"
 
 dotenv.config()
 
@@ -80,5 +84,25 @@ async function main() {
   for (const item of SkillItems) {
     const skill = new Skill({ ...item, effect: {} })
     await skill.save()
+  }
+
+  //Boost Migration
+  await Boost.deleteMany()
+  for (const item of BoostItems) {
+    const boost = new Boost({ ...item, effect: {} })
+    await boost.save()
+  }
+
+  //Levels Migration
+  await LevelsParameters.deleteMany()
+  for (const item of LevelItems) {
+    const level = new LevelsParameters({ ...item, effect: {} })
+    await level.save()
+  }
+  //Training parameters Migration
+  await TrainingParameters.deleteMany()
+  for (const item of TrainingItems) {
+    const training = new TrainingParameters({ ...item, effect: {} })
+    await training.save()
   }
 }
