@@ -1,0 +1,127 @@
+{
+  // в базе
+  "totalUsers": 65432,
+  // подписаны на канал
+  "subscribedUsers": 4809,
+  // "сколько рефералов": "сколько пользователей"
+  "referralBreakdown": {
+    "0": 64226,
+    "1": 836,
+    "2": 164,
+    "3": 49,
+    "4": 17,
+    "5": 96,
+    "6": 17,
+    "7": 9,
+    "8": 8,
+    "9": 1,
+    "11": 2,
+    "13": 1,
+    "14": 1,
+    "50": 1,
+    "513": 1,
+    "1260": 1,
+    "1357": 1,
+    "56949": 1
+  },
+  // процент подписки на канал из всез в базе
+  "percentSubscribed": "7.34961",
+  "referralPerformance": {
+    "noReferrals": 64226,
+    "lowReferrals": 1066,
+    "highReferrals": 140
+  },
+  // детальные статы по кол-ву
+  "referralDistribution": [
+    {
+      "referralCount": 0,
+      "userCount": 64226,
+      "percentage": "98.15687"
+    },
+    {
+      "referralCount": 1,
+      "userCount": 836,
+      "percentage": "1.27766"
+    },
+    {
+      "referralCount": 2,
+      "userCount": 164,
+      "percentage": "0.25064"
+    },
+    {
+      "referralCount": 3,
+      "userCount": 49,
+      "percentage": "0.07489"
+    },
+    {
+      "referralCount": 4,
+      "userCount": 17,
+      "percentage": "0.02598"
+    },
+    {
+      "referralCount": 5,
+      "userCount": 96,
+      "percentage": "0.14672"
+    },
+    {
+      "referralCount": 6,
+      "userCount": 17,
+      "percentage": "0.02598"
+    },
+    {
+      "referralCount": 7,
+      "userCount": 9,
+      "percentage": "0.01375"
+    },
+    {
+      "referralCount": 8,
+      "userCount": 8,
+      "percentage": "0.01223"
+    },
+    {
+      "referralCount": 9,
+      "userCount": 1,
+      "percentage": "0.00153"
+    },
+    {
+      "referralCount": 11,
+      "userCount": 2,
+      "percentage": "0.00306"
+    },
+    {
+      "referralCount": 13,
+      "userCount": 1,
+      "percentage": "0.00153"
+    },
+    {
+      "referralCount": 14,
+      "userCount": 1,
+      "percentage": "0.00153"
+    },
+    {
+      "referralCount": 50,
+      "userCount": 1,
+      "percentage": "0.00153"
+    },
+    {
+      "referralCount": 513,
+      "userCount": 1,
+      "percentage": "0.00153"
+    },
+    {
+      "referralCount": 1260,
+      "userCount": 1,
+      "percentage": "0.00153"
+    },
+    {
+      "referralCount": 1357,
+      "userCount": 1,
+      "percentage": "0.00153"
+    },
+    {
+      "referralCount": 56949,
+      "userCount": 1,
+      "percentage": "0.00153"
+    }
+  ]
+}
