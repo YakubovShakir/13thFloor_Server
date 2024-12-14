@@ -356,7 +356,7 @@ export const requestStarsPaymentLink = async (req, res) => {
       amount = product.price
     }
 
-    const invoiceLink = await _fetch('http://localhost:4444/payment-create', {
+    const invoiceLink = await _fetch('http://bot:4444/payment-create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
