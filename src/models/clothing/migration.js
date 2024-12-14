@@ -200,8 +200,8 @@ export default [
       male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Head/Dreadlocks-m -icon.png",
       female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Head/Dreadlocks-f -icon.png",
       respect: 100,
-      price: 1,
-      tier: 0,
+      price: 50,
+      tier: 1,
     },
     {
       clothing_id: 13,
