@@ -6,6 +6,7 @@ import UserCurrentInventory from "../../models/user/userInventoryModel.js"
 import Clothing from "../../models/clothing/clothingModel.mjs"
 import ShelfItems from "../../models/shelfItem/shelfItemModel.js"
 import UserParameters from "../../models/user/userParametersModel.mjs"
+import _fetch from "isomorphic-fetch"
 
 export const prebuildInitialInventory = (user_id) =>
   new UserCurrentInventory({
@@ -332,6 +333,25 @@ export const handleClothesEquip = async (req, res) => {
     return res.status(200).json({ status: "ok" })
   } catch (e) {
     console.log("Error in handleClothesUnequip", e)
+    return res.status(500).json({ error: true })
+  }
+}
+
+export const requestStarsPaymentLink = async (req, res) => {
+  try {
+    const { productType, id } = req.body
+
+    const invoiceLink = _fetch('http://localhost:4444/payment-create', {
+      method: 'POST',
+      body: {
+        productType,
+        id
+      }
+    }).then(res => res.json()).then(res => res.body.invoiceLink)
+    
+    return res.status(200).json({ status: 'ok', invoiceLink })
+  } catch(e) {
+    console.log("Error in pay", e)
     return res.status(500).json({ error: true })
   }
 }

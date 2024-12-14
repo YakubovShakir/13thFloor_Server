@@ -28,13 +28,6 @@ const schema = new mongoose.Schema(
         type: String,
       },
     },
-    // Current shelf state
-    shelf: [
-      {
-        id: { type: Number, required: true },
-        cellIndex: { type: Number, required: true },
-      },
-    ],
   },
   { timestamps: true }
 )
