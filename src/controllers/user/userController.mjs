@@ -369,8 +369,7 @@ export const requestStarsPaymentLink = async (req, res) => {
         productName: name,
         description
       })
-    })
-    console.log(invoiceLink)
+    }).then(res => res.json()).then(res => res.invoiceLink)
     
     return res.status(200).json({ status: 'ok', invoiceLink })
   } catch(e) {
