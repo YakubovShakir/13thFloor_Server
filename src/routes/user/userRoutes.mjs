@@ -7,7 +7,8 @@ import {
   getShopItems,
   getInventoryItems,
   handleClothesUnequip,
-  handleClothesEquip
+  handleClothesEquip,
+  requestStarsPaymentLink
 } from "../../controllers/user/userController.mjs"
 import { getUserParameters } from "../../controllers/user/userParametersController.mjs"
 
@@ -29,5 +30,6 @@ router.get("/:id/inventory/get-items", getInventoryItems)
 router.get("/:id/shop/get-items", getShopItems)
 router.post("/:id/inventory/c-unequip", handleClothesUnequip)
 router.post("/:id/inventory/c-equip", handleClothesEquip)
+router.post('/request-stars-invoice-link', requestStarsPaymentLink)
 
 export default router

@@ -7,6 +7,7 @@ import Clothing from "../../models/clothing/clothingModel.mjs"
 import ShelfItems from "../../models/shelfItem/shelfItemModel.js"
 import UserParameters from "../../models/user/userParametersModel.mjs"
 import _fetch from "isomorphic-fetch"
+import Boost from "../../models/boost/boostModel.mjs"
 
 export const prebuildInitialInventory = (user_id) =>
   new UserCurrentInventory({
@@ -341,13 +342,34 @@ export const requestStarsPaymentLink = async (req, res) => {
   try {
     const { productType, id } = req.body
 
-    const invoiceLink = _fetch('http://localhost:4444/payment-create', {
+    let product, name, description, amount, title;
+
+    if(productType === 'boosts') {
+      product = await Boost.findOne({ id: id })
+    }
+
+    if(productType === 'clothes') {
+      product = await Clothing.findOne({ clothing_id: id })
+      name = product.name.ru
+      description = 'random'
+      title = '13th Floor'
+      amount = product.price
+    }
+
+    const invoiceLink = await _fetch('http://localhost:4444/payment-create', {
       method: 'POST',
-      body: {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
         productType,
-        id
-      }
-    }).then(res => res.json()).then(res => res.body.invoiceLink)
+        id,
+        title,
+        amount,
+        productName: name,
+        description
+      })
+    }).then(res => res.json()).then(res => res.invoiceLink)
     
     return res.status(200).json({ status: 'ok', invoiceLink })
   } catch(e) {
