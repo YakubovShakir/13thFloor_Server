@@ -1,5 +1,13 @@
 import mongoose from "mongoose"
 
+export const ShelfItemTypes = {
+  Flower: 'flower',
+  Event: 'event',
+  Award: 'award',
+  Flag: 'flag',
+  Neko: 'neko', 
+}
+
 const ShelfItem = new mongoose.Schema({
   id: { type: Number, required: true, unique: true },
   name: {
@@ -15,6 +23,11 @@ const ShelfItem = new mongoose.Schema({
     stars: { type: Number, default: 0 },
   },
   link: { type: String, required: true },
+  type: {
+    type: String,
+    enum: Object.values(ShelfItemTypes),
+    required: true
+  }
 })
 
 const ShelfItemModel = mongoose.model("shelf_item", ShelfItem)

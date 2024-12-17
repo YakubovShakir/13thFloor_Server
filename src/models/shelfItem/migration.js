@@ -1,3 +1,5 @@
+import { ShelfItemTypes } from "./shelfItemModel.js";
+
 export const ShelfItems = [
   {
     id: 1,
@@ -13,7 +15,8 @@ export const ShelfItems = [
       coins: 0,
       stars: 0,
     },
-    link: "",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/3горшок.png",
+    type: ShelfItemTypes.Flower
   },
   {
     id: 2,
@@ -29,24 +32,26 @@ export const ShelfItems = [
       coins: 0,
       stars: 0,
     },
-    link: "",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/1статуэтка.png",
+    type: ShelfItemTypes.Award
   },
-  {
-    id: 3,
-    name: {
-      ru: "Ретро Консоль",
-      en: "Retro Console",
-    },
-    description: {
-      ru: "Сразу видно первопроходца",
-      en: "A true pioneer shines through!",
-    },
-    cost: {
-      coins: 0,
-      stars: 0,
-    },
-    link: "",
-  },
+  // {
+  //   id: 3,
+  //   name: {
+  //     ru: "Ретро Консоль",
+  //     en: "Retro Console",
+  //   },
+  //   description: {
+  //     ru: "Сразу видно первопроходца",
+  //     en: "A true pioneer shines through!",
+  //   },
+  //   cost: {
+  //     coins: 0,
+  //     stars: 0,
+  //   },
+  //   link: "",
+  //   type: ShelfItemTypes.Award
+  // },
   {
     id: 4,
     name: {
@@ -61,7 +66,8 @@ export const ShelfItems = [
       coins: 250,
       stars: 0,
     },
-    link: "",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/предметы шкатулка 2.png",
+    type: ShelfItemTypes.Event
   },
   {
     id: 5,
@@ -77,7 +83,8 @@ export const ShelfItems = [
       coins: 150,
       stars: 0,
     },
-    link: "",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/снежный шар.png",
+    type: ShelfItemTypes.Event
   },
   {
     id: 6,
@@ -93,22 +100,40 @@ export const ShelfItems = [
       coins: 0,
       stars: 10000,
     },
-    link: "",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/предметы звезда.png",
+    type: ShelfItemTypes.Award
   },
+  // {
+  //   id: 7,
+  //   name: {
+  //     ru: "Будильник",
+  //     en: "Alarm Clock",
+  //   },
+  //   description: {
+  //     ru: "ДЗЫНЬ-ДЗЫНЬ-ДЗЫНЬ-ДЗЫНЬ\nЕсли у персонажа закончилась энергия, он автоматически ложится спать.",
+  //     en: "RING-RING-RING-RING",
+  //   },
+  //   cost: {
+  //     coins: 200,
+  //     stars: 0,
+  //   },
+  //   link: "",
+  // },
   {
-    id: 7,
+    id: 8,
     name: {
-      ru: "Будильник",
-      en: "Alarm Clock",
+      ru: "Неко-кот",
+      en: "Neko-cat",
     },
     description: {
-      ru: "ДЗЫНЬ-ДЗЫНЬ-ДЗЫНЬ-ДЗЫНЬ\nЕсли у персонажа закончилась энергия, он автоматически ложится спать.",
-      en: "RING-RING-RING-RING",
+      ru: "На удачу!",
+      en: "For better luck!",
     },
     cost: {
-      coins: 200,
-      stars: 0,
+      coins: 0,
+      stars: 10000,
     },
-    link: "",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/нфт-исходник.gif",
+    type: ShelfItemTypes.Neko
   },
 ]

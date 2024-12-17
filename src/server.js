@@ -30,6 +30,8 @@ import UserParameters from "./models/user/userParametersModel.mjs"
 import UserCurrentInventory from "./models/user/userInventoryModel.js"
 import UserClothing from "./models/user/userClothingModel.mjs"
 import User from "./models/user/userModel.mjs"
+import ShelfItemModel from "./models/shelfItem/shelfItemModel.js"
+import { ShelfItems } from "./models/shelfItem/migration.js"
 
 dotenv.config()
 
@@ -74,7 +76,18 @@ async function main() {
     deleteUserInventories(),
     deleteUserClothing(),
     deleteUsers(),
+    deleteShelfItems(),
   ])
+}
+
+async function deleteShelfItems() {
+  await ShelfItemModel.deleteMany()
+  await Promise.all(
+    ShelfItems.map(async (item) => {
+      const shelfItem = new ShelfItemModel({ ...item })
+      await shelfItem.save()
+    })
+  )
 }
 
 async function deleteAndInsertClothing() {

@@ -28,6 +28,13 @@ const schema = new mongoose.Schema(
         type: String,
       },
     },
+    shelf: {
+      flower: { type: Number, default: null },
+      award: { type: Number, default: null },
+      event: { type: Number, default: null },
+      neko: { type: Number, default: null },
+      flag: { type: Number, default: null }
+    }
   },
   { timestamps: true }
 )

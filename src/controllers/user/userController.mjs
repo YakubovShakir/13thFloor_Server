@@ -8,6 +8,7 @@ import ShelfItems from "../../models/shelfItem/shelfItemModel.js"
 import UserParameters from "../../models/user/userParametersModel.mjs"
 import _fetch from "isomorphic-fetch"
 import Boost from "../../models/boost/boostModel.mjs"
+import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
 
 export const prebuildInitialInventory = (user_id) =>
   new UserCurrentInventory({
@@ -130,23 +131,22 @@ export const getShopItems = async (req, res) => {
   // TODO: boosters
   try {
     const userId = parseInt(req.params.id)
+    const user = await User.findOne({ id: userId })
     const userInventory = await UserCurrentInventory.findOne({
       user_id: userId,
     })
-    const { clothes } = userInventory
-    console.log(clothes)
+    const { clothes, shelf } = userInventory
+    
     const clothingClean = (
       await Clothing.find({}, { _id: false }, { sort: { tier: 1 } })
     ).filter((item) => !clothes.map((c) => c.id).includes(item.clothing_id))
-    const shelf = await ShelfItems.find(
-      {},
-      { _id: false },
-      { sort: { _id: 1 } }
-    )
+    const shelfClean = (
+      await ShelfItemModel.find({}, { _id: false })
+    ).filter((item) => !shelf.map((c) => c.id).includes(item.id))
 
     return res.status(200).json({
       clothing: clothingClean,
-      shelf,
+      shelf: shelfClean,
     })
   } catch (err) {
     console.log("Failed to fetch shop items", err)
@@ -184,6 +184,9 @@ export const getInventoryItems = async (req, res) => {
     let { clothes, shelf } = userInventory
     clothes = await Promise.all(
       clothes.map((c) => Clothing.findOne({ clothing_id: c.id }))
+    )
+    shelf = await Promise.all(
+      shelf.map((c) => ShelfItemModel.findOne({ id: c.id }))
     )
     const currentlyUsedClothes = await UserClothing.findOne({ user_id: userId })
     const currentlyUsedShelf = (await User.findOne({ id: userId })).shelf
@@ -290,21 +293,35 @@ export const getLevelsParameters = async (req, res) => {
 export const handleClothesUnequip = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
-    const { clothing_id, type } = req.body
-    if (type !== "Accessory") return res.status(200).json({})
-    const isClothingReal = await Clothing.findOne({ clothing_id })
-    const doesUserHaveIt = (
-      await UserCurrentInventory.findOne({ user_id: userId })
-    ).clothes.find((c) => c.id == clothing_id)
-    console.log(isClothingReal)
-    console.log(doesUserHaveIt)
+    const { clothing_id, type, productType } = req.body
+    if (productType === 'clothes') {
+      if (type !== "Accessory") return res.status(200).json({})
+      const isClothingReal = await Clothing.findOne({ clothing_id })
+      const doesUserHaveIt = (
+        await UserCurrentInventory.findOne({ user_id: userId })
+      ).clothes.find((c) => c.id == clothing_id)
+      console.log(isClothingReal)
+      console.log(doesUserHaveIt)
 
-    if (isClothingReal && doesUserHaveIt) {
-      await UserClothing.updateOne(
-        { user_id: userId },
-        { $set: { [type.toLowerCase()]: null } }
-      )
+      if (isClothingReal && doesUserHaveIt) {
+        await UserClothing.updateOne(
+          { user_id: userId },
+          { $set: { [type.toLowerCase()]: null } }
+        )
+      }
     }
+
+    if (productType === 'shelf') {
+      const doesUserHaveIt = (
+        await UserCurrentInventory.findOne({ user_id: userId })
+      ).shelf.find((c) => c.id === clothing_id)
+
+      if (doesUserHaveIt) {
+        const shelfItem = await ShelfItemModel.findOne({ id: doesUserHaveIt.id })
+        await User.updateOne({ id: userId }, { $set: { shelf: { [shelfItem.type]: null } } })
+      }
+    }
+
 
     return res.status(200).json({ status: "ok" })
   } catch (e) {
@@ -315,25 +332,115 @@ export const handleClothesUnequip = async (req, res) => {
 export const handleClothesEquip = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
-    const { clothing_id, type } = req.body
+    const { clothing_id, type, productType } = req.body
 
-    const isClothingReal = await Clothing.findOne({ clothing_id })
-    const doesUserHaveIt = (
-      await UserCurrentInventory.findOne({ user_id: userId })
-    ).clothes.find((c) => c.id == clothing_id)
+    if (productType === 'clothes') {
+      const isClothingReal = await Clothing.findOne({ clothing_id })
+      const doesUserHaveIt = (
+        await UserCurrentInventory.findOne({ user_id: userId })
+      ).clothes.find((c) => c.id == clothing_id)
 
-    console.log(userId, clothing_id, type)
+      console.log(userId, clothing_id, type)
 
-    if (isClothingReal && doesUserHaveIt) {
-      await UserClothing.updateOne(
-        { user_id: userId },
-        { $set: { [type.toLowerCase()]: parseInt(clothing_id) } }
-      )
+      if (isClothingReal && doesUserHaveIt) {
+        await UserClothing.updateOne(
+          { user_id: userId },
+          { $set: { [type.toLowerCase()]: parseInt(clothing_id) } }
+        )
+      }
+    }
+
+    if (productType === 'shelf') {
+      const doesUserHaveIt = (
+        await UserCurrentInventory.findOne({ user_id: userId })
+      ).shelf.find((c) => c.id === clothing_id)
+
+      console.log(clothing_id, productType, doesUserHaveIt)
+
+      if (doesUserHaveIt) {
+        const shelfItem = await ShelfItemModel.findOne({ id: doesUserHaveIt.id })
+        await User.updateOne({ id: userId }, { $set: { shelf: { [shelfItem.type]: shelfItem.id } } })
+      }
     }
 
     return res.status(200).json({ status: "ok" })
   } catch (e) {
     console.log("Error in handleClothesUnequip", e)
+    return res.status(500).json({ error: true })
+  }
+}
+
+export const handleShelfEquip = async (req, res) => {
+  const userId = parseInt(req.params.id)
+  const { type, id } = req.body
+
+  try {
+    const shelfItem = await ShelfItemModel.findOne({ id, type })
+    if (!shelfItem) {
+      return res.status(400).json({ error: true })
+    }
+
+    await User.updateOne({ id: userId }, { $set: { [type]: id } })
+  } catch (err) {
+    console.log("Error in handleShelfEquip", e)
+    return res.status(500).json({ error: true })
+  }
+}
+
+export const handleShelfUnequip = async (req, res) => {
+  const userId = parseInt(req.params.id)
+  const { type } = req.body
+
+  try {
+    await User.updateOne({ id: userId }, { $set: { [type]: null } })
+  } catch (err) {
+    console.log("Error in handleShelfEquip", e)
+    return res.status(500).json({ error: true })
+  }
+}
+
+export const buyItemsForCoins = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id)
+    const { productType, id } = req.body
+
+    const user = await UserParameters.findOne({ id: userId }, { coins: 1 })
+    const userCurrentInventory = await UserCurrentInventory.findOne({ user_id: userId })
+    let product
+
+    if(productType === 'clothes') {
+      if(userCurrentInventory.clothes.find(item => item.id === id)) return res.status(401).json({ ok: false })
+      product = await Clothing.findOne({ clothing_id: id })
+      if(product && user.coins >= product.price) {
+        await UserParameters.updateOne({ id: userId }, { $inc: { coins: -product.price } })
+        await UserCurrentInventory.updateOne({ user_id: userId }, { $addToSet: { clothes: { id: product.clothing_id } } })
+      } else {
+        return res.status(401).json({ ok: false, reason: 'Not enough funds' })  
+      }
+    }
+
+    if(productType === 'shelf') {
+      if(userCurrentInventory.shelf.find(item => item.id === id)) return res.status(401).json({ ok: false })
+      product = await ShelfItemModel.findOne({ id: id })
+      if(product) {
+        const {coins, stars} = product.cost
+        if(stars > 0) {
+          return res.status(500).json({ ok: false })  
+        }
+        if(user.coins >= coins) {
+          await UserParameters.updateOne({ id: userId }, { $inc: { coins: -coins } })
+          await UserCurrentInventory.updateOne({ user_id: userId }, { $addToSet: { shelf: { id: product.id } } })
+        } else {
+          return res.status(401).json({ ok: false, reason: 'Not enough funds' })  
+        }
+      } else {
+        return res.status(500).json({ ok: false })
+      }
+    }
+
+    return res.status(200).json({ ok: true })
+  } catch(err) {
+    console.log("Error in buying for coins", err)
     return res.status(500).json({ error: true })
   }
 }
@@ -344,16 +451,24 @@ export const requestStarsPaymentLink = async (req, res) => {
 
     let product, name, description, amount, title;
 
-    if(productType === 'boosts') {
+    if (productType === 'boosts') {
       product = await Boost.findOne({ id: id })
     }
 
-    if(productType === 'clothes') {
+    if (productType === 'clothes') {
       product = await Clothing.findOne({ clothing_id: id })
       name = product.name.ru
-      description = 'random'
+      description = product.description.ru
       title = '13th Floor'
       amount = product.price
+    }
+
+    if(productType === 'shelf') {
+      product = await ShelfItemModel.findOne({ id: id })
+      name = product.name.ru
+      description = product.description.ru
+      title = '13th Floor'
+      amount = product.cost.stars
     }
 
     const invoiceLink = await _fetch('http://bot:4444/payment-create', {
@@ -370,9 +485,9 @@ export const requestStarsPaymentLink = async (req, res) => {
         description
       })
     }).then(res => res.json()).then(res => res.invoiceLink)
-    
+
     return res.status(200).json({ status: 'ok', invoiceLink })
-  } catch(e) {
+  } catch (e) {
     console.log("Error in pay", e)
     return res.status(500).json({ error: true })
   }
