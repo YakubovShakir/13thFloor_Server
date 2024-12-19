@@ -100,7 +100,7 @@ export const ShelfItems = [
       coins: 0,
       stars: 10000,
     },
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/предметы звезда.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
     type: ShelfItemTypes.Award
   },
   // {
