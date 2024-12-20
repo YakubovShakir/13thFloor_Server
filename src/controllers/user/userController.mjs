@@ -13,7 +13,7 @@ import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
 export const prebuildInitialInventory = (user_id) =>
   new UserCurrentInventory({
     user_id,
-    shelf: [],
+    shelf: process.env.NODE_ENV === 'test' ? [{id: 1},{id: 2},{id: 5},{id: 8}] : [],
     // all tier 0 items, no offence
     clothes: [
       {

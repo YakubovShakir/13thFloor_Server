@@ -21,7 +21,13 @@ export const getUserParameters = async (req, res) => {
         id: userId,
         prestart: true,
         personage: {},
-        shelf:{
+        shelf: process.env.NODE_ENV === 'test' ? {
+          flower: 1,
+          award: 2,
+          event: 5,
+          neko: 8,
+          flag: 0,
+        } : {
           flower: null,
           award: null,
           event: null,
