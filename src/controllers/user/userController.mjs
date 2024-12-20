@@ -317,9 +317,14 @@ export const handleClothesUnequip = async (req, res) => {
       ).shelf.find((c) => c.id === clothing_id)
 
       if (doesUserHaveIt) {
-        const shelfItem = await ShelfItemModel.findOne({ id: doesUserHaveIt.id })
-        await User.updateOne({ id: userId }, { $set: { shelf: { [shelfItem.type]: null } } })
-      }
+        const currentUser = await User.findOne({ id: userId });
+        const currentShelf = { ...currentUser.shelf, [type]: null };
+
+        await User.updateOne(
+          { id: userId },
+          { $set: { shelf: currentShelf } }
+        )
+    }
     }
 
 
@@ -358,8 +363,13 @@ export const handleClothesEquip = async (req, res) => {
       console.log(clothing_id, productType, doesUserHaveIt)
 
       if (doesUserHaveIt) {
-        const shelfItem = await ShelfItemModel.findOne({ id: doesUserHaveIt.id })
-        await User.updateOne({ id: userId }, { $set: { shelf: { [shelfItem.type]: shelfItem.id } } })
+          const currentUser = await User.findOne({ id: userId });
+          const currentShelf = { ...currentUser.shelf, [type]: clothing_id };
+
+          await User.updateOne(
+            { id: userId },
+            { $set: { shelf: currentShelf } }
+          )
       }
     }
 
@@ -379,8 +389,21 @@ export const handleShelfEquip = async (req, res) => {
     if (!shelfItem) {
       return res.status(400).json({ error: true })
     }
-
-    await User.updateOne({ id: userId }, { $set: { shelf: { [type]: id } } })
+    console.log(type)
+    await User.updateOne(
+      { id: userId },
+      {
+        $setOnInsert: {
+          'shelf.flower': null,
+          'shelf.award': null,
+          'shelf.event': null,
+          'shelf.neko': null,
+          'shelf.flag': null
+        },
+        $set: { [`shelf.${type}`]: id }
+      },
+      { upsert: true }
+    )
   } catch (err) {
     console.log("Error in handleShelfEquip", e)
     return res.status(500).json({ error: true })
@@ -392,7 +415,7 @@ export const handleShelfUnequip = async (req, res) => {
   const { type } = req.body
 
   try {
-    await User.updateOne({ id: userId }, { $set: { [type]: null } })
+    await User.updateOne({ id: userId },  { $set: { [`shelf.${type}`]: null } })
   } catch (err) {
     console.log("Error in handleShelfEquip", e)
     return res.status(500).json({ error: true })

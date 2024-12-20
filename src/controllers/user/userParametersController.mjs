@@ -1,4 +1,6 @@
 import Clothing from "../../models/clothing/clothingModel.mjs"
+import { ShelfItems } from "../../models/shelfItem/migration.js"
+import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
 import UserClothing from "../../models/user/userClothingModel.mjs"
 import UserCurrentInventory from "../../models/user/userInventoryModel.js"
 import User from "../../models/user/userModel.mjs"
@@ -19,7 +21,13 @@ export const getUserParameters = async (req, res) => {
         id: userId,
         prestart: true,
         personage: {},
-        shelf: [],
+        shelf:{
+          flower: null,
+          award: null,
+          event: null,
+          neko: null,
+          flag: null,
+        },
       }).save()
     }
 
@@ -54,7 +62,18 @@ export const getUserParameters = async (req, res) => {
     const accessories = await Clothing.find({
       clothing_id: { $in: userClothing?.accessories },
     })
-    const shelf = user.shelf
+    
+    const processShelf = async (userShelf) => {
+      const entries = await Promise.all(
+        Object.entries(userShelf).map(async ([key, value]) => {
+          const item = await ShelfItemModel.findOne({ id: value })
+          return [key, item]
+        })
+      )
+      return Object.fromEntries(entries)
+    }
+
+    const shelf = await processShelf(user.shelf)
 
     const personage =
       Object.keys(user.personage).length > 0 ? user.personage : null
