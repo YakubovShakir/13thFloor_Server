@@ -2,22 +2,22 @@ export default [
   {
     level: 1,
     duration: 1,
-    energy_spend: 0.83,
-    hungry_spend: 0.02,
+    energy_spend: 10,
+    hungry_spend: 4,
     mood_profit: 2,
   },
   {
     level: 2,
     duration: 5,
-    energy_spend: 2,
-    hungry_spend: 0.04,
+    energy_spend: 15,
+    hungry_spend: 8,
     mood_profit: 4,
   },
   {
     level: 3,
     duration: 10,
-    energy_spend: 3,
-    hungry_spend: 0.06,
+    energy_spend: 20,
+    hungry_spend: 10,
     mood_profit: 8,
   },
   {

@@ -2,7 +2,7 @@ export default [
   {
     skill_id: 1,
     name: "Мотивирующий подкаст",
-    coins_price: 100,
+    coins_price: 1,
     description: null,
     duration: 1,
     skill_id_required: null,
@@ -12,7 +12,7 @@ export default [
   {
     skill_id: 2,
     name: "Спортивная одежда",
-    coins_price: 600,
+    coins_price: 1,
     description:
       "Если во время тренировки вы одеты в спортивную одежду, вы восстанавливаете больше счастья после тренировки",
     duration: 30,
@@ -23,7 +23,7 @@ export default [
   {
     skill_id: 3,
     name: "Офисные программы",
-    coins_price: 550,
+    coins_price: 1,
     description: "Изучите базовые офисные программы для продвижения по работе",
     duration: 120,
     skill_id_required: 1,
@@ -33,7 +33,7 @@ export default [
   {
     skill_id: 4,
     name: "Онлайн обучение",
-    coins_price: 800,
+    coins_price: 1,
     description: null,
     duration: 200,
     skill_id_required: 3,
@@ -43,7 +43,7 @@ export default [
   {
     skill_id: 5,
     name: "Тренинг по рекламе",
-    coins_price: 2400,
+    coins_price: 1,
     description: null,
     duration: 300,
     skill_id_required: 4,
@@ -53,7 +53,7 @@ export default [
   {
     skill_id: 6,
     name: "Курсы подбора персонала",
-    coins_price: 3000,
+    coins_price: 1,
     description: null,
     duration: 450,
     skill_id_required: 5,
@@ -63,7 +63,7 @@ export default [
   {
     skill_id: 7,
     name: "Статья о здоровом сне",
-    coins_price: 3600,
+    coins_price: 1,
     description:
       "Твой сон длится меньше на 30 минут, но ты чувствуешь себя все так же бодро",
     duration: 500,
@@ -74,7 +74,7 @@ export default [
   {
     skill_id: 8,
     name: "Школа менеджмента",
-    coins_price: 5000,
+    coins_price: 1,
     description: null,
     duration: 675,
     skill_id_required: 6,
@@ -84,7 +84,7 @@ export default [
   {
     skill_id: 9,
     name: "Бизнес тренинг",
-    coins_price: 6000,
+    coins_price: 1,
     description: null,
     duration: 1050,
     skill_id_required: 8,
@@ -94,7 +94,7 @@ export default [
   {
     skill_id: 10,
     name: "Тренинг по автоматизации",
-    coins_price: 10000,
+    coins_price: 1,
     description: null,
     duration: 1500,
     skill_id_required: 9,
@@ -104,7 +104,7 @@ export default [
   {
     skill_id: 12,
     name: "Энциклопедия бодибилдинга",
-    coins_price: 18500,
+    coins_price: 1,
     description: "Твое настроение после тренировки улучшается на 10% больше",
     duration: 1800,
     skill_id_required: null,
@@ -114,7 +114,7 @@ export default [
   {
     skill_id: 11,
     name: "Экономическое образование",
-    coins_price: 20000,
+    coins_price: 1,
     description: null,
     duration: 2200,
     skill_id_required: 10,
