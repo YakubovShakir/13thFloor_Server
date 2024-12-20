@@ -16,6 +16,7 @@ export const ShelfItems = [
       stars: 0,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/3горшок.png",
+    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/цветок-2-полка.png",
     type: ShelfItemTypes.Flower
   },
   {
@@ -33,6 +34,7 @@ export const ShelfItems = [
       stars: 0,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/1статуэтка.png",
+    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/Бета-полка.png",
     type: ShelfItemTypes.Award
   },
   // {
@@ -67,6 +69,7 @@ export const ShelfItems = [
       stars: 0,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/предметы шкатулка 2.png",
+    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шкатурка-полка.png",
     type: ShelfItemTypes.Event
   },
   {
@@ -84,6 +87,7 @@ export const ShelfItems = [
       stars: 0,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/снежный шар.png",
+    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шар-полка.png",
     type: ShelfItemTypes.Event
   },
   {
@@ -101,6 +105,7 @@ export const ShelfItems = [
       stars: 10000,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
+    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
     type: ShelfItemTypes.Award
   },
   // {
@@ -134,6 +139,7 @@ export const ShelfItems = [
       stars: 10000,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/нфт-исходник.gif",
+    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/нфт-исходник2.gif",
     type: ShelfItemTypes.Neko
   },
 ]

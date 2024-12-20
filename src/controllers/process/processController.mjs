@@ -93,7 +93,7 @@ export const getUserActiveProcess = async (req, res) => {
     const userId = parseInt(req.query.id)
     if (!userId) return res.status(400).json({ error: "<id> is required!" })
 
-    const user = await User.findOne({ id: userId })
+    let user = await User.findOne({ id: userId })
     if (!user)
       user = await new User({
         id: userId,

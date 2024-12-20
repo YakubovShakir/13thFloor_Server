@@ -27,7 +27,8 @@ const ShelfItem = new mongoose.Schema({
     type: String,
     enum: Object.values(ShelfItemTypes),
     required: true
-  }
+  },
+  shelf_link: { type: String, required: true }
 })
 
 const ShelfItemModel = mongoose.model("shelf_item", ShelfItem)
