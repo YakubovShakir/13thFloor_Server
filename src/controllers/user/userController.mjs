@@ -380,7 +380,7 @@ export const handleShelfEquip = async (req, res) => {
       return res.status(400).json({ error: true })
     }
 
-    await User.updateOne({ id: userId }, { $set: { [type]: id } })
+    await User.updateOne({ id: userId }, { $set: { shelf: { [type]: id } } })
   } catch (err) {
     console.log("Error in handleShelfEquip", e)
     return res.status(500).json({ error: true })
