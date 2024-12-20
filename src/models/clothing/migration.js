@@ -107,7 +107,7 @@ export default [
   {
     clothing_id: 6,
     name: {
-      ru: "Грязные Спортивки",
+      ru: "Грязные Sportивки",
       en: "Street Grind",
     },
     tag: ["Sport"],
@@ -401,7 +401,7 @@ export default [
   {
     clothing_id: 20,
     name: {
-      ru: "Чистые спортивки",
+      ru: "Чистые Sportивки",
       en: "Clean Sweatpants",
     },
     tag: ["Casual"],
@@ -1258,7 +1258,7 @@ export default [
       ru: "Неви",
       en: "Navy",
     },
-    tag: "Спорт",
+    tag: "Sport",
     type: "Top",
     effect: null,
     male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Navy-m.png",
@@ -1391,7 +1391,7 @@ export default [
   {
     clothing_id: 77,
     name: {
-      ru: "Спортлайн",
+      ru: "Sportлайн",
       en: "Sportline",
     },
     tag: null,
@@ -2360,7 +2360,7 @@ export default [
   // {
   //   clothing_id: 135,
   //   name: {
-  //     ru: "Суета в спортзале",
+  //     ru: "Суета в Sportзале",
   //     en: "Gym Hustle",
   //   },
   //   tag: null,
