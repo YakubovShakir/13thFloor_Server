@@ -9,6 +9,8 @@ import worksRouter from "./routes/work/workRoutes.mjs"
 import skillsRouter from "./routes/skill/skillRoutes.mjs"
 import processRouter from "./routes/process/processRoutes.mjs"
 import levelsRouter from "./routes/level/levelRoutes.mjs"
+import taskRouter from "./routes/task/taskRoutes.mjs"
+
 import dotenv from "dotenv"
 
 import ClothingItems from "./models/clothing/migration.js"
@@ -18,6 +20,7 @@ import BoostItems from "./models/boost/migration.js"
 import WorkItems from "./models/work/migration.js"
 import LevelItems from "./models/level/migration.js"
 import TrainingItems from "./models/training/migration.js"
+import TasksItems from "./models/task/testMigration.js"
 
 import Clothing from "./models/clothing/clothingModel.mjs"
 import Skill from "./models/skill/skillModel.mjs"
@@ -32,7 +35,7 @@ import UserClothing from "./models/user/userClothingModel.mjs"
 import User from "./models/user/userModel.mjs"
 import ShelfItemModel from "./models/shelfItem/shelfItemModel.js"
 import { ShelfItems } from "./models/shelfItem/migration.js"
-
+import Tasks from "./models/task/taskModel.js"
 dotenv.config()
 
 const app = express()
@@ -57,6 +60,7 @@ app.use("/api/boost/", boostRouter)
 app.use("/api/work/", worksRouter)
 app.use("/api/skill/", skillsRouter)
 app.use("/api/levels/", levelsRouter)
+app.use("/api/task/", taskRouter)
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => {
@@ -65,6 +69,8 @@ app.listen(PORT, () => {
 
 async function main() {
   await Promise.all([
+    deleteAndInsertTasks(),
+
     deleteAndInsertClothing(),
     deleteAndInsertWork(),
     deleteAndInsertFood(),
@@ -78,6 +84,16 @@ async function main() {
     deleteUsers(),
     deleteShelfItems(),
   ])
+}
+
+async function deleteAndInsertTasks() {
+  await Tasks.deleteMany()
+  await Promise.all(
+    TasksItems.map(async (item) => {
+      const task = new Tasks({ ...item, effect: {} })
+      await task.save()
+    })
+  )
 }
 
 async function deleteShelfItems() {

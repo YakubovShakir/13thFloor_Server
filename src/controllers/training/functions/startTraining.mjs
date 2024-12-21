@@ -3,6 +3,11 @@ import TrainingParameters from "../../../models/training/trainingParameters.mjs"
 import addActiveProcess from "../../process/functions/addActiveProcess.mjs"
 import UserBoost from "../../../models/user/userBoostsModel.mjs"
 import process from "../../../models/process/processModel.mjs"
+import {
+  addCompletedTask,
+  checkTaskStatus,
+} from "../../task/taskController.mjs"
+import UserTask from "../../../models/user/userTaskModel.mjs"
 const startTraining = async (userId) => {
   try {
     //Получаем параметры пользователя, если параметров нет, тогда создаем их (проверка на то что сам юзер в базе должна быть в обработчике ручки)
@@ -33,6 +38,7 @@ const startTraining = async (userId) => {
     user.energy -= trainingEnergySpend * training?.duration
 
     await user.save()
+    await addCompletedTask(userId, "get_active")
     await addActiveProcess(userId, "training", user?.level, training?.duration)
 
     return { status: 200, data: { status: "ok" } }
