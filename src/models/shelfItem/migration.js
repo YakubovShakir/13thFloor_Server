@@ -15,7 +15,7 @@ export const ShelfItems = [
       coins: 0,
       stars: 0,
     },
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/3горшок.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/FlowerType1.png",
     shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/цветок-2-полка.png",
     type: ShelfItemTypes.Flower
   },
@@ -33,7 +33,7 @@ export const ShelfItems = [
       coins: 0,
       stars: 0,
     },
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/1статуэтка.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/Beta.png",
     shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/Бета-полка.png",
     type: ShelfItemTypes.Award
   },
@@ -68,7 +68,7 @@ export const ShelfItems = [
       coins: 250,
       stars: 0,
     },
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/предметы шкатулка 2.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/MusicBox.png",
     shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шкатурка-полка.png",
     type: ShelfItemTypes.Event
   },
@@ -86,7 +86,7 @@ export const ShelfItems = [
       coins: 150,
       stars: 0,
     },
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/снежный шар.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/SnowGlass.png",
     shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шар-полка.png",
     type: ShelfItemTypes.Event
   },
@@ -104,7 +104,7 @@ export const ShelfItems = [
       coins: 0,
       stars: 10000,
     },
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/Star.png",
     shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
     type: ShelfItemTypes.Award
   },
