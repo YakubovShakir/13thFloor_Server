@@ -78,10 +78,10 @@ async function main() {
     deleteAndInsertBoost(),
     deleteAndInsertLevels(),
     deleteAndInsertTraining(),
-    deleteUserParameters(),
-    deleteUserInventories(),
-    deleteUserClothing(),
-    deleteUsers(),
+    // deleteUserParameters(),
+    // deleteUserInventories(),
+    // deleteUserClothing(),
+    // deleteUsers(),
     deleteShelfItems(),
   ])
 }
