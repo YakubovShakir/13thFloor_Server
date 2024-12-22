@@ -9,17 +9,17 @@ export default [
     type: null,
     link: "https://13floorgame.ru/images/skills/podcast.png",
   },
-  {
-    skill_id: 2,
-    name: "Спортивная одежда",
-    coins_price: 1,
-    description:
-      "Если во время тренировки вы одеты в спортивную одежду, вы восстанавливаете больше счастья после тренировки",
-    duration: 30,
-    skill_id_required: null,
-    type: null,
-    link: "https://13floorgame.ru/images/skills/sportswear.png",
-  },
+  // {
+  //   skill_id: 2,
+  //   name: "Спортивная одежда",
+  //   coins_price: 1,
+  //   description:
+  //     "Если во время тренировки вы одеты в спортивную одежду, вы восстанавливаете больше счастья после тренировки",
+  //   duration: 30,
+  //   skill_id_required: null,
+  //   type: null,
+  //   link: "https://13floorgame.ru/images/skills/sportswear.png",
+  // },
   {
     skill_id: 3,
     name: "Офисные программы",
