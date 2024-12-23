@@ -11,6 +11,7 @@ import Boost from "../../models/boost/boostModel.mjs"
 import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
 import Investments, { InvestmentTypes } from "../../models/investments/investmentModel.js"
 import UserLaunchedInvestments from "../../models/investments/userLaunchedInvestments.js"
+import moment from "moment-timezone"
 
 export const prebuildInitialInventory = (user_id) =>
   new UserCurrentInventory({
@@ -528,24 +529,65 @@ export const getUserInvestments = async () => {
     }
 
     const user = await User.findOne({ id: userId }, { investment_levels: 1 })
-    const userParams = await UserParameters.findOne({ id: userId })
-    const InvestmentLevel = user.investment_levels[investment_type]
     
     // current investments by user level
     const currentGameCenter = await Investments.findOne({ type: InvestmentTypes.GameCenter, level: user.investment_levels[InvestmentTypes.GameCenter] })
     const currentCoffeeShop = await Investments.findOne({ type: InvestmentTypes.CoffeeShop, level: user.investment_levels[InvestmentTypes.CoffeeShop] })
     const currentZooShop = await Investments.findOne({ type: InvestmentTypes.ZooShop, level: user.investment_levels[InvestmentTypes.ZooShop] })
 
-    const activeGameCenter = await UserLaunchedInvestments.find({ investment_id: currentGameCenter.id, user_id: userId }, null, { sort: {  } })
+    // next levels
+    const nextLevelGameCenter = await Investments.findOne({ type: InvestmentTypes.GameCenter, level: user.investment_levels[InvestmentTypes.GameCenter] + 1 })
+    const nextLevelCoffeeShop = await Investments.findOne({ type: InvestmentTypes.CoffeeShop, level: user.investment_levels[InvestmentTypes.CoffeeShop] + 1 })
+    const nextLevelZooShop = await Investments.findOne({ type: InvestmentTypes.ZooShop, level: user.investment_levels[InvestmentTypes.ZooShop] + 1 })
+
+    const activeGameCenter = await UserLaunchedInvestments.find({ investment_id: currentGameCenter.id, user_id: userId }, null, { sort: { createdAt: -1 } })
+    const activeCoffeeShop = await UserLaunchedInvestments.find({ investment_id: currentCoffeeShop.id, user_id: userId }, null, { sort: { createdAt: -1 } })
+    const activeZooShop = await UserLaunchedInvestments.find({ investment_id: currentZooShop.id, user_id: userId }, null, { sort: { createdAt: -1 } })
 
     const response = {
-      [InvestmentTypes.GameCenter]: {
+      tz: moment.tz.guess(),
+      game_center: {
+        type: InvestmentTypes.GameCenter, 
         current_level: currentGameCenter.level,
-        in_progress,
-        can_claim,
-        started_at,
+        can_claim: activeGameCenter ? currentGameCenter.level > 0 && activeGameCenter.claimed === false : false,
+        started_at: activeGameCenter?.createdAt,
+        has_auto_claim: user.has_autoclaim[InvestmentTypes.GameCenter],
+        upgrade_info: nextLevelGameCenter ? {
+          level: nextLevelGameCenter.level,
+          price: nextLevelGameCenter.price,
+          from: currentGameCenter.coins_per_hour,
+          to: nextLevelGameCenter.coins_per_hour
+        } : false
+      },
+      coffee_shop: {
+        type: InvestmentTypes.CoffeeShop, 
+        current_level: currentCoffeeShop.level,
+        can_claim: activeCoffeeShop ? currentCoffeeShop.level > 0 && activeCoffeeShop.claimed === false : false,
+        started_at: activeCoffeeShop?.createdAt,
+        has_auto_claim: user.has_autoclaim[InvestmentTypes.CoffeeShop],
+        upgrade_info: nextLevelCoffeeShop ? {
+          level: nextLevelCoffeeShop.level,
+          price: nextLevelCoffeeShop.price,
+          from: currentCoffeeShop.coins_per_hour,
+          to: nextLevelCoffeeShop.coins_per_hour
+        } : false
+      },
+      zoo_shop: {
+        type: InvestmentTypes.ZooShop, 
+        current_level: currentZooShop.level,
+        can_claim: activeZooShop ? currentZooShop.level > 0 && activeZooShop.claimed === false : false,
+        started_at: activeZooShop?.createdAt,
+        has_auto_claim: user.has_autoclaim[InvestmentTypes.ZooShop],
+        upgrade_info: nextLevelZooShop ? {
+          level: nextLevelZooShop.level,
+          price: nextLevelZooShop.price,
+          from: currentZooShop.coins_per_hour,
+          to: nextLevelZooShop.coins_per_hour
+        } : null
       },
     }
+
+    return res.status(200).json(response)
   } catch(err) {
     console.log("Error in get investment", e)
     return res.status(500).json({ error: true })
@@ -573,8 +615,10 @@ export const buyInvestmentLevel = async () => {
       return res.status(404).json({ error: true })  
     }
 
-    if(userParams.coins >= nextLevelInvestment) {
+    if(userParams.coins >= nextLevelInvestment.price) {
       if(!investment_type === InvestmentTypes.GameCenter) {
+        const activeInvestment = await UserLaunchedInvestments.findOne({ type: investment_type, level: user.investment_levels[investment_type] }, null, { createdAt: -1 })
+        if(activeInvestment)
         user.investment_levels[investment_type] += 1
         userParams.respect = userParams.respect - currentInvestment?.respect || 0 + nextLevelInvestment.respect
         await user.save()
@@ -582,6 +626,9 @@ export const buyInvestmentLevel = async () => {
 
         return res.status(200).json({ ok: true })
       }
+
+      // Cannot buy gamecenter
+      return res.status(403).json({ error: true })
     }
 
   } catch(err) {
@@ -602,12 +649,14 @@ export const claimInvestment = async () => {
     const user = await User.findOne({ id: userId }, { investment_levels: 1 })
     const userParams = await UserParameters.findOne({ id: userId })
     const userInvestmentLevel = user.investment_levels[investment_type]
-    const currentInvestment = await Investments.findOne({ type: investment_type, level: userInvestmentLevel })
-    const investmentToClaim = await UserLaunchedInvestments.findOne({ user_id: userId, investment_id: currentInvestment.id })
+    const investmentsOfType = (await Investments.find({ type: investment_type }, { id: 1 })).map(item => item.id)
+    const investmentToClaim = await UserLaunchedInvestments.findOne({ user_id: userId, investment_id: { $in: investmentsOfType } }, null, { sort: { createdAt: -1 } })
 
     if(!investmentToClaim || investmentToClaim.claimed) {
       return res.status(404).json({ error: true })  
     }
+
+    const investment = await Investments.findOne({ type: investment_type, level: userInvestmentLevel })
 
     // Make claimable in 10 sec on test
     if(!Date.now() - new Date(investmentToClaim.createdAt).getTime() >= process.env.NODE_ENV === 'test' ? 10000 : 3600000) {
@@ -619,6 +668,7 @@ export const claimInvestment = async () => {
 
     await userParams.save()
     await investmentToClaim.save()
+    await ( new UserLaunchedInvestments({ user_id: userId, investment_id: investment.id, to_claim: investment.coins_per_hour }) ).save()
   } catch(err) {
     console.log("Error in investment upgrade", e)
     return res.status(500).json({ error: true })

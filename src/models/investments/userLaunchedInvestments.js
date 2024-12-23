@@ -1,9 +1,9 @@
 import mongoose from "mongoose"
 
 export const InvestmentTypes = {
-    GameCenter: 'gameCenter',
-    CoffeeShop: 'coffeeShop',
-    ZooShop: 'zooShop'
+    GameCenter: 'game_center',
+    CoffeeShop: 'coffee_shop',
+    ZooShop: 'zoo_shop'
 }
 
 const schema = new mongoose.Schema({

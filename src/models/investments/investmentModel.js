@@ -1,10 +1,5 @@
 import mongoose from "mongoose"
-
-export const InvestmentTypes = {
-    GameCenter: 'gameCenter',
-    CoffeeShop: 'coffeeShop',
-    ZooShop: 'zooShop'
-}
+import { InvestmentTypes } from "./userLaunchedInvestments"
 
 const schema = new mongoose.Schema({
   id: { type: Number, required: true, unquie: true },
