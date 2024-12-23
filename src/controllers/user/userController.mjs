@@ -619,7 +619,7 @@ export const buyInvestmentLevel = async () => {
       if(!investment_type === InvestmentTypes.GameCenter) {
         // const activeInvestment = await UserLaunchedInvestments.findOne({ type: investment_type, level: user.investment_levels[investment_type] }, null, { createdAt: -1 })
         user.investment_levels[investment_type] += 1
-        userParams.respect = userParams.respect - currentInvestment?.respect || 0 + nextLevelInvestment.respect
+        userParams.respect = userParams.respect - (currentInvestment?.respect || 0) + nextLevelInvestment.respect
         await user.save()
         await userParams.save()
 
