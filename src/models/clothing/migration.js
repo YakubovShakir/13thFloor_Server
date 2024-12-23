@@ -1258,7 +1258,7 @@ export default [
       ru: "Неви",
       en: "Navy",
     },
-    tag: "Спорт",
+    tag: ["Sport"],
     type: "Top",
     effect: null,
     male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Navy-m.png",
