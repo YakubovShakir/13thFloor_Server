@@ -10,7 +10,10 @@ import {
   handleClothesEquip,
   requestStarsPaymentLink,
   handleShelfEquip,
-  buyItemsForCoins
+  buyItemsForCoins,
+  getUserInvestments,
+  buyInvestmentLevel,
+  claimInvestment
 } from "../../controllers/user/userController.mjs"
 import { getUserParameters } from "../../controllers/user/userParametersController.mjs"
 
@@ -36,5 +39,8 @@ router.post("/:id/shelf/equip", handleShelfEquip)
 router.post("/:id/shelf/unequip", handleShelfEquip)
 router.post('/request-stars-invoice-link', requestStarsPaymentLink)
 router.post('/:id/buy-items-for-coins', buyItemsForCoins)
+router.post('/:id/investments', getUserInvestments)
+router.post('/:id/investments/buy-level', buyInvestmentLevel)
+router.post('/:id/investments/claim', claimInvestment)
 
 export default router

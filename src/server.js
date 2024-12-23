@@ -32,6 +32,9 @@ import UserClothing from "./models/user/userClothingModel.mjs"
 import User from "./models/user/userModel.mjs"
 import ShelfItemModel from "./models/shelfItem/shelfItemModel.js"
 import { ShelfItems } from "./models/shelfItem/migration.js"
+import UserLaunchedInvestments from "./models/investments/userLaunchedInvestments.mjs"
+import Investments from "./models/investments/investmentModel.mjs"
+import InvestmentsMigration from './models/investments/migration.js'
 
 dotenv.config()
 
@@ -77,7 +80,19 @@ async function main() {
     deleteUserClothing(),
     deleteUsers(),
     deleteShelfItems(),
+    deleteInvestments()
   ])
+}
+
+async function deleteInvestments() {
+  await UserLaunchedInvestments.deleteMany()
+  await Investments.deleteMany()
+  await Promise.all(
+    InvestmentsMigration.map(async (item) => {
+      const investments = new Investments(item)
+      await investments.save()
+    })
+  )
 }
 
 async function deleteShelfItems() {

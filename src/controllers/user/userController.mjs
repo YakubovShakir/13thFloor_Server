@@ -9,8 +9,9 @@ import UserParameters from "../../models/user/userParametersModel.mjs"
 import _fetch from "isomorphic-fetch"
 import Boost from "../../models/boost/boostModel.mjs"
 import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
-import Investments, { InvestmentTypes } from "../../models/investments/investmentModel.js"
-import UserLaunchedInvestments from "../../models/investments/userLaunchedInvestments.js"
+import Investments from "../../models/investments/investmentModel.mjs"
+import { InvestmentTypes } from "../../models/investments/userLaunchedInvestments.mjs"
+import UserLaunchedInvestments from "../../models/investments/userLaunchedInvestments.mjs"
 import moment from "moment-timezone"
 
 export const prebuildInitialInventory = (user_id) =>
