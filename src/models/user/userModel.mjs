@@ -34,7 +34,13 @@ const schema = new mongoose.Schema(
       event: { type: Number, default: null },
       neko: { type: Number, default: null },
       flag: { type: Number, default: null }
-    }
+    },
+    investment_levels: {
+      game_center: { type: Number, default: 0 },
+      coffee_shop: { type: Number, default: 0 },
+      zoo_shop: { type: Number, default: 0 }
+    },
+    has_autoclaim: { type: Boolean, default: false }
   },
   { timestamps: true }
 )

@@ -9,6 +9,8 @@ import UserParameters from "../../models/user/userParametersModel.mjs"
 import _fetch from "isomorphic-fetch"
 import Boost from "../../models/boost/boostModel.mjs"
 import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
+import Investments, { InvestmentTypes } from "../../models/investments/investmentModel.js"
+import UserLaunchedInvestments from "../../models/investments/userLaunchedInvestments.js"
 
 export const prebuildInitialInventory = (user_id) =>
   new UserCurrentInventory({
@@ -512,6 +514,113 @@ export const requestStarsPaymentLink = async (req, res) => {
     return res.status(200).json({ status: 'ok', invoiceLink })
   } catch (e) {
     console.log("Error in pay", e)
+    return res.status(500).json({ error: true })
+  }
+}
+
+// investments
+export const getUserInvestments = async () => {
+  try {
+    const userId = parseInt(req.params.id)
+
+    if(!Object.values(InvestmentTypes).includes(investment_type)) {
+      return res.status(400).json({ error: true })
+    }
+
+    const user = await User.findOne({ id: userId }, { investment_levels: 1 })
+    const userParams = await UserParameters.findOne({ id: userId })
+    const InvestmentLevel = user.investment_levels[investment_type]
+    
+    // current investments by user level
+    const currentGameCenter = await Investments.findOne({ type: InvestmentTypes.GameCenter, level: user.investment_levels[InvestmentTypes.GameCenter] })
+    const currentCoffeeShop = await Investments.findOne({ type: InvestmentTypes.CoffeeShop, level: user.investment_levels[InvestmentTypes.CoffeeShop] })
+    const currentZooShop = await Investments.findOne({ type: InvestmentTypes.ZooShop, level: user.investment_levels[InvestmentTypes.ZooShop] })
+
+    const activeGameCenter = await UserLaunchedInvestments.find({ investment_id: currentGameCenter.id, user_id: userId }, null, { sort: {  } })
+
+    const response = {
+      [InvestmentTypes.GameCenter]: {
+        current_level: currentGameCenter.level,
+        in_progress,
+        can_claim,
+        started_at,
+      },
+    }
+  } catch(err) {
+    console.log("Error in get investment", e)
+    return res.status(500).json({ error: true })
+  }
+}
+
+export const buyInvestmentLevel = async () => {
+  try {
+    const userId = parseInt(req.params.id)
+    const { investment_type } = req.body
+
+    if(!Object.values(InvestmentTypes).includes(investment_type)) {
+      return res.status(400).json({ error: true })
+    }
+
+    const user = await User.findOne({ id: userId }, { investment_levels: 1 })
+    const userParams = await UserParameters.findOne({ id: userId })
+    const userInvestmentLevel = user.investment_levels[investment_type]
+    
+    const currentInvestment = await Investments.findOne({ type: investment_type, level: userInvestmentLevel }, { respect: 1 })
+    const nextLevelInvestment = await Investments.findOne({ type: investment_type, level: userInvestmentLevel + 1 })
+
+    if(!nextLevelInvestment) {
+      console.log("Error in buyInvestmentLevel - nowhere to upgrade")
+      return res.status(404).json({ error: true })  
+    }
+
+    if(userParams.coins >= nextLevelInvestment) {
+      if(!investment_type === InvestmentTypes.GameCenter) {
+        user.investment_levels[investment_type] += 1
+        userParams.respect = userParams.respect - currentInvestment?.respect || 0 + nextLevelInvestment.respect
+        await user.save()
+        await userParams.save()
+
+        return res.status(200).json({ ok: true })
+      }
+    }
+
+  } catch(err) {
+    console.log("Error in investment upgrade", e)
+    return res.status(500).json({ error: true })
+  }
+}
+
+export const claimInvestment = async () => {
+  try {
+    const userId = parseInt(req.params.id)
+    const { investment_type } = req.body
+
+    if(!Object.values(InvestmentTypes).includes(investment_type)) {
+      return res.status(400).json({ error: true })
+    }
+
+    const user = await User.findOne({ id: userId }, { investment_levels: 1 })
+    const userParams = await UserParameters.findOne({ id: userId })
+    const userInvestmentLevel = user.investment_levels[investment_type]
+    const currentInvestment = await Investments.findOne({ type: investment_type, level: userInvestmentLevel })
+    const investmentToClaim = await UserLaunchedInvestments.findOne({ user_id: userId, investment_id: currentInvestment.id })
+
+    if(!investmentToClaim || investmentToClaim.claimed) {
+      return res.status(404).json({ error: true })  
+    }
+
+    // Make claimable in 10 sec on test
+    if(!Date.now() - new Date(investmentToClaim.createdAt).getTime() >= process.env.NODE_ENV === 'test' ? 10000 : 3600000) {
+      return res.status(403).json({ error: true })
+    }
+
+    userParams.coins += investmentToClaim.to_claim
+    investmentToClaim.claimed = true
+
+    await userParams.save()
+    await investmentToClaim.save()
+  } catch(err) {
+    console.log("Error in investment upgrade", e)
     return res.status(500).json({ error: true })
   }
 }
