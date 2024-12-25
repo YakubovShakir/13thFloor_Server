@@ -304,6 +304,7 @@ export const handleClothesUnequip = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
     const { clothing_id, type, productType } = req.body
+    // const userParams = 
     if (productType === "clothes") {
       if (type !== "Accessory") return res.status(200).json({})
       const isClothingReal = await Clothing.findOne({ clothing_id })
@@ -561,7 +562,7 @@ export const requestStarsPaymentLink = async (req, res) => {
 export const getUserInvestments = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
-    const user = await User.findOne({ id: userId }, { investment_levels: 1 })
+    const user = await User.findOne({ id: userId }, { investment_levels: 1, has_autoclaim: 1 })
 
     // current investments by user level
     const currentGameCenter = await Investments.findOne({
@@ -628,7 +629,7 @@ export const getUserInvestments = async (req, res) => {
           ? currentGameCenter.level > 0 && activeGameCenter.claimed === false
           : false,
         started_at: activeGameCenter?.createdAt,
-        has_auto_claim: user.has_autoclaim[InvestmentTypes.GameCenter] || false,
+        has_autoclaim: user.has_autoclaim[InvestmentTypes.GameCenter] || false,
         upgrade_info: nextLevelGameCenter
           ? {
             level: nextLevelGameCenter.level,
@@ -645,7 +646,7 @@ export const getUserInvestments = async (req, res) => {
           ? currentCoffeeShop.level > 0 && activeCoffeeShop.claimed === false
           : false,
         started_at: activeCoffeeShop?.createdAt,
-        has_auto_claim: user.has_autoclaim[InvestmentTypes.CoffeeShop] || false,
+        has_autoclaim: user.has_autoclaim[InvestmentTypes.CoffeeShop] || false,
         upgrade_info: nextLevelCoffeeShop
           ? {
             level: nextLevelCoffeeShop.level,
@@ -662,7 +663,7 @@ export const getUserInvestments = async (req, res) => {
           ? currentZooShop.level > 0 && activeZooShop.claimed === false
           : false,
         started_at: activeZooShop?.createdAt,
-        has_auto_claim: user.has_autoclaim[InvestmentTypes.ZooShop] || false,
+        has_autoclaim: user.has_autoclaim[InvestmentTypes.ZooShop] || false,
         upgrade_info: nextLevelZooShop
           ? {
             level: nextLevelZooShop.level,
