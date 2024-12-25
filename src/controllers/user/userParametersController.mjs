@@ -1,4 +1,5 @@
 import Clothing from "../../models/clothing/clothingModel.mjs"
+import Referal from "../../models/referral/referralModel.mjs"
 import { ShelfItems } from "../../models/shelfItem/migration.js"
 import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
 import UserClothing from "../../models/user/userClothingModel.mjs"
@@ -8,12 +9,52 @@ import Users from "../../models/user/userModel.mjs"
 import UserParameters from "../../models/user/userParametersModel.mjs"
 import { prebuildInitialInventory } from "./userController.mjs"
 
+const gamecenterLevelMap = {
+  "1": 1,
+  "5": 2,
+  "10": 3,
+  "25": 4,
+  "40": 5,
+  "60": 6,
+  "90": 7,
+  "200": 8,
+  "300": 9,
+  "450": 10,
+  "500": 11,
+  "750": 12,
+  "1000": 13,
+  "1500": 14,
+  "2250": 15,
+  "2500": 16,
+  "3750": 17,
+  "5500": 18,
+  "8250": 19,
+  "10000": 20,
+  "15000": 21,
+  "22500": 22,
+  "33750": 23,
+  "50000": 24,
+  "75000": 25,
+  "112500": 26,
+  "168750": 27,
+  "253130": 28,
+  "379700": 29,
+  "569550": 30,
+  "854330": 31,
+  "1281500": 32,
+  "1922250": 33,
+  "2883380": 34,
+  "4325070": 35
+}
+
 export const getUserParameters = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
     if (!userId) return res.status(400).json({ error: "bad request" })
 
     let user = await Users.findOne({ id: userId })
+
+    const refs = await Referal.countDocuments({ refer_id: userId })
 
     if (!user) {
       console.log("Registering user with ID", userId)
@@ -33,6 +74,11 @@ export const getUserParameters = async (req, res) => {
           event: null,
           neko: null,
           flag: null,
+        },
+        investment_levels: {
+          game_center: gamecenterLevelMap[refs.toString()] || 0,
+          coffee_shop: 0,
+          zoo_shop: 0
         },
       }).save()
     }

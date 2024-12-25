@@ -9,11 +9,18 @@ import UserParameters from "../../models/user/userParametersModel.mjs"
 import _fetch from "isomorphic-fetch"
 import Boost from "../../models/boost/boostModel.mjs"
 import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
+import Investments from "../../models/investments/investmentModel.mjs"
+import { InvestmentTypes } from "../../models/investments/userLaunchedInvestments.mjs"
+import UserLaunchedInvestments from "../../models/investments/userLaunchedInvestments.mjs"
+import moment from "moment-timezone"
 
-export const prebuildInitialInventory = (user_id) =>
-  new UserCurrentInventory({
+export const prebuildInitialInventory = async (user_id) => {
+  await new UserCurrentInventory({
     user_id,
-    shelf: process.env.NODE_ENV === 'test' ? [{id: 1},{id: 2},{id: 5},{id: 8}] : [],
+    shelf:
+      process.env.NODE_ENV === "test"
+        ? [{ id: 1 }, { id: 2 }, { id: 5 }, { id: 8 }]
+        : [],
     // all tier 0 items, no offence
     clothes: [
       {
@@ -40,6 +47,7 @@ export const prebuildInitialInventory = (user_id) =>
     ],
     boosts: [],
   }).save()
+}
 
 export const getUser = async (req, res) => {
   try {
@@ -54,6 +62,8 @@ export const getUser = async (req, res) => {
           personage: user.personage || null,
         })
     }
+
+    return res.status(500).json({ error: true })
   } catch (e) {
     console.log("Error while get user ", e)
     return res.status(404).json({ message: "User not found" })
@@ -65,23 +75,25 @@ export const createUserPersonage = async (req, res) => {
     const userId = parseInt(req.params.id)
     const { race, gender, name } = req.body
 
-    if (userId) {
-      console.log("Creating personage", race, gender, name, userId)
-      await User.updateOne(
-        {
-          id: userId,
-        },
-        {
-          $set: {
-            personage: {
-              race,
-              gender,
-              name,
-            },
-          },
-        }
-      )
+    if (!userId) {
+      return res.status(400).json({ error: true })
     }
+
+    console.log("Creating personage", race, gender, name, userId)
+    await User.updateOne(
+      {
+        id: userId,
+      },
+      {
+        $set: {
+          personage: {
+            race,
+            gender,
+            name,
+          },
+        },
+      }
+    )
 
     const getInitialHatByRace = (race) => {
       const map = {
@@ -131,18 +143,17 @@ export const getShopItems = async (req, res) => {
   // TODO: boosters
   try {
     const userId = parseInt(req.params.id)
-    const user = await User.findOne({ id: userId })
     const userInventory = await UserCurrentInventory.findOne({
       user_id: userId,
     })
     const { clothes, shelf } = userInventory
-    
+
     const clothingClean = (
       await Clothing.find({}, { _id: false }, { sort: { tier: 1 } })
     ).filter((item) => !clothes.map((c) => c.id).includes(item.clothing_id))
-    const shelfClean = (
-      await ShelfItemModel.find({}, { _id: false })
-    ).filter((item) => !shelf.map((c) => c.id).includes(item.id))
+    const shelfClean = (await ShelfItemModel.find({}, { _id: false })).filter(
+      (item) => !shelf.map((c) => c.id).includes(item.id)
+    )
 
     return res.status(200).json({
       clothing: clothingClean,
@@ -249,8 +260,7 @@ export const getCurrentClothes = async (req, res) => {
 export const updateUserPrestart = async (req, res) => {
   try {
     const userId = req.params.id
-    const referrals = await Referal.find({ refer_id: userId })
-    const refCount = referrals.length
+    const refCount = await Referal.countDocuments({ refer_id: userId })
     if (refCount < 5)
       return res.status(400).json({ message: "Not enough referrals" })
     if (!parseInt(userId))
@@ -294,7 +304,8 @@ export const handleClothesUnequip = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
     const { clothing_id, type, productType } = req.body
-    if (productType === 'clothes') {
+    // const userParams = 
+    if (productType === "clothes") {
       if (type !== "Accessory") return res.status(200).json({})
       const isClothingReal = await Clothing.findOne({ clothing_id })
       const doesUserHaveIt = (
@@ -311,22 +322,18 @@ export const handleClothesUnequip = async (req, res) => {
       }
     }
 
-    if (productType === 'shelf') {
+    if (productType === "shelf") {
       const doesUserHaveIt = (
         await UserCurrentInventory.findOne({ user_id: userId })
       ).shelf.find((c) => c.id === clothing_id)
 
       if (doesUserHaveIt) {
-        const currentUser = await User.findOne({ id: userId });
-        const currentShelf = { ...currentUser.shelf, [type]: null };
+        const currentUser = await User.findOne({ id: userId })
+        const currentShelf = { ...currentUser.shelf, [type]: null }
 
-        await User.updateOne(
-          { id: userId },
-          { $set: { shelf: currentShelf } }
-        )
+        await User.updateOne({ id: userId }, { $set: { shelf: currentShelf } })
+      }
     }
-    }
-
 
     return res.status(200).json({ status: "ok" })
   } catch (e) {
@@ -339,7 +346,7 @@ export const handleClothesEquip = async (req, res) => {
     const userId = parseInt(req.params.id)
     const { clothing_id, type, productType } = req.body
 
-    if (productType === 'clothes') {
+    if (productType === "clothes") {
       const isClothingReal = await Clothing.findOne({ clothing_id })
       const doesUserHaveIt = (
         await UserCurrentInventory.findOne({ user_id: userId })
@@ -348,14 +355,34 @@ export const handleClothesEquip = async (req, res) => {
       console.log(userId, clothing_id, type)
 
       if (isClothingReal && doesUserHaveIt) {
-        await UserClothing.updateOne(
-          { user_id: userId },
-          { $set: { [type.toLowerCase()]: parseInt(clothing_id) } }
-        )
+        let userParams = await UserParameters.findOne({ id: userId })
+        if (type.toLowerCase() !== "accessory") {
+          const currentClothingId = (
+            await UserClothing.findOne({ user_id: userId })
+          )[type.toLowerCase()]
+          const currentClothing = currentClothingId
+            ? await Clothing.find(
+              { clothing_id: currentClothingId },
+              { respect: 1 }
+            )
+            : null
+          const currentClothingRespect = currentClothing
+            ? currentClothing.respect
+            : 0
+          // update respect
+          userParams.respect = userParams.respect - currentClothingRespect + isClothingReal.respect
+          await userParams.save()
+          await UserClothing.updateOne(
+            { user_id: userId },
+            { $set: { [type.toLowerCase()]: parseInt(clothing_id) } }
+          )
+        } else {
+          //
+        }
       }
     }
 
-    if (productType === 'shelf') {
+    if (productType === "shelf") {
       const doesUserHaveIt = (
         await UserCurrentInventory.findOne({ user_id: userId })
       ).shelf.find((c) => c.id === clothing_id)
@@ -363,13 +390,10 @@ export const handleClothesEquip = async (req, res) => {
       console.log(clothing_id, productType, doesUserHaveIt)
 
       if (doesUserHaveIt) {
-          const currentUser = await User.findOne({ id: userId });
-          const currentShelf = { ...currentUser.shelf, [type]: clothing_id };
+        const currentUser = await User.findOne({ id: userId })
+        const currentShelf = { ...currentUser.shelf, [type]: clothing_id }
 
-          await User.updateOne(
-            { id: userId },
-            { $set: { shelf: currentShelf } }
-          )
+        await User.updateOne({ id: userId }, { $set: { shelf: currentShelf } })
       }
     }
 
@@ -394,13 +418,13 @@ export const handleShelfEquip = async (req, res) => {
       { id: userId },
       {
         $setOnInsert: {
-          'shelf.flower': null,
-          'shelf.award': null,
-          'shelf.event': null,
-          'shelf.neko': null,
-          'shelf.flag': null
+          "shelf.flower": null,
+          "shelf.award": null,
+          "shelf.event": null,
+          "shelf.neko": null,
+          "shelf.flag": null,
         },
-        $set: { [`shelf.${type}`]: id }
+        $set: { [`shelf.${type}`]: id },
       },
       { upsert: true }
     )
@@ -415,7 +439,7 @@ export const handleShelfUnequip = async (req, res) => {
   const { type } = req.body
 
   try {
-    await User.updateOne({ id: userId },  { $set: { [`shelf.${type}`]: null } })
+    await User.updateOne({ id: userId }, { $set: { [`shelf.${type}`]: null } })
   } catch (err) {
     console.log("Error in handleShelfEquip", e)
     return res.status(500).json({ error: true })
@@ -428,33 +452,49 @@ export const buyItemsForCoins = async (req, res) => {
     const { productType, id } = req.body
 
     const user = await UserParameters.findOne({ id: userId }, { coins: 1 })
-    const userCurrentInventory = await UserCurrentInventory.findOne({ user_id: userId })
+    const userCurrentInventory = await UserCurrentInventory.findOne({
+      user_id: userId,
+    })
     let product
 
-    if(productType === 'clothes') {
-      if(userCurrentInventory.clothes.find(item => item.id === id)) return res.status(401).json({ ok: false })
+    if (productType === "clothes") {
+      if (userCurrentInventory.clothes.find((item) => item.id === id))
+        return res.status(401).json({ ok: false })
       product = await Clothing.findOne({ clothing_id: id })
-      if(product && user.coins >= product.price) {
-        await UserParameters.updateOne({ id: userId }, { $inc: { coins: -product.price } })
-        await UserCurrentInventory.updateOne({ user_id: userId }, { $addToSet: { clothes: { id: product.clothing_id } } })
+      if (product && user.coins >= product.price) {
+        await UserParameters.updateOne(
+          { id: userId },
+          { $inc: { coins: -product.price } }
+        )
+        await UserCurrentInventory.updateOne(
+          { user_id: userId },
+          { $addToSet: { clothes: { id: product.clothing_id } } }
+        )
       } else {
-        return res.status(401).json({ ok: false, reason: 'Not enough funds' })  
+        return res.status(401).json({ ok: false, reason: "Not enough funds" })
       }
     }
 
-    if(productType === 'shelf') {
-      if(userCurrentInventory.shelf.find(item => item.id === id)) return res.status(401).json({ ok: false })
+    if (productType === "shelf") {
+      if (userCurrentInventory.shelf.find((item) => item.id === id))
+        return res.status(401).json({ ok: false })
       product = await ShelfItemModel.findOne({ id: id })
-      if(product) {
-        const {coins, stars} = product.cost
-        if(stars > 0) {
-          return res.status(500).json({ ok: false })  
+      if (product) {
+        const { coins, stars } = product.cost
+        if (stars > 0) {
+          return res.status(500).json({ ok: false })
         }
-        if(user.coins >= coins) {
-          await UserParameters.updateOne({ id: userId }, { $inc: { coins: -coins } })
-          await UserCurrentInventory.updateOne({ user_id: userId }, { $addToSet: { shelf: { id: product.id } } })
+        if (user.coins >= coins) {
+          await UserParameters.updateOne(
+            { id: userId },
+            { $inc: { coins: -coins } }
+          )
+          await UserCurrentInventory.updateOne(
+            { user_id: userId },
+            { $addToSet: { shelf: { id: product.id } } }
+          )
         } else {
-          return res.status(401).json({ ok: false, reason: 'Not enough funds' })  
+          return res.status(401).json({ ok: false, reason: "Not enough funds" })
         }
       } else {
         return res.status(500).json({ ok: false })
@@ -462,7 +502,7 @@ export const buyItemsForCoins = async (req, res) => {
     }
 
     return res.status(200).json({ ok: true })
-  } catch(err) {
+  } catch (err) {
     console.log("Error in buying for coins", err)
     return res.status(500).json({ error: true })
   }
@@ -472,32 +512,32 @@ export const requestStarsPaymentLink = async (req, res) => {
   try {
     const { productType, id } = req.body
 
-    let product, name, description, amount, title;
+    let product, name, description, amount, title
 
-    if (productType === 'boosts') {
+    if (productType === "boosts") {
       product = await Boost.findOne({ id: id })
     }
 
-    if (productType === 'clothes') {
+    if (productType === "clothes") {
       product = await Clothing.findOne({ clothing_id: id })
       name = product.name.ru
       description = product.description.ru
-      title = '13th Floor'
+      title = "13th Floor"
       amount = product.price
     }
 
-    if(productType === 'shelf') {
+    if (productType === "shelf") {
       product = await ShelfItemModel.findOne({ id: id })
       name = product.name.ru
       description = product.description.ru
-      title = '13th Floor'
+      title = "13th Floor"
       amount = product.cost.stars
     }
 
-    const invoiceLink = await _fetch('http://bot:4444/payment-create', {
-      method: 'POST',
+    const invoiceLink = await _fetch("http://bot:4444/payment-create", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         productType,
@@ -505,13 +545,262 @@ export const requestStarsPaymentLink = async (req, res) => {
         title,
         amount,
         productName: name,
-        description
-      })
-    }).then(res => res.json()).then(res => res.invoiceLink)
+        description,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => res.invoiceLink)
 
-    return res.status(200).json({ status: 'ok', invoiceLink })
+    return res.status(200).json({ status: "ok", invoiceLink })
   } catch (e) {
     console.log("Error in pay", e)
     return res.status(500).json({ error: true })
   }
 }
+
+// investments
+export const getUserInvestments = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id)
+    const user = await User.findOne({ id: userId }, { investment_levels: 1, has_autoclaim: 1 })
+
+    // current investments by user level
+    const currentGameCenter = await Investments.findOne({
+      type: InvestmentTypes.GameCenter,
+      level: user.investment_levels[InvestmentTypes.GameCenter],
+    })
+    const currentCoffeeShop = await Investments.findOne({
+      type: InvestmentTypes.CoffeeShop,
+      level: user.investment_levels[InvestmentTypes.CoffeeShop],
+    })
+    const currentZooShop = await Investments.findOne({
+      type: InvestmentTypes.ZooShop,
+      level: user.investment_levels[InvestmentTypes.ZooShop],
+    })
+
+    // next levels
+    const nextLevelGameCenter = await Investments.findOne({
+      type: InvestmentTypes.GameCenter,
+      level: user.investment_levels[InvestmentTypes.GameCenter] + 1,
+    })
+    const nextLevelCoffeeShop = await Investments.findOne({
+      type: InvestmentTypes.CoffeeShop,
+      level: user.investment_levels[InvestmentTypes.CoffeeShop] + 1,
+    })
+    const nextLevelZooShop = await Investments.findOne({
+      type: InvestmentTypes.ZooShop,
+      level: user.investment_levels[InvestmentTypes.ZooShop] + 1,
+    })
+
+    const activeGameCenter = currentGameCenter
+      ? (
+        await UserLaunchedInvestments.find(
+          { investment_id: currentGameCenter.id, user_id: userId },
+          null,
+          { sort: { createdAt: -1 } }
+        )
+      )[0]
+      : null
+    const activeCoffeeShop = currentCoffeeShop
+      ? (
+        await UserLaunchedInvestments.find(
+          { investment_id: currentCoffeeShop.id, user_id: userId },
+          null,
+          { sort: { createdAt: -1 } }
+        )
+      )[0]
+      : null
+    const activeZooShop = currentZooShop
+      ? (
+        await UserLaunchedInvestments.find(
+          { investment_id: currentZooShop.id, user_id: userId },
+          null,
+          { sort: { createdAt: -1 } }
+        )
+      )[0]
+      : null
+
+    const response = {
+      tz: moment.tz.guess(),
+      game_center: {
+        type: InvestmentTypes.GameCenter,
+        current_level: currentGameCenter?.level || 0,
+        can_claim: activeGameCenter
+          ? currentGameCenter.level > 0 && activeGameCenter.claimed === false
+          : false,
+        started_at: activeGameCenter?.createdAt,
+        has_autoclaim: user.has_autoclaim[InvestmentTypes.GameCenter] || false,
+        upgrade_info: nextLevelGameCenter
+          ? {
+            level: nextLevelGameCenter.level,
+            price: nextLevelGameCenter.price,
+            from: currentGameCenter?.coins_per_hour || 0,
+            to: nextLevelGameCenter.coins_per_hour,
+          }
+          : false,
+      },
+      coffee_shop: {
+        type: InvestmentTypes.CoffeeShop,
+        current_level: currentCoffeeShop?.level || 0,
+        can_claim: activeCoffeeShop
+          ? currentCoffeeShop.level > 0 && activeCoffeeShop.claimed === false
+          : false,
+        started_at: activeCoffeeShop?.createdAt,
+        has_autoclaim: user.has_autoclaim[InvestmentTypes.CoffeeShop] || false,
+        upgrade_info: nextLevelCoffeeShop
+          ? {
+            level: nextLevelCoffeeShop.level,
+            price: nextLevelCoffeeShop.price,
+            from: currentCoffeeShop?.coins_per_hour || 0,
+            to: nextLevelCoffeeShop.coins_per_hour,
+          }
+          : false,
+      },
+      zoo_shop: {
+        type: InvestmentTypes.ZooShop,
+        current_level: currentZooShop?.level || 0,
+        can_claim: activeZooShop
+          ? currentZooShop.level > 0 && activeZooShop.claimed === false
+          : false,
+        started_at: activeZooShop?.createdAt,
+        has_autoclaim: user.has_autoclaim[InvestmentTypes.ZooShop] || false,
+        upgrade_info: nextLevelZooShop
+          ? {
+            level: nextLevelZooShop.level,
+            price: nextLevelZooShop.price,
+            from: currentZooShop?.coins_per_hour || 0,
+            to: nextLevelZooShop.coins_per_hour,
+          }
+          : null,
+      },
+    }
+
+    return res.status(200).json(response)
+  } catch (err) {
+    console.log("Error in get investment", err)
+    return res.status(500).json({ error: true })
+  }
+}
+
+export const buyInvestmentLevel = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id)
+    const { investment_type } = req.body
+
+    if (!Object.values(InvestmentTypes).includes(investment_type)) {
+      return res.status(400).json({ error: true })
+    }
+
+    const user = await User.findOne({ id: userId }, { investment_levels: 1 })
+    const userParams = await UserParameters.findOne({ id: userId })
+    const userInvestmentLevel = user.investment_levels[investment_type]
+
+    const currentInvestment = await Investments.findOne(
+      { type: investment_type, level: userInvestmentLevel },
+      { respect: 1 }
+    )
+    const nextLevelInvestment = await Investments.findOne({
+      type: investment_type,
+      level: userInvestmentLevel + 1,
+    })
+
+    if (!nextLevelInvestment) {
+      console.log("Error in buyInvestmentLevel - nowhere to upgrade")
+      return res.status(404).json({ error: true })
+    }
+
+    if (userParams.coins >= nextLevelInvestment.price) {
+      if (investment_type !== InvestmentTypes.GameCenter) {
+        if (user.investment_levels[investment_type] === 0) {
+          // creating investment object
+          await new UserLaunchedInvestments({
+            user_id: userId,
+            investment_id: nextLevelInvestment.id,
+            to_claim: nextLevelInvestment.coins_per_hour,
+          }).save()
+        }
+        // const activeInvestment = await UserLaunchedInvestments.findOne({ type: investment_type, level: user.investment_levels[investment_type] }, null, { createdAt: -1 })
+        user.investment_levels[investment_type] += 1
+        userParams.respect =
+          userParams.respect -
+          (currentInvestment?.respect || 0) +
+          nextLevelInvestment.respect
+        userParams.coins = userParams.coins - nextLevelInvestment.price
+        await user.save()
+        await userParams.save()
+
+        return res.status(200).json({ ok: true })
+      }
+
+      // Cannot buy gamecenter
+      return res.status(400).json({ error: true })
+    }
+
+    // not enough coins
+    return res
+      .status(403)
+      .json({ error: true, message: "Insufficient balance" })
+  } catch (err) {
+    console.log("Error in investment upgrade", err)
+    return res.status(500).json({ error: true })
+  }
+}
+
+export const claimInvestment = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id)
+    const { investment_type } = req.body
+
+    if (!Object.values(InvestmentTypes).includes(investment_type)) {
+      return res.status(400).json({ error: true })
+    }
+
+    const user = await User.findOne({ id: userId }, { investment_levels: 1 })
+    const userParams = await UserParameters.findOne({ id: userId })
+    const userInvestmentLevel = user.investment_levels[investment_type]
+    const investmentsOfType = (
+      await Investments.find({ type: investment_type }, { id: 1 })
+    ).map((item) => item.id)
+    const investmentToClaim = await UserLaunchedInvestments.findOne(
+      { user_id: userId, investment_id: { $in: investmentsOfType } },
+      null,
+      { sort: { createdAt: -1 } }
+    )
+
+    if (!investmentToClaim || investmentToClaim.claimed) {
+      return res.status(404).json({ error: true })
+    }
+
+    const investment = await Investments.findOne({
+      type: investment_type,
+      level: userInvestmentLevel,
+    })
+
+    // Make claimable in 10 sec on test
+    if (
+      Date.now() - new Date(investmentToClaim.createdAt).getTime() <
+      (process.env.NODE_ENV === "test" ? 10000 : 3600000)
+    ) {
+      return res.status(403).json({ error: true })
+    }
+
+    userParams.coins += investmentToClaim.to_claim
+    investmentToClaim.claimed = true
+
+    await userParams.save()
+    await investmentToClaim.save()
+    await new UserLaunchedInvestments({
+      user_id: userId,
+      investment_id: investment.id,
+      to_claim: investment.coins_per_hour,
+    }).save()
+    return res.status(200).json({ ok: true })
+  } catch (err) {
+    console.log("Error in investment upgrade", err)
+    return res.status(500).json({ error: true })
+  }
+}
+
+export const getUserTasks = async (req, res) => { }
+
+export const claimUserTask = async (req, res) => { }
