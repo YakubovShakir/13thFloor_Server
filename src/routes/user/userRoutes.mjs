@@ -39,8 +39,10 @@ router.post("/:id/shelf/equip", handleShelfEquip)
 router.post("/:id/shelf/unequip", handleShelfEquip)
 router.post('/request-stars-invoice-link', requestStarsPaymentLink)
 router.post('/:id/buy-items-for-coins', buyItemsForCoins)
-router.post('/:id/investments', getUserInvestments)
+router.get('/:id/investments', getUserInvestments)
 router.post('/:id/investments/buy-level', buyInvestmentLevel)
 router.post('/:id/investments/claim', claimInvestment)
+router.get('/:id/tasks')
+router.post('/:id/tasks/claim')
 
 export default router
