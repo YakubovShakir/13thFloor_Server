@@ -38,6 +38,7 @@ const clothingSchema = new mongoose.Schema({
   female_icon: { type: String, required: true},
   respect: { type: Number, required: true },
   price: { type: Number, required: true },
+  is_premium: { type: Boolean, default: false },
   tier: { type: Number, required: true }
 })
 
