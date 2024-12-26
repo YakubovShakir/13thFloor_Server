@@ -11,12 +11,9 @@ const schema = new mongoose.Schema({
   level: { type: Number },
   category: {
     type: String,
-    enum: ["levelTask", "learnSkillTask", "doTrainingTask"],
+    enum: ["levelTask", "learnSkillTask", "doTrainingTask", "inviteFriendTask"],
   },
-  category_parameters: {
-    requiredLevel: { type: Number },
-    skillId: { type: Number },
-  },
+  category_parameters: {},
 })
 
 const Tasks = mongoose.model("tasks", schema)

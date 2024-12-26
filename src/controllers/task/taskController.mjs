@@ -5,6 +5,7 @@ import levelTaskHandler from "./categoryHandlers/levelTaskHandler.js"
 import User from "../../models/user/userModel.mjs"
 import learnSkillTaskHandler from "./categoryHandlers/skillTaskHandler.js"
 import doTrainingTaskHandler from "./categoryHandlers/doTrainingTaskHandler.js"
+import inviteFriendTaskHandler from "./categoryHandlers/inviteFriendTaskHandler.js"
 
 export const addCompletedTask = async (userId, taskType) => {
   try {
@@ -58,6 +59,10 @@ export const checkTaskIsCompleted = async (req, res) => {
         break
       case "doTrainingTask":
         completed = await doTrainingTaskHandler(userId)
+        break
+      case "inviteFriendTask":
+        const refCount = task.category_parameters.refCount
+        completed = await inviteFriendTaskHandler(userId, refCount)
         break
     }
     if (completed) {
