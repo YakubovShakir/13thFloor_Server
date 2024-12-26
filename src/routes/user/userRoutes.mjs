@@ -13,7 +13,9 @@ import {
   buyItemsForCoins,
   getUserInvestments,
   buyInvestmentLevel,
-  claimInvestment
+  claimInvestment,
+  getUserTasks,
+  claimUserTask
 } from "../../controllers/user/userController.mjs"
 import { getUserParameters } from "../../controllers/user/userParametersController.mjs"
 
@@ -42,7 +44,7 @@ router.post('/:id/buy-items-for-coins', buyItemsForCoins)
 router.get('/:id/investments', getUserInvestments)
 router.post('/:id/investments/buy-level', buyInvestmentLevel)
 router.post('/:id/investments/claim', claimInvestment)
-router.get('/:id/tasks')
-router.post('/:id/tasks/claim')
+router.get('/:id/tasks', getUserTasks)
+router.post('/:id/tasks/claim', claimUserTask)
 
 export default router

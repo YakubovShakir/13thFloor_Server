@@ -13,43 +13,47 @@ import Investments from "../../models/investments/investmentModel.mjs"
 import { InvestmentTypes } from "../../models/investments/userLaunchedInvestments.mjs"
 import UserLaunchedInvestments from "../../models/investments/userLaunchedInvestments.mjs"
 import moment from "moment-timezone"
+import Tasks from "../../models/tasks/taskModel.mjs"
+import CompletedTasks from "../../models/tasks/completedTask.mjs"
+import { Bot } from "grammy"
+import Work from "../../models/work/workModel.mjs"
 
 const gamecenterLevelMap = {
-  "1": 1,
-  "5": 2,
-  "10": 3,
-  "25": 4,
-  "40": 5,
-  "60": 6,
-  "90": 7,
-  "200": 8,
-  "300": 9,
-  "450": 10,
-  "500": 11,
-  "750": 12,
-  "1000": 13,
-  "1500": 14,
-  "2250": 15,
-  "2500": 16,
-  "3750": 17,
-  "5500": 18,
-  "8250": 19,
-  "10000": 20,
-  "15000": 21,
-  "22500": 22,
-  "33750": 23,
-  "50000": 24,
-  "75000": 25,
-  "112500": 26,
-  "168750": 27,
-  "253130": 28,
-  "379700": 29,
-  "569550": 30,
-  "854330": 31,
-  "1281500": 32,
-  "1922250": 33,
-  "2883380": 34,
-  "4325070": 35
+  1: 1,
+  5: 2,
+  10: 3,
+  25: 4,
+  40: 5,
+  60: 6,
+  90: 7,
+  200: 8,
+  300: 9,
+  450: 10,
+  500: 11,
+  750: 12,
+  1000: 13,
+  1500: 14,
+  2250: 15,
+  2500: 16,
+  3750: 17,
+  5500: 18,
+  8250: 19,
+  10000: 20,
+  15000: 21,
+  22500: 22,
+  33750: 23,
+  50000: 24,
+  75000: 25,
+  112500: 26,
+  168750: 27,
+  253130: 28,
+  379700: 29,
+  569550: 30,
+  854330: 31,
+  1281500: 32,
+  1922250: 33,
+  2883380: 34,
+  4325070: 35,
 }
 
 export const prebuildInitialInventory = async (user_id) => {
@@ -134,21 +138,24 @@ export const createUserPersonage = async (req, res) => {
           investment_levels: {
             game_center: gameCenterLevel,
             coffee_shop: 0,
-            zoo_shop: 0
+            zoo_shop: 0,
           },
         },
       }
     )
     let userParam = await UserParameters.findOne({ id: userId })
-    
-    if(gameCenterLevel > 0) {
-      const investment = await Investments.findOne({ type: 'game_center', level: gameCenterLevel })
+
+    if (gameCenterLevel > 0) {
+      const investment = await Investments.findOne({
+        type: "game_center",
+        level: gameCenterLevel,
+      })
       await new UserLaunchedInvestments({
         user_id: userId,
         investment_id: investment.id,
         to_claim: investment.coins_per_hour,
       }).save()
-      userParam.respect += investment.respect;
+      userParam.respect += investment.respect
       await userParam.save()
     }
 
@@ -359,7 +366,7 @@ export const handleClothesUnequip = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
     const { clothing_id, type, productType } = req.body
-    // const userParams = 
+    // const userParams =
     if (productType === "clothes") {
       if (type !== "Accessory") return res.status(200).json({})
       const isClothingReal = await Clothing.findOne({ clothing_id })
@@ -417,15 +424,16 @@ export const handleClothesEquip = async (req, res) => {
           )[type.toLowerCase()]
           const currentClothing = currentClothingId
             ? await Clothing.find(
-              { clothing_id: currentClothingId },
-              { respect: 1 }
-            )
+                { clothing_id: currentClothingId },
+                { respect: 1 }
+              )
             : null
           const currentClothingRespect = currentClothing
             ? currentClothing.respect
             : 0
           // update respect
-          userParams.respect = userParams.respect - currentClothingRespect + isClothingReal.respect
+          userParams.respect =
+            userParams.respect - currentClothingRespect + isClothingReal.respect
           await userParams.save()
           await UserClothing.updateOne(
             { user_id: userId },
@@ -591,8 +599,8 @@ export const requestStarsPaymentLink = async (req, res) => {
 
     if (productType === "autoclaim") {
       product = await ShelfItemModel.findOne({ id: id })
-      name = 'Автоклейм'
-      description = 'Автоматический сбор инвестиции с вашего бизнеса!'
+      name = "Автоклейм"
+      description = "Автоматический сбор инвестиции с вашего бизнеса!"
       title = "13th Floor"
       amount = 1
     }
@@ -625,7 +633,10 @@ export const requestStarsPaymentLink = async (req, res) => {
 export const getUserInvestments = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
-    const user = await User.findOne({ id: userId }, { investment_levels: 1, has_autoclaim: 1 })
+    const user = await User.findOne(
+      { id: userId },
+      { investment_levels: 1, has_autoclaim: 1 }
+    )
 
     // current investments by user level
     const currentGameCenter = await Investments.findOne({
@@ -657,30 +668,30 @@ export const getUserInvestments = async (req, res) => {
 
     const activeGameCenter = currentGameCenter
       ? (
-        await UserLaunchedInvestments.find(
-          { investment_id: currentGameCenter.id, user_id: userId },
-          null,
-          { sort: { createdAt: -1 } }
-        )
-      )[0]
+          await UserLaunchedInvestments.find(
+            { investment_id: currentGameCenter.id, user_id: userId },
+            null,
+            { sort: { createdAt: -1 } }
+          )
+        )[0]
       : null
     const activeCoffeeShop = currentCoffeeShop
       ? (
-        await UserLaunchedInvestments.find(
-          { investment_id: currentCoffeeShop.id, user_id: userId },
-          null,
-          { sort: { createdAt: -1 } }
-        )
-      )[0]
+          await UserLaunchedInvestments.find(
+            { investment_id: currentCoffeeShop.id, user_id: userId },
+            null,
+            { sort: { createdAt: -1 } }
+          )
+        )[0]
       : null
     const activeZooShop = currentZooShop
       ? (
-        await UserLaunchedInvestments.find(
-          { investment_id: currentZooShop.id, user_id: userId },
-          null,
-          { sort: { createdAt: -1 } }
-        )
-      )[0]
+          await UserLaunchedInvestments.find(
+            { investment_id: currentZooShop.id, user_id: userId },
+            null,
+            { sort: { createdAt: -1 } }
+          )
+        )[0]
       : null
 
     const response = {
@@ -695,11 +706,11 @@ export const getUserInvestments = async (req, res) => {
         has_autoclaim: user.has_autoclaim[InvestmentTypes.GameCenter] || false,
         upgrade_info: nextLevelGameCenter
           ? {
-            level: nextLevelGameCenter.level,
-            price: nextLevelGameCenter.price,
-            from: currentGameCenter?.coins_per_hour || 0,
-            to: nextLevelGameCenter.coins_per_hour,
-          }
+              level: nextLevelGameCenter.level,
+              price: nextLevelGameCenter.price,
+              from: currentGameCenter?.coins_per_hour || 0,
+              to: nextLevelGameCenter.coins_per_hour,
+            }
           : false,
       },
       coffee_shop: {
@@ -712,11 +723,11 @@ export const getUserInvestments = async (req, res) => {
         has_autoclaim: user.has_autoclaim[InvestmentTypes.CoffeeShop] || false,
         upgrade_info: nextLevelCoffeeShop
           ? {
-            level: nextLevelCoffeeShop.level,
-            price: nextLevelCoffeeShop.price,
-            from: currentCoffeeShop?.coins_per_hour || 0,
-            to: nextLevelCoffeeShop.coins_per_hour,
-          }
+              level: nextLevelCoffeeShop.level,
+              price: nextLevelCoffeeShop.price,
+              from: currentCoffeeShop?.coins_per_hour || 0,
+              to: nextLevelCoffeeShop.coins_per_hour,
+            }
           : false,
       },
       zoo_shop: {
@@ -729,11 +740,11 @@ export const getUserInvestments = async (req, res) => {
         has_autoclaim: user.has_autoclaim[InvestmentTypes.ZooShop] || false,
         upgrade_info: nextLevelZooShop
           ? {
-            level: nextLevelZooShop.level,
-            price: nextLevelZooShop.price,
-            from: currentZooShop?.coins_per_hour || 0,
-            to: nextLevelZooShop.coins_per_hour,
-          }
+              level: nextLevelZooShop.level,
+              price: nextLevelZooShop.price,
+              from: currentZooShop?.coins_per_hour || 0,
+              to: nextLevelZooShop.coins_per_hour,
+            }
           : null,
       },
     }
@@ -775,14 +786,14 @@ export const buyInvestmentLevel = async (req, res) => {
     if (userParams.coins >= nextLevelInvestment.price) {
       if (investment_type !== InvestmentTypes.GameCenter) {
         // if (user.investment_levels[investment_type] === 0) {
-        
+
         // }
-          // creating investment object
-          await new UserLaunchedInvestments({
-            user_id: userId,
-            investment_id: nextLevelInvestment.id,
-            to_claim: nextLevelInvestment.coins_per_hour,
-          }).save()
+        // creating investment object
+        await new UserLaunchedInvestments({
+          user_id: userId,
+          investment_id: nextLevelInvestment.id,
+          to_claim: nextLevelInvestment.coins_per_hour,
+        }).save()
         // const activeInvestment = await UserLaunchedInvestments.findOne({ type: investment_type, level: user.investment_levels[investment_type] }, null, { createdAt: -1 })
         user.investment_levels[investment_type] += 1
         userParams.respect =
@@ -865,6 +876,71 @@ export const claimInvestment = async (req, res) => {
   }
 }
 
-export const getUserTasks = async (req, res) => { }
+export const getUserTasks = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id)
 
-export const claimUserTask = async (req, res) => { }
+    const tasks = await Tasks.find()
+    const userParam = await UserParameters.findOne({ id: userId })
+    const completedTaskIds = (
+      await CompletedTasks.find({ user_id: userId })
+    ).map((item) => item.task_id)
+
+    const work = await Work.findOne({ id: userParam.work_id })
+  
+    const response = {
+      social_tasks: tasks.map((task) => ({
+        ...task._doc,
+        is_complete: completedTaskIds.includes(task.id),
+        reward: task.fixed + (work ? work.coins_in_hour * task.multiplier : 0),
+      })),
+    }
+
+    return res.status(200).json(response)
+  } catch (err) {
+    console.log("Error in getUserTasks", err)
+    return res.status(500).json({ error: true })
+  }
+}
+
+const bot = new Bot("7866433891:AAHAh-4Lc0Dvr80URgOQMJrIKB_1bfxc0KM")
+
+export const claimUserTask = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id)
+    const { id } = req.body
+
+    const task = await Tasks.findOne({ id: id })
+    const userParam = await UserParameters.findOne({ id: userId })
+
+    if(await CompletedTasks.findOne({ task_id: id, user_id: userId })) {
+      console.log(`Task is already completed by user ${userId} ${task.id}`)
+      return res.status(403).json({ ok: true })
+    }
+
+    if (task) {
+      if (task.is_tg) {
+        try {
+          await bot.api.getChatMember(task.channel_id, userId)
+          console.log("Task complete")
+        } catch (err) {
+          return res.status(403).json({ error: true })
+        }
+      } else {
+        console.log("Link task - skipping")
+      }
+
+      await new CompletedTasks({ user_id: userId, task_id: task.id }).save()
+      const work = await Work.findOne({ id: userParam.work_id })
+      userParam.coins += task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
+      await userParam.save()
+    } else {
+      return res.status(404).json({ ok: true })
+    }
+
+    return res.status(200).json({ ok: true })
+  } catch (err) {
+    console.log("Error in getUserTasks", err)
+    return res.status(500).json({ error: true })
+  }
+}
