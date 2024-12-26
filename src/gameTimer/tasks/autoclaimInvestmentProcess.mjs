@@ -27,7 +27,7 @@ const claim = async (investment_type, userId) => {
     const investment = await Investments.findOne({ type: investment_type, level: userInvestmentLevel })
 
     // Make claimable in 10 sec on test
-    if(Date.now() - new Date(investmentToClaim.createdAt).getTime() < (process.env.NODE_ENV === 'test' ? 5000 : 3600000)) {
+    if(Date.now() - new Date(investmentToClaim.createdAt).getTime() < (process.env.NODE_ENV === 'test' ? 30000 : 3600000)) {
         console.log('here')
       return
     }
@@ -43,7 +43,7 @@ const claim = async (investment_type, userId) => {
 
 export const AutoclaimProccess = cron.schedule(
     // every 5 sec
-  "*/5 * * * * *",
+  "*/1 * * * * *",
   async () => {
     try {
         let usersWithAutoclaim = await User.find({

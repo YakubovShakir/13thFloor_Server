@@ -1,4 +1,5 @@
 import Clothing from "../../models/clothing/clothingModel.mjs"
+import Investments from "../../models/investments/investmentModel.mjs"
 import Referal from "../../models/referral/referralModel.mjs"
 import { ShelfItems } from "../../models/shelfItem/migration.js"
 import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
@@ -8,6 +9,7 @@ import User from "../../models/user/userModel.mjs"
 import Users from "../../models/user/userModel.mjs"
 import UserParameters from "../../models/user/userParametersModel.mjs"
 import { prebuildInitialInventory } from "./userController.mjs"
+import UserLaunchedInvestments from '../../models/investments/userLaunchedInvestments.mjs'
 
 const gamecenterLevelMap = {
   "1": 1,
@@ -55,7 +57,7 @@ export const getUserParameters = async (req, res) => {
     let user = await Users.findOne({ id: userId })
 
     const refs = await Referal.countDocuments({ refer_id: userId })
-
+    
     if (!user) {
       console.log("Registering user with ID", userId)
       user = await new User({
@@ -80,7 +82,22 @@ export const getUserParameters = async (req, res) => {
           coffee_shop: 0,
           zoo_shop: 0
         },
+        has_autoclaim: {
+          game_center: false,
+          coffee_shop: false,
+          zoo_shop: false
+        }
       }).save()
+
+      const gameCenterLevel = gamecenterLevelMap[refs.toString()] || 0
+      if(gameCenterLevel > 0) {
+        const investment = await Investments.findOne({ type: 'game_center', level: gameCenterLevel })
+        await new UserLaunchedInvestments({
+          user_id: userId,
+          investment_id: investment.id,
+          to_claim: investment.coins_per_hour,
+        }).save()
+      }
     }
 
     let parameters = await UserParameters.findOne({ id: userId }, { _id: 0 })

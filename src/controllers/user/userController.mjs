@@ -14,6 +14,44 @@ import { InvestmentTypes } from "../../models/investments/userLaunchedInvestment
 import UserLaunchedInvestments from "../../models/investments/userLaunchedInvestments.mjs"
 import moment from "moment-timezone"
 
+const gamecenterLevelMap = {
+  "1": 1,
+  "5": 2,
+  "10": 3,
+  "25": 4,
+  "40": 5,
+  "60": 6,
+  "90": 7,
+  "200": 8,
+  "300": 9,
+  "450": 10,
+  "500": 11,
+  "750": 12,
+  "1000": 13,
+  "1500": 14,
+  "2250": 15,
+  "2500": 16,
+  "3750": 17,
+  "5500": 18,
+  "8250": 19,
+  "10000": 20,
+  "15000": 21,
+  "22500": 22,
+  "33750": 23,
+  "50000": 24,
+  "75000": 25,
+  "112500": 26,
+  "168750": 27,
+  "253130": 28,
+  "379700": 29,
+  "569550": 30,
+  "854330": 31,
+  "1281500": 32,
+  "1922250": 33,
+  "2883380": 34,
+  "4325070": 35
+}
+
 export const prebuildInitialInventory = async (user_id) => {
   await new UserCurrentInventory({
     user_id,
@@ -80,6 +118,8 @@ export const createUserPersonage = async (req, res) => {
     }
 
     console.log("Creating personage", race, gender, name, userId)
+    const refs = await Referal.countDocuments({ refer_id: userId })
+    const gameCenterLevel = gamecenterLevelMap[refs.toString()] || 0
     await User.updateOne(
       {
         id: userId,
@@ -91,9 +131,23 @@ export const createUserPersonage = async (req, res) => {
             gender,
             name,
           },
+          investment_levels: {
+            game_center: gameCenterLevel,
+            coffee_shop: 0,
+            zoo_shop: 0
+          },
         },
       }
     )
+
+    if(gameCenterLevel > 0) {
+      const investment = await Investments.findOne({ type: 'game_center', level: gameCenterLevel })
+      await new UserLaunchedInvestments({
+        user_id: userId,
+        investment_id: investment.id,
+        to_claim: investment.coins_per_hour,
+      }).save()
+    }
 
     const getInitialHatByRace = (race) => {
       const map = {
@@ -527,6 +581,14 @@ export const requestStarsPaymentLink = async (req, res) => {
     }
 
     if (productType === "shelf") {
+      product = await ShelfItemModel.findOne({ id: id })
+      name = product.name.ru
+      description = product.description.ru
+      title = "13th Floor"
+      amount = product.cost.stars
+    }
+
+    if (productType === "autoclaim") {
       product = await ShelfItemModel.findOne({ id: id })
       name = product.name.ru
       description = product.description.ru
