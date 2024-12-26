@@ -590,10 +590,10 @@ export const requestStarsPaymentLink = async (req, res) => {
 
     if (productType === "autoclaim") {
       product = await ShelfItemModel.findOne({ id: id })
-      name = product.name.ru
-      description = product.description.ru
+      name = 'Автоклейм'
+      description = 'Автоматический сбор инвестиции с вашего бизнеса!'
       title = "13th Floor"
-      amount = product.cost.stars
+      amount = 1
     }
 
     const invoiceLink = await _fetch("http://bot:4444/payment-create", {
@@ -773,14 +773,15 @@ export const buyInvestmentLevel = async (req, res) => {
 
     if (userParams.coins >= nextLevelInvestment.price) {
       if (investment_type !== InvestmentTypes.GameCenter) {
-        if (user.investment_levels[investment_type] === 0) {
+        // if (user.investment_levels[investment_type] === 0) {
+        
+        // }
           // creating investment object
           await new UserLaunchedInvestments({
             user_id: userId,
             investment_id: nextLevelInvestment.id,
             to_claim: nextLevelInvestment.coins_per_hour,
           }).save()
-        }
         // const activeInvestment = await UserLaunchedInvestments.findOne({ type: investment_type, level: user.investment_levels[investment_type] }, null, { createdAt: -1 })
         user.investment_levels[investment_type] += 1
         userParams.respect =
