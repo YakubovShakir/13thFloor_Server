@@ -4,6 +4,7 @@ import cron from "node-cron"
 import process from "../../../models/process/processModel.mjs"
 import updateProcessTime from "../../../utils/updateProcessTime.js"
 import UserBoost from "../../../models/user/userBoostsModel.mjs"
+import UserStat from "../../../models/user/userStatModel.js"
 
 const endFunction = async (userId, parameters, tp) => {
   const trainingBoostProcess = await process.findOne({
@@ -20,6 +21,13 @@ const endFunction = async (userId, parameters, tp) => {
   if (trainingBoostProcess)
     await trainingBoostProcess.deleteOne({ _id: trainingBoostProcess?._id })
   await parameters.save()
+
+  const trainingCompleted = await UserStat.findOne({
+    user_id: userId,
+    type: "doTraining",
+  })
+  if (!trainingCompleted)
+    UserStat.create({ user_id: userId, type: "doTraining" })
 }
 
 export const TrainingProccess = cron.schedule(

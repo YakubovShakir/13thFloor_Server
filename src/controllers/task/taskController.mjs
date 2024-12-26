@@ -3,6 +3,8 @@ import Tasks from "../../models/task/taskModel.js"
 import UserParameters from "../../models/user/userParametersModel.mjs"
 import levelTaskHandler from "./categoryHandlers/levelTaskHandler.js"
 import User from "../../models/user/userModel.mjs"
+import learnSkillTaskHandler from "./categoryHandlers/skillTaskHandler.js"
+import doTrainingTaskHandler from "./categoryHandlers/doTrainingTaskHandler.js"
 
 export const addCompletedTask = async (userId, taskType) => {
   try {
@@ -48,6 +50,15 @@ export const checkTaskIsCompleted = async (req, res) => {
           parameters
         )
         break
+      case "learnSkillTask":
+        completed = await learnSkillTaskHandler(
+          userId,
+          task.category_parameters.skillId
+        )
+        break
+      case "doTrainingTask":
+        completed = await doTrainingTaskHandler(userId)
+        break
     }
     if (completed) {
       await UserTask.create({
@@ -62,6 +73,7 @@ export const checkTaskIsCompleted = async (req, res) => {
     console.log("Error in checkTaskIsCompleted ", e)
   }
 }
+
 export const claimTaskReward = async (req, res) => {
   try {
     const userId = parseInt(req.query.userId) // Получаем айди пользователя и айди задания
