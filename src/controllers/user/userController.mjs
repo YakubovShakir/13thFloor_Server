@@ -854,7 +854,7 @@ export const claimInvestment = async (req, res) => {
     // Make claimable in 10 sec on test
     if (
       Date.now() - new Date(investmentToClaim.createdAt).getTime() <
-      (process.env.NODE_ENV === "test" ? 10000 : 3600000)
+      (process.env.NODE_ENV === "test" ? 30000 : 3600000)
     ) {
       return res.status(403).json({ error: true })
     }
