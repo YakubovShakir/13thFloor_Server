@@ -139,7 +139,8 @@ export const createUserPersonage = async (req, res) => {
         },
       }
     )
-
+    let userParam = await UserParameters.findOne({ id: userId })
+    
     if(gameCenterLevel > 0) {
       const investment = await Investments.findOne({ type: 'game_center', level: gameCenterLevel })
       await new UserLaunchedInvestments({
@@ -147,6 +148,8 @@ export const createUserPersonage = async (req, res) => {
         investment_id: investment.id,
         to_claim: investment.coins_per_hour,
       }).save()
+      userParam.respect += investment.respect;
+      await userParam.save()
     }
 
     const getInitialHatByRace = (race) => {
@@ -174,8 +177,6 @@ export const createUserPersonage = async (req, res) => {
     if (!(await UserCurrentInventory.findOne({ user_id: userId })))
       await prebuildInitialInventory(userId)
 
-    let userParam = await UserParameters.findOne({ id: userId })
-
     const sumRespect = (
       await Clothing.find({
         clothing_id: { $in: [5, 6, 7, getInitialHatByRace(race)] },
@@ -184,7 +185,7 @@ export const createUserPersonage = async (req, res) => {
       acc += cur.respect
       return acc
     }, 0)
-    userParam.respect = sumRespect
+    userParam.respect += sumRespect
     await userParam.save()
     return res.status(200).json({})
   } catch (e) {
