@@ -9,7 +9,7 @@ services:
     image: mongo:5
     volumes:
       - db-floor:/data/db
-
+      - ./restore-folder:/data/restore
     ports:
       - 27017:27017
 volumes:
