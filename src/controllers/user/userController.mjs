@@ -418,19 +418,19 @@ export const handleClothesEquip = async (req, res) => {
 
       if (isClothingReal && doesUserHaveIt) {
         let userParams = await UserParameters.findOne({ id: userId })
+        console.log(userParams)
         if (type.toLowerCase() !== "accessory") {
           const currentClothingId = (
             await UserClothing.findOne({ user_id: userId })
           )[type.toLowerCase()]
           const currentClothing = currentClothingId
-            ? await Clothing.find(
+            ? await Clothing.findOne(
                 { clothing_id: currentClothingId },
                 { respect: 1 }
               )
             : null
-          const currentClothingRespect = currentClothing
-            ? currentClothing.respect
-            : 0
+          const currentClothingRespect = currentClothing.respect
+          console.log(currentClothingRespect)
           // update respect
           userParams.respect =
             userParams.respect - currentClothingRespect + isClothingReal.respect
