@@ -203,4 +203,5 @@ async function deleteUserClothing() {
 }
 async function deleteUsers() {
   await User.deleteMany()
+  await UserParameters.deleteMany()
 }
