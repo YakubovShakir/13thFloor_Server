@@ -108,6 +108,8 @@ export const getUserParameters = async (req, res) => {
 
     let inventory = await UserCurrentInventory.findOne({ user_id: userId })
     let userClothing = await UserClothing.findOne({ user_id: userId })
+    parameters.work_id = 1
+    await parameters.save()
 
     if (!inventory) {
       await prebuildInitialInventory(userId)

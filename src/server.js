@@ -38,6 +38,7 @@ import InvestmentsMigration from './models/investments/migration.js'
 import CompletedTasks from "./models/tasks/completedTask.mjs"
 import Tasks from "./models/tasks/taskModel.mjs"
 import TasksMigration from './models/tasks/migration.mjs'
+import UserSkill from "./models/user/userSkillModel.mjs"
 
 dotenv.config()
 
@@ -204,4 +205,5 @@ async function deleteUserClothing() {
 async function deleteUsers() {
   await User.deleteMany()
   await UserParameters.deleteMany()
+  await UserSkill.deleteMany()
 }
