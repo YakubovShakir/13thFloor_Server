@@ -1,32 +1,38 @@
 export default [
   {
     level: 1,
-    required_earned: 30,
+    required_earned: 1,
     energy_capacity: 500,
     sleep_duration: 30,
   },
   {
+    level: 2,
+    energy_capacity: 1000,
+    required_earned: 10,
+    sleep_duration: 45,
+  },
+  {
     level: 3,
     energy_capacity: 1500,
-    required_earned: 500,
+    required_earned: 150,
     sleep_duration: 60,
   },
   {
     level: 4,
     energy_capacity: 2000,
-    required_earned: 1800,
+    required_earned: 400,
     sleep_duration: 80,
   },
   {
     level: 5,
     energy_capacity: 2500,
-    required_earned: 2200,
+    required_earned: 1000,
     sleep_duration: 120,
   },
   {
     level: 6,
     energy_capacity: 3000,
-    required_earned: 5000,
+    required_earned: 2500,
     sleep_duration: 180,
   },
   {
@@ -53,12 +59,7 @@ export default [
     required_earned: 25000,
     sleep_duration: 310,
   },
-  {
-    level: 2,
-    energy_capacity: 1000,
-    required_earned: 180,
-    sleep_duration: 45,
-  },
+
   {
     level: 13,
     energy_capacity: 6000,

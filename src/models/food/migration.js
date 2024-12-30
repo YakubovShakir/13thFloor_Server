@@ -92,7 +92,7 @@ export default [
     long_hungry_restore: null,
     instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 50,
+    coins_price: 1,
     link: "https://13floorgame.ru/images/foods/apple.png",
     food_id: 1,
   },

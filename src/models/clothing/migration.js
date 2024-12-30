@@ -16,7 +16,7 @@ export default [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_Ashen_m_-icon.png",
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_Ashen_f_-icon.png",
-    respect: 50,
+    respect: 0,
     price: 0,
     tier: 0,
   },
@@ -37,7 +37,7 @@ export default [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_Blonde_m_-icon.png",
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_Blonde_f_-icon.png",
-    respect: 50,
+    respect: 0,
     price: 0,
     tier: 0,
   },
@@ -58,7 +58,7 @@ export default [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_brown_m-icon.png",
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_brown_f_-icon.png",
-    respect: 50,
+    respect: 0,
     price: 0,
     tier: 0,
   },
@@ -79,7 +79,7 @@ export default [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_dark_m-icon.png",
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_dark_f_-icon.png",
-    respect: 50,
+    respect: 0,
     price: 0,
     tier: 0,
   },
