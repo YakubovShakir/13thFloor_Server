@@ -33,4 +33,5 @@ console.log("Запустил процессы сна")
 gameTimer.BoostProccess.start()
 console.log("Запустил процессы бустов")
 AutoclaimProccess.start()
+console.log("Запустил процессы инвестиций")
 export default gameTimer

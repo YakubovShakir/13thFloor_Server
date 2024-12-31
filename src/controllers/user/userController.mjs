@@ -144,7 +144,7 @@ export const createUserPersonage = async (req, res) => {
       }
     )
     let userParam = await UserParameters.findOne({ id: userId })
-    if(userParam) {
+    if (userParam) {
       userParam.work_id = 1
       await userParam.save()
     }
@@ -443,7 +443,40 @@ export const handleClothesEquip = async (req, res) => {
             { $set: { [type.toLowerCase()]: parseInt(clothing_id) } }
           )
         } else {
-          //
+          // accessories
+          const currentClothingIds = (
+            await UserClothing.findOne({ user_id: userId })
+          )["accessories"]
+          console.log(currentClothingIds)
+          if (!currentClothingIds.includes(clothing_id)) {
+            const currentClothing = currentClothingIds
+              ? await Clothing.find(
+                  { clothing_id: { $in: currentClothingIds } },
+                  { respect: 1 }
+                )
+              : null
+            const currentClothingRespect = currentClothing ? currentClothing.respect : 0
+              ? currentClothing.reduce((acc, curr) => {
+                  acc += curr.respect
+                  return acc
+                }, 0)
+              : 0
+
+            console.log(currentClothingRespect)
+
+            // update respect
+            userParams.respect =
+              userParams.respect -
+              currentClothingRespect +
+              isClothingReal.respect
+            await userParams.save()
+            await UserClothing.updateOne(
+              { user_id: userId },
+              { $addToSet: { accessories: parseInt(clothing_id) } }
+            )
+          } else {
+            return res.status(403).json({ error: true })
+          }
         }
       }
     }
@@ -456,10 +489,15 @@ export const handleClothesEquip = async (req, res) => {
       console.log(clothing_id, productType, doesUserHaveIt)
 
       if (doesUserHaveIt) {
+        const shelfItem = await ShelfItems.findOne({ id: clothing_id })
+        console.log(shelfItem)
+        const userParam = await UserParameters.findOne({ id: userId }) 
+        userParam.respect += shelfItem && shelfItem.respect ? shelfItem.respect : 0
         const currentUser = await User.findOne({ id: userId })
         const currentShelf = { ...currentUser.shelf, [type]: clothing_id }
 
         await User.updateOne({ id: userId }, { $set: { shelf: currentShelf } })
+        await userParam.save()
       }
     }
 
@@ -476,6 +514,8 @@ export const handleShelfEquip = async (req, res) => {
 
   try {
     const shelfItem = await ShelfItemModel.findOne({ id, type })
+    const userParams = await UserParameters.findOne({ id: userId })
+
     if (!shelfItem) {
       return res.status(400).json({ error: true })
     }
@@ -494,6 +534,7 @@ export const handleShelfEquip = async (req, res) => {
       },
       { upsert: true }
     )
+    userParams.respect += shelfItem.respect
   } catch (err) {
     console.log("Error in handleShelfEquip", e)
     return res.status(500).json({ error: true })
@@ -505,7 +546,20 @@ export const handleShelfUnequip = async (req, res) => {
   const { type } = req.body
 
   try {
+    const user = await User.findOne({ id: userId })
+    const currentShelfItemIdByType = user[`shelf.${type}`]
+
+    if(!currentShelfItemIdByType) {
+      return res.status(403).json({ error: true })
+    }
+
+    const shelfItem = await ShelfItemModel.findOne({ id: currentShelfItemIdByType, type })
+    const userParams = await UserParameters.findOne({ id: userId })
+    console.log(shelfItem)
     await User.updateOne({ id: userId }, { $set: { [`shelf.${type}`]: null } })
+
+    userParams.respect -= shelfItem.respect
+    await userParams.save()
   } catch (err) {
     console.log("Error in handleShelfEquip", e)
     return res.status(500).json({ error: true })
@@ -854,7 +908,6 @@ export const claimInvestment = async (req, res) => {
       level: userInvestmentLevel,
     })
 
-    // Make claimable in 10 sec on test
     if (
       Date.now() - new Date(investmentToClaim.createdAt).getTime() <
       (process.env.NODE_ENV === "test" ? 30000 : 3600000)
@@ -862,16 +915,17 @@ export const claimInvestment = async (req, res) => {
       return res.status(403).json({ error: true })
     }
 
-    userParams.coins += investmentToClaim.to_claim
-    investmentToClaim.claimed = true
-
-    await userParams.save()
-    await investmentToClaim.save()
     await new UserLaunchedInvestments({
       user_id: userId,
       investment_id: investment.id,
       to_claim: investment.coins_per_hour,
     }).save()
+
+    userParams.coins += investmentToClaim.to_claim
+    investmentToClaim.claimed = true
+
+    await userParams.save()
+    await investmentToClaim.save()
     return res.status(200).json({ ok: true })
   } catch (err) {
     console.log("Error in investment upgrade", err)
@@ -890,7 +944,7 @@ export const getUserTasks = async (req, res) => {
     ).map((item) => item.task_id)
 
     const work = await Work.findOne({ id: userParam.work_id })
-  
+
     const response = {
       social_tasks: tasks.map((task) => ({
         ...task._doc,
@@ -916,7 +970,7 @@ export const claimUserTask = async (req, res) => {
     const task = await Tasks.findOne({ id: id })
     const userParam = await UserParameters.findOne({ id: userId })
 
-    if(await CompletedTasks.findOne({ task_id: id, user_id: userId })) {
+    if (await CompletedTasks.findOne({ task_id: id, user_id: userId })) {
       console.log(`Task is already completed by user ${userId} ${task.id}`)
       return res.status(403).json({ ok: true })
     }
@@ -935,7 +989,8 @@ export const claimUserTask = async (req, res) => {
 
       await new CompletedTasks({ user_id: userId, task_id: task.id }).save()
       const work = await Work.findOne({ id: userParam.work_id })
-      userParam.coins += task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
+      userParam.coins +=
+        task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
       await userParam.save()
     } else {
       return res.status(404).json({ ok: true })

@@ -1,9 +1,15 @@
 export default [
   {
     skill_id: 1,
-    name: "Мотивирующий подкаст",
+    name: {
+      ru: "Мотивирующий подкаст",
+      en: "Motivational Podcast"
+    },
     coins_price: 1,
-    description: null,
+    description: {
+      ru: "Какое-то описание",
+      en: "Some desc"
+    },
     duration: 1,
     skill_id_required: null,
     type: null,

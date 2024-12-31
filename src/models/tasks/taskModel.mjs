@@ -19,8 +19,14 @@ import mongoose from "mongoose"
 
 const schema = new mongoose.Schema({
     id: { type: Number, required: true, unique: true },
-    title: { type: String, required: true },
-    description: { type: String, required: true },
+    title: {
+        ru: { type: String, required: true },
+        en: { type: String, required: true },
+    },
+    description: {
+        ru: { type: String, required: true },
+        en: { type: String, required: true },
+    },
     is_tg: { type: Boolean, default: true },
     channel_id: { type: String, default: null },
     link: { type: String, required: true },

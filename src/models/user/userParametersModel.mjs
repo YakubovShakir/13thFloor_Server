@@ -5,7 +5,7 @@ const userParameterSchema = new mongoose.Schema({
   level: { type: Number, default: 1 },
   experience: { type: Number, default: 0 },
   coins: { type: Number, default: 20 },
-  total_earned: { type: Number, default: 0 },
+  total_earned: { type: Number, default: 20 },
   energy_capacity: { type: Number, default: 150 },
   energy: { type: Number, default: 150 },
   hungry: { type: Number, default: 100 },

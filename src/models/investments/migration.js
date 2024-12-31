@@ -6,7 +6,10 @@ export default [
     level: 1,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 2,
