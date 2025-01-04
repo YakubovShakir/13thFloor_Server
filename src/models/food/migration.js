@@ -1,7 +1,10 @@
 export default [
   {
     user_level_require: 3,
-    name: "Бодрящий ланч",
+    
+    name: {
+      ru: "Бодрящий ланч",
+      en: "Energy lunch"},
     duration: 45,
     instant_energy_restore: null,
     long_energy_restore: {
@@ -21,7 +24,10 @@ export default [
   },
   {
     user_level_require: 10,
-    name: "Стейк",
+  
+    name: {
+      ru: "Стейк",
+      en: "Steak"},
     duration: 50,
     instant_energy_restore: null,
     long_energy_restore: null,
@@ -41,7 +47,10 @@ export default [
   },
   {
     user_level_require: 2,
-    name: "Сытный бургер",
+    
+    name: {
+      ru: "Сытный бургер",
+      en: "Big burger"},
     duration: 50,
     instant_energy_restore: null,
     long_energy_restore: null,
@@ -61,7 +70,10 @@ export default [
   },
   {
     user_level_require: 14,
-    name: "Буррито",
+    
+    name: {
+      ru: "Буррито",
+      en: "Burrito"},
     duration: 45,
     instant_energy_restore: null,
     long_energy_restore: {
@@ -81,7 +93,9 @@ export default [
   },
   {
     user_level_require: 1,
-    name: "Яблоко",
+    name: {
+      ru: "Яблоко",
+      en: "Apple"},    
     duration: 20,
     instant_energy_restore: null,
     long_energy_restore: null,
@@ -98,7 +112,9 @@ export default [
   },
   {
     user_level_require: 12,
-    name: "Суши",
+    name: {
+      ru: "Суши",
+      en: "Sushi"},
     duration: 200,
     instant_energy_restore: null,
     long_energy_restore: null,
@@ -118,7 +134,10 @@ export default [
   },
   {
     user_level_require: 6,
-    name: "Протеиновый батончик",
+    
+    name: {
+      ru: "Протеиновый батончик",
+      en: "Protein Bar"},
     duration: 120,
     instant_energy_restore: null,
     long_energy_restore: null,
@@ -135,7 +154,10 @@ export default [
   },
   {
     user_level_require: 4,
-    name: "Комплексный обед",
+   
+    name: {
+      ru: "Комплексный обед",
+      en: "Set lunch"},
     duration: 80,
     instant_energy_restore: null,
     long_energy_restore: null,
