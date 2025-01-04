@@ -18,7 +18,10 @@ export default [
     level: 2,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 3,
@@ -27,7 +30,10 @@ export default [
     level: 3,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 4,
@@ -36,7 +42,10 @@ export default [
     level: 4,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 5,
@@ -45,7 +54,10 @@ export default [
     level: 5,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 6,
@@ -54,7 +66,10 @@ export default [
     level: 6,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 7,
@@ -63,7 +78,10 @@ export default [
     level: 7,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 8,
@@ -72,7 +90,10 @@ export default [
     level: 8,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 9,
@@ -81,7 +102,10 @@ export default [
     level: 9,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 10,
@@ -90,7 +114,10 @@ export default [
     level: 10,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 11,
@@ -99,7 +126,10 @@ export default [
     level: 11,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 12,
@@ -108,7 +138,10 @@ export default [
     level: 12,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 13,
@@ -117,7 +150,10 @@ export default [
     level: 13,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 14,
@@ -126,7 +162,10 @@ export default [
     level: 14,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 15,
@@ -135,7 +174,10 @@ export default [
     level: 15,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 16,
@@ -144,7 +186,10 @@ export default [
     level: 16,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 17,
@@ -153,7 +198,10 @@ export default [
     level: 17,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 18,
@@ -162,7 +210,10 @@ export default [
     level: 18,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 19,
@@ -171,7 +222,10 @@ export default [
     level: 19,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 20,
@@ -180,7 +234,10 @@ export default [
     level: 20,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 21,
@@ -189,7 +246,10 @@ export default [
     level: 21,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 22,
@@ -198,7 +258,10 @@ export default [
     level: 22,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 23,
@@ -207,7 +270,10 @@ export default [
     level: 23,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 24,
@@ -216,7 +282,10 @@ export default [
     level: 24,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 25,
@@ -225,7 +294,10 @@ export default [
     level: 25,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 26,
@@ -234,7 +306,10 @@ export default [
     level: 26,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 27,
@@ -243,7 +318,10 @@ export default [
     level: 27,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 28,
@@ -252,7 +330,10 @@ export default [
     level: 28,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 29,
@@ -261,7 +342,10 @@ export default [
     level: 29,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 30,
@@ -270,7 +354,10 @@ export default [
     level: 30,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 31,
@@ -279,7 +366,10 @@ export default [
     level: 31,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 32,
@@ -288,7 +378,10 @@ export default [
     level: 32,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 33,
@@ -297,7 +390,10 @@ export default [
     level: 33,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 34,
@@ -306,7 +402,10 @@ export default [
     level: 34,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 35,
@@ -315,7 +414,10 @@ export default [
     level: 35,
     price: 0,
     type: "game_center",
-    title: "Игровой центр",
+    title: {
+      ru: "Игровой центр",
+      en: "Game Center"
+    },
   },
   {
     id: 36,
@@ -324,7 +426,10 @@ export default [
     level: 1,
     price: 300,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 37,
@@ -333,7 +438,10 @@ export default [
     level: 2,
     price: 450,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 38,
@@ -342,7 +450,10 @@ export default [
     level: 3,
     price: 680,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 39,
@@ -351,7 +462,10 @@ export default [
     level: 4,
     price: 1020,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 40,
@@ -360,7 +474,10 @@ export default [
     level: 5,
     price: 1530,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 41,
@@ -369,7 +486,10 @@ export default [
     level: 6,
     price: 2300,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 42,
@@ -378,7 +498,10 @@ export default [
     level: 7,
     price: 3450,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 43,
@@ -387,7 +510,10 @@ export default [
     level: 8,
     price: 5180,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 44,
@@ -396,7 +522,10 @@ export default [
     level: 9,
     price: 7770,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 45,
@@ -405,7 +534,10 @@ export default [
     level: 10,
     price: 11660,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 46,
@@ -414,7 +546,10 @@ export default [
     level: 11,
     price: 17490,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 47,
@@ -423,7 +558,10 @@ export default [
     level: 12,
     price: 26240,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 48,
@@ -432,7 +570,10 @@ export default [
     level: 13,
     price: 39360,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 49,
@@ -441,7 +582,10 @@ export default [
     level: 14,
     price: 47230,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 50,
@@ -450,7 +594,10 @@ export default [
     level: 15,
     price: 56680,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 51,
@@ -459,7 +606,10 @@ export default [
     level: 16,
     price: 68020,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 52,
@@ -468,7 +618,10 @@ export default [
     level: 17,
     price: 81620,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 53,
@@ -477,7 +630,10 @@ export default [
     level: 18,
     price: 97940,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 54,
@@ -486,7 +642,10 @@ export default [
     level: 19,
     price: 117530,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 55,
@@ -495,7 +654,10 @@ export default [
     level: 20,
     price: 129280,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 56,
@@ -504,7 +666,10 @@ export default [
     level: 21,
     price: 142210,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 57,
@@ -513,7 +678,10 @@ export default [
     level: 22,
     price: 156430,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 58,
@@ -522,7 +690,10 @@ export default [
     level: 23,
     price: 172070,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 59,
@@ -531,7 +702,10 @@ export default [
     level: 24,
     price: 189280,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 60,
@@ -540,7 +714,10 @@ export default [
     level: 25,
     price: 208210,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 61,
@@ -549,7 +726,10 @@ export default [
     level: 26,
     price: 229030,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 62,
@@ -558,7 +738,10 @@ export default [
     level: 27,
     price: 251930,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 63,
@@ -567,7 +750,10 @@ export default [
     level: 28,
     price: 277120,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 64,
@@ -576,7 +762,10 @@ export default [
     level: 29,
     price: 304830,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 65,
@@ -585,7 +774,10 @@ export default [
     level: 30,
     price: 335310,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 66,
@@ -594,7 +786,10 @@ export default [
     level: 31,
     price: 368840,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 67,
@@ -603,7 +798,10 @@ export default [
     level: 32,
     price: 405720,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 68,
@@ -612,7 +810,10 @@ export default [
     level: 33,
     price: 446290,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 69,
@@ -621,7 +822,10 @@ export default [
     level: 34,
     price: 490920,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 70,
@@ -630,7 +834,10 @@ export default [
     level: 35,
     price: 540010,
     type: "coffee_shop",
-    title: "Кофейня",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
   },
   {
     id: 71,
@@ -639,7 +846,11 @@ export default [
     level: 1,
     price: 1000,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 72,
@@ -648,7 +859,10 @@ export default [
     level: 2,
     price: 1500,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 73,
@@ -657,7 +871,10 @@ export default [
     level: 3,
     price: 2250,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 74,
@@ -666,7 +883,10 @@ export default [
     level: 4,
     price: 3380,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 75,
@@ -675,7 +895,10 @@ export default [
     level: 5,
     price: 5070,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 76,
@@ -684,7 +907,10 @@ export default [
     level: 6,
     price: 7610,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 77,
@@ -693,7 +919,10 @@ export default [
     level: 7,
     price: 11420,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 78,
@@ -702,7 +931,10 @@ export default [
     level: 8,
     price: 17130,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 79,
@@ -711,7 +943,10 @@ export default [
     level: 9,
     price: 25700,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 80,
@@ -720,7 +955,10 @@ export default [
     level: 10,
     price: 38550,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 81,
@@ -729,7 +967,10 @@ export default [
     level: 11,
     price: 57830,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 82,
@@ -738,7 +979,10 @@ export default [
     level: 12,
     price: 86750,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 83,
@@ -747,7 +991,10 @@ export default [
     level: 13,
     price: 130130,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 84,
@@ -756,7 +1003,10 @@ export default [
     level: 14,
     price: 195200,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 85,
@@ -765,7 +1015,10 @@ export default [
     level: 15,
     price: 234240,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 86,
@@ -774,7 +1027,10 @@ export default [
     level: 16,
     price: 257660,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 87,
@@ -783,7 +1039,10 @@ export default [
     level: 17,
     price: 283430,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 88,
@@ -792,7 +1051,10 @@ export default [
     level: 18,
     price: 311770,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 89,
@@ -801,7 +1063,10 @@ export default [
     level: 19,
     price: 342950,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 90,
@@ -810,7 +1075,10 @@ export default [
     level: 20,
     price: 377250,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 91,
@@ -819,7 +1087,10 @@ export default [
     level: 21,
     price: 414980,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 92,
@@ -828,7 +1099,10 @@ export default [
     level: 22,
     price: 456480,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 93,
@@ -837,7 +1111,10 @@ export default [
     level: 23,
     price: 502130,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 94,
@@ -846,7 +1123,10 @@ export default [
     level: 24,
     price: 552340,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 95,
@@ -855,7 +1135,10 @@ export default [
     level: 25,
     price: 607570,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 96,
@@ -864,7 +1147,10 @@ export default [
     level: 26,
     price: 668330,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 97,
@@ -873,7 +1159,10 @@ export default [
     level: 27,
     price: 735160,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 98,
@@ -882,7 +1171,10 @@ export default [
     level: 28,
     price: 808680,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 99,
@@ -891,7 +1183,10 @@ export default [
     level: 29,
     price: 889550,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 100,
@@ -900,7 +1195,10 @@ export default [
     level: 30,
     price: 978510,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 101,
@@ -909,7 +1207,10 @@ export default [
     level: 31,
     price: 1076360,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 102,
@@ -918,7 +1219,10 @@ export default [
     level: 32,
     price: 1184000,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 103,
@@ -927,7 +1231,10 @@ export default [
     level: 33,
     price: 1302400,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 104,
@@ -936,7 +1243,10 @@ export default [
     level: 34,
     price: 1432640,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
   {
     id: 105,
@@ -945,6 +1255,9 @@ export default [
     level: 35,
     price: 1575900,
     type: "zoo_shop",
-    title: "Зоомагазин",
+    title: {
+      ru: "Зоомагазин",
+      en: "Pet Store"
+    },
   },
 ]
