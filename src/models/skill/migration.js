@@ -6,9 +6,10 @@ export default [
       en: "Motivational Podcast"
     },
     coins_price: 1,
-    description: {
-      ru: "Какое-то описание",
-      en: "Some desc"
+    description: 
+    {
+      ru: "Первый шаг на пути к самосовершенствованию",
+      en: "The first step on the path to self-improvement"
     },
     duration: 1,
     skill_id_required: null,
@@ -28,9 +29,18 @@ export default [
   // },
   {
     skill_id: 3,
-    name: "Офисные программы",
+    
+    name: {
+      ru: "Офисные программы",
+      en: "Office programs"
+    },
     coins_price: 1,
-    description: "Изучите базовые офисные программы для продвижения по работе",
+    description: 
+    {
+      ru: "Изучите базовые офисные программы для продвижения по работе",
+      en: "Study basic office programs for job promotion"
+    },
+    
     duration: 120,
     skill_id_required: 1,
     type: null,
@@ -38,7 +48,11 @@ export default [
   },
   {
     skill_id: 4,
-    name: "Онлайн обучение",
+    
+    name: {
+      ru: "Онлайн обучение",
+      en: "Online education"
+    },
     coins_price: 1,
     description: null,
     duration: 200,
@@ -48,7 +62,11 @@ export default [
   },
   {
     skill_id: 5,
-    name: "Тренинг по рекламе",
+    
+    name: {
+      ru: "Тренинг по рекламе",
+      en: "Advertising training"
+    },
     coins_price: 1,
     description: null,
     duration: 300,
@@ -58,7 +76,11 @@ export default [
   },
   {
     skill_id: 6,
-    name: "Курсы подбора персонала",
+    
+    name: {
+      ru: "Курсы подбора персонала",
+      en: "Recruitment courses"
+    },
     coins_price: 1,
     description: null,
     duration: 450,
@@ -68,10 +90,19 @@ export default [
   },
   {
     skill_id: 7,
-    name: "Статья о здоровом сне",
+    
+    name: {
+      ru: "Статья о здоровом сне",
+      en: "An article about healthy sleep"
+    },
+
     coins_price: 1,
-    description:
-      "Твой сон длится меньше на 30 минут, но ты чувствуешь себя все так же бодро",
+    description: 
+    {
+      ru: "Твой сон длится меньше на 30 минут, но ты чувствуешь себя все так же бодро",
+      en: "Your sleep lasts less than 30 minutes, but you still feel cheerful"
+    },
+    
     duration: 500,
     skill_id_required: null,
     type: null,
@@ -79,7 +110,11 @@ export default [
   },
   {
     skill_id: 8,
-    name: "Школа менеджмента",
+    
+    name: {
+      ru: "Школа менеджмента",
+      en: "School of Management"
+    },
     coins_price: 1,
     description: null,
     duration: 675,
@@ -89,7 +124,11 @@ export default [
   },
   {
     skill_id: 9,
-    name: "Бизнес тренинг",
+    
+    name: {
+      ru: "Бизнес тренинг",
+      en: "Business training"
+    },
     coins_price: 1,
     description: null,
     duration: 1050,
@@ -99,7 +138,11 @@ export default [
   },
   {
     skill_id: 10,
-    name: "Тренинг по автоматизации",
+   
+    name: {
+      ru: "Тренинг по автоматизации",
+      en: "Automation training"
+    },
     coins_price: 1,
     description: null,
     duration: 1500,
@@ -109,9 +152,17 @@ export default [
   },
   {
     skill_id: 12,
-    name: "Энциклопедия бодибилдинга",
-    coins_price: 1,
-    description: "Твое настроение после тренировки улучшается на 10% больше",
+    
+    name: {
+      ru: "Энциклопедия бодибилдинга",
+      en: "Encyclopedia of Bodybuilding"
+    },
+    coins_price: 1, description: 
+    {
+      ru: "Твое настроение после тренировки улучшается на 10% больше",
+      en: "Your mood improves by 10% more after a workout"
+    },
+    
     duration: 1800,
     skill_id_required: null,
     type: null,
@@ -119,7 +170,11 @@ export default [
   },
   {
     skill_id: 11,
-    name: "Экономическое образование",
+ 
+    name: {
+      ru: "Экономическое образование",
+      en: "Economic education"
+    },
     coins_price: 1,
     description: null,
     duration: 2200,
