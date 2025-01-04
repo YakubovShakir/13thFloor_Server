@@ -7,7 +7,10 @@ const restoreSchema = new mongoose.Schema({
 
 const schema = new mongoose.Schema({
   user_level_require: { type: Number, required: true },
-  name: { type: String, required: true, unique: true },
+  name: {
+    ru: { type: String, required: true, unique: true },
+    en: { type: String, required: true, unique: true }
+  },
   duration: { type: Number, required: true },
   instant_energy_restore: { type: restoreSchema },
   long_energy_restore: { type: restoreSchema },
