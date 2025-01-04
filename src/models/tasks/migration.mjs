@@ -1,8 +1,15 @@
 export default [
     {
         id: 1,
-        title: "Подписаться на 13 Floor News",
-        description: "Подпишись на наш канал, и забирай награду",
+        title: {
+            ru: "Подписаться на 13 Floor News",
+            en: "Subscribe to 13 Floor News"
+          },
+        description: {
+            ru: "Подпишись на наш канал, и забирай награду",
+            en: "Subscribe to our channel and collect the reward"
+          },
+        
         is_tg: true,
         channel_id: '-1002323702022',
         link: "https://t.me/Game_13thFloor",
@@ -11,8 +18,16 @@ export default [
     },
     {
         id: 2,
-        title: "Подписаться на Telegram-канал",
-        description: "Подпишись на наш канал, и забирай награду",
+        
+        title: {
+            ru: "Подписаться на Telegram-канал",
+            en: "Subscribe to the Telegram channel"
+          },
+
+          description: {
+            ru: "Подпишись на наш канал, и забирай награду",
+            en: "Subscribe to our channel and collect the reward"
+          },
         is_tg: true,
         channel_id: '-1002323702022',
         link: "https://t.me/Game_13thFloor",
@@ -21,8 +36,14 @@ export default [
     },
     {
         id: 3,
-        title: "Подписаться на Telegram-канал",
-        description: "Подпишись на наш канал, и забирай награду",
+        title: {
+            ru: "Подписаться на Telegram-канал",
+            en: "Subscribe to the Telegram channel"
+          },
+          description: {
+            ru: "Подпишись на наш канал, и забирай награду",
+            en: "Subscribe to our channel and collect the reward"
+          },
         is_tg: true,
         channel_id: '-1002323702022',
         link: "https://t.me/Game_13thFloor",
@@ -31,8 +52,14 @@ export default [
     },
     {
         id: 4,
-        title: "Подписаться на Telegram-канал",
-        description: "Подпишись на наш канал, и забирай награду",
+        title: {
+            ru: "Подписаться на Telegram-канал",
+            en: "Subscribe to the Telegram channel"
+          },
+          description: {
+            ru: "Подпишись на наш канал, и забирай награду",
+            en: "Subscribe to our channel and collect the reward"
+          },
         is_tg: true,
         channel_id: '-1002323702022',
         link: "https://t.me/Game_13thFloor",
@@ -41,8 +68,14 @@ export default [
     },
     {
         id: 5,
-        title: "Подписаться на Telegram-канал",
-        description: "Подпишись на наш канал, и забирай награду",
+        title: {
+            ru: "Подписаться на Telegram-канал",
+            en: "Subscribe to the Telegram channel"
+          },
+          description: {
+            ru: "Подпишись на наш канал, и забирай награду",
+            en: "Subscribe to our channel and collect the reward"
+          },
         is_tg: true,
         channel_id: '-1002323702022',
         link: "https://t.me/Game_13thFloor",
