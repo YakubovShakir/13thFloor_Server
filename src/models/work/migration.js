@@ -2,6 +2,7 @@ export default [
   {
     work_id: 1,
     name: "Курьер",
+    
     coins_price: 1,
     coins_in_hour: 60,
     energy_cost_in_hour: 50,
