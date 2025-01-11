@@ -1,8 +1,10 @@
 export default [
   {
     work_id: 1,
-    name: "Курьер",
-    
+    name: {
+      ru: "Курьер",
+      en: "Courier"
+    },
     coins_price: 1,
     coins_in_hour: 60,
     energy_cost_in_hour: 50,
@@ -14,7 +16,10 @@ export default [
   },
   {
     work_id: 2,
-    name: "Официант",
+    name: {
+      ru: "Официант",
+      en: "Waiter"
+    },
     coins_price: 1,
     coins_in_hour: 120,
     energy_cost_in_hour: 120,
@@ -26,7 +31,10 @@ export default [
   },
   {
     work_id: 3,
-    name: "Офис-менеджер",
+    name: {
+      ru: "Офис-менеджер",
+      en: "Office Manager"
+    },
     coins_price: 1,
     coins_in_hour: 180,
     energy_cost_in_hour: 180,
@@ -38,7 +46,10 @@ export default [
   },
   {
     work_id: 4,
-    name: "Администратор",
+    name: {
+      ru: "Администратор",
+      en: "Administrator"
+    },
     coins_price: 1,
     coins_in_hour: 240,
     energy_cost_in_hour: 240,
@@ -50,7 +61,10 @@ export default [
   },
   {
     work_id: 5,
-    name: "Менеджер по продажам",
+    name: {
+      ru: "Менеджер по продажам",
+      en: "Sales Manager"
+    },
     coins_price: 1,
     coins_in_hour: 300,
     energy_cost_in_hour: 300,
@@ -62,7 +76,10 @@ export default [
   },
   {
     work_id: 6,
-    name: "Менеджер по закупкам",
+    name: {
+      ru: "Менеджер по закупкам",
+      en: "Purchasing Manager"
+    },
     coins_price: 1,
     coins_in_hour: 350,
     energy_cost_in_hour: 350,
@@ -74,7 +91,10 @@ export default [
   },
   {
     work_id: 7,
-    name: "Маркетолог",
+    name: {
+      ru: "Маркетолог",
+      en: "Marketer"
+    },
     coins_price: 1,
     coins_in_hour: 400,
     energy_cost_in_hour: 400,
@@ -86,7 +106,10 @@ export default [
   },
   {
     work_id: 8,
-    name: "HR",
+    name: {
+      ru: "HR",
+      en: "HR"
+    },
     coins_price: 1,
     coins_in_hour: 420,
     energy_cost_in_hour: 420,
@@ -98,7 +121,10 @@ export default [
   },
   {
     work_id: 9,
-    name: "Менеджер проекта",
+    name: {
+      ru: "Менеджер проекта",
+      en: "Project Manager"
+    },
     coins_price: 1,
     coins_in_hour: 480,
     energy_cost_in_hour: 480,
@@ -110,7 +136,10 @@ export default [
   },
   {
     work_id: 10,
-    name: "Тимлид",
+    name: {
+      ru: "Тимлид",
+      en: "Team Lead"
+    },
     coins_price: 1,
     coins_in_hour: 540,
     energy_cost_in_hour: 540,
@@ -122,7 +151,10 @@ export default [
   },
   {
     work_id: 11,
-    name: "Зам директора",
+    name: {
+      ru: "Зам директора",
+      en: "Deputy Director"
+    },
     coins_price: 1,
     coins_in_hour: 600,
     energy_cost_in_hour: 600,
@@ -134,7 +166,10 @@ export default [
   },
   {
     work_id: 12,
-    name: "Директор",
+    name: {
+      ru: "Директор",
+      en: "Director"
+    },
     coins_price: 1,
     coins_in_hour: 660,
     energy_cost_in_hour: 660,
@@ -146,7 +181,10 @@ export default [
   },
   {
     work_id: 13,
-    name: "Партнер",
+    name: {
+      ru: "Партнер",
+      en: "Partner"
+    },
     coins_price: 1,
     coins_in_hour: 720,
     energy_cost_in_hour: 720,
@@ -158,7 +196,10 @@ export default [
   },
   {
     work_id: 14,
-    name: "CEO",
+    name: {
+      ru: "CEO",
+      en: "CEO"
+    },
     coins_price: 1,
     coins_in_hour: 780,
     energy_cost_in_hour: 780,
@@ -170,7 +211,10 @@ export default [
   },
   {
     work_id: 15,
-    name: "Миллионер",
+    name: {
+      ru: "Миллионер",
+      en: "Millionaire"
+    },
     coins_price: 1,
     coins_in_hour: 800,
     energy_cost_in_hour: 800,

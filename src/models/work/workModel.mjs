@@ -2,7 +2,10 @@ import mongoose from "mongoose"
 
 const workSchema = new mongoose.Schema({
   work_id: { type: Number, required: true, unique: true },
-  name: { type: String, unique: true, required: true },
+  name: {
+    ru:  { type: String, required: true },
+    en:  { type: String, required: true }
+  },
   coins_price: { type: Number, required: true },
   coins_in_hour: { type: Number, required: true },
   energy_cost_in_hour: { type: Number, required: true },
