@@ -122,7 +122,7 @@ export const getUserParameters = async (req, res) => {
         top: 5,
         pants: 6,
         shoes: 7,
-        accessories: [],
+        accessories: null,
       })
     }
 
@@ -130,8 +130,8 @@ export const getUserParameters = async (req, res) => {
     const top = await Clothing.findOne({ clothing_id: userClothing?.top })
     const pants = await Clothing.findOne({ clothing_id: userClothing?.pants })
     const shoes = await Clothing.findOne({ clothing_id: userClothing?.shoes })
-    const accessories = await Clothing.find({
-      clothing_id: { $in: userClothing?.accessories },
+    const accessories = await Clothing.findOne({
+      clothing_id: userClothing?.accessories,
     })
     
     const processShelf = async (userShelf) => {

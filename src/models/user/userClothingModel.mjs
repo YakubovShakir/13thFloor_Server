@@ -7,7 +7,7 @@ const userCurrentClothingSchema = new mongoose.Schema({
   top: { type: Number, default: null },
   pants: { type: Number, default: null },
   shoes: { type: Number, default: null },
-  accessories: [{ type: Number }],
+  accessories:{ type: Number, default: null },
 })
 
 const UserClothing = mongoose.model("user_clothing", userCurrentClothingSchema)

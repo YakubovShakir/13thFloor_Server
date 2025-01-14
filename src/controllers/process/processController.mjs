@@ -55,6 +55,7 @@ export const stopActiveProcess = async (req, res) => {
   if (!user) return res.status(404).json({ error: "User not found!" })
 
   const activeProcess = await process.findOne({ id: userId, active: true })
+  console.log(userId)
   if (!activeProcess)
     return res.status(404).json({ error: "Active Process not found!" })
 

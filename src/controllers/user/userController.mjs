@@ -180,7 +180,7 @@ export const createUserPersonage = async (req, res) => {
         top: 5,
         pants: 6,
         shoes: 7,
-        accessories: [],
+        accessories: null,
       })
       await userClothing.save()
     }
@@ -229,25 +229,6 @@ export const getShopItems = async (req, res) => {
   }
 }
 
-// export const equipClothes = async (req, res) => {
-//   try {
-//     const userId = parseInt(req.params.id)
-
-//     const userInventory = await UserCurrentInventory.findOne({ user_id: userId })
-//     const { clothes } = userInventory
-//     console.log(clothes)
-//     const clothingClean = (await Clothing.find({}, { _id: false }, { sort: { tier: 1 } })).filter(item => !clothes.map(c => c.id).includes(item.clothing_id))
-//     const shelf = await ShelfItems.find({}, { _id: false }, { sort: { _id: 1 } })
-
-//     return res.status(200).json({
-//       clothing: clothingClean,
-//       shelf
-//     })
-//   } catch(err) {
-//     console.log("Failed to fetch shop items", err)
-//   }
-// }
-
 export const getInventoryItems = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
@@ -293,7 +274,7 @@ export const getCurrentClothes = async (req, res) => {
         userClothing.top,
         userClothing.pants,
         userClothing.shoes,
-        ...userClothing.accessories,
+        userClothing.accessory,
       ]
 
       const clothingElements = await Clothing.find({
@@ -309,10 +290,12 @@ export const getCurrentClothes = async (req, res) => {
         shoes: clothingElements.find(
           (el) => el.clothing_id === userClothing.shoes
         ),
-        accessories: clothingElements.filter((el) =>
+        accessories: clothingElements.find((el) =>
           userClothing.accessories.includes(el.clothing_id)
         ),
       }
+
+      console.log(reponse)
 
       return res.status(200).json(response)
     }
@@ -422,62 +405,24 @@ export const handleClothesEquip = async (req, res) => {
       if (isClothingReal && doesUserHaveIt) {
         let userParams = await UserParameters.findOne({ id: userId })
         console.log(userParams)
-        if (type.toLowerCase() !== "accessory") {
-          const currentClothingId = (
-            await UserClothing.findOne({ user_id: userId })
-          )[type.toLowerCase()]
-          const currentClothing = currentClothingId
-            ? await Clothing.findOne(
-                { clothing_id: currentClothingId },
-                { respect: 1 }
-              )
-            : null
-          const currentClothingRespect = currentClothing.respect
-          console.log(currentClothingRespect)
-          // update respect
-          userParams.respect =
-            userParams.respect - currentClothingRespect + isClothingReal.respect
-          await userParams.save()
-          await UserClothing.updateOne(
-            { user_id: userId },
-            { $set: { [type.toLowerCase()]: parseInt(clothing_id) } }
-          )
-        } else {
-          // accessories
-          const currentClothingIds = (
-            await UserClothing.findOne({ user_id: userId })
-          )["accessories"]
-          console.log(currentClothingIds)
-          if (!currentClothingIds.includes(clothing_id)) {
-            const currentClothing = currentClothingIds
-              ? await Clothing.find(
-                  { clothing_id: { $in: currentClothingIds } },
-                  { respect: 1 }
-                )
-              : null
-            const currentClothingRespect = currentClothing ? currentClothing.respect : 0
-              ? currentClothing.reduce((acc, curr) => {
-                  acc += curr.respect
-                  return acc
-                }, 0)
-              : 0
-
-            console.log(currentClothingRespect)
-
-            // update respect
-            userParams.respect =
-              userParams.respect -
-              currentClothingRespect +
-              isClothingReal.respect
-            await userParams.save()
-            await UserClothing.updateOne(
-              { user_id: userId },
-              { $addToSet: { accessories: parseInt(clothing_id) } }
+        const currentClothingId = (
+          await UserClothing.findOne({ user_id: userId })
+        )[type.toLowerCase()]
+        const currentClothing = currentClothingId
+          ? await Clothing.findOne(
+              { clothing_id: currentClothingId },
+              { respect: 1 }
             )
-          } else {
-            return res.status(403).json({ error: true })
-          }
-        }
+          : null
+        const currentClothingRespect = currentClothing?.respect || 0
+        console.log(currentClothingRespect)
+        userParams.respect =
+          userParams.respect - currentClothingRespect + isClothingReal.respect
+        await userParams.save()
+        await UserClothing.updateOne(
+          { user_id: userId },
+          { $set: { [type === 'Accessory' ? 'accessories' : type.toLowerCase()]: parseInt(clothing_id) } }
+        )
       }
     }
 
@@ -491,8 +436,9 @@ export const handleClothesEquip = async (req, res) => {
       if (doesUserHaveIt) {
         const shelfItem = await ShelfItems.findOne({ id: clothing_id })
         console.log(shelfItem)
-        const userParam = await UserParameters.findOne({ id: userId }) 
-        userParam.respect += shelfItem && shelfItem.respect ? shelfItem.respect : 0
+        const userParam = await UserParameters.findOne({ id: userId })
+        userParam.respect +=
+          shelfItem && shelfItem.respect ? shelfItem.respect : 0
         const currentUser = await User.findOne({ id: userId })
         const currentShelf = { ...currentUser.shelf, [type]: clothing_id }
 
@@ -549,11 +495,14 @@ export const handleShelfUnequip = async (req, res) => {
     const user = await User.findOne({ id: userId })
     const currentShelfItemIdByType = user[`shelf.${type}`]
 
-    if(!currentShelfItemIdByType) {
+    if (!currentShelfItemIdByType) {
       return res.status(403).json({ error: true })
     }
 
-    const shelfItem = await ShelfItemModel.findOne({ id: currentShelfItemIdByType, type })
+    const shelfItem = await ShelfItemModel.findOne({
+      id: currentShelfItemIdByType,
+      type,
+    })
     const userParams = await UserParameters.findOne({ id: userId })
     console.log(shelfItem)
     await User.updateOne({ id: userId }, { $set: { [`shelf.${type}`]: null } })
