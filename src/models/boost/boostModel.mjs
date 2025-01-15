@@ -2,9 +2,15 @@ import mongoose from "mongoose"
 
 const boostsSchema = new mongoose.Schema({
   boost_id: { type: Number, required: true, unique: true },
-  name: { type: String, unique: true, required: true },
+  name: {
+    ru: { type: String, unique: true },
+    en: { type: String, unique: true }
+  },
   stars_price: { type: Number, required: true },
-  description: { type: String },
+  description: {
+    ru: { type: String, unique: true },
+    en: { type: String, unique: true }
+  },
   link: { type: String },
   duration: { type: Number },
   type: { type: String },
