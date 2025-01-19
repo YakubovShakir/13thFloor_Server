@@ -39,6 +39,7 @@ import CompletedTasks from "./models/tasks/completedTask.mjs"
 import Tasks from "./models/tasks/taskModel.mjs"
 import TasksMigration from './models/tasks/migration.mjs'
 import UserSkill from "./models/user/userSkillModel.mjs"
+import UserProcess from './models/process/processModel.mjs'
 
 dotenv.config()
 
@@ -83,6 +84,7 @@ async function main() {
     deleteUserInventories(),
     deleteUserClothing(),
     deleteUsers(),
+    deleteUserProcesses(),
     deleteShelfItems(),
     deleteInvestments(),
     deleteTasks()
@@ -109,6 +111,10 @@ async function deleteInvestments() {
       await investments.save()
     })
   )
+}
+
+async function deleteUserProcesses() {
+  await UserProcess.deleteMany()
 }
 
 async function deleteShelfItems() {
