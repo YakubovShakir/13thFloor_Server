@@ -10,7 +10,7 @@ const skillSchema = new mongoose.Schema({
     ru: { type: String, required: false },
     en: { type: String, required: false }
   },
-  link: { type: String, unique: true },
+  link: { type: String },
   duration: { type: Number },
   skill_id_required: { type: Number },
   type: { type: String },

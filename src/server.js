@@ -158,7 +158,8 @@ async function deleteAndInsertFood() {
 }
 
 async function deleteAndInsertSkill() {
-  await Skill.deleteMany()
+  await Skill.syncIndexes()
+  await Skill.deleteMany({})
   await Promise.all(
     SkillItems.map(async (item) => {
       const skill = new Skill({ ...item, effect: {} })
