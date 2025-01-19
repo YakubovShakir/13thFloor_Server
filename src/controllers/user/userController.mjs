@@ -114,6 +114,7 @@ export const getUser = async (req, res) => {
 
 export const createUserPersonage = async (req, res) => {
   try {
+    //
     const userId = parseInt(req.params.id)
     const { race, gender, name } = req.body
 
@@ -146,8 +147,11 @@ export const createUserPersonage = async (req, res) => {
     let userParam = await UserParameters.findOne({ id: userId })
     if (userParam) {
       userParam.work_id = 1
-      await userParam.save()
+    } else {
+      userParam = new UserParameters({ id: userId })
     }
+    await userParam.save()
+
     if (gameCenterLevel > 0) {
       const investment = await Investments.findOne({
         type: "game_center",
