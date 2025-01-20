@@ -15,7 +15,9 @@ import {
   buyInvestmentLevel,
   claimInvestment,
   getUserTasks,
-  claimUserTask
+  claimUserTask,
+  handleTonWalletConnect,
+  handleTonWalletDisconnect
 } from "../../controllers/user/userController.mjs"
 import { getUserParameters } from "../../controllers/user/userParametersController.mjs"
 
@@ -30,6 +32,9 @@ router.patch("/updatePrestart/:id", updateUserPrestart)
 router.post("/personage/create/:id", createUserPersonage)
 
 router.get("/:id/current-clothes", getCurrentClothes)
+
+router.post("/:userId/wallet/connect", handleTonWalletConnect)
+router.post("/:userId/wallet/disconnect", handleTonWalletDisconnect)
 
 router.get("/:userId/inventory/clothes/equip/:id")
 router.get("/:userId/inventory/shelf/equip/:id")

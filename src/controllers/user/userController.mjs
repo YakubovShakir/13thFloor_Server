@@ -955,3 +955,36 @@ export const claimUserTask = async (req, res) => {
     return res.status(500).json({ error: true })
   }
 }
+
+export const handleTonWalletConnect = async (req, res) => {
+  const { tonWalletAddress } = req.body
+  const userId = parseInt(req.params.userId)
+
+  if(!userId || !tonWalletAddress || tonWalletAddress === '') {
+    return res.status(400).json({ error: true })
+  }
+
+  try {
+    await User.updateOne({ id: userId }, { $set: { tonWalletAddress } })
+  } catch(err) {
+    return res.status(500).json({ error: true })
+  }
+
+  return res.status(400).json({ error: false })
+}
+
+export const handleTonWalletDisconnect = async (req, res) => {
+  const userId = parseInt(req.params.userId)
+
+  if(!userId || !tonWalletAddress || tonWalletAddress === '') {
+    return res.status(400).json({ error: true })
+  }
+
+  try {
+    await User.updateOne({ id: userId }, { $set: { tonWalletAddress: null } })
+  } catch(err) {
+    return res.status(500).json({ error: true })
+  }
+
+  return res.status(400).json({ error: false })
+}

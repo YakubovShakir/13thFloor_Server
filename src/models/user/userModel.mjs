@@ -44,7 +44,8 @@ const schema = new mongoose.Schema(
       game_center: { type: Boolean, default: false },
       coffee_shop: { type: Boolean, default: false },
       zoo_shop: { type: Boolean, default: false },
-    }
+    },
+    tonWalletAddress: { type: String, default: null, unique: true, trim: true }
   },
   { timestamps: true }
 )
