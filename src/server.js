@@ -211,6 +211,7 @@ async function deleteUserClothing() {
 }
 async function deleteUsers() {
   await User.deleteMany()
+  await User.syncIndexes()
   await UserParameters.deleteMany()
   await UserSkill.deleteMany()
 }
