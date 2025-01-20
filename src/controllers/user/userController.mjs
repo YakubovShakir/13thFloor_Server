@@ -965,12 +965,18 @@ export const handleTonWalletConnect = async (req, res) => {
   }
 
   try {
+    const userWithWallet = await User.findOne({ tonWalletAddress })
+    
+    if(userWithWallet) {
+      return res.status(403).json({ error: true })
+    }
+
     await User.updateOne({ id: userId }, { $set: { tonWalletAddress } })
+
+    return res.status(200).json({ error: false })
   } catch(err) {
     return res.status(500).json({ error: true })
   }
-
-  return res.status(400).json({ error: false })
 }
 
 export const handleTonWalletDisconnect = async (req, res) => {
