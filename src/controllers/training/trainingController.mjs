@@ -19,6 +19,7 @@ export const getUserTrainingParameters = async (req, res) => {
     if (tp) return res.status(200).json({ training_parameters: tp })
     else return res.status(404).json({ error: "tp not found" })
   } catch (e) {
+    console.log('From training controller')
     console.log("Error while get parameters ", e)
   }
 }

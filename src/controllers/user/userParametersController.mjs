@@ -51,16 +51,21 @@ const gamecenterLevelMap = {
 
 export const getUserParameters = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
-    if (!userId) return res.status(400).json({ error: "bad request" })
+    const userId = parseInt(req.params.id);
+    if (!userId) {
+      return res.status(400).json({ error: "bad request" });
+    }
 
-    let user = await Users.findOne({ id: userId })
+    // First get or create user
+    let user = await Users.findOne({ id: userId });
+    const refs = await Referal.countDocuments({ refer_id: userId });
 
-    const refs = await Referal.countDocuments({ refer_id: userId })
-    
     if (!user) {
-      console.log("Registering user with ID", userId)
-      user = await new User({
+      console.log("Registering user with ID", userId);
+      const gameCenterLevel = gamecenterLevelMap[refs.toString()] || 0;
+      
+      // Create user document
+      const userData = {
         id: userId,
         prestart: true,
         personage: {},
@@ -78,7 +83,7 @@ export const getUserParameters = async (req, res) => {
           flag: null,
         },
         investment_levels: {
-          game_center: gamecenterLevelMap[refs.toString()] || 0,
+          game_center: gameCenterLevel,
           coffee_shop: 0,
           zoo_shop: 0
         },
@@ -87,79 +92,102 @@ export const getUserParameters = async (req, res) => {
           coffee_shop: false,
           zoo_shop: false
         }
-      }).save()
+      };
 
-      const gameCenterLevel = gamecenterLevelMap[refs.toString()] || 0
-      if(gameCenterLevel > 0) {
-        const investment = await Investments.findOne({ type: 'game_center', level: gameCenterLevel })
-        await new UserLaunchedInvestments({
-          user_id: userId,
-          investment_id: investment.id,
-          to_claim: investment.coins_per_hour,
-        }).save()
+      try {
+        user = await Users.create(userData); // Use create instead of new...save()
+      } catch (err) {
+        if (err.code === 11000) { // Handle potential race condition
+          user = await Users.findOne({ id: userId });
+        } else {
+          throw err;
+        }
+      }
+
+      // Handle game center investment if needed
+      if (gameCenterLevel > 0) {
+        const investment = await Investments.findOne({ 
+          type: 'game_center', 
+          level: gameCenterLevel 
+        });
+        
+        if (investment) {
+          await UserLaunchedInvestments.create({
+            user_id: userId,
+            investment_id: investment.id,
+            to_claim: investment.coins_per_hour,
+          });
+        }
       }
     }
 
-    let parameters = await UserParameters.findOne({ id: userId }, { _id: 0 })
-
+    // Get or create user parameters
+    let parameters = await UserParameters.findOne({ id: userId });
     if (!parameters) {
-      parameters = await UserParameters.create({ id: userId })
+      parameters = await UserParameters.create({ 
+        id: userId,
+        work_id: 1
+      });
     }
-    parameters.hasWallet = user.tonWalletAddress !== null 
+    parameters.hasWallet = user.tonWalletAddress !== null;
+    await parameters.save();
 
-    let inventory = await UserCurrentInventory.findOne({ user_id: userId })
-    let userClothing = await UserClothing.findOne({ user_id: userId })
-    parameters.work_id = 1
-    await parameters.save()
-
+    // Get or create inventory
+    let inventory = await UserCurrentInventory.findOne({ user_id: userId });
     if (!inventory) {
-      await prebuildInitialInventory(userId)
+      inventory = await prebuildInitialInventory(userId);
     }
 
+    // Get or create clothing
+    let userClothing = await UserClothing.findOne({ user_id: userId });
     if (!userClothing) {
-      await UserClothing.create({
+      userClothing = await UserClothing.create({
         user_id: userId,
         hat: 4,
         top: 5,
         pants: 6,
         shoes: 7,
         accessories: null,
-      })
+      });
     }
 
-    const hat = await Clothing.findOne({ clothing_id: userClothing?.hat })
-    const top = await Clothing.findOne({ clothing_id: userClothing?.top })
-    const pants = await Clothing.findOne({ clothing_id: userClothing?.pants })
-    const shoes = await Clothing.findOne({ clothing_id: userClothing?.shoes })
-    const accessories = await Clothing.findOne({
-      clothing_id: userClothing?.accessories,
-    })
-    
+    // Fetch clothing items in parallel
+    const [hat, top, pants, shoes, accessories] = await Promise.all([
+      Clothing.findOne({ clothing_id: userClothing?.hat }),
+      Clothing.findOne({ clothing_id: userClothing?.top }),
+      Clothing.findOne({ clothing_id: userClothing?.pants }),
+      Clothing.findOne({ clothing_id: userClothing?.shoes }),
+      Clothing.findOne({ clothing_id: userClothing?.accessories }),
+    ]);
+
+    // Process shelf items
     const processShelf = async (userShelf) => {
       const entries = await Promise.all(
         Object.entries(userShelf).map(async ([key, value]) => {
-          const item = await ShelfItemModel.findOne({ id: value })
-          return [key, item]
+          if (!value) return [key, null];
+          const item = await ShelfItemModel.findOne({ id: value });
+          return [key, item];
         })
-      )
-      return Object.fromEntries(entries)
-    }
+      );
+      return Object.fromEntries(entries);
+    };
 
-    const shelf = await processShelf(user.shelf)
+    const shelf = await processShelf(user.shelf);
+    const personage = Object.keys(user.personage).length > 0 ? user.personage : null;
 
-    const personage =
-      Object.keys(user.personage).length > 0 ? user.personage : null
+    return res.status(200).json({
+      parameters,
+      personage,
+      inventory,
+      clothing: userClothing && { hat, top, pants, shoes, accessories },
+      shelf,
+    });
 
-    return res
-      .status(200)
-      .json({
-        parameters,
-        personage,
-        inventory,
-        clothing: userClothing && { hat, top, pants, shoes, accessories },
-        shelf,
-      })
-  } catch (e) {
-    console.log("Error while get parameters ", e)
+  } catch (error) {
+    console.error('Error in getUserParameters:', error);
+    return res.status(500).json({ 
+      error: true,
+      message: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
+    });
   }
-}
+};

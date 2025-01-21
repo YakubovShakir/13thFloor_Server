@@ -37,6 +37,7 @@ const startTraining = async (userId) => {
 
     return { status: 200, data: { status: "ok" } }
   } catch (e) {
+    console.log('From start training')
     console.log("Error while get parameters ", e)
   }
 }
