@@ -945,7 +945,7 @@ export const claimUserTask = async (req, res) => {
       const work = await Work.findOne({ id: userParam.work_id })
       const reward = task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
       userParam.coins += reward
-      userParam.total_earned += reward 
+
       await userParam.save()
     } else {
       return res.status(404).json({ ok: true })
