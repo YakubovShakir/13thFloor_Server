@@ -875,6 +875,7 @@ export const claimInvestment = async (req, res) => {
     }).save()
 
     userParams.coins += investmentToClaim.to_claim
+    userParams.total_earned += investmentToClaim.to_claim
     investmentToClaim.claimed = true
 
     await userParams.save()
@@ -942,8 +943,9 @@ export const claimUserTask = async (req, res) => {
 
       await new CompletedTasks({ user_id: userId, task_id: task.id }).save()
       const work = await Work.findOne({ id: userParam.work_id })
-      userParam.coins +=
-        task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
+      const reward = task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
+      userParam.coins += reward
+      userParam.total_earned += reward 
       await userParam.save()
     } else {
       return res.status(404).json({ ok: true })
@@ -982,7 +984,7 @@ export const handleTonWalletConnect = async (req, res) => {
 export const handleTonWalletDisconnect = async (req, res) => {
   const userId = parseInt(req.params.userId)
 
-  if(!userId || !tonWalletAddress || tonWalletAddress === '') {
+  if(!userId) {
     return res.status(400).json({ error: true })
   }
 

@@ -105,6 +105,7 @@ export const getUserParameters = async (req, res) => {
     if (!parameters) {
       parameters = await UserParameters.create({ id: userId })
     }
+    parameters.hasWallet = user.tonWalletAddress !== null 
 
     let inventory = await UserCurrentInventory.findOne({ user_id: userId })
     let userClothing = await UserClothing.findOne({ user_id: userId })

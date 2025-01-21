@@ -12,7 +12,7 @@ export default [
     hungry_cost_in_hour: 4,
     skill_id_required: null,
     respect_required: 50,
-    link: "https://13floorgame.ru/images/works/courier.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BA%D1%83%D1%80%D1%8C%D0%B5%D1%80.png",
   },
   {
     work_id: 2,
