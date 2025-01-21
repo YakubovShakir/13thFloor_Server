@@ -8,7 +8,7 @@ export default [
   {
     level: 2,
     energy_capacity: 1000,
-    required_earned: 100,
+    required_earned: 10,
     sleep_duration: 45,
   },
   {
