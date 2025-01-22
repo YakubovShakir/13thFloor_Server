@@ -29,10 +29,12 @@ const updateProcessTime = async (
 
     await process.save()
   } else {
+    console.log('here')
     if (seconds - 1 > 0) {
       process.seconds -= 1
       await process.save()
     } else {
+      console.log('deleting process')
       await process.deleteOne({ _id: process?._id })
       if (durationCallback) await durationCallback() // Минутный тик при котором должно что-то произойти
       if (endCallback) await endCallback()

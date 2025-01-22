@@ -25,7 +25,7 @@ const startTraining = async (userId) => {
     const cond =
       user?.energy >= trainingEnergySpend * training?.duration &&
       user?.hungry >= trainingHungrySpend * training?.duration
-    console.log(trainingEnergySpend, trainingHungrySpend)
+
     if (!cond)
       return { status: 400, data: { error: "Not enough energy or hungry" } }
 

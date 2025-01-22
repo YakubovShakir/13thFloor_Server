@@ -41,13 +41,14 @@ export const startProcess = async (req, res) => {
         result = await buyFood(userId, foodId)
         break
     }
-    return res.status(result?.status).json(result?.data)
+    return res.status(result?.status).json({...result?.data})
   } catch (e) {
     console.log("Error in startProcess - ", e)
   }
 }
 
 export const stopActiveProcess = async (req, res) => {
+  console.log('Stopping process')
   const userId = parseInt(req.query.id)
   if (!userId) return res.status(400).json({ error: "<id> is required!" })
 
