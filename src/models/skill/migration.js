@@ -12,6 +12,7 @@ export default [
       en: "The first step on the path to self-improvement"
     },
     duration: 1,
+    requiredLevel: 1,
     skill_id_required: null,
     type: null,
     link: "https://13floorgame.ru/images/skills/podcast.png",
@@ -42,6 +43,7 @@ export default [
     },
     
     duration: 120,
+    requiredLevel: 1,
     skill_id_required: 1,
     type: null,
     link: "https://13floorgame.ru/images/skills/officePrograms.png",
@@ -54,6 +56,7 @@ export default [
       en: "Online education"
     },
     coins_price: 1,
+    requiredLevel: 1,
     description: null,
     duration: 200,
     skill_id_required: 3,
@@ -68,6 +71,7 @@ export default [
       en: "Advertising training"
     },
     coins_price: 1,
+    requiredLevel: 1,
     description: null,
     duration: 300,
     skill_id_required: 4,
@@ -82,6 +86,7 @@ export default [
       en: "Recruitment courses"
     },
     coins_price: 1,
+    requiredLevel: 1,
     description: null,
     duration: 450,
     skill_id_required: 5,
@@ -104,6 +109,7 @@ export default [
     },
     
     duration: 500,
+    requiredLevel: 1,
     skill_id_required: null,
     type: null,
     link: "https://13floorgame.ru/images/skills/sleepMode.png",
@@ -116,6 +122,7 @@ export default [
       en: "School of Management"
     },
     coins_price: 1,
+    requiredLevel: 1,
     description: null,
     duration: 675,
     skill_id_required: 6,
@@ -130,6 +137,7 @@ export default [
       en: "Business training"
     },
     coins_price: 1,
+    requiredLevel: 1,
     description: null,
     duration: 1050,
     skill_id_required: 8,
@@ -144,6 +152,7 @@ export default [
       en: "Automation training"
     },
     coins_price: 1,
+    requiredLevel: 1,
     description: null,
     duration: 1500,
     skill_id_required: 9,
@@ -164,6 +173,7 @@ export default [
     },
     
     duration: 1800,
+    requiredLevel: 1,
     skill_id_required: null,
     type: null,
     link: "https://13floorgame.ru/images/skills/bodybuilding.png",
@@ -176,6 +186,7 @@ export default [
       en: "Economic education"
     },
     coins_price: 1,
+    requiredLevel: 1,
     description: null,
     duration: 2200,
     skill_id_required: 10,
