@@ -534,7 +534,7 @@ export const buyItemsForCoins = async (req, res) => {
       if (userCurrentInventory.clothes.find((item) => item.id === id))
         return res.status(401).json({ ok: false })
       product = await Clothing.findOne({ clothing_id: id })
-      if (product && user.coins >= product.price) {
+      if (product && user.coins >= product.price && user.level >= product.tier) {
         await UserParameters.updateOne(
           { id: userId },
           { $inc: { coins: -product.price } }
