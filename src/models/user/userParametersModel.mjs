@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import migration from "../level/migration"
 
 const userParameterSchema = new mongoose.Schema({
   id: { type: Number, required: true, unique: true },
@@ -6,7 +7,7 @@ const userParameterSchema = new mongoose.Schema({
   experience: { type: Number, default: 0 },
   coins: { type: Number, default: 0 },
   total_earned: { type: Number, default: 0 },
-  energy_capacity: { type: Number, default: 150 },
+  energy_capacity: { type: Number, default: migration.find(level => level.level === 1).energy_capacity },
   energy: { type: Number, default: 150 },
   hungry: { type: Number, default: 100 },
   mood: { type: Number, default: 100 },
