@@ -1606,7 +1606,7 @@ export default [
     male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Accessories/ChokerCharm-m-icon.png",
     female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Accessories/ChokerCharm-f-icon.png",
     price: 8000,
-    respect: 0,
+    respect: 3500,
     tier: 3,
   },
   {
