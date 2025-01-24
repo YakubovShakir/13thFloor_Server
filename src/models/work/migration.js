@@ -22,13 +22,13 @@ export default [
       en: "Waiter"
     },
     requiredLevel: 2,
-    coins_price: 1,
+    coins_price: 5,
     coins_in_hour: 120,
     energy_cost_in_hour: 300,
     mood_cost_in_hour: 80,
     hungry_cost_in_hour: 55,
     skill_id_required: 1,
-    respect_required: 150,
+    respect_required: 50,
     link: "https://13floorgame.ru/images/works/waiter.png",
   },
   {
@@ -38,13 +38,13 @@ export default [
       en: "Office Manager"
     },
     requiredLevel: 3,
-    coins_price: 1,
+    coins_price: 30,
     coins_in_hour: 180,
     energy_cost_in_hour: 480,
     mood_cost_in_hour: 33,
     hungry_cost_in_hour: 60,
     skill_id_required: 3,
-    respect_required: 200,
+    respect_required: 100,
     link: "https://13floorgame.ru/images/works/officeManager.png",
   },
   {
@@ -54,13 +54,13 @@ export default [
       en: "Administrator"
     },
     requiredLevel: 4,
-    coins_price: 1,
+    coins_price: 100,
     coins_in_hour: 240,
     energy_cost_in_hour: 650,
     mood_cost_in_hour: 38,
     hungry_cost_in_hour: 63,
     skill_id_required: null,
-    respect_required: 400,
+    respect_required: 250,
     link: "https://13floorgame.ru/images/works/admin.png",
   },
   {
@@ -70,7 +70,7 @@ export default [
       en: "Sales Manager"
     },
     requiredLevel: 5,
-    coins_price: 1,
+    coins_price: 300,
     coins_in_hour: 300,
     energy_cost_in_hour: 800,
     mood_cost_in_hour: 40,
@@ -86,7 +86,7 @@ export default [
       en: "Purchasing Manager"
     },
     requiredLevel: 6,
-    coins_price: 1,
+    coins_price: 700,
     coins_in_hour: 350,
     energy_cost_in_hour: 950,
     mood_cost_in_hour: 45,
@@ -102,7 +102,7 @@ export default [
       en: "Marketer"
     },
     requiredLevel: 7,
-    coins_price: 1,
+    coins_price: 900,
     coins_in_hour: 400,
     energy_cost_in_hour: 1200,
     mood_cost_in_hour: 47,
@@ -118,7 +118,7 @@ export default [
       en: "HR"
     },
     requiredLevel: 8,
-    coins_price: 1,
+    coins_price: 1000,
     coins_in_hour: 420,
     energy_cost_in_hour: 1500,
     mood_cost_in_hour: 49,
@@ -134,7 +134,7 @@ export default [
       en: "Project Manager"
     },
     requiredLevel: 9,
-    coins_price: 1,
+    coins_price: 1200,
     coins_in_hour: 480,
     energy_cost_in_hour: 1800,
     mood_cost_in_hour: 51,
@@ -150,7 +150,7 @@ export default [
       en: "Team Lead"
     },
     requiredLevel: 10,
-    coins_price: 1,
+    coins_price: 1300,
     coins_in_hour: 540,
     energy_cost_in_hour: 2000,
     mood_cost_in_hour: 55,
@@ -166,7 +166,7 @@ export default [
       en: "Deputy Director"
     },
     requiredLevel: 11,
-    coins_price: 1,
+    coins_price: 1800,
     coins_in_hour: 600,
     energy_cost_in_hour: 2200,
     mood_cost_in_hour: 55,
@@ -182,7 +182,7 @@ export default [
       en: "Director"
     },
     requiredLevel: 12,
-    coins_price: 1,
+    coins_price: 2500,
     coins_in_hour: 660,
     energy_cost_in_hour: 2600,
     mood_cost_in_hour: 58,
@@ -199,7 +199,7 @@ export default [
     },
     requiredLevel: 13,
     coins_price: 1,
-    coins_in_hour: 720,
+    coins_in_hour: 3800,
     energy_cost_in_hour: 2800,
     mood_cost_in_hour: 60,
     hungry_cost_in_hour: 85,
@@ -214,7 +214,7 @@ export default [
       en: "CEO"
     },
     requiredLevel: 14,
-    coins_price: 1,
+    coins_price: 5000,
     coins_in_hour: 780,
     energy_cost_in_hour: 3500,
     mood_cost_in_hour: 63,
@@ -230,7 +230,7 @@ export default [
       en: "Millionaire"
     },
     requiredLevel: 15,
-    coins_price: 1,
+    coins_price: 10000,
     coins_in_hour: 800,
     energy_cost_in_hour: 3800,
     mood_cost_in_hour: 70,

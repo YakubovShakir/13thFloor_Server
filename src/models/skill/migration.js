@@ -5,7 +5,7 @@ export default [
       ru: "Мотивирующий подкаст",
       en: "Motivational Podcast"
     },
-    coins_price: 1,
+    coins_price: 2,
     description: 
     {
       ru: "Первый шаг на пути к самосовершенствованию",
@@ -35,7 +35,7 @@ export default [
       ru: "Офисные программы",
       en: "Office programs"
     },
-    coins_price: 1,
+    coins_price: 10,
     description: 
     {
       ru: "Изучите базовые офисные программы для продвижения по работе",
@@ -43,7 +43,7 @@ export default [
     },
     
     duration: 3,
-    requiredLevel: 1,
+    requiredLevel: 2,
     skill_id_required: 1,
     type: null,
     link: "https://13floorgame.ru/images/skills/officePrograms.png",
@@ -55,8 +55,8 @@ export default [
       ru: "Онлайн обучение",
       en: "Online education"
     },
-    coins_price: 1,
-    requiredLevel: 1,
+    coins_price: 20,
+    requiredLevel: 3,
     description: null,
     duration: 10,
     skill_id_required: 3,
@@ -70,8 +70,8 @@ export default [
       ru: "Тренинг по рекламе",
       en: "Advertising training"
     },
-    coins_price: 1,
-    requiredLevel: 1,
+    coins_price: 50,
+    requiredLevel: 6,
     description: null,
     duration: 15,
     skill_id_required: 4,
@@ -85,8 +85,8 @@ export default [
       ru: "Курсы подбора персонала",
       en: "Recruitment courses"
     },
-    coins_price: 1,
-    requiredLevel: 1,
+    coins_price: 100,
+    requiredLevel: 7,
     description: null,
     duration: 45,
     skill_id_required: 5,
@@ -101,7 +101,7 @@ export default [
       en: "An article about healthy sleep"
     },
 
-    coins_price: 1,
+    coins_price: 1000,
     description: 
     {
       ru: "Твой сон длится меньше на 30 минут, но ты чувствуешь себя все так же бодро",
@@ -121,8 +121,8 @@ export default [
       ru: "Школа менеджмента",
       en: "School of Management"
     },
-    coins_price: 1,
-    requiredLevel: 1,
+    coins_price: 300,
+    requiredLevel: 9,
     description: null,
     duration: 200,
     skill_id_required: 6,
@@ -136,8 +136,8 @@ export default [
       ru: "Бизнес тренинг",
       en: "Business training"
     },
-    coins_price: 1,
-    requiredLevel: 1,
+    coins_price: 500,
+    requiredLevel: 10,
     description: null,
     duration: 350,
     skill_id_required: 8,
@@ -151,8 +151,8 @@ export default [
       ru: "Тренинг по автоматизации",
       en: "Automation training"
     },
-    coins_price: 1,
-    requiredLevel: 1,
+    coins_price: 1000,
+    requiredLevel: 12,
     description: null,
     duration: 600,
     skill_id_required: 9,
@@ -166,7 +166,8 @@ export default [
       ru: "Энциклопедия бодибилдинга",
       en: "Encyclopedia of Bodybuilding"
     },
-    coins_price: 1, description: 
+    coins_price: 1000,
+     description: 
     {
       ru: "Твое настроение после тренировки улучшается на 10% больше",
       en: "Your mood improves by 10% more after a workout"
@@ -185,8 +186,8 @@ export default [
       ru: "Экономическое образование",
       en: "Economic education"
     },
-    coins_price: 1,
-    requiredLevel: 1,
+    coins_price: 10000,
+    requiredLevel: 13,
     description: null,
     duration: 2000,
     skill_id_required: 10,
