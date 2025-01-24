@@ -524,7 +524,7 @@ export const buyItemsForCoins = async (req, res) => {
     const userId = parseInt(req.params.id)
     const { productType, id } = req.body
 
-    const user = await UserParameters.findOne({ id: userId }, { coins: 1 })
+    const user = await UserParameters.findOne({ id: userId })
     const userCurrentInventory = await UserCurrentInventory.findOne({
       user_id: userId,
     })
@@ -567,6 +567,7 @@ export const buyItemsForCoins = async (req, res) => {
             { $addToSet: { shelf: { id: product.id } } }
           )
         } else {
+          console.log('not enough coins')
           return res.status(401).json({ ok: false, reason: "Not enough funds" })
         }
       } else {
