@@ -29,7 +29,6 @@ const updateProcessTime = async (
 
     await process.save()
   } else {
-    console.log('here')
     if (seconds - 1 > 0) {
       process.seconds -= 1
       await process.save()
