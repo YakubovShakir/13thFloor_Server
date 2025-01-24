@@ -19,6 +19,7 @@ export default [
     respect: 0,
     price: 0,
     tier: 0,
+    requiredLevel: 0,
   },
   {
     clothing_id: 2,
@@ -40,6 +41,7 @@ export default [
     respect: 0,
     price: 0,
     tier: 0,
+    requiredLevel: 0,
   },
   {
     clothing_id: 3,
@@ -61,6 +63,7 @@ export default [
     respect: 0,
     price: 0,
     tier: 0,
+    requiredLevel: 0,
   },
   {
     clothing_id: 4,
@@ -82,6 +85,7 @@ export default [
     respect: 0,
     price: 0,
     tier: 0,
+    requiredLevel: 0,
   },
   {
     clothing_id: 5,
@@ -103,6 +107,7 @@ export default [
     respect: 0,
     price: 0,
     tier: 0,
+    requiredLevel: 0,
   },
   {
     clothing_id: 6,
@@ -124,6 +129,7 @@ export default [
     respect: 0,
     price: 0,
     tier: 0,
+    requiredLevel: 0,
   },
   {
     clothing_id: 7,
@@ -145,6 +151,7 @@ export default [
     respect: 0,
     price: 0,
     tier: 0,
+    requiredLevel: 0,
   },
   {
     clothing_id: 8,
@@ -166,6 +173,7 @@ export default [
     respect: 100,
     price: 50,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 9,
@@ -187,6 +195,7 @@ export default [
     respect: 100,
     price: 50,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 10,
@@ -208,6 +217,7 @@ export default [
     respect: 100,
     price: 50,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 11,
@@ -229,6 +239,7 @@ export default [
     respect: 100,
     price: 50,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 12,
@@ -250,6 +261,7 @@ export default [
     respect: 100,
     price: 1,
     tier: 0,
+    requiredLevel: 0,
   },
   {
     clothing_id: 13,
@@ -271,6 +283,7 @@ export default [
     respect: 35,
     price: 100,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 14,
@@ -292,6 +305,7 @@ export default [
     respect: 50,
     price: 100,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 15,
@@ -313,6 +327,7 @@ export default [
     respect: 70,
     price: 100,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 16,
@@ -334,6 +349,7 @@ export default [
     respect: 70,
     price: 100,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 17,
@@ -355,6 +371,7 @@ export default [
     respect: 70,
     price: 100,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 18,
@@ -376,6 +393,7 @@ export default [
     respect: 50,
     price: 450,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 19,
@@ -397,6 +415,7 @@ export default [
     respect: 30,
     price: 350,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 20,
@@ -418,6 +437,7 @@ export default [
     respect: 100,
     price: 430,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 21,
@@ -439,6 +459,7 @@ export default [
     respect: 50,
     price: 500,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 22,
@@ -460,6 +481,7 @@ export default [
     respect: 100,
     price: 300,
     tier: 1,
+    requiredLevel: 0,
   },
   {
     clothing_id: 23,
@@ -481,6 +503,7 @@ export default [
     respect: 100,
     price: 100,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 24,
@@ -502,6 +525,7 @@ export default [
     respect: 100,
     price: 100,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 25,
@@ -519,6 +543,7 @@ export default [
     respect: 100,
     price: 100,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 26,
@@ -536,6 +561,7 @@ export default [
     respect: 100,
     price: 100,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 27,
@@ -553,6 +579,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 28,
@@ -570,6 +597,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 29,
@@ -587,6 +615,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 30,
@@ -604,6 +633,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 31,
@@ -621,6 +651,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 32,
@@ -638,6 +669,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 33,
@@ -655,6 +687,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 34,
@@ -672,6 +705,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 35,
@@ -689,6 +723,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 36,
@@ -706,6 +741,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 37,
@@ -723,6 +759,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 38,
@@ -740,6 +777,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 39,
@@ -757,6 +795,7 @@ export default [
     respect: 70,
     price: 200,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 40,
@@ -774,6 +813,7 @@ export default [
     respect: 50,
     price: 350,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 41,
@@ -791,6 +831,7 @@ export default [
     respect: 50,
     price: 350,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 42,
@@ -808,6 +849,7 @@ export default [
     respect: 50,
     price: 350,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 43,
@@ -825,6 +867,7 @@ export default [
     respect: 50,
     price: 350,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 44,
@@ -842,6 +885,7 @@ export default [
     respect: 50,
     price: 350,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 45,
@@ -859,6 +903,7 @@ export default [
     respect: 50,
     price: 350,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 46,
@@ -876,6 +921,7 @@ export default [
     respect: 50,
     price: 350,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 47,
@@ -893,6 +939,7 @@ export default [
     respect: 100,
     price: 700,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 48,
@@ -910,6 +957,7 @@ export default [
     respect: 100,
     price: 700,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 49,
@@ -927,6 +975,7 @@ export default [
     respect: 200,
     price: 1000,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 50,
@@ -944,6 +993,7 @@ export default [
     respect: 200,
     price: 1000,
     tier: 2,
+    requiredLevel: 0,
   },
   {
     clothing_id: 51,
@@ -961,6 +1011,7 @@ export default [
     respect: 250,
     price: 500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 52,
@@ -979,6 +1030,7 @@ export default [
     respect: 250,
     price: 500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 53,
@@ -996,6 +1048,7 @@ export default [
     respect: 250,
     price: 500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 54,
@@ -1013,6 +1066,7 @@ export default [
     respect: 2500,
     price: 5000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 55,
@@ -1030,6 +1084,7 @@ export default [
     respect: 2250,
     price: 4500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 56,
@@ -1047,6 +1102,7 @@ export default [
     respect: 2000,
     price: 4000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 57,
@@ -1064,6 +1120,7 @@ export default [
     respect: 1750,
     price: 3500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 58,
@@ -1081,6 +1138,7 @@ export default [
     respect: 2250,
     price: 4500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 59,
@@ -1098,6 +1156,7 @@ export default [
     respect: 3000,
     price: 6000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 60,
@@ -1115,6 +1174,7 @@ export default [
     respect: 2250,
     price: 4500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 61,
@@ -1132,6 +1192,7 @@ export default [
     respect: 1750,
     price: 3500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 62,
@@ -1149,6 +1210,7 @@ export default [
     respect: 1900,
     price: 3800,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 63,
@@ -1166,6 +1228,7 @@ export default [
     respect: 1900,
     price: 3800,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 64,
@@ -1183,6 +1246,7 @@ export default [
     respect: 2900,
     price: 5800,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 65,
@@ -1200,6 +1264,7 @@ export default [
     respect: 2400,
     price: 4800,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 66,
@@ -1217,6 +1282,7 @@ export default [
     respect: 2100,
     price: 4200,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 67,
@@ -1234,6 +1300,7 @@ export default [
     respect: 2500,
     price: 5000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 68,
@@ -1251,6 +1318,7 @@ export default [
     respect: 2900,
     price: 5800,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 69,
@@ -1268,6 +1336,7 @@ export default [
     respect: 2500,
     price: 5000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 70,
@@ -1285,6 +1354,7 @@ export default [
     respect: 2000,
     price: 4000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 71,
@@ -1302,6 +1372,7 @@ export default [
     respect: 2500,
     price: 5000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 72,
@@ -1319,6 +1390,7 @@ export default [
     respect: 2350,
     price: 4700,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 73,
@@ -1336,6 +1408,7 @@ export default [
     respect: 2350,
     price: 4700,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 74,
@@ -1353,6 +1426,7 @@ export default [
     respect: 1850,
     price: 3700,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 75,
@@ -1370,6 +1444,7 @@ export default [
     respect: 3000,
     price: 6000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 76,
@@ -1387,6 +1462,7 @@ export default [
     respect: 4000,
     price: 8000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 77,
@@ -1404,6 +1480,7 @@ export default [
     respect: 2000,
     price: 4000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 78,
@@ -1421,6 +1498,7 @@ export default [
     respect: 1750,
     price: 3500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 79,
@@ -1438,6 +1516,7 @@ export default [
     respect: 1750,
     price: 3500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 80,
@@ -1455,6 +1534,7 @@ export default [
     respect: 1750,
     price: 3500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 81,
@@ -1472,6 +1552,7 @@ export default [
     respect: 3500,
     price: 7000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 82,
@@ -1489,6 +1570,7 @@ export default [
     respect: 3350,
     price: 6700,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 83,
@@ -1506,6 +1588,7 @@ export default [
     respect: 5000,
     price: 10000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 84,
@@ -1523,6 +1606,7 @@ export default [
     respect: 4000,
     price: 8000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 85,
@@ -1540,6 +1624,7 @@ export default [
     respect: 3500,
     price: 7000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 86,
@@ -1557,6 +1642,7 @@ export default [
     respect: 6000,
     price: 12000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 87,
@@ -1574,6 +1660,7 @@ export default [
     respect: 10000,
     price: 20000,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 88,
@@ -1591,6 +1678,7 @@ export default [
     respect: 3750,
     price: 7500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 89,
@@ -1608,6 +1696,7 @@ export default [
     price: 8000,
     respect: 3500,
     tier: 3,
+    requiredLevel: 0,
   },
   {
     clothing_id: 90,
@@ -1625,6 +1714,7 @@ export default [
     respect: 400,
     price: 800,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 91,
@@ -1642,6 +1732,7 @@ export default [
     respect: 400,
     price: 800,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 92,
@@ -1659,6 +1750,7 @@ export default [
     respect: 400,
     price: 800,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 93,
@@ -1676,6 +1768,7 @@ export default [
     respect: 400,
     price: 800,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 94,
@@ -1693,6 +1786,7 @@ export default [
     respect: 750,
     price: 1500,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 95,
@@ -1710,6 +1804,7 @@ export default [
     respect: 12500,
     price: 25000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 96,
@@ -1727,6 +1822,7 @@ export default [
     respect: 10000,
     price: 20000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 97,
@@ -1744,6 +1840,7 @@ export default [
     respect: 17500,
     price: 35000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 98,
@@ -1761,6 +1858,7 @@ export default [
     respect: 7500,
     price: 15000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 99,
@@ -1778,6 +1876,7 @@ export default [
     respect: 7500,
     price: 15000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 100,
@@ -1795,6 +1894,7 @@ export default [
     respect: 7500,
     price: 15000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 101,
@@ -1812,6 +1912,7 @@ export default [
     respect: 10000,
     price: 20000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 102,
@@ -1829,6 +1930,7 @@ export default [
     respect: 7500,
     price: 15000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 103,
@@ -1846,6 +1948,7 @@ export default [
     respect: 7500,
     price: 15000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 104,
@@ -1863,6 +1966,7 @@ export default [
     respect: 7500,
     price: 15000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 105,
@@ -1880,6 +1984,7 @@ export default [
     respect: 7500,
     price: 15000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 106,
@@ -1897,6 +2002,7 @@ export default [
     respect: 12500,
     price: 25000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 107,
@@ -1914,6 +2020,7 @@ export default [
     respect: 6500,
     price: 13000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 108,
@@ -1931,6 +2038,7 @@ export default [
     respect: 6500,
     price: 13000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 109,
@@ -1948,6 +2056,7 @@ export default [
     respect: 9000,
     price: 18000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 110,
@@ -1965,6 +2074,7 @@ export default [
     respect: 9500,
     price: 19000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 111,
@@ -1982,6 +2092,7 @@ export default [
     respect: 12500,
     price: 25000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 112,
@@ -1999,6 +2110,7 @@ export default [
     respect: 9000,
     price: 18000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 113,
@@ -2016,6 +2128,7 @@ export default [
     respect: 12500,
     price: 25000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 114,
@@ -2033,6 +2146,7 @@ export default [
     respect: 12500,
     price: 25000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 115,
@@ -2050,6 +2164,7 @@ export default [
     respect: 12500,
     price: 25000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 116,
@@ -2067,6 +2182,7 @@ export default [
     respect: 9500,
     price: 19000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 117,
@@ -2084,6 +2200,7 @@ export default [
     respect: 10000,
     price: 20000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 119,
@@ -2101,6 +2218,7 @@ export default [
     respect: 6500,
     price: 13000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 120,
@@ -2118,6 +2236,7 @@ export default [
     respect: 15000,
     price: 30000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 121,
@@ -2135,6 +2254,7 @@ export default [
     respect: 7500,
     price: 15000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 122,
@@ -2152,6 +2272,7 @@ export default [
     respect: 9000,
     price: 18000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 123,
@@ -2169,6 +2290,7 @@ export default [
     respect: 6500,
     price: 13000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 124,
@@ -2186,6 +2308,7 @@ export default [
     respect: 9000,
     price: 18000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 125,
@@ -2203,6 +2326,7 @@ export default [
     respect: 25000,
     price: 50000,
     tier: 4,
+    requiredLevel: 0,
   },
   {
     clothing_id: 126,
@@ -2220,6 +2344,7 @@ export default [
     respect: 50000,
     price: 100000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 127,
@@ -2237,6 +2362,7 @@ export default [
     respect: 50000,
     price: 100000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 128,
@@ -2254,6 +2380,7 @@ export default [
     respect: 50000,
     price: 100000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 129,
@@ -2271,6 +2398,7 @@ export default [
     respect: 50000,
     price: 100000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 130,
@@ -2288,6 +2416,7 @@ export default [
     respect: 25000,
     price: 50000,
     tier: 5,
+    requiredLevel: 0,
   },
   // {
   //   clothing_id: 131,
@@ -2322,6 +2451,7 @@ export default [
     respect: 17500,
     price: 35000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 133,
@@ -2339,6 +2469,7 @@ export default [
     respect: 22500,
     price: 45000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 134,
@@ -2356,6 +2487,7 @@ export default [
     respect: 22500,
     price: 45000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 135,
@@ -2373,6 +2505,7 @@ export default [
     respect: 25000,
     price: 50000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 136,
@@ -2390,6 +2523,7 @@ export default [
     respect: 15000,
     price: 30000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 137,
@@ -2407,6 +2541,7 @@ export default [
     respect: 15000,
     price: 30000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 138,
@@ -2424,6 +2559,7 @@ export default [
     respect: 15000,
     price: 30000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 139,
@@ -2441,6 +2577,7 @@ export default [
     respect: 15000,
     price: 30000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 140,
@@ -2458,6 +2595,7 @@ export default [
     respect: 15000,
     price: 30000,
     tier: 5,
+    requiredLevel: 0,
   },
   // {
   //   clothing_id: 141,
@@ -2492,6 +2630,7 @@ export default [
     respect: 15000,
     price: 30000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 143,
@@ -2509,6 +2648,7 @@ export default [
     respect: 15000,
     price: 30000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 144,
@@ -2526,6 +2666,7 @@ export default [
     respect: 15000,
     price: 30000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 145,
@@ -2543,6 +2684,7 @@ export default [
     respect: 100000,
     price: 200000,
     tier: 5,
+    requiredLevel: 0,
   },
   {
     clothing_id: 146,
@@ -2560,6 +2702,7 @@ export default [
     respect: 100000,
     price: 200000,
     tier: 5,
+    requiredLevel: 0,
   },
   // {
   //   clothing_id: 147,
