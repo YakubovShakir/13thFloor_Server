@@ -4,7 +4,7 @@ export default [
     name: {
       ru: "Яблоко",
       en: "Apple"},    
-    duration: 5,
+    duration: 2,
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
@@ -25,7 +25,7 @@ export default [
     name: {
       ru: "Сытный бургер",
       en: "Big burger"},
-    duration: 15,
+    duration: 5,
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
@@ -38,7 +38,7 @@ export default [
     },
     instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 15,
+    coins_price: 7,
     link: "https://13floorgame.ru/images/foods/burger.png",
     food_id: 2,
   },
@@ -48,7 +48,7 @@ export default [
     name: {
       ru: "Бодрящий ланч",
       en: "Energy lunch"},
-    duration: 25,
+    duration: 15,
     instant_energy_restore: null,
     long_energy_restore: {
       value: 180,
@@ -61,7 +61,7 @@ export default [
     long_hungry_restore: null,
     instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 25,
+    coins_price: 15,
     link: "https://13floorgame.ru/images/foods/liteLunch.png",
     food_id: 3,
   },
