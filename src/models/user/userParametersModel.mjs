@@ -11,7 +11,10 @@ const userParameterSchema = new mongoose.Schema({
     type: Number,
     default: migration.find((level) => level.level === 1).energy_capacity,
   },
-  energy: { type: Number, default: 150 },
+  energy: {
+    type: Number,
+    default: migration.find((level) => level.level === 1).energy_capacity,
+  },
   hungry: { type: Number, default: 100 },
   mood: { type: Number, default: 100 },
   respect: { type: Number, default: 0 },
