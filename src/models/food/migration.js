@@ -4,7 +4,7 @@ export default [
     name: {
       ru: "Яблоко",
       en: "Apple"},    
-    duration: 20,
+    duration: 5,
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
@@ -24,7 +24,7 @@ export default [
     name: {
       ru: "Сытный бургер",
       en: "Big burger"},
-    duration: 50,
+    duration: 15,
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
@@ -47,7 +47,7 @@ export default [
     name: {
       ru: "Бодрящий ланч",
       en: "Energy lunch"},
-    duration: 45,
+    duration: 25,
     instant_energy_restore: null,
     long_energy_restore: {
       value: 180,
@@ -70,7 +70,7 @@ export default [
     name: {
       ru: "Комплексный обед",
       en: "Set lunch"},
-    duration: 80,
+    duration: 45,
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
@@ -93,7 +93,7 @@ export default [
     name: {
       ru: "Протеиновый батончик",
       en: "Protein Bar"},
-    duration: 120,
+    duration: 90,
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
@@ -113,7 +113,7 @@ export default [
     name: {
       ru: "Стейк",
       en: "Steak"},
-    duration: 50,
+    duration: 120,
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
@@ -146,7 +146,7 @@ export default [
     long_hungry_restore: null,
     instant_mood_restore: null,
     long_mood_restore: {
-      value: 7,
+      value: 10,
       percent: true,
     },
     coins_price: 380,
