@@ -3,6 +3,7 @@ import Skill from "../../../models/skill/skillModel.mjs"
 import UserSkill from "../../../models/user/userSkillModel.mjs"
 import process from "../../../models/process/processModel.mjs"
 import addProcess from "../../process/functions/addProcess.mjs"
+import useRelaxMassage from "../../boost/functions/useRelaxMassage.mjs"
 
 const buySkill = async (userId, skillId) => {
   try {
@@ -23,7 +24,6 @@ const buySkill = async (userId, skillId) => {
     const processExist = await process.findOne({
       id: userId,
       type: "skill",
-      type_id: skillId,
     })
     if (processExist) return {status: 400, data: {error: "in Learning!"}} 
 
@@ -38,7 +38,7 @@ const buySkill = async (userId, skillId) => {
     }
 
     // Проверка на достаточность баланса
-    if (user?.coins < skill?.coins_price)
+    if (user?.coins < skill?.coins_price && user?.level >= skill.requiredLevel)
       return {status: 400, data: {error: "Balance not enough!"}} 
 
     user.coins -= skill?.coins_price
