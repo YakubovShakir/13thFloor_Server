@@ -48,7 +48,7 @@ export const buyWork = async (req, res) => {
     }
 
     // Проверка на достаточность баланса
-    if (user?.coins < work?.coins_price)
+    if (user?.coins < work?.coins_price && user.level >= work?.requiredLevel)
       return res.status(400).json({ error: "Balance not enough!" })
     else {
       user.coins -= work?.coins_price
