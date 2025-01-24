@@ -24,6 +24,7 @@ const buySkill = async (userId, skillId) => {
     const processExist = await process.findOne({
       id: userId,
       type: "skill",
+      skill_id: skillId
     })
     if (processExist) return {status: 400, data: {error: "in Learning!"}} 
 
