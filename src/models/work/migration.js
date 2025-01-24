@@ -5,6 +5,7 @@ export default [
       ru: "Курьер",
       en: "Courier"
     },
+    requiredLevel: 1,
     coins_price: 1,
     coins_in_hour: 60,
     energy_cost_in_hour: 250,
@@ -20,6 +21,7 @@ export default [
       ru: "Официант",
       en: "Waiter"
     },
+    requiredLevel: 2,
     coins_price: 1,
     coins_in_hour: 120,
     energy_cost_in_hour: 300,
@@ -35,6 +37,7 @@ export default [
       ru: "Офис-менеджер",
       en: "Office Manager"
     },
+    requiredLevel: 3,
     coins_price: 1,
     coins_in_hour: 180,
     energy_cost_in_hour: 480,
@@ -50,6 +53,7 @@ export default [
       ru: "Администратор",
       en: "Administrator"
     },
+    requiredLevel: 4,
     coins_price: 1,
     coins_in_hour: 240,
     energy_cost_in_hour: 650,
@@ -65,6 +69,7 @@ export default [
       ru: "Менеджер по продажам",
       en: "Sales Manager"
     },
+    requiredLevel: 5,
     coins_price: 1,
     coins_in_hour: 300,
     energy_cost_in_hour: 800,
@@ -80,6 +85,7 @@ export default [
       ru: "Менеджер по закупкам",
       en: "Purchasing Manager"
     },
+    requiredLevel: 6,
     coins_price: 1,
     coins_in_hour: 350,
     energy_cost_in_hour: 950,
@@ -95,6 +101,7 @@ export default [
       ru: "Маркетолог",
       en: "Marketer"
     },
+    requiredLevel: 7,
     coins_price: 1,
     coins_in_hour: 400,
     energy_cost_in_hour: 1200,
@@ -110,6 +117,7 @@ export default [
       ru: "HR",
       en: "HR"
     },
+    requiredLevel: 8,
     coins_price: 1,
     coins_in_hour: 420,
     energy_cost_in_hour: 1500,
@@ -125,6 +133,7 @@ export default [
       ru: "Менеджер проекта",
       en: "Project Manager"
     },
+    requiredLevel: 9,
     coins_price: 1,
     coins_in_hour: 480,
     energy_cost_in_hour: 1800,
@@ -140,6 +149,7 @@ export default [
       ru: "Тимлид",
       en: "Team Lead"
     },
+    requiredLevel: 10,
     coins_price: 1,
     coins_in_hour: 540,
     energy_cost_in_hour: 2000,
@@ -155,6 +165,7 @@ export default [
       ru: "Зам директора",
       en: "Deputy Director"
     },
+    requiredLevel: 11,
     coins_price: 1,
     coins_in_hour: 600,
     energy_cost_in_hour: 2200,
@@ -170,6 +181,7 @@ export default [
       ru: "Директор",
       en: "Director"
     },
+    requiredLevel: 12,
     coins_price: 1,
     coins_in_hour: 660,
     energy_cost_in_hour: 2600,
@@ -185,6 +197,7 @@ export default [
       ru: "Партнер",
       en: "Partner"
     },
+    requiredLevel: 13,
     coins_price: 1,
     coins_in_hour: 720,
     energy_cost_in_hour: 2800,
@@ -200,6 +213,7 @@ export default [
       ru: "CEO",
       en: "CEO"
     },
+    requiredLevel: 14,
     coins_price: 1,
     coins_in_hour: 780,
     energy_cost_in_hour: 3500,
@@ -215,6 +229,7 @@ export default [
       ru: "Миллионер",
       en: "Millionaire"
     },
+    requiredLevel: 15,
     coins_price: 1,
     coins_in_hour: 800,
     energy_cost_in_hour: 3800,

@@ -14,6 +14,8 @@ const workSchema = new mongoose.Schema({
   skill_id_required: { type: Number},
   respect_required: { type: Number },
   link: { type: String, unique: true },
+  
+  requiredLevel: { type: Number, required: true },
 })
 
 const Work = mongoose.model("works", workSchema)
