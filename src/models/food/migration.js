@@ -18,42 +18,62 @@ export default [
     link: "https://13floorgame.ru/images/foods/apple.png",
     food_id: 1,
   },
-  
   {
     user_level_require: 2,
-    
     name: {
-      ru: "Сытный бургер",
-      en: "Big burger"},
+      ru: "Печенька",
+      en: "Cookie"},    
     duration: 5,
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
-      value: 5,
+      value: 3,
       percent: true,
     },
-    long_hungry_restore: {
-      value: 15,
+    long_hungry_restore: null,
+    instant_mood_restore: 
+    {
+      value: 1,
       percent: true,
     },
-    instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 7,
-    link: "https://13floorgame.ru/images/foods/burger.png",
+    coins_price: 6,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D1%8C%D0%B5.png",
     food_id: 2,
   },
   {
     user_level_require: 3,
     
     name: {
-      ru: "Бодрящий ланч",
-      en: "Energy lunch"},
-    duration: 15,
+      ru: "Полезный Салат",
+      en: "Healthy Salad"},
+    duration: 10,
     instant_energy_restore: null,
-    long_energy_restore: {
-      value: 180,
+    long_energy_restore: null,
+    instant_hungry_restore: {
+      value: 8,
+      percent: true,
+    },
+    long_hungry_restore: null,
+    instant_mood_restore: null,
+    long_mood_restore: null,
+    coins_price: 12,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A1%D0%B0%D0%BB%D0%B0%D1%82.png",
+    food_id: 3,
+  },
+   
+  {
+    user_level_require: 4,
+    
+    name: {
+      ru: "Завтрак",
+      en: "Breakfast"},
+    duration: 15,
+    instant_energy_restore:{
+      value: 150,
       percent: false,
     },
+    long_energy_restore: null,
     instant_hungry_restore: {
       value: 5,
       percent: true,
@@ -63,30 +83,77 @@ export default [
     long_mood_restore: null,
     coins_price: 15,
     link: "https://13floorgame.ru/images/foods/liteLunch.png",
-    food_id: 3,
+    food_id: 4,
   },
   {
     user_level_require: 4,
    
     name: {
+      ru: "Рамен",
+      en: "Ramen"},
+    duration: 30,
+    instant_energy_restore: null,
+    long_energy_restore: null,
+    instant_hungry_restore: {
+      value: 10,
+      percent: true,
+    },
+    long_hungry_restore:null,
+    instant_mood_restore: {
+      value: 5,
+      percent: true,
+    },
+    long_mood_restore: null,
+    coins_price: 50,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9B%D0%B0%D0%BF%D1%88%D0%B0-%D1%8F%D0%BF%D0%BE%D0%BD%D1%81%D0%BA%D0%B0%D1%8F.png",
+    food_id: 5,
+  },
+  {
+    user_level_require: 5,
+   
+    name: {
       ru: "Комплексный обед",
-      en: "Set lunch"},
-    duration: 45,
+      en: "Lunch"},
+    duration: 30,
+    instant_energy_restore: null,
+    long_energy_restore: null,
+    instant_hungry_restore: {
+      value: 15,
+      percent: true,
+    },
+    long_hungry_restore: null,
+    instant_mood_restore: {
+      value: 10,
+      percent: true,
+    },
+    long_mood_restore: null,
+    coins_price: 50,
+    link: "https://13floorgame.ru/images/foods/lunch.png",
+    food_id: 6,
+  },
+  {
+    user_level_require: 6,
+    
+    name: {
+      ru: "Пицца",
+      en: "Pizza"},
+    duration: 40,
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
       value: 25,
       percent: true,
     },
-    long_hungry_restore: {
-      value: 15,
+    long_hungry_restore: null,
+    instant_mood_restore: 
+    {
+      value: 10,
       percent: true,
     },
-    instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 50,
-    link: "https://13floorgame.ru/images/foods/lunch.png",
-    food_id: 4,
+    coins_price: 75,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9F%D0%B8%D1%86%D1%86%D0%B0.png",
+    food_id: 7,
   },
   {
     user_level_require: 6,
@@ -94,8 +161,11 @@ export default [
     name: {
       ru: "Протеиновый батончик",
       en: "Protein Bar"},
-    duration: 90,
-    instant_energy_restore: null,
+    duration: 45,
+    instant_energy_restore: {
+      value: 300,
+      percent: true,
+    },
     long_energy_restore: null,
     instant_hungry_restore: {
       value: 35,
@@ -104,12 +174,35 @@ export default [
     long_hungry_restore: null,
     instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 150,
+    coins_price: 120,
     link: "https://13floorgame.ru/images/foods/proteinBar.png",
-    food_id: 5,
+    food_id: 8,
   },
   {
-    user_level_require: 10,
+    user_level_require: 7,
+    
+    name: {
+      ru: "Сытный бургер",
+      en: "Big burger"},
+    duration: 60,
+    instant_energy_restore: null,
+    long_energy_restore: null,
+    instant_hungry_restore: {
+      value: 20,
+      percent: true,
+    },
+    long_hungry_restore: {
+      value: 15,
+      percent: true,
+    },
+    instant_mood_restore: null,
+    long_mood_restore: null,
+    coins_price: 180,
+    link: "https://13floorgame.ru/images/foods/burger.png",
+    food_id: 9,
+  },
+  {
+    user_level_require: 8,
   
     name: {
       ru: "Стейк",
@@ -122,18 +215,18 @@ export default [
       percent: true,
     },
     long_hungry_restore: {
-      value: 18,
+      value: 20,
       percent: true,
     },
     instant_mood_restore: null,
     long_mood_restore: null,
     coins_price: 200,
     link: "https://13floorgame.ru/images/foods/steak.png",
-    food_id: 6,
+    food_id: 10,
   },
   
   {
-    user_level_require: 12,
+    user_level_require: 9,
     name: {
       ru: "Суши",
       en: "Sushi"},
@@ -152,10 +245,10 @@ export default [
     },
     coins_price: 380,
     link: "https://13floorgame.ru/images/foods/sushi.png",
-    food_id: 7,
+    food_id: 11,
   },
   {
-    user_level_require: 14,
+    user_level_require: 10,
     
     name: {
       ru: "Буррито",
@@ -175,7 +268,7 @@ export default [
     long_mood_restore: null,
     coins_price: 450,
     link: "https://13floorgame.ru/images/foods/burrito.png",
-    food_id: 8,
+    food_id: 12,
   },
  
 ]
