@@ -486,7 +486,7 @@ export default [
   {
     clothing_id: 23,
     name: {
-      ru: "Sharp Finish ashen",
+      ru: "Седая Укладка",
       en: "Sharp Finish ashen",
     },
     tag: null,
@@ -508,7 +508,7 @@ export default [
   {
     clothing_id: 24,
     name: {
-      ru: "Sharp Finish blondie",
+      ru: "Светлая Укладка",
       en: "Sharp Finish blondie",
     },
     tag: null,
@@ -530,7 +530,7 @@ export default [
   {
     clothing_id: 25,
     name: {
-      ru: "Sharp Finish brown",
+      ru: "Укладка Брюнета",
       en: "Sharp Finish brown",
     },
     tag: null,
@@ -548,7 +548,7 @@ export default [
   {
     clothing_id: 26,
     name: {
-      ru: "Sharp Finish dark",
+      ru: "Темная Укладка",
       en: "Sharp Finish dark",
     },
     tag: null,
@@ -968,7 +968,7 @@ export default [
     tag: null,
     type: "Accessory",
     effect: null,
-    male_link: "/https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/OrdinaryGlasses-m.png",
+    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/OrdinaryGlasses-m.png",
     female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/OrdinaryGlasses-f.png",
     male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/OrdinaryGlasses-m-icon.png",
     female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/OrdinaryGlasses-f-icon.png",
@@ -2671,7 +2671,7 @@ export default [
   {
     clothing_id: 145,
     name: {
-      ru: "люксовое сияние",
+      ru: "Люксовое сияние",
       en: "Luxe Glow",
     },
     tag: null,
