@@ -421,10 +421,10 @@ export default [
   },
   {
     id: 36,
-    coins_per_hour: 150,
-    respect: 10,
+    coins_per_hour: 5,
+    respect: 5,
     level: 1,
-    price: 800,
+    price: 300,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -433,10 +433,10 @@ export default [
   },
   {
     id: 37,
-    coins_per_hour: 200,
-    respect: 10,
+    coins_per_hour: 7,
+    respect: 5,
     level: 2,
-    price: 450,
+    price: 100,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -445,10 +445,10 @@ export default [
   },
   {
     id: 38,
-    coins_per_hour: 250,
-    respect: 10,
+    coins_per_hour: 10,
+    respect: 5,
     level: 3,
-    price: 680,
+    price: 150,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -457,10 +457,10 @@ export default [
   },
   {
     id: 39,
-    coins_per_hour: 300,
-    respect: 10,
+    coins_per_hour: 15,
+    respect: 5,
     level: 4,
-    price: 1020,
+    price: 180,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -469,10 +469,10 @@ export default [
   },
   {
     id: 40,
-    coins_per_hour: 350,
-    respect: 10,
+    coins_per_hour: 18,
+    respect: 5,
     level: 5,
-    price: 1530,
+    price: 200,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -481,10 +481,10 @@ export default [
   },
   {
     id: 41,
-    coins_per_hour: 400,
-    respect: 10,
+    coins_per_hour: 20,
+    respect: 5,
     level: 6,
-    price: 2300,
+    price: 230,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -493,10 +493,10 @@ export default [
   },
   {
     id: 42,
-    coins_per_hour: 450,
-    respect: 10,
+    coins_per_hour: 22,
+    respect: 5,
     level: 7,
-    price: 3450,
+    price: 250,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -505,10 +505,10 @@ export default [
   },
   {
     id: 43,
-    coins_per_hour: 500,
-    respect: 10,
+    coins_per_hour: 25,
+    respect: 5,
     level: 8,
-    price: 5180,
+    price: 300,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -517,10 +517,10 @@ export default [
   },
   {
     id: 44,
-    coins_per_hour: 550,
-    respect: 10,
+    coins_per_hour: 28,
+    respect: 5,
     level: 9,
-    price: 7770,
+    price: 320,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -529,10 +529,10 @@ export default [
   },
   {
     id: 45,
-    coins_per_hour: 600,
-    respect: 10,
+    coins_per_hour: 30,
+    respect: 5,
     level: 10,
-    price: 11660,
+    price: 350,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -541,10 +541,10 @@ export default [
   },
   {
     id: 46,
-    coins_per_hour: 650,
-    respect: 10,
+    coins_per_hour: 32,
+    respect: 5,
     level: 11,
-    price: 17490,
+    price: 380,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -553,10 +553,10 @@ export default [
   },
   {
     id: 47,
-    coins_per_hour: 700,
-    respect: 10,
+    coins_per_hour: 35,
+    respect: 5,
     level: 12,
-    price: 26240,
+    price: 400,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -565,10 +565,10 @@ export default [
   },
   {
     id: 48,
-    coins_per_hour: 750,
-    respect: 10,
+    coins_per_hour: 38,
+    respect: 5,
     level: 13,
-    price: 39360,
+    price: 420,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -577,10 +577,10 @@ export default [
   },
   {
     id: 49,
-    coins_per_hour: 800,
-    respect: 10,
+    coins_per_hour: 40,
+    respect: 5,
     level: 14,
-    price: 47230,
+    price: 450,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -589,10 +589,10 @@ export default [
   },
   {
     id: 50,
-    coins_per_hour: 850,
-    respect: 10,
+    coins_per_hour: 42,
+    respect: 5,
     level: 15,
-    price: 56680,
+    price: 500,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -601,10 +601,10 @@ export default [
   },
   {
     id: 51,
-    coins_per_hour: 900,
-    respect: 10,
+    coins_per_hour: 45,
+    respect: 5,
     level: 16,
-    price: 68020,
+    price: 550,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -613,10 +613,10 @@ export default [
   },
   {
     id: 52,
-    coins_per_hour: 950,
-    respect: 10,
+    coins_per_hour: 48,
+    respect: 5,
     level: 17,
-    price: 81620,
+    price: 580,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -625,10 +625,10 @@ export default [
   },
   {
     id: 53,
-    coins_per_hour: 1000,
-    respect: 10,
+    coins_per_hour: 50,
+    respect: 5,
     level: 18,
-    price: 97940,
+    price: 600,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -637,10 +637,10 @@ export default [
   },
   {
     id: 54,
-    coins_per_hour: 1070,
-    respect: 10,
+    coins_per_hour: 55,
+    respect: 5,
     level: 19,
-    price: 117530,
+    price: 700,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -649,10 +649,10 @@ export default [
   },
   {
     id: 55,
-    coins_per_hour: 1140,
-    respect: 10,
+    coins_per_hour: 60,
+    respect: 5,
     level: 20,
-    price: 129280,
+    price: 1000,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -661,10 +661,10 @@ export default [
   },
   {
     id: 56,
-    coins_per_hour: 1210,
-    respect: 10,
+    coins_per_hour: 65,
+    respect: 5,
     level: 21,
-    price: 142210,
+    price: 1200,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -673,10 +673,10 @@ export default [
   },
   {
     id: 57,
-    coins_per_hour: 1280,
-    respect: 10,
+    coins_per_hour: 70,
+    respect: 5,
     level: 22,
-    price: 156430,
+    price: 1300,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -685,10 +685,10 @@ export default [
   },
   {
     id: 58,
-    coins_per_hour: 1350,
-    respect: 10,
+    coins_per_hour: 75,
+    respect: 5,
     level: 23,
-    price: 172070,
+    price: 1400,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -697,10 +697,10 @@ export default [
   },
   {
     id: 59,
-    coins_per_hour: 1420,
-    respect: 10,
+    coins_per_hour: 80,
+    respect: 5,
     level: 24,
-    price: 189280,
+    price: 1500,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -709,10 +709,10 @@ export default [
   },
   {
     id: 60,
-    coins_per_hour: 1490,
-    respect: 10,
+    coins_per_hour: 85,
+    respect: 5,
     level: 25,
-    price: 208210,
+    price: 1800,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -721,10 +721,10 @@ export default [
   },
   {
     id: 61,
-    coins_per_hour: 1590,
-    respect: 10,
+    coins_per_hour: 90,
+    respect: 5,
     level: 26,
-    price: 229030,
+    price: 2000,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -733,10 +733,10 @@ export default [
   },
   {
     id: 62,
-    coins_per_hour: 1700,
-    respect: 10,
+    coins_per_hour: 95,
+    respect: 5,
     level: 27,
-    price: 251930,
+    price: 2400,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -745,10 +745,10 @@ export default [
   },
   {
     id: 63,
-    coins_per_hour: 1810,
-    respect: 10,
+    coins_per_hour: 100,
+    respect: 5,
     level: 28,
-    price: 277120,
+    price: 2800,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -757,10 +757,10 @@ export default [
   },
   {
     id: 64,
-    coins_per_hour: 1920,
-    respect: 10,
+    coins_per_hour: 110,
+    respect: 5,
     level: 29,
-    price: 304830,
+    price: 3200,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -769,10 +769,10 @@ export default [
   },
   {
     id: 65,
-    coins_per_hour: 2030,
-    respect: 10,
+    coins_per_hour: 115,
+    respect: 5,
     level: 30,
-    price: 335310,
+    price: 2600,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -781,10 +781,10 @@ export default [
   },
   {
     id: 66,
-    coins_per_hour: 2140,
-    respect: 10,
+    coins_per_hour: 120,
+    respect: 5,
     level: 31,
-    price: 368840,
+    price: 2800,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -793,10 +793,10 @@ export default [
   },
   {
     id: 67,
-    coins_per_hour: 2250,
-    respect: 10,
+    coins_per_hour: 125,
+    respect: 5,
     level: 32,
-    price: 405720,
+    price: 3200,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -805,10 +805,10 @@ export default [
   },
   {
     id: 68,
-    coins_per_hour: 2360,
-    respect: 10,
+    coins_per_hour: 130,
+    respect: 5,
     level: 33,
-    price: 446290,
+    price: 4000,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -817,10 +817,10 @@ export default [
   },
   {
     id: 69,
-    coins_per_hour: 2470,
-    respect: 10,
+    coins_per_hour: 140,
+    respect: 5,
     level: 34,
-    price: 490920,
+    price: 4500,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -829,10 +829,10 @@ export default [
   },
   {
     id: 70,
-    coins_per_hour: 2580,
-    respect: 10,
+    coins_per_hour: 150,
+    respect: 5,
     level: 35,
-    price: 540010,
+    price: 5000,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
