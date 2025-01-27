@@ -1,6 +1,6 @@
 import { FoodProccess } from "./tasks/FoodProcess/task.mjs"
 import { SkillProccess } from "./tasks/SkillProcess/task.mjs"
-import { WorkProccess } from "./tasks/WorkProcess/task.mjs"
+import { WorkProcess } from "./tasks/WorkProcess/task.mjs"
 import { TrainingProccess } from "./tasks/TrainingProcess/task.mjs"
 import { SleepProccess } from "./tasks/SleepProcess/task.mjs"
 import { AutoclaimProccess } from './tasks/autoclaimInvestmentProcess.mjs'
@@ -14,7 +14,7 @@ const gameTimer = {
   FoodProccess,
   SkillProccess,
   TrainingProccess,
-  WorkProccess,
+  WorkProcess,
   SleepProccess,
   BoostProccess,
 }
@@ -26,7 +26,7 @@ gameTimer.SkillProccess.start()
 console.log("Запустил процессы изучения навыков")
 gameTimer.TrainingProccess.start()
 console.log("Запустил процессы тренировок")
-gameTimer.WorkProccess.start()
+gameTimer.WorkProcess.start()
 console.log("Запустил процессы работы")
 gameTimer.SleepProccess.start()
 console.log("Запустил процессы сна")
