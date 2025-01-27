@@ -584,7 +584,7 @@ export const buyItemsForCoins = async (req, res) => {
 
 export const requestStarsPaymentLink = async (req, res) => {
   try {
-    const { productType, id } = req.body
+    const { productType, id, lang = 'en' } = req.body
 
     let product, name, description, amount, title
 
@@ -594,16 +594,16 @@ export const requestStarsPaymentLink = async (req, res) => {
 
     if (productType === "clothes") {
       product = await Clothing.findOne({ clothing_id: id })
-      name = product.name.ru
-      description = product.description.ru
+      name = product.name[lang]
+      description = product.description[lang]
       title = "13th Floor"
       amount = product.price
     }
 
     if (productType === "shelf") {
       product = await ShelfItemModel.findOne({ id: id })
-      name = product.name.ru
-      description = product.description.ru
+      name = product.name[lang]
+      description = product.description[lang]
       title = "13th Floor"
       amount = product.cost.stars
     }
@@ -616,7 +616,7 @@ export const requestStarsPaymentLink = async (req, res) => {
       amount = 1
     }
 
-    const invoiceLink = await _fetch("http://bot:4444/payment-create", {
+    const invoiceLink = await _fetch(`${process.env.BOT_ADDR}payment-create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
