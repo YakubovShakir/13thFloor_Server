@@ -15,7 +15,8 @@ export default [
             ru: 'Ускорение работы на 1%',
             en: 'Work duration decreased by 1%'
         },
-        link: ''
+        link: '',
+        required_level: 1
     },
     {
         id: 2,
@@ -31,7 +32,8 @@ export default [
             ru: 'Ускорение тренировки на 1%',
             en: 'Training duration decreased by 1%'
         },
-        link: ''
+        link: '',
+        required_level: 1
     },
     {
         id: 3,
@@ -47,7 +49,8 @@ export default [
             ru: 'Ускорение сна на 1%',
             en: 'Sleep duration decreased by 1%'
         },
-        link: ''
+        link: '',
+        required_level: 1
     },
     {
         id: 4,
@@ -63,6 +66,7 @@ export default [
             ru: 'Увеличение дохода работы на 1%',
             en: 'Work income increased by 1%'
         },
-        link: ''
+        link: '',
+        required_level: 1
     },
 ]
