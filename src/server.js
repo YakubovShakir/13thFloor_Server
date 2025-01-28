@@ -171,6 +171,7 @@ async function deleteAndInsertSkill() {
 }
 
 async function deleteAndInsertBoost() {
+  await Boost.syncIndexes()
   await Boost.deleteMany()
   await Promise.all(
     BoostItems.map(async (item) => {
