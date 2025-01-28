@@ -3,10 +3,37 @@ import UserProcess from "../../../models/process/processModel.mjs"
 import cron from "node-cron"
 import updateProcessTime from "../../../utils/updateProcessTime.js"
 import Boost from "../../../models/boost/boostModel.mjs"
-import tonicDrinkDurationFunction from "./types/tonicDrink.mjs"
+import moment from 'moment-timezone'
+
+const processDurationFunction = async (boostDuration, process, user) => {
+    const boostDurationInSeconds = boostDuration * 60
+    const processDurationInSeconds = moment().diff(moment(process.createdAt), 'seconds');
+    const diffSeconds = moment().diff(moment(process.updatedAt), 'seconds');
+  
+    // Calculate remaining time
+    const remainingSeconds = Math.max(0, boostDurationInSeconds - processDurationInSeconds);
+    const remainingMinutes = Math.floor(remainingSeconds / 60);
+    const remainingSecondsAfterMinutes = remainingSeconds % 60;
+
+    if(remainingSeconds === 0) {
+      await UserProcess.deleteOne({ _id: process._id })
+      user.energy = user.energy_capacity
+
+      await user.save()
+      return
+    }
+    // Update process duration and seconds
+    process.duration = remainingMinutes;
+    process.seconds = remainingSecondsAfterMinutes;
+
+    user.energy = user.energy + user?.energy_capacity / boostDurationInSeconds * diffSeconds
+    console.log(user.energy)
+    await user.save()
+    await process.save()
+}
 
 export const BoostProccess = cron.schedule(
-  "* * * * * *",
+  "*/5 * * * * *",
   async () => {
     try {
       //get All Boost process
@@ -20,17 +47,11 @@ export const BoostProccess = cron.schedule(
 
         switch (boost?.type) {
           case "tonic-drink":
-            await updateProcessTime(
-              process,
-              () => tonicDrinkDurationFunction(user),
-              null
-            )
+            await processDurationFunction(boost.duration, process, user)
             break
           case "personal-training":
             await updateProcessTime(process, null, null, true)
             break
-          default:
-            await updateProcessTime(process, null, null, false)
         }
       }
     } catch (e) {

@@ -40,6 +40,8 @@ import Tasks from "./models/tasks/taskModel.mjs"
 import TasksMigration from './models/tasks/migration.mjs'
 import UserSkill from "./models/user/userSkillModel.mjs"
 import UserProcess from './models/process/processModel.mjs'
+import { ConstantEffects } from "./models/effects/constantEffectsLevels.mjs"
+import constantEffects from './models/effects/migration.mjs'
 
 dotenv.config()
 
@@ -89,7 +91,8 @@ async function main() {
     deleteAndInsertTraining(),
     deleteShelfItems(),
     deleteInvestments(),
-    deleteTasks()
+    deleteTasks(),
+    deleteConstantEffects()
   ])
 }
 
@@ -212,9 +215,20 @@ async function deleteUserInventories() {
 async function deleteUserClothing() {
   await UserClothing.deleteMany()
 }
+
 async function deleteUsers() {
   await User.deleteMany()
   await User.syncIndexes()
   await UserParameters.deleteMany()
   await UserSkill.deleteMany()
+}
+
+async function deleteConstantEffects() {
+  await ConstantEffects.deleteMany()
+  await Promise.all(
+    constantEffects.map(async effect => {
+      const e = new ConstantEffects(effect)
+      await e.save()
+    })
+  )
 }

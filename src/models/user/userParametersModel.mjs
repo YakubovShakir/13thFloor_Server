@@ -29,6 +29,13 @@ const userParameterSchema = new mongoose.Schema({
     energy: { type: Number, default: 1 },
   },
   work_id: { type: Number, default: 0 },
+  constant_effects_levels: {
+    // Effects levels
+    work_duration_decrease: { type: Number, default: 0 },
+    training_duration_decrease: { type: Number, default: 0 },
+    sleeping_duration_decrease: { type: Number, default: 0 },
+    work_hourly_income_increase: { type: Number, default: 0 }
+  }
 })
 
 const UserParameters = mongoose.model("users_parameters", userParameterSchema)
