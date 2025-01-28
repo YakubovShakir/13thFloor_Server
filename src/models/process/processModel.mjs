@@ -11,6 +11,7 @@ const schema = new mongoose.Schema({
   //! IN SECONDS
   duration: { type: Number, required: true },
   seconds: { type: Number, default: 0 },
+  target_duration: { type: Number, default: null }
 }, { timestamps: true })
 
 const process = mongoose.model("users_process", schema)
