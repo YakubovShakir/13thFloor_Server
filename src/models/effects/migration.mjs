@@ -1,3 +1,4 @@
+import { duration } from "moment-timezone";
 import { ConstantEffectTypes } from "./constantEffectsLevels.mjs";
 
 export default [
@@ -16,7 +17,8 @@ export default [
             en: 'Work duration decreased by 1%'
         },
         link: '',
-        required_level: 1
+        required_level: 1,
+        duration: 1
     },
     {
         id: 2,
@@ -33,7 +35,8 @@ export default [
             en: 'Training duration decreased by 1%'
         },
         link: '',
-        required_level: 1
+        required_level: 1,
+        duration: 1,
     },
     {
         id: 3,
@@ -50,7 +53,8 @@ export default [
             en: 'Sleep duration decreased by 1%'
         },
         link: '',
-        required_level: 1
+        required_level: 1,
+        duration: 1
     },
     {
         id: 4,
@@ -67,6 +71,7 @@ export default [
             en: 'Work income increased by 1%'
         },
         link: '',
-        required_level: 1
+        required_level: 1,
+        duration: 1
     },
 ]
