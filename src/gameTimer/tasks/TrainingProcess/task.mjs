@@ -30,8 +30,8 @@ const durationFunction = async (userId, parameters, tp, process) => {
     // const moodProfit = trainingBoostProcess
     //   ? tp?.mood_profit / 60 * diffSeconds * 2 
     //   : tp?.mood_profit / 60 * diffSeconds
-    const moodProfit = tp?.mood_profit / 60 * diffSeconds
-  console.log(moodProfit, remainingMinutes, remainingSeconds)
+    const moodProfit = tp?.mood_profit / trainingDurationInSeconds * diffSeconds
+    console.log(moodProfit, remainingMinutes, remainingSeconds)
     parameters.mood = Math.min(100, moodProfit + parameters?.mood)
 
     if(processDurationInSeconds > trainingDurationInSeconds) {

@@ -24,9 +24,9 @@ const durationFunction = async (process, work, userParameters) => {
 
   // Check if user has enough resources
   const canContinueWork = 
-    userParameters.mood >= periodMoodCost &&
-    userParameters.energy >= periodEnergyCost &&
-    userParameters.hungry >= periodHungryCost
+    Math.floor(userParameters.mood) >= periodMoodCost &&
+    Math.floor(userParameters.energy) >= periodEnergyCost &&
+    Math.floor(userParameters.hungry) >= periodHungryCost
 
   if (canContinueWork) {
     // Deduct resources
@@ -63,7 +63,7 @@ const durationFunction = async (process, work, userParameters) => {
 }
 
 export const WorkProcess = cron.schedule(
-  "*/10 * * * * *", // Run every 10 seconds
+  "*/5 * * * * *", // Run every 10 seconds
   async () => {
     try {
       // Get all work processes

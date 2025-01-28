@@ -17,18 +17,18 @@ export default [
     type: "tonic-drink",
     link: "https://13floorgame.ru/images/boosts/workoutDrink.png",
   },
-  // {
-  //   boost_id: 3,
-  //   name: { ru: "Персональная тренировка", en: "Personal Training" },
-  //   stars_price: 100,
-  //   description: {
-  //     ru: "Следующая тренировка тратит в половину меньше энергии и восстанавливает вдвое больше счастья после окончания тренировки",
-  //     en: "The next workout consumes half the energy and restores twice as much happiness after the workout is completed",
-  //   },
-  //   duration: null,
-  //   type: "personal-training",
-  //   link: "https://13floorgame.ru/images/boosts/personalTraining.png",
-  // },
+  {
+    boost_id: 3,
+    name: { ru: "Персональная тренировка", en: "Personal Training" },
+    stars_price: 100,
+    description: {
+      ru: "Следующая тренировка тратит в половину меньше энергии и восстанавливает вдвое больше счастья после окончания тренировки",
+      en: "The next workout consumes half the energy and restores twice as much happiness after the workout is completed",
+    },
+    duration: null,
+    type: "personal-training",
+    link: "https://13floorgame.ru/images/boosts/personalTraining.png",
+  },
   {
     boost_id: 4,
     name: { ru: "Расслабляющий массаж", en: "Relaxing Massage" },
@@ -65,28 +65,28 @@ export default [
     type: "robot-helper-24",
     link: "https://13floorgame.ru/images/boosts/robot.png",
   },
-  // {
-  //   boost_id: 7,
-  //   name: { ru: "Ускорение обучения 20%", en: "Learning Speed Boost 20%" },
-  //   stars_price: 100,
-  //   description: {
-  //     ru: "Ускоряет текущее обучение. Возможно применить только к одному текущему обучению",
-  //     en: "Accelerates current learning. Can only be applied to one current learning process",
-  //   },
-  //   duration: null,
-  //   type: "learn-speed-20",
-  //   link: "https://13floorgame.ru/images/boosts/learnSpeed20.png",
-  // },
-  // {
-  //   boost_id: 8,
-  //   name: { ru: "Ускорение обучения 50%", en: "Learning Speed Boost 50%" },
-  //   stars_price: 100,
-  //   description: {
-  //     ru: "Ускоряет текущее обучение. Возможно применить только к одному текущему обучению",
-  //     en: "Accelerates current learning. Can only be applied to one current learning process",
-  //   },
-  //   duration: null,
-  //   type: "learn-speed-50",
-  //   link: "https://13floorgame.ru/images/boosts/learnSpeed50.png",
-  // },
+  {
+    boost_id: 7,
+    name: { ru: "Ускорение обучения 20%", en: "Learning Speed Boost 20%" },
+    stars_price: 100,
+    description: {
+      ru: "Ускоряет текущее обучение. Возможно применить только к одному текущему обучению",
+      en: "Accelerates current learning. Can only be applied to one current learning process",
+    },
+    duration: null,
+    type: "learn-speed-20",
+    link: "https://13floorgame.ru/images/boosts/learnSpeed20.png",
+  },
+  {
+    boost_id: 8,
+    name: { ru: "Ускорение обучения 50%", en: "Learning Speed Boost 50%" },
+    stars_price: 100,
+    description: {
+      ru: "Ускоряет текущее обучение. Возможно применить только к одному текущему обучению",
+      en: "Accelerates current learning. Can only be applied to one current learning process",
+    },
+    duration: null,
+    type: "learn-speed-50",
+    link: "https://13floorgame.ru/images/boosts/learnSpeed50.png",
+  },
 ];

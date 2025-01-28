@@ -79,9 +79,9 @@ export const useBoost = async (req, res) => {
   try {
     const userParameters = await UserParameters.findOne({ id: userId })
     const userBoost = await UserBoost.findOne({ id: userId, boost_id: boostId })
-    if (!userBoost) {
-      return res.status(400).send({ message: "You dont have this boost" })
-    }
+    // if (!userBoost) {
+    //   return res.status(403).send({ message: "You dont have this boost" })
+    // }
     const boost = await Boost.findOne({ boost_id: boostId })
     let result
     let skillId
@@ -119,7 +119,7 @@ export const useBoost = async (req, res) => {
         result = await useLearnSpeed(userId, skillId, 0.5)
         break
       default:
-        return res.status(400).send({ error: "Internal server error" })
+        return res.status(500).send({ error: "Internal server error" })
     }
     if (!result) return res.status(400).send({ error: "Cannot use this boost" })
 
