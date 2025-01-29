@@ -2832,7 +2832,7 @@ export default [
         level: 1,
         price: 100,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 1,
+        value_change: 60,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -2850,7 +2850,7 @@ export default [
         level: 2,
         price: 200,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 4,
+        value_change: 240,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -2868,7 +2868,7 @@ export default [
         level: 3,
         price: 400,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 6,
+        value_change: 360,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -2886,7 +2886,7 @@ export default [
         level: 4,
         price: 800,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 9,
+        value_change: 540,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -2904,7 +2904,7 @@ export default [
         level: 5,
         price: 1600,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 12,
+        value_change: 720,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -2922,7 +2922,7 @@ export default [
         level: 6,
         price: 2400,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 16,
+        value_change: 960,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -2940,7 +2940,7 @@ export default [
         level: 7,
         price: 3600,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 20,
+        value_change: 1200,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -2958,7 +2958,7 @@ export default [
         level: 8,
         price: 5400,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 25,
+        value_change: 1500,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -2976,7 +2976,7 @@ export default [
         level: 9,
         price: 8100,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 30,
+        value_change: 1800,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -2994,7 +2994,7 @@ export default [
         level: 10,
         price: 12150,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 36,
+        value_change: 2160,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -3012,7 +3012,7 @@ export default [
         level: 11,
         price: 18225,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 42,
+        value_change: 2520,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -3030,7 +3030,7 @@ export default [
         level: 12,
         price: 27338,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 49,
+        value_change: 2940,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -3048,7 +3048,7 @@ export default [
         level: 13,
         price: 41007,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 57,
+        value_change: 3420,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -3066,7 +3066,7 @@ export default [
         level: 14,
         price: 61511,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 65,
+        value_change: 3360,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -3084,7 +3084,7 @@ export default [
         level: 15,
         price: 92267,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 73,
+        value_change: 4380,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -3102,7 +3102,7 @@ export default [
         level: 16,
         price: 138401,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 82,
+        value_change: 4920,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -3120,7 +3120,7 @@ export default [
         level: 17,
         price: 207602,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 91,
+        value_change: 5460,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -3138,7 +3138,7 @@ export default [
         level: 18,
         price: 311403,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 100,
+        value_change: 6000,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -3156,7 +3156,7 @@ export default [
         level: 19,
         price: 467105,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 110,
+        value_change: 6600,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
@@ -3174,7 +3174,7 @@ export default [
         level: 20,
         price: 700658,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-        value_change: 120,
+        value_change: 7200,
         name: {
             ru: 'Увеличение дохода',
             en: 'Work income '
