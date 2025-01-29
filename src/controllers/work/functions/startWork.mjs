@@ -1,6 +1,12 @@
+import {
+  ConstantEffects,
+  ConstantEffectTypes,
+} from "../../../models/effects/constantEffectsLevels.mjs"
 import UserParameters from "../../../models/user/userParametersModel.mjs"
 import Work from "../../../models/work/workModel.mjs"
+import getMinutesAndSeconds from "../../../utils/getMinutesAndSeconds.js"
 import addActiveProcess from "../../process/functions/addActiveProcess.mjs"
+
 const startWork = async (userId) => {
   try {
     // Получение параметров и работы
@@ -23,7 +29,33 @@ const startWork = async (userId) => {
         data: { error: "Not enough Mood or Energy or Hungry" },
       }
 
-    await addActiveProcess(userId, "work", user?.work_id, work?.duration || 1, 0)
+    const { work_duration_decrease, work_hourly_income_increase } =
+      user.constant_effects_levels
+
+    const duration_decrease = await ConstantEffects.findOne({
+      type: ConstantEffectTypes.WorkDurationDecrease,
+      level: work_duration_decrease,
+    })
+    const reward_increase = await ConstantEffects.findOne({
+      type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
+      level: work_hourly_income_increase,
+    })
+
+    const baseDuration = (work?.duration || 1) * 60 // in secs for precision
+    const durationInSeconds = duration_decrease
+    ? Math.floor(
+        baseDuration * ((100 - duration_decrease.value_change) / 100)
+      )
+    : baseDuration
+    
+    //! EXPORT AND REUSE
+
+    const { duration, seconds } = getMinutesAndSeconds(durationInSeconds)
+
+    await addActiveProcess(userId, "work", user?.work_id, duration, seconds, {
+      duration_decrease: duration_decrease?.value_change,
+      reward_increase: reward_increase?.value_change,
+    })
 
     return { status: 200, data: { status: "ok" } }
   } catch (e) {

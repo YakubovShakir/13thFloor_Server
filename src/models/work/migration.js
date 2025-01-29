@@ -14,6 +14,7 @@ export default [
     skill_id_required: null,
     respect_required: 0,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A3%D0%B1%D0%BE%D1%80%D1%89%D0%B8%D0%BA.png",
+    duration: 60
   },
   {
     work_id: 2,

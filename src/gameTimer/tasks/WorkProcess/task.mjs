@@ -7,20 +7,38 @@ import moment from 'moment-timezone'
 
 
 const durationFunction = async (process, work, userParameters) => {
+  console.log('im here')
+  // Apply duration decrease
+  const durationDecreasePercentage = process.effects.duration_decrease || 0
+  const rewardIncreaseHourly = process.effects.reward_increase || 0
+
+  const baseWorkDuration = work.duration * 60 || 60
+  const actualWorkDuration = baseWorkDuration * (1 - durationDecreasePercentage / 100)
+  console.log(actualWorkDuration)
   // Convert hourly costs to per-second costs
   const moodCostPerSecond = work.mood_cost_in_hour / 3600
   const hungryCostPerSecond = work.hungry_cost_in_hour / 3600
   const energyCostPerSecond = work.energy_cost_in_hour / 3600
-  const coinRewardPerSecond = work.coins_in_hour / 3600
+
   
   // Calculate time difference since last update
-  const diffSeconds = moment().diff(moment(process.updatedAt), 'seconds')
+  const now = moment()
+  const diffSeconds = now.diff(moment(process.createdAt), 'seconds')
+  const processDurationInSeconds = now.diff(moment(process.createdAt), 'seconds')
+
+    // Calculate remaining time with the decreased duration
+  const remainingSeconds = Math.max(0, actualWorkDuration - processDurationInSeconds);
+  const remainingMinutes = Math.floor(remainingSeconds / 60);
+  const remainingSecondsAfterMinutes = remainingSeconds % 60;
   
+    // Update process duration and seconds
+  process.duration = remainingMinutes;
+  process.seconds = remainingSecondsAfterMinutes;
+    
   // Calculate costs for the time period
   const periodMoodCost = moodCostPerSecond * diffSeconds
   const periodHungryCost = hungryCostPerSecond * diffSeconds
   const periodEnergyCost = energyCostPerSecond * diffSeconds
-  const periodCoinReward = coinRewardPerSecond * diffSeconds
 
   // Check if user has enough resources
   const canContinueWork = 
@@ -33,37 +51,31 @@ const durationFunction = async (process, work, userParameters) => {
     userParameters.mood = Math.max(0, userParameters.mood - periodMoodCost)
     userParameters.energy = Math.max(0, userParameters.energy - periodEnergyCost)
     userParameters.hungry = Math.max(0, userParameters.hungry - periodHungryCost)
-    
-    // Add coins
-    await upUserBalance(userParameters.id, periodCoinReward)
 
-    // Update timer
-    let newSeconds = Math.max(0, process.seconds - diffSeconds)
+    const processDurationInSeconds = moment().diff(moment(process.createdAt), 'seconds');
     
-    // If we've passed the previous timer, reset to 1 minute
-    if (newSeconds <= 0) {
-      // Calculate how many seconds have passed into the new minute
-      const extraSeconds = Math.abs(newSeconds)
-      process.duration = 0
-      process.seconds = 60 - extraSeconds
-    } else {
-      process.duration = 0
-      process.seconds = newSeconds
+    if(processDurationInSeconds >= actualWorkDuration) {
+      //! Work finished
+      const coinReward = (work.coins_in_hour + rewardIncreaseHourly) / 3600 * work?.duration / 60
+      
+      await upUserBalance(userParameters.id, coinReward)
+      await userParameters.save()
+      await process.deleteOne({ _id: process._id })
+      return
     }
     
-    process.updatedAt = new Date()
-    
     // Save changes
+    process.user_parameters_updated_at = now.toDate()
     await process.save()
     await userParameters.save()
   } else {
-    // If user doesn't have enough resources, end the work process
+    // If user doesn't have enough resources, end the work process without granting reward
     await process.deleteOne({ _id: process._id })
   }
 }
 
 export const WorkProcess = cron.schedule(
-  "*/5 * * * * *", // Run every 10 seconds
+  "*/10 * * * * *", // Run every 10 seconds
   async () => {
     try {
       // Get all work processes

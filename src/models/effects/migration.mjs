@@ -1,4 +1,3 @@
-import { duration } from "moment-timezone";
 import { ConstantEffectTypes } from "./constantEffectsLevels.mjs";
 
 export default [
@@ -2487,7 +2486,7 @@ export default [
         level: 1,
         price: 100,
         type: ConstantEffectTypes.WorkDurationDecrease,
-        value_change: 1,
+        value_change: 10,
         name: {
             ru: 'Тайм менеджмент',
             en: 'Time management'

@@ -7,14 +7,18 @@ import LevelsParameters from "../../../models/level/levelParametersModel.mjs"
 import moment from 'moment-timezone'
 
 const durationFunction = async (process, parameters) => {
-  const level = parameters.level // get user level
+  const level = parameters.level
   const levelParameters = await LevelsParameters.findOne({ level })
   
-  const sleepDurationInSeconds = levelParameters.sleep_duration * 60 // sleep duration in seconds
+  // Get base duration and apply percentage decrease
+  const durationDecreasePercentage = 1 // 1% decrease
+  const baseSleepDurationInSeconds = levelParameters.sleep_duration * 60
+  const sleepDurationInSeconds = baseSleepDurationInSeconds * (1 - durationDecreasePercentage / 100)
+  
   const processDurationInSeconds = moment().diff(moment(process.createdAt), 'seconds');
   const diffSeconds = moment().diff(moment(process.updatedAt), 'seconds');
 
-  // Calculate remaining time
+  // Calculate remaining time with the decreased duration
   const remainingSeconds = Math.max(0, sleepDurationInSeconds - processDurationInSeconds);
   const remainingMinutes = Math.floor(remainingSeconds / 60);
   const remainingSecondsAfterMinutes = remainingSeconds % 60;
@@ -30,13 +34,18 @@ const durationFunction = async (process, parameters) => {
     return
   }
   
-  const energyRestorePerDiff = parameters.energy_capacity / sleepDurationInSeconds * diffSeconds;
+  // Adjusted energy calculation to maintain the same total energy reward
+  // We increase the energy per second to compensate for shorter duration
+  const energyMultiplier = baseSleepDurationInSeconds / sleepDurationInSeconds
+  const energyRestorePerDiff = (parameters.energy_capacity / sleepDurationInSeconds * diffSeconds) * (1 / energyMultiplier);
+  
   parameters.energy = Math.min(parameters?.energy_capacity, parameters.energy + energyRestorePerDiff)
   console.log('Restoring sleep energy', parameters.energy + energyRestorePerDiff + '/' + parameters.energy_capacity, parameters.id)
   
-  await process.save() // Save process updates
+  await process.save()
   await parameters.save()
 }
+
 export const SleepProccess = cron.schedule(
   "*/10 * * * * *",
   async () => {
