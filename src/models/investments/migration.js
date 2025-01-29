@@ -61,7 +61,7 @@ export default [
   },
   {
     id: 6,
-    coins_per_hour: 1300,
+    coins_per_hour: 1250,
     respect: 50,
     level: 6,
     price: 0,
@@ -73,7 +73,7 @@ export default [
   },
   {
     id: 7,
-    coins_per_hour: 1450,
+    coins_per_hour: 1350,
     respect: 40,
     level: 7,
     price: 0,
@@ -85,7 +85,7 @@ export default [
   },
   {
     id: 8,
-    coins_per_hour: 1600,
+    coins_per_hour: 1450,
     respect: 35,
     level: 8,
     price: 0,
@@ -97,7 +97,7 @@ export default [
   },
   {
     id: 9,
-    coins_per_hour: 1750,
+    coins_per_hour: 1550,
     respect: 35,
     level: 9,
     price: 0,
@@ -109,7 +109,7 @@ export default [
   },
   {
     id: 10,
-    coins_per_hour: 1900,
+    coins_per_hour: 1600,
     respect: 35,
     level: 10,
     price: 0,
@@ -121,7 +121,7 @@ export default [
   },
   {
     id: 11,
-    coins_per_hour: 2050,
+    coins_per_hour: 1700,
     respect: 10,
     level: 11,
     price: 0,
@@ -133,7 +133,7 @@ export default [
   },
   {
     id: 12,
-    coins_per_hour: 2200,
+    coins_per_hour: 1800,
     respect: 10,
     level: 12,
     price: 0,
@@ -145,7 +145,7 @@ export default [
   },
   {
     id: 13,
-    coins_per_hour: 2350,
+    coins_per_hour: 1900,
     respect: 10,
     level: 13,
     price: 0,
@@ -157,7 +157,7 @@ export default [
   },
   {
     id: 14,
-    coins_per_hour: 2500,
+    coins_per_hour: 2000,
     respect: 10,
     level: 14,
     price: 0,
@@ -169,7 +169,7 @@ export default [
   },
   {
     id: 15,
-    coins_per_hour: 2650,
+    coins_per_hour: 2100,
     respect: 10,
     level: 15,
     price: 0,
@@ -181,7 +181,7 @@ export default [
   },
   {
     id: 16,
-    coins_per_hour: 2800,
+    coins_per_hour: 2200,
     respect: 10,
     level: 16,
     price: 0,
@@ -193,7 +193,7 @@ export default [
   },
   {
     id: 17,
-    coins_per_hour: 2950,
+    coins_per_hour: 2300,
     respect: 10,
     level: 17,
     price: 0,
@@ -205,7 +205,7 @@ export default [
   },
   {
     id: 18,
-    coins_per_hour: 3100,
+    coins_per_hour: 2400,
     respect: 10,
     level: 18,
     price: 0,
@@ -217,7 +217,7 @@ export default [
   },
   {
     id: 19,
-    coins_per_hour: 3250,
+    coins_per_hour: 2500,
     respect: 10,
     level: 19,
     price: 0,
@@ -229,7 +229,7 @@ export default [
   },
   {
     id: 20,
-    coins_per_hour: 3400,
+    coins_per_hour: 2600,
     respect: 10,
     level: 20,
     price: 0,
@@ -241,7 +241,7 @@ export default [
   },
   {
     id: 21,
-    coins_per_hour: 3550,
+    coins_per_hour: 2700,
     respect: 10,
     level: 21,
     price: 0,
@@ -253,7 +253,7 @@ export default [
   },
   {
     id: 22,
-    coins_per_hour: 3700,
+    coins_per_hour: 2800,
     respect: 10,
     level: 22,
     price: 0,
@@ -265,7 +265,7 @@ export default [
   },
   {
     id: 23,
-    coins_per_hour: 3850,
+    coins_per_hour: 2900,
     respect: 10,
     level: 23,
     price: 0,
@@ -277,7 +277,7 @@ export default [
   },
   {
     id: 24,
-    coins_per_hour: 4000,
+    coins_per_hour: 3000,
     respect: 10,
     level: 24,
     price: 0,
@@ -289,7 +289,7 @@ export default [
   },
   {
     id: 25,
-    coins_per_hour: 4150,
+    coins_per_hour: 3100,
     respect: 10,
     level: 25,
     price: 0,
@@ -301,7 +301,7 @@ export default [
   },
   {
     id: 26,
-    coins_per_hour: 4300,
+    coins_per_hour: 3200,
     respect: 10,
     level: 26,
     price: 0,
@@ -313,7 +313,7 @@ export default [
   },
   {
     id: 27,
-    coins_per_hour: 4450,
+    coins_per_hour: 3300,
     respect: 10,
     level: 27,
     price: 0,
@@ -325,7 +325,7 @@ export default [
   },
   {
     id: 28,
-    coins_per_hour: 4600,
+    coins_per_hour: 3400,
     respect: 10,
     level: 28,
     price: 0,
@@ -337,7 +337,7 @@ export default [
   },
   {
     id: 29,
-    coins_per_hour: 4750,
+    coins_per_hour: 3500,
     respect: 10,
     level: 29,
     price: 0,
@@ -349,7 +349,7 @@ export default [
   },
   {
     id: 30,
-    coins_per_hour: 4900,
+    coins_per_hour: 3600,
     respect: 10,
     level: 30,
     price: 0,
@@ -361,7 +361,7 @@ export default [
   },
   {
     id: 31,
-    coins_per_hour: 5050,
+    coins_per_hour: 3700,
     respect: 10,
     level: 31,
     price: 0,
@@ -373,7 +373,7 @@ export default [
   },
   {
     id: 32,
-    coins_per_hour: 5200,
+    coins_per_hour: 3800,
     respect: 10,
     level: 32,
     price: 0,
@@ -385,7 +385,7 @@ export default [
   },
   {
     id: 33,
-    coins_per_hour: 5350,
+    coins_per_hour: 3900,
     respect: 10,
     level: 33,
     price: 0,
@@ -397,7 +397,7 @@ export default [
   },
   {
     id: 34,
-    coins_per_hour: 5500,
+    coins_per_hour: 4000,
     respect: 10,
     level: 34,
     price: 0,
@@ -409,7 +409,7 @@ export default [
   },
   {
     id: 35,
-    coins_per_hour: 5650,
+    coins_per_hour: 4100,
     respect: 10,
     level: 35,
     price: 0,
@@ -421,237 +421,9 @@ export default [
   },
   {
     id: 36,
-    coins_per_hour: 5,
+    coins_per_hour: 70,
     respect: 5,
     level: 1,
-    price: 300,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 37,
-    coins_per_hour: 7,
-    respect: 5,
-    level: 2,
-    price: 100,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 38,
-    coins_per_hour: 10,
-    respect: 5,
-    level: 3,
-    price: 150,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 39,
-    coins_per_hour: 15,
-    respect: 5,
-    level: 4,
-    price: 180,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 40,
-    coins_per_hour: 18,
-    respect: 5,
-    level: 5,
-    price: 200,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 41,
-    coins_per_hour: 20,
-    respect: 5,
-    level: 6,
-    price: 230,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 42,
-    coins_per_hour: 22,
-    respect: 5,
-    level: 7,
-    price: 250,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 43,
-    coins_per_hour: 25,
-    respect: 5,
-    level: 8,
-    price: 300,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 44,
-    coins_per_hour: 28,
-    respect: 5,
-    level: 9,
-    price: 320,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 45,
-    coins_per_hour: 30,
-    respect: 5,
-    level: 10,
-    price: 350,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 46,
-    coins_per_hour: 32,
-    respect: 5,
-    level: 11,
-    price: 380,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 47,
-    coins_per_hour: 35,
-    respect: 5,
-    level: 12,
-    price: 400,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 48,
-    coins_per_hour: 38,
-    respect: 5,
-    level: 13,
-    price: 420,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 49,
-    coins_per_hour: 40,
-    respect: 5,
-    level: 14,
-    price: 450,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 50,
-    coins_per_hour: 42,
-    respect: 5,
-    level: 15,
-    price: 500,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 51,
-    coins_per_hour: 45,
-    respect: 5,
-    level: 16,
-    price: 550,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 52,
-    coins_per_hour: 48,
-    respect: 5,
-    level: 17,
-    price: 580,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 53,
-    coins_per_hour: 50,
-    respect: 5,
-    level: 18,
-    price: 600,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 54,
-    coins_per_hour: 55,
-    respect: 5,
-    level: 19,
-    price: 700,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 55,
-    coins_per_hour: 60,
-    respect: 5,
-    level: 20,
     price: 1000,
     type: "coffee_shop",
     title: {
@@ -660,58 +432,10 @@ export default [
     },
   },
   {
-    id: 56,
-    coins_per_hour: 65,
+    id: 37,
+    coins_per_hour: 150,
     respect: 5,
-    level: 21,
-    price: 1200,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 57,
-    coins_per_hour: 70,
-    respect: 5,
-    level: 22,
-    price: 1300,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 58,
-    coins_per_hour: 75,
-    respect: 5,
-    level: 23,
-    price: 1400,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 59,
-    coins_per_hour: 80,
-    respect: 5,
-    level: 24,
-    price: 1500,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 60,
-    coins_per_hour: 85,
-    respect: 5,
-    level: 25,
+    level: 2,
     price: 1800,
     type: "coffee_shop",
     title: {
@@ -720,22 +444,10 @@ export default [
     },
   },
   {
-    id: 61,
-    coins_per_hour: 90,
+    id: 38,
+    coins_per_hour: 200,
     respect: 5,
-    level: 26,
-    price: 2000,
-    type: "coffee_shop",
-    title: {
-      ru: "Кофейня",
-      en: "Cafeteria"
-    },
-  },
-  {
-    id: 62,
-    coins_per_hour: 95,
-    respect: 5,
-    level: 27,
+    level: 3,
     price: 2400,
     type: "coffee_shop",
     title: {
@@ -744,11 +456,299 @@ export default [
     },
   },
   {
+    id: 39,
+    coins_per_hour: 250,
+    respect: 5,
+    level: 4,
+    price: 3000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 40,
+    coins_per_hour: 300,
+    respect: 5,
+    level: 5,
+    price: 4200,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 41,
+    coins_per_hour: 350,
+    respect: 5,
+    level: 6,
+    price: 4900,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 42,
+    coins_per_hour: 400,
+    respect: 5,
+    level: 7,
+    price: 5600,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 43,
+    coins_per_hour: 450,
+    respect: 5,
+    level: 8,
+    price: 6300,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 44,
+    coins_per_hour: 500,
+    respect: 5,
+    level: 9,
+    price: 7000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 45,
+    coins_per_hour: 550,
+    respect: 5,
+    level: 10,
+    price: 8800,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 46,
+    coins_per_hour: 600,
+    respect: 5,
+    level: 11,
+    price: 9600,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 47,
+    coins_per_hour: 650,
+    respect: 5,
+    level: 12,
+    price: 10400,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 48,
+    coins_per_hour: 700,
+    respect: 5,
+    level: 13,
+    price: 11200,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 49,
+    coins_per_hour: 750,
+    respect: 5,
+    level: 14,
+    price: 12000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 50,
+    coins_per_hour: 800,
+    respect: 5,
+    level: 15,
+    price: 14400,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 51,
+    coins_per_hour: 850,
+    respect: 5,
+    level: 16,
+    price: 15300,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 52,
+    coins_per_hour: 900,
+    respect: 5,
+    level: 17,
+    price: 16200,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 53,
+    coins_per_hour: 950,
+    respect: 5,
+    level: 18,
+    price: 17100,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 54,
+    coins_per_hour: 1000,
+    respect: 5,
+    level: 19,
+    price: 18000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 55,
+    coins_per_hour: 1050,
+    respect: 5,
+    level: 20,
+    price: 21000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 56,
+    coins_per_hour: 1100,
+    respect: 5,
+    level: 21,
+    price: 22000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 57,
+    coins_per_hour: 1150,
+    respect: 5,
+    level: 22,
+    price: 23000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 58,
+    coins_per_hour: 1200,
+    respect: 5,
+    level: 23,
+    price: 24000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 59,
+    coins_per_hour: 1250,
+    respect: 5,
+    level: 24,
+    price: 25000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 60,
+    coins_per_hour: 1300,
+    respect: 5,
+    level: 25,
+    price: 26000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 61,
+    coins_per_hour: 1350,
+    respect: 5,
+    level: 26,
+    price: 27000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
+    id: 62,
+    coins_per_hour: 1400,
+    respect: 5,
+    level: 27,
+    price: 28000,
+    type: "coffee_shop",
+    title: {
+      ru: "Кофейня",
+      en: "Cafeteria"
+    },
+  },
+  {
     id: 63,
-    coins_per_hour: 100,
+    coins_per_hour: 1450,
     respect: 5,
     level: 28,
-    price: 2800,
+    price: 29000,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -757,10 +757,10 @@ export default [
   },
   {
     id: 64,
-    coins_per_hour: 110,
+    coins_per_hour: 1500,
     respect: 5,
     level: 29,
-    price: 3200,
+    price: 30000,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -769,10 +769,10 @@ export default [
   },
   {
     id: 65,
-    coins_per_hour: 115,
+    coins_per_hour: 1550,
     respect: 5,
     level: 30,
-    price: 2600,
+    price: 37200,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -781,10 +781,10 @@ export default [
   },
   {
     id: 66,
-    coins_per_hour: 120,
+    coins_per_hour: 1600,
     respect: 5,
     level: 31,
-    price: 2800,
+    price: 38400,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -793,10 +793,10 @@ export default [
   },
   {
     id: 67,
-    coins_per_hour: 125,
+    coins_per_hour: 1650,
     respect: 5,
     level: 32,
-    price: 3200,
+    price: 39600,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -805,10 +805,10 @@ export default [
   },
   {
     id: 68,
-    coins_per_hour: 130,
+    coins_per_hour: 1700,
     respect: 5,
     level: 33,
-    price: 4000,
+    price: 40800,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -817,10 +817,10 @@ export default [
   },
   {
     id: 69,
-    coins_per_hour: 140,
+    coins_per_hour: 1750,
     respect: 5,
     level: 34,
-    price: 4500,
+    price: 42000,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -829,10 +829,10 @@ export default [
   },
   {
     id: 70,
-    coins_per_hour: 150,
+    coins_per_hour: 1800,
     respect: 5,
     level: 35,
-    price: 5000,
+    price: 43200,
     type: "coffee_shop",
     title: {
       ru: "Кофейня",
@@ -844,7 +844,7 @@ export default [
     coins_per_hour: 400,
     respect: 10,
     level: 1,
-    price: 3000,
+    price: 4800,
     type: "zoo_shop",
     
     title: {
@@ -857,7 +857,7 @@ export default [
     coins_per_hour: 450,
     respect: 10,
     level: 2,
-    price: 1500,
+    price: 5400,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -869,7 +869,7 @@ export default [
     coins_per_hour: 500,
     respect: 10,
     level: 3,
-    price: 2250,
+    price: 6000,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -881,7 +881,7 @@ export default [
     coins_per_hour: 550,
     respect: 10,
     level: 4,
-    price: 3380,
+    price: 6600,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -893,7 +893,7 @@ export default [
     coins_per_hour: 600,
     respect: 10,
     level: 5,
-    price: 5070,
+    price: 8400,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -905,7 +905,7 @@ export default [
     coins_per_hour: 650,
     respect: 10,
     level: 6,
-    price: 7610,
+    price: 9100,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -917,7 +917,7 @@ export default [
     coins_per_hour: 730,
     respect: 10,
     level: 7,
-    price: 11420,
+    price: 10220,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -929,7 +929,7 @@ export default [
     coins_per_hour: 810,
     respect: 10,
     level: 8,
-    price: 17130,
+    price: 11340,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -941,7 +941,7 @@ export default [
     coins_per_hour: 890,
     respect: 10,
     level: 9,
-    price: 25700,
+    price: 12460,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -953,7 +953,7 @@ export default [
     coins_per_hour: 970,
     respect: 10,
     level: 10,
-    price: 38550,
+    price: 15520,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -965,7 +965,7 @@ export default [
     coins_per_hour: 1070,
     respect: 10,
     level: 11,
-    price: 57830,
+    price: 17120,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -977,7 +977,7 @@ export default [
     coins_per_hour: 1170,
     respect: 10,
     level: 12,
-    price: 86750,
+    price: 18720,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -989,7 +989,7 @@ export default [
     coins_per_hour: 1270,
     respect: 10,
     level: 13,
-    price: 130130,
+    price: 20320,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1001,7 +1001,7 @@ export default [
     coins_per_hour: 1370,
     respect: 10,
     level: 14,
-    price: 195200,
+    price: 21920,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1013,7 +1013,7 @@ export default [
     coins_per_hour: 1470,
     respect: 10,
     level: 15,
-    price: 234240,
+    price: 26460,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1025,7 +1025,7 @@ export default [
     coins_per_hour: 1570,
     respect: 10,
     level: 16,
-    price: 257660,
+    price: 28260,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1037,7 +1037,7 @@ export default [
     coins_per_hour: 1670,
     respect: 10,
     level: 17,
-    price: 283430,
+    price: 30060,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1049,7 +1049,7 @@ export default [
     coins_per_hour: 1770,
     respect: 10,
     level: 18,
-    price: 311770,
+    price: 33660,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1061,7 +1061,7 @@ export default [
     coins_per_hour: 1870,
     respect: 10,
     level: 19,
-    price: 342950,
+    price: 39400,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1073,7 +1073,7 @@ export default [
     coins_per_hour: 1970,
     respect: 10,
     level: 20,
-    price: 377250,
+    price: 41800,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1085,7 +1085,7 @@ export default [
     coins_per_hour: 2090,
     respect: 10,
     level: 21,
-    price: 414980,
+    price: 44200,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1097,7 +1097,7 @@ export default [
     coins_per_hour: 2210,
     respect: 10,
     level: 22,
-    price: 456480,
+    price: 46600,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1109,7 +1109,7 @@ export default [
     coins_per_hour: 2330,
     respect: 10,
     level: 23,
-    price: 502130,
+    price: 49000,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1121,7 +1121,7 @@ export default [
     coins_per_hour: 2450,
     respect: 10,
     level: 24,
-    price: 552340,
+    price: 52000,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1133,7 +1133,7 @@ export default [
     coins_per_hour: 2600,
     respect: 10,
     level: 25,
-    price: 607570,
+    price: 55000,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1145,7 +1145,7 @@ export default [
     coins_per_hour: 2750,
     respect: 10,
     level: 26,
-    price: 668330,
+    price: 58000,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1157,7 +1157,7 @@ export default [
     coins_per_hour: 2900,
     respect: 10,
     level: 27,
-    price: 735160,
+    price: 61000,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1169,7 +1169,7 @@ export default [
     coins_per_hour: 3050,
     respect: 10,
     level: 28,
-    price: 808680,
+    price: 64000,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1181,7 +1181,7 @@ export default [
     coins_per_hour: 3200,
     respect: 10,
     level: 29,
-    price: 889550,
+    price: 80400,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1193,7 +1193,7 @@ export default [
     coins_per_hour: 3350,
     respect: 10,
     level: 30,
-    price: 978510,
+    price: 85200,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1205,7 +1205,7 @@ export default [
     coins_per_hour: 3550,
     respect: 10,
     level: 31,
-    price: 1076360,
+    price: 90000,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1217,7 +1217,7 @@ export default [
     coins_per_hour: 3750,
     respect: 10,
     level: 32,
-    price: 1184000,
+    price: 94800,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1229,7 +1229,7 @@ export default [
     coins_per_hour: 3950,
     respect: 10,
     level: 33,
-    price: 1302400,
+    price: 99600,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1241,7 +1241,7 @@ export default [
     coins_per_hour: 4150,
     respect: 10,
     level: 34,
-    price: 1432640,
+    price: 104400,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
@@ -1253,7 +1253,7 @@ export default [
     coins_per_hour: 4350,
     respect: 10,
     level: 35,
-    price: 1575900,
+    price: 109200,
     type: "zoo_shop",
     title: {
       ru: "Зоомагазин",
