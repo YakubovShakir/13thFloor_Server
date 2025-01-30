@@ -11,7 +11,7 @@ const durationFunction = async (process, parameters) => {
   const levelParameters = await LevelsParameters.findOne({ level })
   
   // Get base duration and apply percentage decrease
-  const durationDecreasePercentage = 1 // 1% decrease
+  const durationDecreasePercentage = process.effects.duration_decrease || 0
   const baseSleepDurationInSeconds = levelParameters.sleep_duration * 60
   const sleepDurationInSeconds = baseSleepDurationInSeconds * (1 - durationDecreasePercentage / 100)
   
