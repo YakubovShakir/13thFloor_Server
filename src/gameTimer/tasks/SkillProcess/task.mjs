@@ -11,7 +11,7 @@ const endFunction = async (userId, skillId) => {
 }
 
 export const SkillProccess = cron.schedule(
-  "* * * * * *",
+  "*/10 * * * * *",
   async () => {
     try {
       //get All Food process
