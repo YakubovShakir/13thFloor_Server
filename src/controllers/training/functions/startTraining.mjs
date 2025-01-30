@@ -3,13 +3,14 @@ import TrainingParameters from "../../../models/training/trainingParameters.mjs"
 import addActiveProcess from "../../process/functions/addActiveProcess.mjs"
 import UserBoost from "../../../models/user/userBoostsModel.mjs"
 import process from "../../../models/process/processModel.mjs"
-import { ConstantEffectTypes } from "../../../models/effects/constantEffectsLevels.mjs"
+import { ConstantEffects, ConstantEffectTypes } from "../../../models/effects/constantEffectsLevels.mjs"
+import getMinutesAndSeconds from "../../../utils/getMinutesAndSeconds.js"
 const startTraining = async (userId) => {
   try {
     //Получаем параметры пользователя, если параметров нет, тогда создаем их (проверка на то что сам юзер в базе должна быть в обработчике ручки)
     const user = await UserParameters.findOne({ id: userId })
     if (!user) user = await UserParameters.create({ id: userId })
-
+    const level = await TrainingParameters.findOne({ level: user.level })
     const cond = user?.energy >= 0 && user?.hungry >= 0
 
     if (!cond)
@@ -22,13 +23,14 @@ const startTraining = async (userId) => {
       level: training_duration_decrease,
     })
 
-    const baseDuration = (work?.duration || 1) * 60 // in secs for precision
+    const baseDuration = level?.duration * 60 // in secs for precision
     const durationInSeconds = duration_decrease
       ? Math.floor(
           baseDuration * ((100 - duration_decrease.value_change) / 100)
         )
       : baseDuration
-
+    console.log('base', baseDuration)
+    console.log('duration', durationInSeconds)
     const { duration, seconds } = getMinutesAndSeconds(durationInSeconds)
 
     await user.save()

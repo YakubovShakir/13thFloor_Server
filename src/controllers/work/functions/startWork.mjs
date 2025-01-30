@@ -47,14 +47,15 @@ const startWork = async (userId) => {
         baseDuration * ((100 - duration_decrease.value_change) / 100)
       )
     : baseDuration
-    
-    //! EXPORT AND REUSE
 
     const { duration, seconds } = getMinutesAndSeconds(durationInSeconds)
 
     await addActiveProcess(userId, "work", user?.work_id, duration, seconds, {
       duration_decrease: duration_decrease?.value_change,
       reward_increase: reward_increase?.value_change,
+    }, {
+      base_duration_in_seconds: baseDuration,
+      target_duration_in_seconds: durationInSeconds < baseDuration ? durationInSeconds : null
     })
 
     return { status: 200, data: { status: "ok" } }

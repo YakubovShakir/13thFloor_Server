@@ -28,7 +28,7 @@ const durationFunction = async (process, work, userParameters) => {
 
     // Calculate remaining time with the decreased duration
   const remainingSeconds = Math.max(0, actualWorkDuration - processDurationInSeconds);
-  const remainingMinutes = Math.floor(remainingSeconds / 60);
+  const remainingMinutes = Math.ceil(remainingSeconds / 60);
   const remainingSecondsAfterMinutes = remainingSeconds % 60;
   
     // Update process duration and seconds
@@ -53,13 +53,12 @@ const durationFunction = async (process, work, userParameters) => {
     userParameters.hungry = Math.max(0, userParameters.hungry - periodHungryCost)
 
     const processDurationInSeconds = moment().diff(moment(process.createdAt), 'seconds');
-    
+    console.log(processDurationInSeconds, actualWorkDuration, rewardIncreaseHourly)
     if(processDurationInSeconds >= actualWorkDuration) {
       //! Work finished
-      const coinReward = (work.coins_in_hour + rewardIncreaseHourly) / 3600 * work?.duration / 60
-      
+      const coinReward = (work.coins_in_hour + rewardIncreaseHourly) / 3600 * baseWorkDuration
+      console.log(coinReward)
       await upUserBalance(userParameters.id, coinReward)
-      await userParameters.save()
       await process.deleteOne({ _id: process._id })
       return
     }

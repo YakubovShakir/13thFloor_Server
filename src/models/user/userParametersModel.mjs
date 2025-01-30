@@ -3,7 +3,7 @@ import migration from "../level/migration.js"
 
 const userParameterSchema = new mongoose.Schema({
   id: { type: Number, required: true, unique: true },
-  level: { type: Number, default: 0 },
+  level: { type: Number, default: 1 },
   experience: { type: Number, default: 0 },
   coins: { type: Number, default: 0 },
   total_earned: { type: Number, default: 0 },

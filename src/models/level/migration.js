@@ -2,7 +2,7 @@ export default [
   {
     level: 1,
     energy_capacity: 500,
-    required_earned: 1,
+    required_earned: 0,
     sleep_duration: 5,
   },
   {

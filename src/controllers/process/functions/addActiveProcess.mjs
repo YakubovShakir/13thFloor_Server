@@ -1,7 +1,7 @@
 import addProcess from "./addProcess.mjs"
 import process from "../../../models/process/processModel.mjs"
 
-const addActiveProcess = async (userId, type, typeId, duration, seconds, effects) => {
+const addActiveProcess = async (userId, type, typeId, duration, seconds, effects, processExtra) => {
   const activeProcess = await process.findOne({
     id: userId,
     active: true,
@@ -15,7 +15,7 @@ const addActiveProcess = async (userId, type, typeId, duration, seconds, effects
     console.log(activeProcess.effects)
     await activeProcess.save()
   } else {
-    await addProcess(userId, type, typeId, duration, effects)
+    await addProcess(userId, type, typeId, duration,seconds, effects, processExtra)
   }
 }
 
