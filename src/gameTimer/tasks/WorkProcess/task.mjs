@@ -28,9 +28,10 @@ const durationFunction = async (process, work, userParameters) => {
 
     // Calculate remaining time with the decreased duration
   const remainingSeconds = Math.max(0, actualWorkDuration - processDurationInSeconds);
-  const remainingMinutes = Math.ceil(remainingSeconds / 60);
+  const remainingMinutes = Math.floor(remainingSeconds / 60);
   const remainingSecondsAfterMinutes = remainingSeconds % 60;
   
+  console.log('@', remainingMinutes, remainingSecondsAfterMinutes)
     // Update process duration and seconds
   process.duration = remainingMinutes;
   process.seconds = remainingSecondsAfterMinutes;
