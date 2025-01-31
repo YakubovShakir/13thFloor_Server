@@ -10,6 +10,7 @@ import Users from "../../models/user/userModel.mjs"
 import UserParameters from "../../models/user/userParametersModel.mjs"
 import { prebuildInitialInventory } from "./userController.mjs"
 import UserLaunchedInvestments from '../../models/investments/userLaunchedInvestments.mjs'
+import { ConstantEffects, ConstantEffectTypes } from "../../models/effects/constantEffectsLevels.mjs"
 
 const gamecenterLevelMap = {
   "1": 1,
@@ -132,7 +133,16 @@ export const getUserParameters = async (req, res) => {
     parameters.hasWallet = user.tonWalletAddress !== null;
     await parameters.save();
 
-    // Get or create inventory
+    const work_duration_decrease_level = parameters.constant_effects_levels?.work_duration_decrease
+    const work_hourly_income_increase_level = parameters.constant_effects_levels?.work_hourly_income_increase
+    
+    const work_duration_decrease_doc = await ConstantEffects.findOne({ type: ConstantEffectTypes.WorkDurationDecrease, level: work_duration_decrease_level })
+    const work_hourly_income_increase_doc = await ConstantEffects.findOne({ type: ConstantEffectTypes.WorkHourlyIncomeIncrease, level: work_hourly_income_increase_level })    // Get or create inventory
+    
+    //! TODO REMOVE
+    const work_duration_decrease = work_duration_decrease_doc?.value_change || null
+    const work_hourly_income_increase = work_hourly_income_increase_doc?.value_change || null
+
     let inventory = await UserCurrentInventory.findOne({ user_id: userId });
     if (!inventory) {
       inventory = await prebuildInitialInventory(userId);
@@ -181,6 +191,8 @@ export const getUserParameters = async (req, res) => {
       inventory,
       clothing: userClothing && { hat, top, pants, shoes, accessories },
       shelf,
+      work_duration_decrease,
+      work_hourly_income_increase
     });
 
   } catch (error) {
