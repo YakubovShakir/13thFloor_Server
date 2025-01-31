@@ -6,14 +6,14 @@ const addProcess = async (userId, type, typeId, duration, seconds, effects, proc
     if (!["work", "training", "sleep", "skill", "food", "boost"].includes(type))
       return console.log("utils->addProcess - not valid type of process")
 
-    // const active = {
-    //   work: true,
-    //   training: true,
-    //   sleep: true,
-    //   skill: false,
-    //   food: false,
-    //   boost: false,
-    // }
+    const active = {
+      work: true,
+      training: true,
+      sleep: true,
+      skill: false,
+      food: false,
+      boost: false,
+    }
 
     let params = {
       id: userId,
@@ -25,7 +25,14 @@ const addProcess = async (userId, type, typeId, duration, seconds, effects, proc
     }
 
     if(effects) params.effects = {...effects}
-    if(processExtra) params = {...params, ...processExtra}
+    
+    if(processExtra) { 
+      console.log('process extra', processExtra)
+      const { base_duration_in_seconds = null, target_duration_in_seconds = null} = processExtra
+
+      params.base_duration_in_seconds = base_duration_in_seconds
+      params.target_duration_in_seconds = target_duration_in_seconds
+    }
 
     await process.create(params)
   } catch (e) {

@@ -89,9 +89,11 @@ export const checkCanStopWork = async (userId) => {
     const processUpdated = moment(workProcess.updatedAt)
 
     console.log('@@@@', now.diff(moment(workProcess.createdAt), 'seconds'), durationInSeconds)
+    
     if (now.diff(moment(workProcess.createdAt), 'seconds') >= durationInSeconds) {
-      console.log('Stopping process')
+      console.log('Stopping work process')
       await process.deleteOne({ id: userId, type_id: work.work_id })
+      console.log('Stopped work process')
       user.coins += reward_at_the_end
       user.total_earned += reward_at_the_end
       await user.save()

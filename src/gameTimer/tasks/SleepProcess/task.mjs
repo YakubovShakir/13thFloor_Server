@@ -55,7 +55,7 @@ export const SleepProccess = cron.schedule(
 
       for (let process of processes) {
         const parameters = await UserParameters.findOne({ id: process?.id })
-       durationFunction(process, parameters)
+        await durationFunction(process, parameters)
       }
     } catch (e) {
       console.log("Error when Sleep process", e)

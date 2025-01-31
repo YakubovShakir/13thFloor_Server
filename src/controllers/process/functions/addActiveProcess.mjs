@@ -6,13 +6,20 @@ const addActiveProcess = async (userId, type, typeId, duration, seconds, effects
     id: userId,
     active: true,
   })
-  if (activeProcess) {
+  if (activeProcess && type !== 'skill') {
     activeProcess.type = type
     activeProcess.type_id = typeId
     activeProcess.duration = duration || 0
     activeProcess.seconds = seconds || 0
     if(effects) activeProcess.effects = {...effects}
-    console.log(activeProcess.effects)
+    if(processExtra) { 
+      console.log('process extra', processExtra)
+      const { base_duration_in_seconds = null, target_duration_in_seconds = null} = processExtra
+
+      activeProcess.base_duration_in_seconds = base_duration_in_seconds
+      activeProcess.target_duration_in_seconds = target_duration_in_seconds
+    }
+    
     await activeProcess.save()
   } else {
     await addProcess(userId, type, typeId, duration,seconds, effects, processExtra)
