@@ -95,7 +95,7 @@ export const checkCanStopWork = async (userId) => {
       console.log('Stopped work process', reward_at_the_end)
       
       user.coins += reward_at_the_end
-      user.energy -= work.energy_cost_in_hour / 3600 * Math.min(0, work.base_duration_in_seconds - seconds_left)
+      user.energy = Math.min(0, user.energy - Math.floor(workProcess.energy_cost_in_hour / 3600 * Math.min(0, workProcess.base_duration_in_seconds - seconds_left)))
       user.total_earned += reward_at_the_end
       
       await user.save()
