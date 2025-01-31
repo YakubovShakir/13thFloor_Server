@@ -28,10 +28,11 @@ const addProcess = async (userId, type, typeId, duration, seconds, effects, proc
     
     if(processExtra) { 
       console.log('process extra', processExtra)
-      const { base_duration_in_seconds = null, target_duration_in_seconds = null} = processExtra
+      const { base_duration_in_seconds = null, target_duration_in_seconds = null, reward_at_the_end = null} = processExtra
 
       params.base_duration_in_seconds = base_duration_in_seconds
       params.target_duration_in_seconds = target_duration_in_seconds
+      params.reward_at_the_end = reward_at_the_end
     }
 
     await process.create(params)
