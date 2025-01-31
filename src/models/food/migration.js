@@ -14,7 +14,7 @@ export default [
     long_hungry_restore: null,
     instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 3,
+    coins_price: 25,
     link: "https://13floorgame.ru/images/foods/apple.png",
     food_id: 1,
   },
@@ -37,7 +37,7 @@ export default [
       percent: true,
     },
     long_mood_restore: null,
-    coins_price: 6,
+    coins_price: 60,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D1%8C%D0%B5.png",
     food_id: 2,
   },
@@ -57,7 +57,7 @@ export default [
     long_hungry_restore: null,
     instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 12,
+    coins_price: 250,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A1%D0%B0%D0%BB%D0%B0%D1%82.png",
     food_id: 3,
   },
@@ -81,12 +81,12 @@ export default [
     long_hungry_restore: null,
     instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 15,
+    coins_price: 1500,
     link: "https://13floorgame.ru/images/foods/liteLunch.png",
     food_id: 4,
   },
   {
-    user_level_require: 4,
+    user_level_require: 5,
    
     name: {
       ru: "Рамен",
@@ -95,7 +95,7 @@ export default [
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
-      value: 10,
+      value: 20,
       percent: true,
     },
     long_hungry_restore:null,
@@ -104,12 +104,12 @@ export default [
       percent: true,
     },
     long_mood_restore: null,
-    coins_price: 50,
+    coins_price: 2700,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9B%D0%B0%D0%BF%D1%88%D0%B0-%D1%8F%D0%BF%D0%BE%D0%BD%D1%81%D0%BA%D0%B0%D1%8F.png",
     food_id: 5,
   },
   {
-    user_level_require: 5,
+    user_level_require: 6,
    
     name: {
       ru: "Комплексный обед",
@@ -118,7 +118,7 @@ export default [
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
-      value: 15,
+      value: 35,
       percent: true,
     },
     long_hungry_restore: null,
@@ -127,12 +127,12 @@ export default [
       percent: true,
     },
     long_mood_restore: null,
-    coins_price: 50,
+    coins_price: 5000,
     link: "https://13floorgame.ru/images/foods/lunch.png",
     food_id: 6,
   },
   {
-    user_level_require: 6,
+    user_level_require: 7,
     
     name: {
       ru: "Пицца",
@@ -151,12 +151,12 @@ export default [
       percent: true,
     },
     long_mood_restore: null,
-    coins_price: 75,
+    coins_price: 7500,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9F%D0%B8%D1%86%D1%86%D0%B0.png",
     food_id: 7,
   },
   {
-    user_level_require: 6,
+    user_level_require: 8,
     
     name: {
       ru: "Протеиновый батончик",
@@ -174,12 +174,12 @@ export default [
     long_hungry_restore: null,
     instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 120,
+    coins_price: 12000,
     link: "https://13floorgame.ru/images/foods/proteinBar.png",
     food_id: 8,
   },
   {
-    user_level_require: 7,
+    user_level_require: 9,
     
     name: {
       ru: "Сытный бургер",
@@ -188,7 +188,7 @@ export default [
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
-      value: 20,
+      value: 40,
       percent: true,
     },
     long_hungry_restore: {
@@ -197,12 +197,12 @@ export default [
     },
     instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 180,
+    coins_price: 18000,
     link: "https://13floorgame.ru/images/foods/burger.png",
     food_id: 9,
   },
   {
-    user_level_require: 8,
+    user_level_require: 10,
   
     name: {
       ru: "Стейк",
@@ -211,7 +211,7 @@ export default [
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
-      value: 20,
+      value: 55,
       percent: true,
     },
     long_hungry_restore: {
@@ -220,21 +220,21 @@ export default [
     },
     instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 200,
+    coins_price: 22000,
     link: "https://13floorgame.ru/images/foods/steak.png",
     food_id: 10,
   },
   
   {
-    user_level_require: 9,
+    user_level_require: 11,
     name: {
       ru: "Суши",
       en: "Sushi"},
-    duration: 200,
+    duration: 140,
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
-      value: 40,
+      value: 60,
       percent: true,
     },
     long_hungry_restore: null,
@@ -243,12 +243,12 @@ export default [
       value: 10,
       percent: true,
     },
-    coins_price: 380,
+    coins_price: 28000,
     link: "https://13floorgame.ru/images/foods/sushi.png",
     food_id: 11,
   },
   {
-    user_level_require: 10,
+    user_level_require: 12,
     
     name: {
       ru: "Буррито",
@@ -260,13 +260,13 @@ export default [
       percent: false,
     },
     instant_hungry_restore: {
-      value: 25,
+      value: 45,
       percent: true,
     },
     long_hungry_restore: null,
     instant_mood_restore: null,
     long_mood_restore: null,
-    coins_price: 450,
+    coins_price: 35000,
     link: "https://13floorgame.ru/images/foods/burrito.png",
     food_id: 12,
   },

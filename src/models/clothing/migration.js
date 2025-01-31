@@ -171,7 +171,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Head/GlossyGlamDark-f-icon.png",
     respect: 100,
-    price: 800,
+    price: 100,
     tier: 1,
     requiredLevel: 1,
   },
@@ -193,7 +193,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Head/GlossyGlamBlonde-f-icon.png",
       respect: 100,
-      price: 800,
+      price: 100,
     tier: 1,
     requiredLevel: 1,
   },
@@ -215,7 +215,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Head/GlossyGlamBrown-f-icon-icon.png",
       respect: 100,
-      price: 800,
+      price: 100,
     tier: 1,
     requiredLevel: 1,
   },
@@ -237,7 +237,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Head/GlossyGlam  Ashen-f-icon-icon.png",
       respect: 100,
-      price: 800,
+      price: 100,
     tier: 1,
     requiredLevel: 1,
   },
@@ -259,7 +259,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Head/Dreadlocks-f -icon.png",
       respect: 100,
-      price: 800,
+      price: 100,
     tier: 0,
     requiredLevel: 1,
   },
@@ -281,7 +281,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Body/GreyTankTop-f-icon.png",
     respect: 110,
-    price: 1000,
+    price: 250,
     tier: 1,
     requiredLevel: 1,
   },
@@ -303,7 +303,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Body/WifeBeater-f-icon.png",
       respect: 110,
-      price: 1000,
+      price: 270,
     tier: 1,
     requiredLevel: 1,
   },
@@ -325,7 +325,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Body/WhiteTShirt-f-icon.png",
       respect: 100,
-      price: 1000,
+      price: 300,
     tier: 1,
     requiredLevel: 1,
   },
@@ -347,7 +347,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Body/FieryPulse-f-icon.png",
       respect: 120,
-      price: 1200,
+      price: 380,
     tier: 1,
     requiredLevel: 1,
   },
@@ -369,7 +369,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Body/HeatWave-f-icon.png",
       respect: 110,
-      price: 1100,
+      price: 350,
     tier: 1,
     requiredLevel: 1,
   },
@@ -391,7 +391,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Legs/WorkPants-f-icon.png",
       respect: 150,
-      price: 1500,
+      price: 450,
     tier: 1,
     requiredLevel: 1,
   },
@@ -413,7 +413,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Legs/SupermarketJeans- f-icon.png",
       respect: 130,
-      price: 1300,
+      price: 410,
     tier: 1,
     requiredLevel: 1,
   },
@@ -435,7 +435,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Legs/CleanSweatpants-f-icon.png",
       respect: 120,
-      price: 1200,
+      price: 380,
     tier: 1,
     requiredLevel: 1,
   },
@@ -457,7 +457,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Shoes/BlackKeds-f-icon.png",
       respect: 180,
-      price: 1800,
+      price: 600,
     tier: 1,
     requiredLevel: 1,
   },
@@ -479,7 +479,7 @@ export default [
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Accessories/Workaholic-f-icon.png",
       respect: 130,
-      price: 1800,
+      price: 500,
     tier: 1,
     requiredLevel: 1,
   },

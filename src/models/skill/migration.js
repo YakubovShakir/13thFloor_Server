@@ -286,7 +286,7 @@ export default [
       ru: "Лидерство и мотивация",
       en: "Leadership and motivation"
     },
-    coins_price: 211200,
+    coins_price: 216000,
     requiredLevel: 16,
     description: null,
     duration: 5800,
@@ -301,7 +301,7 @@ export default [
       ru: "Тренинг по автоматизации",
       en: "Automation training"
     },
-    coins_price: 260000,
+    coins_price: 273000,
     requiredLevel: 17,
     description: null,
     duration: 8700,
@@ -316,14 +316,14 @@ export default [
       ru: "Энциклопедия бодибилдинга",
       en: "Encyclopedia of Bodybuilding"
     },
-    coins_price: 100000,
+    coins_price: 360000,
      description: 
     {
       ru: "Твое настроение после тренировки улучшается на 10% больше",
       en: "Your mood improves by 10% more after a workout"
     },
     
-    duration: 30000,
+    duration: 486000,
     requiredLevel: 12,
     skill_id_required: null,
     type: null,
@@ -336,7 +336,7 @@ export default [
       ru: "Экономическое образование",
       en: "Economic education"
     },
-    coins_price: 288000,
+    coins_price: 660000,
     requiredLevel: 20,
     description: null,
     duration: 13800,
