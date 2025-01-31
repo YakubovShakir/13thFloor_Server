@@ -16,7 +16,7 @@ const schema = new mongoose.Schema({
     reward_increase: { type: Number, default: null }
   },
   boosted_created_at: { type: Date, default: null },
-  base_duration_in_seconds: { type: Number, default: null },
+  base_duration_in_seconds: { type: Number, required: true },
   target_duration_in_seconds: { type: Number, default: null },
   reward_at_the_end: { type: Number, default: null }
   // user_parameters_updated_at: { type: Date, default: null }

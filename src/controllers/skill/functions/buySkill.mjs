@@ -66,7 +66,7 @@ const buySkill = async (userId, skillId) => {
     )
 
     await user.save()
-    await addProcess(userId, "skill", skillId, skill?.duration)
+    // await addProcess(userId, "skill", skillId, skill?.duration)
 
     return { status: 200, data: { status: "ok" } }
   } catch (e) {

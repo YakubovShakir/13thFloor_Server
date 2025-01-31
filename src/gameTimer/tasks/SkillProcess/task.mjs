@@ -11,7 +11,7 @@ const durationFunction = async (process, userId, skillId) => {
       : process.base_duration_in_seconds
 
     const processDurationInSeconds = moment().diff(moment(process.createdAt), 'seconds')
-  
+    console.log(baseLearningDuration)
       // Calculate remaining time with the decreased duration
     const remainingSeconds = Math.max(0, baseLearningDuration - processDurationInSeconds);
     const remainingMinutes = Math.floor(remainingSeconds / 60);
@@ -37,6 +37,7 @@ const durationFunction = async (process, userId, skillId) => {
 export const SkillProccess = cron.schedule(
   "*/10 * * * * *",
   async () => {
+    console.log('hello')
     try {
       //get All Food process
       let skillProcesses = await UserProcess.find({ type: "skill" })
