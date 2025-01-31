@@ -1,6 +1,6 @@
 import process from "../../models/process/processModel.mjs"
 import User from "../../models/user/userModel.mjs"
-import startWork from "../work/functions/startWork.mjs"
+import startWork, { checkCanStopWork } from "../work/functions/startWork.mjs"
 import startTraining from "../training/functions/startTraining.mjs"
 import { startSleep } from "../sleep/sleepController.mjs"
 import buySkill from "../skill/functions/buySkill.mjs"
@@ -87,6 +87,25 @@ export const getUserProcesses = async (req, res) => {
     return res.status(200).json({ processes })
   } catch (e) {
     console.log("Error while getUserProcesses - ", e)
+  }
+}
+
+export const checkCanStop = async (req, res) => {
+  console.log('yes')
+  const userId = parseInt(req.params.id)
+
+  const activeProcess = await process.findOne({ id: userId, active: true })
+  console.log(activeProcess)
+  switch(activeProcess?.type) {
+    case 'work':
+      try {
+        const { status, data } = await checkCanStopWork(userId, activeProcess)
+        console.log('process stopped')
+        return res.status(status).json(data)
+      } catch(err) {
+        console.log(err)
+        return res.status(err.status).json(err.data)
+      }
   }
 }
 

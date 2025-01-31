@@ -37,6 +37,9 @@ const startTraining = async (userId) => {
 
     await addActiveProcess(userId, "training", user?.level, duration, seconds, {
       duration_decrease: duration_decrease?.value_change
+    }, {
+      base_duration_in_seconds: baseDuration,
+      target_duration_in_seconds: durationInSeconds < baseDuration ? durationInSeconds : null
     })
 
     return { status: 200, data: { status: "ok" } }

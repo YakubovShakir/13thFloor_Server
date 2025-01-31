@@ -75,7 +75,7 @@ const durationFunction = async (process, work, userParameters) => {
 }
 
 export const WorkProcess = cron.schedule(
-  "*/10 * * * * *", // Run every 10 seconds
+  "2 * * * * *", // Run every 10 seconds
   async () => {
     try {
       // Get all work processes

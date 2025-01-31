@@ -18,7 +18,7 @@ const durationFunction = async (userId, parameters, tp, process) => {
 
   // Calculate remaining time
   const remainingSeconds = Math.max(0, trainingDurationInSeconds - processDurationInSeconds);
-  const { minutes: remainingMinutes, seconds: remainingSecondsAfterMinutes } = getMinutesAndSeconds(remainingSeconds);
+  const { duration: remainingMinutes, seconds: remainingSecondsAfterMinutes } = getMinutesAndSeconds(remainingSeconds);
 
   // Update process duration and seconds
   process.duration = remainingMinutes;
