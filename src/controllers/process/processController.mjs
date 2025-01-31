@@ -1,7 +1,9 @@
 import process from "../../models/process/processModel.mjs"
 import User from "../../models/user/userModel.mjs"
 import startWork, { checkCanStopWork } from "../work/functions/startWork.mjs"
-import startTraining from "../training/functions/startTraining.mjs"
+import startTraining, {
+  checkCanStopTraining,
+} from "../training/functions/startTraining.mjs"
 import { startSleep } from "../sleep/sleepController.mjs"
 import buySkill from "../skill/functions/buySkill.mjs"
 import buyFood from "../food/functions/buyFood.mjs"
@@ -41,14 +43,14 @@ export const startProcess = async (req, res) => {
         result = await buyFood(userId, foodId)
         break
     }
-    return res.status(result?.status).json({...result?.data})
+    return res.status(result?.status).json({ ...result?.data })
   } catch (e) {
     console.log("Error in startProcess - ", e)
   }
 }
 
 export const stopActiveProcess = async (req, res) => {
-  console.log('Stopping process')
+  console.log("Stopping process")
   const userId = parseInt(req.query.id)
   if (!userId) return res.status(400).json({ error: "<id> is required!" })
 
@@ -91,21 +93,49 @@ export const getUserProcesses = async (req, res) => {
 }
 
 export const checkCanStop = async (req, res) => {
-  console.log('yes')
+  console.log("yes")
   const userId = parseInt(req.params.id)
 
   const activeProcess = await process.findOne({ id: userId, active: true })
-  console.log(activeProcess)
-  switch(activeProcess?.type) {
-    case 'work':
+  if(!activeProcess) {
+    return res.status(404).json({})
+  }
+  switch (activeProcess?.type) {
+    case "work":
       try {
         const { status, data } = await checkCanStopWork(userId, activeProcess)
-        console.log('process stopped')
+        console.log("process stopped")
         return res.status(status).json(data)
-      } catch(err) {
+      } catch (err) {
         console.log(err)
         return res.status(err.status).json(err.data)
       }
+    case "training":
+      try {
+        const { status, data } = await checkCanStopTraining(
+          userId,
+          activeProcess
+        )
+        console.log("process stopped")
+        return res.status(status).json(data)
+      } catch (err) {
+        console.log(err)
+        return res.status(err.status).json(err.data)
+      }
+      case "sleep":
+        try {
+          const { status, data } = await checkCanStopTraining(
+            userId,
+            activeProcess
+          )
+          console.log("process stopped")
+          return res.status(status).json(data)
+        } catch (err) {
+          console.log(err)
+          return res.status(err.status).json(err.data)
+        }
+    default:
+      return res.status(200).json({ status: 'ok' })
   }
 }
 

@@ -8,6 +8,7 @@ import moment from 'moment-timezone'
 import getMinutesAndSeconds from '../../../utils/getMinutesAndSeconds.js'
 
 const durationFunction = async (userId, parameters, tp, process) => {
+  const user = await UserParameters.findOne({ id: userId })
   // Apply duration decrease if applicable
   const durationDecreasePercentage = process.effects.duration_decrease || 0
   const baseDurationInSeconds = tp.duration * 60
@@ -26,8 +27,12 @@ const durationFunction = async (userId, parameters, tp, process) => {
 
   // Calculate mood profit using original duration to maintain same total reward
   const moodProfit = tp?.mood_profit / baseDurationInSeconds * diffSeconds
-  console.log(moodProfit, remainingMinutes, remainingSeconds)
+  const energySpend = user.energy_capacity / baseDurationInSeconds * diffSeconds
+  const hungrySpend = tp?.hungry_spend / baseDurationInSeconds * diffSeconds
+
   parameters.mood = Math.min(100, moodProfit + parameters?.mood)
+  parameters.energy = Math.max(0, parameters.energy - energySpend)
+  parameters.hungrySpend = Math.max(0, parameters.energy - hungrySpend)
 
   if(processDurationInSeconds > trainingDurationInSeconds) {
     await parameters.save()

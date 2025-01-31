@@ -26,10 +26,43 @@ export const startSleep = async (userId) => {
 
     await addActiveProcess(userId, "sleep", user?.level, duration, seconds, {
       duration_decrease: duration_decrease?.value_change
+    }, {
+      base_duration_in_seconds: baseDuration,
+      target_duration_in_seconds: durationInSeconds
     })
 
     return { status: 200, data: {message: "Succesfully start sleep!"}}
   } catch (e) {
     console.log("Error in startSleep", e)
   }
+}
+
+export const checkCanStopSleep = async (userId) => {
+  // Получение параметров и работы
+  const user = await UserParameters.findOne({ id: userId })
+  const sleepProcess = await process.findOne({ id: userId, type_id: work.work_id })
+
+  if (!user || !work || !workProcess)
+    return { status: 403, data: { } }
+
+  const durationInSeconds = sleepProcess.target_duration_in_seconds || sleepProcess.base_duration_in_seconds
+  const seconds_left = moment().diff(moment(sleepProcess.createdAt), 'seconds')
+  const now = moment()
+  const processCreated = moment(sleepProcess.createdAt)
+
+  console.log('@@@@', now.diff(moment(processCreated), 'seconds'), durationInSeconds)
+  
+  if (now.diff(moment(processCreated), 'seconds') >= durationInSeconds) {
+    console.log('Stopping work process')
+    await process.deleteOne({ id: userId, type: 'sleep' })
+    console.log('Stopped work process', reward_at_the_end)
+
+    user.energy = Math.min(user.energy_capacity, user.energy_capacity / sleepProcess.base_duration_in_seconds * Math.min(0, sleepProcess.base_duration_in_seconds - seconds_left))
+    
+    await user.save()
+
+    return { status: 200, data: { status: "ok" } }
+  }
+
+  throw { status: 401, data: { seconds_left } }
 }

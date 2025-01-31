@@ -11,10 +11,8 @@ const durationFunction = async (process, parameters) => {
   const levelParameters = await LevelsParameters.findOne({ level })
   
   // Get base duration and apply percentage decrease
-  const durationDecreasePercentage = process.effects.duration_decrease || 0
-  const baseSleepDurationInSeconds = levelParameters.sleep_duration * 60
-  const sleepDurationInSeconds = baseSleepDurationInSeconds * (1 - durationDecreasePercentage / 100)
-  
+  const baseDuration = process.base_duration_in_seconds
+  const sleepDurationInSeconds = process.target_duration_in_seconds || process.base_duration_in_seconds
   const processDurationInSeconds = moment().diff(moment(process.createdAt), 'seconds');
   const diffSeconds = moment().diff(moment(process.updatedAt), 'seconds');
 
@@ -36,8 +34,7 @@ const durationFunction = async (process, parameters) => {
   
   // Adjusted energy calculation to maintain the same total energy reward
   // We increase the energy per second to compensate for shorter duration
-  const energyMultiplier = baseSleepDurationInSeconds / sleepDurationInSeconds
-  const energyRestorePerDiff = (parameters.energy_capacity / sleepDurationInSeconds * diffSeconds) * (1 / energyMultiplier);
+  const energyRestorePerDiff = parameters.energy_capacity / baseDuration * diffSeconds
   
   parameters.energy = Math.min(parameters?.energy_capacity, parameters.energy + energyRestorePerDiff)
   console.log('Restoring sleep energy', parameters.energy + energyRestorePerDiff + '/' + parameters.energy_capacity, parameters.id)
