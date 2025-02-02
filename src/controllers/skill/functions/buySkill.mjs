@@ -11,7 +11,8 @@ import { ConstantEffects } from "../../../models/effects/constantEffectsLevels.m
 const buySkill = async (userId, skillId, sub_type) => {
   try {
     const user = await UserParameters.findOne({ id: userId })
-    const skill = sub_type ? await ConstantEffects.find({ id: skillId }) : await Skill.findOne({ skill_id: skillId })
+    const skill = sub_type ? await ConstantEffects.findOne({ id: skillId }) : await Skill.findOne({ skill_id: skillId })
+    console.log(skill, sub_type)
     if (!user || !skill)
       return {
         status: 404,
@@ -38,7 +39,7 @@ const buySkill = async (userId, skillId, sub_type) => {
     if (processExist) return { status: 400, data: { error: "in Learning!" } }
 
     //Проверка на наличие необходимого навыка
-    if (sub_type && skill?.skill_id_required) {
+    if (!sub_type && skill?.skill_id_required) {
       const userRequierdSkill = await UserSkill.findOne({
         skill_id: skill?.skill_id_required,
       })
@@ -46,9 +47,10 @@ const buySkill = async (userId, skillId, sub_type) => {
         return { status: 400, data: { error: "Need Required Skill!" } }
     }
 
-    const skillPrice = sub_type ? skill.price : skill?.coins_price
+    const skillPrice = skill?.price || skill.coins_price
+    console.log(skillPrice)
     // Проверка на достаточность баланса
-    if (user?.coins < skillPrice && user?.level >= skill.requiredLevel)
+    if (user?.coins < skillPrice && user?.level < (sub_type === 'constant_effects' ? skill.rquired_level : skill.requiredLevel))
       return { status: 400, data: { error: "Balance not enough!" } }
 
     user.coins -= skillPrice
@@ -66,11 +68,9 @@ const buySkill = async (userId, skillId, sub_type) => {
       {
         base_duration_in_seconds: baseDuration,
         //! Increased through boost logic
-        target_duration_in_seconds: null
-      },
-      {
+        target_duration_in_seconds: null,
         sub_type
-      }
+      },
     )
 
     await user.save()

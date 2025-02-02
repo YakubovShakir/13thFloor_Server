@@ -3,6 +3,8 @@ import UserSkill from "../../../models/user/userSkillModel.mjs"
 import cron from "node-cron"
 import updateProcessTime from "../../../utils/updateProcessTime.js"
 import moment from "moment-timezone"
+import { ConstantEffects, ConstantEffectTypes } from "../../../models/effects/constantEffectsLevels.mjs"
+import UserParameters from "../../../models/user/userParametersModel.mjs"
 
 const durationFunction = async (process, userId, skillId) => {
     // Calculate time difference since last update
@@ -23,10 +25,18 @@ const durationFunction = async (process, userId, skillId) => {
 
     if(processDurationInSeconds >= baseLearningDuration) {
       console.log(processDurationInSeconds >= baseLearningDuration, processDurationInSeconds, baseLearningDuration)
-      await UserSkill.create({
-        id: userId,
-        skill_id: skillId,
-      })
+      if(process.sub_type === 'constant_effects') {
+        console.log('learned constant effect')
+        const effect = await ConstantEffects.findOne({ id: skillId })
+        const userParams = await UserParameters.findOne({ id: userId })
+        userParams.constant_effects_levels[effect.type] = effect.level
+        await userParams.save()
+      } else {
+        await UserSkill.create({
+          id: userId,
+          skill_id: skillId,
+        })
+      }
       await process.deleteOne({ id: userId, type_id: skillId })
       return
     }
@@ -37,7 +47,6 @@ const durationFunction = async (process, userId, skillId) => {
 export const SkillProccess = cron.schedule(
   "*/10 * * * * *",
   async () => {
-    console.log('hello')
     try {
       //get All Food process
       let skillProcesses = await UserProcess.find({ type: "skill" })

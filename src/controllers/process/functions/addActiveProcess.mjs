@@ -14,11 +14,12 @@ const addActiveProcess = async (userId, type, typeId, duration, seconds, effects
     if(effects) activeProcess.effects = {...effects}
     if(processExtra) { 
       console.log('process extra', processExtra)
-      const { base_duration_in_seconds = null, target_duration_in_seconds = null, reward_at_the_end = null} = processExtra
+      const { base_duration_in_seconds = null, target_duration_in_seconds = null, reward_at_the_end = null, sub_type = null} = processExtra
 
       activeProcess.base_duration_in_seconds = base_duration_in_seconds
       activeProcess.target_duration_in_seconds = target_duration_in_seconds
       activeProcess.reward_at_the_end = reward_at_the_end
+      activeProcess.sub_type = sub_type
     }
     
     await activeProcess.save()

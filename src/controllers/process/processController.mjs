@@ -34,6 +34,7 @@ export const startProcess = async (req, res) => {
       case "skill":
         const skillId = parseInt(req.query.typeId)
         const sub_type = req.query.sub_type
+        console.log(sub_type)
         if (!skillId)
           return res.status(400).json({ error: "Incorrect skillId!" })
         result = await buySkill(userId, skillId, sub_type)
