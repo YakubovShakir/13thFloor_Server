@@ -29,7 +29,7 @@ const durationFunction = async (process, userId, skillId) => {
         console.log('learned constant effect')
         const effect = await ConstantEffects.findOne({ id: skillId })
         const userParams = await UserParameters.findOne({ id: userId })
-        userParams.constant_effects_levels[effect.type] = effect.level
+        userParams.constant_effects_levels[effect.type] = effect.level + 1
         await userParams.save()
       } else {
         await UserSkill.create({
