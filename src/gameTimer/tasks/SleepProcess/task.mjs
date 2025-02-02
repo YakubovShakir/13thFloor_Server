@@ -25,7 +25,7 @@ const durationFunction = async (process, parameters) => {
   process.duration = remainingMinutes;
   process.seconds = remainingSecondsAfterMinutes;
 
-  if(processDurationInSeconds > sleepDurationInSeconds) {
+  if(processDurationInSeconds >= sleepDurationInSeconds) {
     parameters.energy = parameters.energy_capacity
     await parameters.save()
     await process.deleteOne({ id: process.id, type: 'sleep' })
@@ -44,7 +44,7 @@ const durationFunction = async (process, parameters) => {
 }
 
 export const SleepProccess = cron.schedule(
-  "*/10 * * * * *",
+  "1 * * * * *",
   async () => {
     try {
       //get All Sleep Processes

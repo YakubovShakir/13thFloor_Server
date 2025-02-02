@@ -7,6 +7,7 @@ const schema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  sub_type: { type: String, default: null },
   type_id: { type: Number, required: true },
   //! IN SECONDS
   duration: { type: Number, required: true },

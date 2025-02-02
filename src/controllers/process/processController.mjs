@@ -4,7 +4,7 @@ import startWork, { checkCanStopWork } from "../work/functions/startWork.mjs"
 import startTraining, {
   checkCanStopTraining,
 } from "../training/functions/startTraining.mjs"
-import { startSleep } from "../sleep/sleepController.mjs"
+import { checkCanStopSleep, startSleep } from "../sleep/sleepController.mjs"
 import buySkill from "../skill/functions/buySkill.mjs"
 import buyFood from "../food/functions/buyFood.mjs"
 import Work from "../../models/work/workModel.mjs"
@@ -33,9 +33,10 @@ export const startProcess = async (req, res) => {
         break
       case "skill":
         const skillId = parseInt(req.query.typeId)
+        const sub_type = req.query.sub_type
         if (!skillId)
           return res.status(400).json({ error: "Incorrect skillId!" })
-        result = await buySkill(userId, skillId)
+        result = await buySkill(userId, skillId, sub_type)
         break
       case "food":
         const foodId = parseInt(req.query.typeId)
@@ -124,7 +125,7 @@ export const checkCanStop = async (req, res) => {
       }
       case "sleep":
         try {
-          const { status, data } = await checkCanStopTraining(
+          const { status, data } = await checkCanStopSleep(
             userId,
             activeProcess
           )

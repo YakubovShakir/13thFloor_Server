@@ -4,6 +4,8 @@ import UserParameters from "../../models/user/userParametersModel.mjs"
 import addActiveProcess from "../process/functions/addActiveProcess.mjs"
 import { ConstantEffects, ConstantEffectTypes } from "../../models/effects/constantEffectsLevels.mjs"
 import getMinutesAndSeconds from '../../utils/getMinutesAndSeconds.js'
+import moment from "moment-timezone"
+
 export const startSleep = async (userId) => {
   try {
     const user = await UserParameters.findOne({id: userId})
@@ -40,9 +42,9 @@ export const startSleep = async (userId) => {
 export const checkCanStopSleep = async (userId) => {
   // Получение параметров и работы
   const user = await UserParameters.findOne({ id: userId })
-  const sleepProcess = await process.findOne({ id: userId, type_id: work.work_id })
+  const sleepProcess = await process.findOne({ id: userId, type: 'sleep' })
 
-  if (!user || !work || !workProcess)
+  if (!user || !sleepProcess)
     return { status: 403, data: { } }
 
   const durationInSeconds = sleepProcess.target_duration_in_seconds || sleepProcess.base_duration_in_seconds
@@ -53,9 +55,8 @@ export const checkCanStopSleep = async (userId) => {
   console.log('@@@@', now.diff(moment(processCreated), 'seconds'), durationInSeconds)
   
   if (now.diff(moment(processCreated), 'seconds') >= durationInSeconds) {
-    console.log('Stopping work process')
+    console.log('Stopping sleep process')
     await process.deleteOne({ id: userId, type: 'sleep' })
-    console.log('Stopped work process', reward_at_the_end)
 
     user.energy = Math.min(user.energy_capacity, user.energy_capacity / sleepProcess.base_duration_in_seconds * Math.min(0, sleepProcess.base_duration_in_seconds - seconds_left))
     
