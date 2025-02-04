@@ -29,7 +29,7 @@ export default [
     mood_cost_in_hour: 22,
     hungry_cost_in_hour: 30,
     skill_id_required: null,
-    respect_required: 0,
+    respect_required: 50,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BA%D1%83%D1%80%D1%8C%D0%B5%D1%80.png",
     duration: 5
   },
