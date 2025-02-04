@@ -20,7 +20,7 @@ const addProcess = async (userId, type, typeId, duration, seconds, effects, proc
       type: type,
       type_id: typeId,
       duration: duration || 0,
-      active: true,
+      active: active[type],
       seconds: seconds || 0,
     }
 

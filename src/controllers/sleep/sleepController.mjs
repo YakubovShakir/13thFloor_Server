@@ -58,7 +58,7 @@ export const checkCanStopSleep = async (userId) => {
     console.log('Stopping sleep process')
     await process.deleteOne({ id: userId, type: 'sleep' })
 
-    user.energy = Math.min(user.energy_capacity, user.energy_capacity / sleepProcess.base_duration_in_seconds * Math.min(0, sleepProcess.base_duration_in_seconds - seconds_left))
+    user.energy = user.energy_capacity
     
     await user.save()
 

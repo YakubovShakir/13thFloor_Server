@@ -15,7 +15,9 @@ const useTonicDrink = async (userId) => {
       boostProcess.duration = boost?.duration
       await boostProcess.save()
     } else {
-      await addProcess(userId, "boost", boost?.boost_id, boost?.duration)
+      await addProcess(userId, "boost", boost?.boost_id, boost?.duration, null, null, {
+        base_duration_in_seconds: boost?.duration * 60
+      })
     }
     return true
   } catch (e) {

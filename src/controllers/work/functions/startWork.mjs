@@ -83,19 +83,17 @@ export const checkCanStopWork = async (userId) => {
     const durationInSeconds = workProcess.target_duration_in_seconds || workProcess.base_duration_in_seconds
 
     const reward_at_the_end = Number(workProcess.reward_at_the_end)
-    const seconds_left = moment().diff(moment(workProcess.createdAt), 'seconds')
     const now = moment()
+    const seconds_left = Math.max(0, durationInSeconds - now.diff(moment(workProcess.createdAt), "seconds"))
     const processCreated = moment(workProcess.createdAt)
-
-    console.log('@@@@', now.diff(moment(processCreated), 'seconds'), durationInSeconds)
     
-    if (now.diff(moment(processCreated), 'seconds') >= durationInSeconds) {
+    if (seconds_left === 0) {
       console.log('Stopping work process')
       await process.deleteOne({ id: userId, type_id: work.work_id })
       console.log('Stopped work process', reward_at_the_end)
       
       user.coins += reward_at_the_end
-      user.energy = Math.min(0, user.energy - Math.floor(work.energy_cost_in_hour / 3600 * Math.min(0, workProcess.base_duration_in_seconds - seconds_left)))
+      user.energy = Math.max(0, user.energy - Math.floor(work.energy_cost_in_hour / 3600 * Math.min(0, workProcess.base_duration_in_seconds - seconds_left)))
       user.total_earned += reward_at_the_end
       
       await user.save()

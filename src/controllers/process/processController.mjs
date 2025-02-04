@@ -75,7 +75,7 @@ export const getUserProcesses = async (req, res) => {
     if (!userId) return res.status(400).json({ error: "<id> is required!" })
 
     const processType = req.query.type
-    if (!["food", "work", "skill", "training"].includes(processType))
+    if (!["food", "work", "skill", "training", "boost"].includes(processType))
       return res.status(400).json({ error: "<type> is wrong!" })
 
     const user = await User.findOne({ id: userId })

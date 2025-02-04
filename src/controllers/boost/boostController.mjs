@@ -98,12 +98,12 @@ export const useBoost = async (req, res) => {
       case "relax-massage":
         result = await useRelaxMassage(userParameters)
         break
-      case "robot-helper-12":
-        result = await useRobotHelper(userId, 5)
-        break
-      case "robot-helper-24":
-        result = await useRobotHelper(userId, 6)
-        break
+      // case "robot-helper-12":
+      //   result = await useRobotHelper(userId, 5)
+      //   break
+      // case "robot-helper-24":
+      //   result = await useRobotHelper(userId, 6)
+      //   break
       case "learn-speed-20":
         skillId = parseInt(req.query.skillId)
         if (!skillId)

@@ -46,7 +46,9 @@ const buyFood = async (userId, foodId) => {
       user.mood = Math.min(100, user?.mood + instantMoodRestore)
 
     await user.save()
-    await addProcess(userId, "food", foodId, food?.duration)
+    await addProcess(userId, "food", foodId, food?.duration, null, null, {
+      base_duration_in_seconds: food.duration * 60
+    })
 
     return { status: 200, data: { status: "ok" } }
   } catch (e) {

@@ -26,14 +26,14 @@ const processDurationFunction = async (boostDuration, process, user) => {
     process.duration = remainingMinutes;
     process.seconds = remainingSecondsAfterMinutes;
 
-    user.energy = user.energy + user?.energy_capacity / boostDurationInSeconds * diffSeconds
-    console.log(user.energy)
+    user.energy = Math.min(user.energy, user.energy + user?.energy_capacity / boostDurationInSeconds * diffSeconds)
+
     await user.save()
     await process.save()
 }
 
 export const BoostProccess = cron.schedule(
-  "*/5 * * * * *",
+  "*/10 * * * * *",
   async () => {
     try {
       //get All Boost process

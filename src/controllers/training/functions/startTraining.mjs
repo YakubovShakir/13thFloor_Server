@@ -77,13 +77,7 @@ export const checkCanStopTraining = async (userId) => {
     trainingProcess.target_duration_in_seconds ||
     trainingProcess.base_duration_in_seconds
   const now = moment()
-  const seconds_left = now.diff(moment(trainingProcess.createdAt), "seconds")
-
-  console.log(
-    "@@@@",
-    now.diff(moment(trainingProcess.createdAt), "seconds"),
-    durationInSeconds
-  )
+  const seconds_left = Math.max(0, durationInSeconds - now.diff(moment(trainingProcess.createdAt), "seconds"))
 
   if (
     now.diff(moment(trainingProcess.createdAt), "seconds") >= durationInSeconds
