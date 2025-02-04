@@ -85,7 +85,6 @@ export const checkCanStopWork = async (userId) => {
     const reward_at_the_end = Number(workProcess.reward_at_the_end)
     const now = moment()
     const seconds_left = Math.max(0, durationInSeconds - now.diff(moment(workProcess.createdAt), "seconds"))
-    const processCreated = moment(workProcess.createdAt)
     
     if (seconds_left === 0) {
       console.log('Stopping work process')
