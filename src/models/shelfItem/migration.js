@@ -54,42 +54,42 @@ export const ShelfItems = [
   //   link: "",
   //   type: ShelfItemTypes.Award
   // },
-  {
-    id: 4,
-    name: {
-      ru: "Музыкальная Шкатулка",
-      en: "Music Box",
-    },
-    description: {
-      ru: "Главный трек этого года",
-      en: "Top track of this year",
-    },
-    cost: {
-      coins: 250,
-      stars: 0,
-    },
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/MusicBox.png",
-    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шкатурка-полка.png",
-    type: ShelfItemTypes.Event
-  },
-  {
-    id: 5,
-    name: {
-      ru: "Шар со Снегом",
-      en: "Snow Globe",
-    },
-    description: {
-      ru: "Аккуратнее! А то весь снег рассыпется",
-      en: "Careful! You'll Scatter All the Snow",
-    },
-    cost: {
-      coins: 150,
-      stars: 0,
-    },
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/SnowGlass.png",
-    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шар-полка.png",
-    type: ShelfItemTypes.Event
-  },
+  // {
+  //   id: 4,
+  //   name: {
+  //     ru: "Музыкальная Шкатулка",
+  //     en: "Music Box",
+  //   },
+  //   description: {
+  //     ru: "Главный трек этого года",
+  //     en: "Top track of this year",
+  //   },
+  //   cost: {
+  //     coins: 250,
+  //     stars: 0,
+  //   },
+  //   link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/MusicBox.png",
+  //   shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шкатурка-полка.png",
+  //   type: ShelfItemTypes.Event
+  // },
+  // {
+  //   id: 5,
+  //   name: {
+  //     ru: "Шар со Снегом",
+  //     en: "Snow Globe",
+  //   },
+  //   description: {
+  //     ru: "Аккуратнее! А то весь снег рассыпется",
+  //     en: "Careful! You'll Scatter All the Snow",
+  //   },
+  //   cost: {
+  //     coins: 150,
+  //     stars: 0,
+  //   },
+  //   link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/SnowGlass.png",
+  //   shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шар-полка.png",
+  //   type: ShelfItemTypes.Event
+  // },
   {
     id: 6,
     name: {
@@ -104,7 +104,7 @@ export const ShelfItems = [
       coins: 0,
       stars: 10000,
     },
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/Star.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
     shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
     type: ShelfItemTypes.Award
   },
