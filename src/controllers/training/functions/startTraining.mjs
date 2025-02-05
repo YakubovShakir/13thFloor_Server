@@ -80,18 +80,21 @@ export const checkCanStopTraining = async (userId) => {
   const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds")
   const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
 
-  // Calculate resource consumption since last update
-  const energyCost = (trainingParameters.energy_spend / trainingParameters.duration * 60) * secondsSinceLastUpdate
-  const hungryCost = (trainingParameters.hungry_spend / trainingParameters.duration * 60) * secondsSinceLastUpdate
-  const moodProfit = (trainingParameters.mood_profit / trainingParameters.duration * 60) * secondsSinceLastUpdate
 
-  if (seconds_left === 0) {
+  // Calculate resource consumption since last update
+  const energyCost = (trainingParameters.energy_spend / (trainingParameters.duration * 60)) * secondsSinceLastUpdate
+  const hungryCost = (trainingParameters.hungry_spend / (trainingParameters.duration * 60)) * secondsSinceLastUpdate
+  const moodProfit = (trainingParameters.mood_profit / (trainingParameters.duration * 60)) * secondsSinceLastUpdate
+
+  console.log(secondsSinceLastUpdate, { energyCost, hungryCost })
+
+  if (seconds_left === 0 || user.energy === 0) {
     console.log('Stopping training process')
     await process.deleteOne({ id: userId, type: 'training' })
 
     user.energy = Math.max(0, user.energy - energyCost)
     user.hungry = Math.max(0, user.hungry - hungryCost)
-    user.mood = Math.min(100, user.energy + moodProfit)
+    user.mood = Math.min(100, user.mood + moodProfit)
 
     await user.save()
 
