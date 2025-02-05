@@ -63,34 +63,36 @@ const startTraining = async (userId) => {
 }
 
 export const checkCanStopTraining = async (userId) => {
-  // Получение параметров и работы
+  // Получение параметров и тренировки
   const user = await UserParameters.findOne({ id: userId })
-  const tp = await TrainingParameters.findOne({ level: user.level })
-  const trainingProcess = await process.findOne({
-    id: userId,
-    type: 'training'
-  })
+  const trainingProcess = await process.findOne({ id: userId, type: 'training' })
+  const trainingParameters = await TrainingParameters.findOne({ level: user.level })
 
-  if (!user || !trainingProcess || !tp) return { status: 403, data: {} }
+  if (!user || !trainingProcess || !trainingParameters)
+    return { status: 403, data: { } }
 
-  const durationInSeconds =
-    trainingProcess.target_duration_in_seconds ||
-    trainingProcess.base_duration_in_seconds
+  const durationInSeconds = trainingProcess.target_duration_in_seconds || trainingProcess.base_duration_in_seconds
+
   const now = moment()
-  const seconds_left = Math.max(0, durationInSeconds - now.diff(moment(trainingProcess.createdAt), "seconds"))
+  const processStartTime = moment(trainingProcess.createdAt)
+  const lastUpdateTime = moment(trainingProcess.user_parameters_updated_at || trainingProcess.updatedAt)
+  const elapsedSeconds = now.diff(processStartTime, "seconds")
+  const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds")
+  const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
 
-  if (
-    now.diff(moment(trainingProcess.createdAt), "seconds") >= durationInSeconds
-  ) {
-    console.log("Stopping training process")
+  // Calculate resource consumption since last update
+  const energyCost = (trainingParameters.energy_spend / trainingParameters.duration * 60) * secondsSinceLastUpdate
+  const hungryCost = (trainingParameters.hungry_spend / trainingParameters.duration * 60) * secondsSinceLastUpdate
+  const moodProfit = (trainingParameters.mood_profit / trainingParameters.duration * 60) * secondsSinceLastUpdate
+
+  if (seconds_left === 0) {
+    console.log('Stopping training process')
     await process.deleteOne({ id: userId, type: 'training' })
-    console.log("Stopped training process")
-    user.mood +=
-      (tp.mood_profit / (trainingProcess.base_duration_in_seconds * 60)) *
-      Math.min(0, trainingProcess.base_duration_in_seconds - seconds_left)
-    user.energy -=
-      (tp.energy_spend / (trainingProcess.base_duration_in_seconds * 60)) *
-      Math.min(0, trainingProcess.base_duration_in_seconds - seconds_left)
+
+    user.energy = Math.max(0, user.energy - energyCost)
+    user.hungry = Math.max(0, user.hungry - hungryCost)
+    user.mood = Math.min(100, user.energy + moodProfit)
+
     await user.save()
 
     return { status: 200, data: { status: "ok" } }

@@ -40,7 +40,7 @@ export const startSleep = async (userId) => {
 }
 
 export const checkCanStopSleep = async (userId) => {
-  // Получение параметров и работы
+  // Получение параметров и процесса сна
   const user = await UserParameters.findOne({ id: userId })
   const sleepProcess = await process.findOne({ id: userId, type: 'sleep' })
 
@@ -48,13 +48,13 @@ export const checkCanStopSleep = async (userId) => {
     return { status: 403, data: { } }
 
   const durationInSeconds = sleepProcess.target_duration_in_seconds || sleepProcess.base_duration_in_seconds
-  const seconds_left = moment().diff(moment(sleepProcess.createdAt), 'seconds')
-  const now = moment()
-  const processCreated = moment(sleepProcess.createdAt)
 
-  console.log('@@@@', now.diff(moment(processCreated), 'seconds'), durationInSeconds)
-  
-  if (now.diff(moment(processCreated), 'seconds') >= durationInSeconds) {
+  const now = moment()
+  const processStartTime = moment(sleepProcess.createdAt)
+  const elapsedSeconds = now.diff(processStartTime, "seconds")
+  const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
+
+  if (seconds_left === 0 || user.energy == user.energy_capacity) {
     console.log('Stopping sleep process')
     await process.deleteOne({ id: userId, type: 'sleep' })
 

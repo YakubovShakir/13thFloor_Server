@@ -6,45 +6,46 @@ import User from "../../../models/user/userModel.mjs"
 import LevelsParameters from "../../../models/level/levelParametersModel.mjs"
 import moment from 'moment-timezone'
 
-const durationFunction = async (process, parameters) => {
-  const level = parameters.level
-  const levelParameters = await LevelsParameters.findOne({ level })
+const durationFunction = async (sleepProcess, parameters) => {
+  const now = moment()
+  const processStartTime = moment(sleepProcess.createdAt)
+  const lastUpdateTime = moment(sleepProcess.user_parameters_updated_at || sleepProcess.updatedAt)
+  const elapsedSeconds = now.diff(processStartTime, "seconds")
+  const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds")
+
+  const durationInSeconds = sleepProcess.target_duration_in_seconds || sleepProcess.base_duration_in_seconds
+  const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
+
+  // Calculate energy restoration since last update
+  const energyRestorePerSecond = parameters.energy_capacity / sleepProcess.base_duration_in_seconds
+  const energyRestored = energyRestorePerSecond * secondsSinceLastUpdate
+
+  // Update user parameters
+  parameters.energy = Math.min(parameters.energy_capacity, parameters.energy + energyRestored)
   
-  // Get base duration and apply percentage decrease
-  const baseDuration = process.base_duration_in_seconds
-  const sleepDurationInSeconds = process.target_duration_in_seconds || process.base_duration_in_seconds
-  const processDurationInSeconds = moment().diff(moment(process.createdAt), 'seconds');
-  const diffSeconds = moment().diff(moment(process.updatedAt), 'seconds');
-
-  // Calculate remaining time with the decreased duration
-  const remainingSeconds = Math.max(0, sleepDurationInSeconds - processDurationInSeconds);
-  const remainingMinutes = Math.floor(remainingSeconds / 60);
-  const remainingSecondsAfterMinutes = remainingSeconds % 60;
-
-  // Update process duration and seconds
-  process.duration = remainingMinutes;
-  process.seconds = remainingSecondsAfterMinutes;
-
-  if(processDurationInSeconds >= sleepDurationInSeconds) {
-    parameters.energy = parameters.energy_capacity
-    await parameters.save()
-    await process.deleteOne({ id: process.id, type: 'sleep' })
-    return
+  if (seconds_left === 0) {
+    // Sleep completed
+    await process.deleteOne({ id: parameters.id, type: 'sleep' })
+  } else {
+    // Update process duration and seconds
+    const remainingMinutes = Math.floor(seconds_left / 60)
+    const remainingSeconds = seconds_left % 60
+    console.log({ energyRestored }, `${remainingMinutes}:${remainingSeconds}`)
+    sleepProcess.duration = remainingMinutes
+    sleepProcess.seconds = remainingSeconds
+    sleepProcess.user_parameters_updated_at = now.toDate()
+    await sleepProcess.save()
   }
-  
-  // Adjusted energy calculation to maintain the same total energy reward
-  // We increase the energy per second to compensate for shorter duration
-  const energyRestorePerDiff = parameters.energy_capacity / baseDuration * diffSeconds
-  
-  parameters.energy = Math.min(parameters?.energy_capacity, parameters.energy + energyRestorePerDiff)
-  console.log('Restoring sleep energy', parameters.energy + energyRestorePerDiff + '/' + parameters.energy_capacity, parameters.id)
-  
-  await process.save()
+
+  if(parameters.energy === parameters.energy_capacity) {
+    await process.deleteOne({ id: parameters.id, type: 'sleep' })
+  }
+
   await parameters.save()
 }
 
 export const SleepProccess = cron.schedule(
-  "1 * * * * *",
+  "*/10 * * * * *",
   async () => {
     try {
       //get All Sleep Processes

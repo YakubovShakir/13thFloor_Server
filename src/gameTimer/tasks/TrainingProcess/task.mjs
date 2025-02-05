@@ -7,42 +7,43 @@ import UserBoost from "../../../models/user/userBoostsModel.mjs"
 import moment from 'moment-timezone'
 import getMinutesAndSeconds from '../../../utils/getMinutesAndSeconds.js'
 
-const durationFunction = async (userId, parameters, tp, process) => {
-  const user = await UserParameters.findOne({ id: userId })
-  // Apply duration decrease if applicable
-  const durationDecreasePercentage = process.effects.duration_decrease || 0
-  const baseDurationInSeconds = tp.duration * 60
-  const trainingDurationInSeconds = baseDurationInSeconds * (1 - durationDecreasePercentage / 100)
+const durationFunction = async (userId, parameters, tp, trainingProcess) => {
+  const now = moment()
+  const processStartTime = moment(trainingProcess.createdAt)
+  const lastUpdateTime = moment(trainingProcess.user_parameters_updated_at || trainingProcess.updatedAt)
+  const elapsedSeconds = now.diff(processStartTime, "seconds")
+  const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds")
+
+  const durationInSeconds = trainingProcess.target_duration_in_seconds || trainingProcess.base_duration_in_seconds
+  const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
+
+  // Calculate resource consumption since last update
+  const energyCost = (tp.energy_spend / (tp.duration * 60)) * secondsSinceLastUpdate
+  const hungryCost = (tp.hungry_spend / (tp.duration * 60)) * secondsSinceLastUpdate
+  const moodProfit = (tp.mood_profit / (tp.duration * 60)) * secondsSinceLastUpdate
   
-  const processDurationInSeconds = moment().diff(moment(process.createdAt), 'seconds');
-  const diffSeconds = moment().diff(moment(process.updatedAt), 'seconds');
-
-  // Calculate remaining time
-  const remainingSeconds = Math.max(0, trainingDurationInSeconds - processDurationInSeconds);
-  const { duration: remainingMinutes, seconds: remainingSecondsAfterMinutes } = getMinutesAndSeconds(remainingSeconds);
-
-  // Update process duration and seconds
-  process.duration = remainingMinutes;
-  process.seconds = remainingSecondsAfterMinutes;
-
-  // Calculate mood profit using original duration to maintain same total reward
-  const moodProfit = tp?.mood_profit / baseDurationInSeconds * diffSeconds
-  const energySpend = user.energy_capacity / baseDurationInSeconds * diffSeconds
-  const hungrySpend = tp?.hungry_spend / baseDurationInSeconds * diffSeconds
-
-  parameters.mood = Math.min(100, moodProfit + parameters?.mood)
-  parameters.energy = Math.max(0, parameters.energy - energySpend)
-  parameters.hungrySpend = Math.max(0, parameters.energy - hungrySpend)
-
-  if(processDurationInSeconds > trainingDurationInSeconds) {
-    await parameters.save()
-    await process.deleteOne({ id: process.id, type: 'training' })
-    return
+  // Update user parameters
+  parameters.energy = Math.max(0, parameters.energy - energyCost)
+  parameters.hungry = Math.max(0, parameters.hungry - hungryCost)
+  parameters.mood = Math.min(100, parameters.mood + moodProfit)
+  
+  if (seconds_left === 0) {
+    // Training complete
+    await process.deleteOne({ id: userId, type: 'training' })
+  } else {
+    // Update process duration and seconds
+    const remainingMinutes = Math.floor(seconds_left / 60)
+    const remainingSeconds = seconds_left % 60
+    console.log({ energyCost, hungryCost, moodProfit }, `${remainingMinutes}:${remainingSeconds}`)
+    trainingProcess.duration = remainingMinutes
+    trainingProcess.seconds = remainingSeconds
+    trainingProcess.user_parameters_updated_at = now.toDate()
+    await trainingProcess.save()
   }
 
   await parameters.save()
-  await process.save()
 }
+
 
 export const TrainingProccess = cron.schedule(
   "*/10 * * * * *",

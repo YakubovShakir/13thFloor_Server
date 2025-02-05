@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node ./src/server.js",
     "devGameTimer": "nodemon ./src/gameTimer/gameTimer.js",
-    "gameTimer": "node ./src/gameTimer/gameTimer.js",
+    "gameTimer": "nodemon ./src/gameTimer/gameTimer.js",
     "dev": "nodemon ./src/server.js",
     "swagger": "node ./src/swagger.js"
   },

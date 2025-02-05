@@ -72,35 +72,49 @@ const startWork = async (userId) => {
 }
 
 export const checkCanStopWork = async (userId) => {
-    // Получение параметров и работы
-    const user = await UserParameters.findOne({ id: userId })
-    const work = await Work.findOne({ work_id: user?.work_id })
-    const workProcess = await process.findOne({ id: userId, type_id: work.work_id })
+  // Получение параметров и работы
+  const user = await UserParameters.findOne({ id: userId })
+  const work = await Work.findOne({ work_id: user?.work_id })
+  const workProcess = await process.findOne({ id: userId, type_id: work.work_id })
 
-    if (!user || !work || !workProcess)
-      return { status: 403, data: { } }
+  if (!user || !work || !workProcess)
+    return { status: 403, data: { } }
 
-    const durationInSeconds = workProcess.target_duration_in_seconds || workProcess.base_duration_in_seconds
+  const durationInSeconds = workProcess.target_duration_in_seconds || workProcess.base_duration_in_seconds
 
-    const reward_at_the_end = Number(workProcess.reward_at_the_end)
-    const now = moment()
-    const seconds_left = Math.max(0, durationInSeconds - now.diff(moment(workProcess.createdAt), "seconds"))
+  const now = moment()
+  const processStartTime = moment(workProcess.createdAt)
+  const lastUpdateTime = moment(workProcess.user_parameters_updated_at || processStartTime)
+  const elapsedSeconds = now.diff(processStartTime, "seconds")
+  const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds")
+  const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
+
+  // Calculate the actual worked duration since last update
+  const actualWorkedDuration = Math.min(secondsSinceLastUpdate, seconds_left)
+
+  // Calculate resource consumption since last update
+  const moodCost = (work.mood_cost_in_hour / 3600) * actualWorkedDuration
+  const hungryCost = (work.hungry_cost_in_hour / 3600) * actualWorkedDuration
+  const energyCost = (work.energy_cost_in_hour / 3600) * actualWorkedDuration
+
+  if (seconds_left === 0) {
+    await process.deleteOne({ id: userId, type_id: work.work_id })
     
-    if (seconds_left === 0) {
-      console.log('Stopping work process')
-      await process.deleteOne({ id: userId, type_id: work.work_id })
-      console.log('Stopped work process', reward_at_the_end)
-      
-      user.coins += reward_at_the_end
-      user.energy = Math.max(0, user.energy - Math.floor(work.energy_cost_in_hour / 3600 * Math.min(0, workProcess.base_duration_in_seconds - seconds_left)))
-      user.total_earned += reward_at_the_end
-      
-      await user.save()
+    const rewardIncreaseHourly = workProcess.effects.reward_increase || 0
+    const workReward = (work.coins_in_hour + rewardIncreaseHourly) / 3600 * workProcess.base_duration_in_seconds
 
-      return { status: 200, data: { status: "ok" } }
-    }
+    user.coins += Math.floor(workReward)
+    user.total_earned += Math.floor(workReward)
+    user.mood = Math.max(0, user.mood - moodCost)
+    user.hungry = Math.max(0, user.hungry - hungryCost)
+    user.energy = Math.max(0, user.energy - energyCost)
+    
+    await user.save()
 
-    throw { status: 401, data: { seconds_left } }
+    return { status: 200, data: { status: "ok" } }
+  }
+
+  throw { status: 401, data: { seconds_left } }
 }
 
 export default startWork

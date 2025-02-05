@@ -5,41 +5,41 @@ import cron from "node-cron"
 import upUserBalance from "../../../utils/userParameters/upUserBalance.mjs"
 import moment from 'moment-timezone'
 
-
 const durationFunction = async (process, work, userParameters) => {
-  console.log('im here')
   // Apply duration decrease
   const durationDecreasePercentage = process.effects.duration_decrease || 0
   const rewardIncreaseHourly = process.effects.reward_increase || 0
 
   const baseWorkDuration = work.duration * 60 || 60
   const actualWorkDuration = baseWorkDuration * (1 - durationDecreasePercentage / 100)
-  console.log(actualWorkDuration)
+
   // Convert hourly costs to per-second costs
   const moodCostPerSecond = work.mood_cost_in_hour / 3600
   const hungryCostPerSecond = work.hungry_cost_in_hour / 3600
   const energyCostPerSecond = work.energy_cost_in_hour / 3600
 
-  
   // Calculate time difference since last update
   const now = moment()
-  const diffSeconds = now.diff(moment(process.createdAt), 'seconds')
+  const lastUpdateTime = moment(process.user_parameters_updated_at || process.updatedAt)
+  const diffSeconds = now.diff(lastUpdateTime, 'seconds')
   const processDurationInSeconds = now.diff(moment(process.createdAt), 'seconds')
 
-    // Calculate remaining time with the decreased duration
+  // Calculate remaining time with the decreased duration
   const remainingSeconds = Math.max(0, actualWorkDuration - processDurationInSeconds);
   const remainingMinutes = Math.floor(remainingSeconds / 60);
   const remainingSecondsAfterMinutes = remainingSeconds % 60;
-  
-  console.log('@', remainingMinutes, remainingSecondsAfterMinutes)
-    // Update process duration and seconds
+
+  // Update process duration and seconds
   process.duration = remainingMinutes;
   process.seconds = remainingSecondsAfterMinutes;
     
-  // Calculate costs for the time period
+  // Calculate costs for the time period since last update
   const periodMoodCost = moodCostPerSecond * diffSeconds
   const periodHungryCost = hungryCostPerSecond * diffSeconds
   const periodEnergyCost = energyCostPerSecond * diffSeconds
+
+  console.log('WORK TIME LEFT', remainingMinutes, remainingSecondsAfterMinutes)
+  console.log({ periodEnergyCost, periodMoodCost, periodHungryCost })
 
   // Check if user has enough resources
   const canContinueWork = 
@@ -53,8 +53,6 @@ const durationFunction = async (process, work, userParameters) => {
     userParameters.energy = Math.max(0, userParameters.energy - periodEnergyCost)
     userParameters.hungry = Math.max(0, userParameters.hungry - periodHungryCost)
 
-    const processDurationInSeconds = moment().diff(moment(process.createdAt), 'seconds');
-    console.log(processDurationInSeconds, actualWorkDuration, rewardIncreaseHourly)
     if(processDurationInSeconds >= actualWorkDuration) {
       //! Work finished
       const coinReward = (work.coins_in_hour + rewardIncreaseHourly) / 3600 * baseWorkDuration
@@ -75,7 +73,7 @@ const durationFunction = async (process, work, userParameters) => {
 }
 
 export const WorkProcess = cron.schedule(
-  "*/10 * * * * *", // Run every 10 seconds
+  "*/10 * * * * *",
   async () => {
     try {
       // Get all work processes
