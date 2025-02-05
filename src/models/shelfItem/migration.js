@@ -72,24 +72,24 @@ export const ShelfItems = [
   //   shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шкатурка-полка.png",
   //   type: ShelfItemTypes.Event
   // },
-  // {
-  //   id: 5,
-  //   name: {
-  //     ru: "Шар со Снегом",
-  //     en: "Snow Globe",
-  //   },
-  //   description: {
-  //     ru: "Аккуратнее! А то весь снег рассыпется",
-  //     en: "Careful! You'll Scatter All the Snow",
-  //   },
-  //   cost: {
-  //     coins: 150,
-  //     stars: 0,
-  //   },
-  //   link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/SnowGlass.png",
-  //   shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шар-полка.png",
-  //   type: ShelfItemTypes.Event
-  // },
+  {
+    id: 5,
+    name: {
+      ru: "Шар со Снегом",
+      en: "Snow Globe",
+    },
+    description: {
+      ru: "Аккуратнее! А то весь снег рассыпется",
+      en: "Careful! You'll Scatter All the Snow",
+    },
+    cost: {
+      coins: 150,
+      stars: 0,
+    },
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/SnowGlass.png",
+    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шар-полка.png",
+    type: ShelfItemTypes.Event
+  },
   {
     id: 6,
     name: {
