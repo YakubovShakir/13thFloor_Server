@@ -17,7 +17,8 @@ import {
   getUserTasks,
   claimUserTask,
   handleTonWalletConnect,
-  handleTonWalletDisconnect
+  handleTonWalletDisconnect,
+  getLeaderboard
 } from "../../controllers/user/userController.mjs"
 import { getUserParameters } from "../../controllers/user/userParametersController.mjs"
 
@@ -51,5 +52,8 @@ router.post('/:id/investments/buy-level', buyInvestmentLevel)
 router.post('/:id/investments/claim', claimInvestment)
 router.get('/:id/tasks', getUserTasks)
 router.post('/:id/tasks/claim', claimUserTask)
+
+//!TODO move to different place
+router.get('/leaderboard', getLeaderboard)
 
 export default router

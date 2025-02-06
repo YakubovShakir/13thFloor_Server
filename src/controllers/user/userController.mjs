@@ -997,3 +997,44 @@ export const handleTonWalletDisconnect = async (req, res) => {
 
   return res.status(400).json({ error: false })
 }
+
+export const getLeaderboard = async (req, res) => {
+  try {
+    const leaderboard = await UserParameters.aggregate([
+      {
+        $lookup: {
+          from: "users",          // Collection to join
+          localField: "id",       // Field from current collection (UserParameters)
+          foreignField: "id",     // Field from users collection
+          as: "user_info"         // Output array field name
+        }
+      },
+      {
+        $unwind: "$user_info"     // Deconstructs the array from lookup
+      },
+      {
+        $addFields: {            // Create new field 'score'
+          score: {
+            $add: ["$total_earned", "$respect"]
+          }
+        }
+      },
+      {
+        $sort: { score: -1 }      // Sort by score descending
+      },
+      {
+        $project: {              // Shape the output document
+          _id: 0,
+          name: "$user_info.personage.name",
+          gender: "$user_info.personage.gender",
+          respect: 1,
+          total_earned: 1
+        }
+      }
+    ]);
+    console.log(leaderboard)
+    return res.status(200).json({ leaderboard })
+  } catch(err) {
+    res.status(500).json({ error: true })
+  }
+}
