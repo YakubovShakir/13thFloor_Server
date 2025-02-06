@@ -2,6 +2,7 @@ import moment from "moment-timezone"
 import { ConstantEffects } from "../../../models/effects/constantEffectsLevels.mjs"
 import process from "../../../models/process/processModel.mjs"
 import Skill from "../../../models/skill/skillModel.mjs"
+import UserParameters from "../../../models/user/userParametersModel.mjs"
 
 const useLearnSpeed = async (userId, skillId, sub_type, speedRate) => {
   try {
@@ -30,6 +31,8 @@ const useLearnSpeed = async (userId, skillId, sub_type, speedRate) => {
           )
           console.log(learningSkillProcess.base_duration_in_seconds, learningSkillProcess.target_duration_in_seconds)
     if(learningSkillProcess.target_duration_in_seconds <= moment().diff(learningSkillProcess.createdAt, 'seconds')) {
+      const userParameters = await UserParameters.findOne({ id: userId }, { constant_effects: 1 })
+      userParameters.constant_effects_levels[skill.type] === skill.level
       await process.deleteOne({ id: userId,
         type: "skill",
         type_id: skillId,
