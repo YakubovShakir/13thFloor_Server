@@ -1,6 +1,5 @@
 import process from "../../../models/process/processModel.mjs"
 
-//!! ADD SECONDS CORRECTLY
 const addProcess = async (userId, type, typeId, duration, seconds, effects, processExtra) => {
   try {
     if (!["work", "training", "sleep", "skill", "food", "boost"].includes(type))
@@ -26,6 +25,8 @@ const addProcess = async (userId, type, typeId, duration, seconds, effects, proc
 
     if(effects) params.effects = {...effects}
     
+    console.log(effects)
+
     if(processExtra) { 
       console.log('process extra', processExtra)
       const { base_duration_in_seconds = null, target_duration_in_seconds = null, reward_at_the_end = null, sub_type = null} = processExtra

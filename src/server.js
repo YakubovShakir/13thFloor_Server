@@ -80,7 +80,7 @@ async function main() {
     // deleteUserInventories(),
     // deleteUserClothing(),
     // deleteUsers(),
-    deleteUserProcesses(),
+    // deleteUserProcesses(),
     //! SAFE MIGRATIONS
     deleteAndInsertClothing(),
     deleteAndInsertWork(),

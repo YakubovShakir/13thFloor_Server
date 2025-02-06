@@ -76,12 +76,14 @@ export const useBoost = async (req, res) => {
     return res.status(400).send({ message: "userId and boostId are required" })
   }
 
+  const sub_type = req.query.sub_type || null
+
   try {
     const userParameters = await UserParameters.findOne({ id: userId })
     const userBoost = await UserBoost.findOne({ id: userId, boost_id: boostId })
-    // if (!userBoost) {
-    //   return res.status(403).send({ message: "You dont have this boost" })
-    // }
+    if (!userBoost) {
+      return res.status(403).send({ message: "You dont have this boost" })
+    }
     const boost = await Boost.findOne({ boost_id: boostId })
     let result
     let skillId
@@ -93,7 +95,7 @@ export const useBoost = async (req, res) => {
         result = await useTonicDrink(userId)
         break
       case "personal-training":
-        result = await usePersonalTraining(userId)
+        result = await usePersonalTraining(userId, boostId)
         break
       case "relax-massage":
         result = await useRelaxMassage(userParameters)
@@ -106,17 +108,19 @@ export const useBoost = async (req, res) => {
       //   break
       case "learn-speed-20":
         skillId = parseInt(req.query.skillId)
+        
         if (!skillId)
           return res.status(400).send({ error: "skillId is incorrect" })
-
-        result = await useLearnSpeed(userId, skillId, 0.2)
+        console.log(skillId, sub_type)
+        result = await useLearnSpeed(userId, skillId, sub_type, 25)
         break
       case "learn-speed-50":
         skillId = parseInt(req.query.skillId)
+
         if (!skillId)
           return res.status(400).send({ error: "skillId is incorrect" })
-
-        result = await useLearnSpeed(userId, skillId, 0.5)
+        console.log(skillId, sub_type)
+        result = await useLearnSpeed(userId, skillId, sub_type, 50)
         break
       default:
         return res.status(500).send({ error: "Internal server error" })

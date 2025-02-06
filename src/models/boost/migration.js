@@ -67,7 +67,7 @@ export default [
   // },
   {
     boost_id: 7,
-    name: { ru: "Ускорение обучения 20%", en: "Learning Speed Boost 20%" },
+    name: { ru: "Ускорение обучения 25%", en: "Learning Speed Boost 25%" },
     stars_price: 100,
     description: {
       ru: "Ускоряет текущее обучение. Возможно применить только к одному текущему обучению",
@@ -75,7 +75,7 @@ export default [
     },
     duration: null,
     type: "learn-speed-20",
-    link: "https://13floorgame.ru/images/boosts/learnSpeed20.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D1%83%D1%81%D0%BA%D0%BE%D1%80-25.png",
   },
   {
     boost_id: 8,
@@ -87,6 +87,6 @@ export default [
     },
     duration: null,
     type: "learn-speed-50",
-    link: "https://13floorgame.ru/images/boosts/learnSpeed50.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D1%83%D1%81%D0%BA%D0%BE%D1%80-50.png",
   },
 ];

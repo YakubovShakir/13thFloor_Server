@@ -1,16 +1,24 @@
+import { BoostsOnNextUse, ProcessTypes } from "../../../models/boost/boostsOnNextUse.js"
 import process from "../../../models/process/processModel.mjs"
+import UserBoost from "../../../models/user/userBoostsModel.mjs"
 import addProcess from "../../process/functions/addProcess.mjs"
 
-const usePersonalTraining = async (userId) => {
+const usePersonalTraining = async (userId, boostId) => {
   try {
-    const existProcess = await process.findOne({
-      id: userId,
-      type: "boost",
-      type_id: 3,
+    const boostsOnNextUse = new BoostsOnNextUse({
+      user_id: userId,
+      on_process: ProcessTypes.TRAINING,
+      boost_id: boostId,
+      effects: {
+        // decrease consumption by 50%
+        energy_cost_decrease: 50,
+        // increase mood reward twice (+100%)
+        mood_increase: 100
+      }
     })
-    if (existProcess) return false
 
-    await addProcess(userId, "boost", 3)
+    await boostsOnNextUse.save()
+
     return true
   } catch (e) {
     console.log("Error in usePersonalTraining ", e)
