@@ -101,7 +101,7 @@ export const checkCanStopTraining = async (userId) => {
   //! TRAINING BOOST SECTOR
 
   // Calculate mood change with increase percentage
-  const baseMoodProfit = (tp.mood_profit / (tp.duration * 60)) * secondsSinceLastUpdate
+  const baseMoodProfit = (trainingParameters.mood_profit / (trainingParameters.duration * 60)) * secondsSinceLastUpdate
   const moodProfit = baseMoodProfit * ((100 + (trainingProcess.effects?.mood_increase !== null ? trainingProcess.effects?.mood_increase : 0)) / 100)
 
   console.log(secondsSinceLastUpdate, { energyCost, hungryCost })
