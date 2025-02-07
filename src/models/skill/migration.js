@@ -112,7 +112,7 @@ export default [
     skill_id: 7,
     
     name: {
-      ru: "Курс деловой переписке",
+      ru: "Курс по деловой переписке",
       en: "Business Correspondence Course"
     },
     coins_price: 6300,
