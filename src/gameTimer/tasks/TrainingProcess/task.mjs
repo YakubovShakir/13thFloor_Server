@@ -39,10 +39,8 @@ const durationFunction = async (userId, parameters, tp, trainingProcess) => {
   parameters.energy = Math.max(0, parameters.energy - energyCost)
   parameters.hungry = Math.max(0, parameters.hungry - hungryCost)
   parameters.mood = Math.min(100, parameters.mood + moodProfit)
-  
-  const user = await UserParameters.findOne({ user: userId })
 
-  if (seconds_left === 0 || user.energy === 0 || user.hungry === 0) {
+  if (seconds_left === 0 || parameters.energy === 0 || parameters.hungry === 0) {
     // Training complete
     await process.deleteOne({ id: userId, type: 'training' })
   } else {
