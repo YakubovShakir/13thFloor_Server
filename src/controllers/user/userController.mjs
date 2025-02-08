@@ -1025,6 +1025,7 @@ export const getLeaderboard = async (req, res) => {
       {
         $project: {              // Shape the output document
           _id: 0,
+          user_id: "$user_info.id",
           name: "$user_info.personage.name",
           gender: "$user_info.personage.gender",
           respect: 1,
