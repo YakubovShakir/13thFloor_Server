@@ -2838,8 +2838,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 60/час',
-            en: 'Income increase by 60/hour'
+            ru: 'Дополнительынй доход + 60/час',
+            en: 'Additional income + 60/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 2,
@@ -2856,8 +2856,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 240/час',
-            en: 'Income increase by 240/hour'
+            ru: 'Дополнительынй доход + 240/час',
+            en: 'Additional income + 240/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 3,
@@ -2874,8 +2874,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 360/час',
-            en: 'Income increase by 360/hour'
+            ru: 'Дополнительынй доход + 360/час',
+            en: 'Additional income + 360/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 4,
@@ -2892,8 +2892,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 540/час',
-            en: 'Income increase by 540/hour'
+            ru: 'Дополнительынй доход + 540/час',
+            en: 'Additional income + 540/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 4,
@@ -2910,8 +2910,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 720/час',
-            en: 'Income increase by 720/hour'
+            ru: 'Дополнительынй доход + 720/час',
+            en: 'Additional income + 720/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 5,
@@ -2928,8 +2928,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 960/час',
-            en: 'Income increase by 960/hour'
+            ru: 'Дополнительынй доход + 960/час',
+            en: 'Additional income + 960/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 6,
@@ -2946,8 +2946,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 1200/час',
-            en: 'Income increase by 1200/hour'
+            ru: 'Дополнительынй доход + 1200/час',
+            en: 'Additional income + 1200/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 6,
@@ -2964,8 +2964,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 1500/час',
-            en: 'Income increase by 1500/hour'
+            ru: 'Дополнительынй доход + 1500/час',
+            en: 'Additional income + 1500/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 7,
@@ -2982,8 +2982,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 1800/час',
-            en: 'Income increase by 1800/hour'
+            ru: 'Дополнительынй доход + 1800/час',
+            en: 'Additional income + 1800/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 7,
@@ -3000,8 +3000,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 2160/час',
-            en: 'Income increase by 2160/hour'
+            ru: 'Дополнительынй доход + 2160/час',
+            en: 'Additional income + 2160/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 8,
@@ -3018,8 +3018,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 2520/час',
-            en: 'Income increase by 2520/hour'
+            ru: 'Дополнительынй доход + 2520/час',
+            en: 'Additional income + 2520/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 8,
@@ -3036,8 +3036,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 2940/час',
-            en: 'Income increase by 2940/hour'
+            ru: 'Дополнительынй доход + 2940/час',
+            en: 'Additional income + 2940/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 9,
@@ -3054,8 +3054,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 3420/час',
-            en: 'Income increase by 3420/hour'
+            ru: 'Дополнительынй доход + 3420/час',
+            en: 'Additional income + 3420/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 9,
@@ -3072,8 +3072,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 3360/час',
-            en: 'Income increase by 3360/hour'
+            ru: 'Дополнительынй доход + 3360/час',
+            en: 'Additional income + 3360/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 10,
@@ -3090,8 +3090,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 4380/час',
-            en: 'Income increase by 4380/hour'
+            ru: 'Дополнительынй доход + 4380/час',
+            en: 'Additional income + 4380/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 10,
@@ -3108,8 +3108,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 4920/час',
-            en: 'Income increase by 4920/hour'
+            ru: 'Дополнительынй доход + 4920/час',
+            en: 'Additional income + 4920/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 11,
@@ -3126,8 +3126,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 5460/час',
-            en: 'Income increase by 5460/hour'
+            ru: 'Дополнительынй доход + 5460/час',
+            en: 'Additional income + 5460/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 11,
@@ -3144,8 +3144,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 6000/час',
-            en: 'Income increase by 6000/hour'
+            ru: 'Дополнительынй доход + 6000/час',
+            en: 'Additional income + 6000/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 1,
@@ -3162,8 +3162,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 6600/час',
-            en: 'Income increase by 6600/hour'
+            ru: 'Дополнительынй доход + 6600/час',
+            en: 'Additional income + 6600/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 12,
@@ -3180,8 +3180,8 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Увеличение дохода на 7200/час',
-            en: 'Income increase by 7200/hour'
+            ru: 'Дополнительынй доход + 7200/час',
+            en: 'Additional income + 7200/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 13,
