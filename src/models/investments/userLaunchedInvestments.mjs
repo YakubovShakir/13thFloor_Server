@@ -10,7 +10,8 @@ const schema = new mongoose.Schema({
   user_id: { type: Number, required: true },
   investment_id: { type: Number, required: true },
   to_claim: { type: Number, required: true },
-  claimed: { type: Boolean, default: false }
+  claimed: { type: Boolean, default: false },
+  investment_type: { type: String, required: true, enum: Object.values(InvestmentTypes) },
 }, { timestamps: true })
 
 const UserLaunchedInvestments = mongoose.model("user_investments", schema)

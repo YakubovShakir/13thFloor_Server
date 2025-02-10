@@ -18,7 +18,8 @@ import {
   claimUserTask,
   handleTonWalletConnect,
   handleTonWalletDisconnect,
-  getLeaderboard
+  getLeaderboard,
+  startInvestment
 } from "../../controllers/user/userController.mjs"
 import { getUserParameters } from "../../controllers/user/userParametersController.mjs"
 
@@ -49,6 +50,7 @@ router.post('/request-stars-invoice-link', requestStarsPaymentLink)
 router.post('/:id/buy-items-for-coins', buyItemsForCoins)
 router.get('/:id/investments', getUserInvestments)
 router.post('/:id/investments/buy-level', buyInvestmentLevel)
+router.post('/:id/investments/start', startInvestment)
 router.post('/:id/investments/claim', claimInvestment)
 router.get('/:id/tasks', getUserTasks)
 router.post('/:id/tasks/claim', claimUserTask)

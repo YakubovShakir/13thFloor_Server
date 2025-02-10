@@ -104,10 +104,9 @@ export const checkCanStopTraining = async (userId) => {
   const baseMoodProfit = (trainingParameters.mood_profit / (trainingParameters.duration * 60)) * secondsSinceLastUpdate
   const moodProfit = baseMoodProfit * ((100 + (trainingProcess.effects?.mood_increase !== null ? trainingProcess.effects?.mood_increase : 0)) / 100)
 
-  console.log(secondsSinceLastUpdate, { energyCost, hungryCost })
+  console.log({ userId, energyCost, hungryCost, secondsSinceLastUpdate })
 
   if (seconds_left === 0 || user.energy === 0 || user.hungry === 0) {
-    console.log('Stopping training process')
     await process.deleteOne({ id: userId, type: 'training' })
 
     user.energy = Math.max(0, user.energy - energyCost)

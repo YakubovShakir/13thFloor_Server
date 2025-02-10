@@ -81,6 +81,7 @@ async function main() {
     // deleteUserClothing(),
     // deleteUsers(),
     // deleteUserProcesses(),
+    // deleteUserInvestments()
     //! SAFE MIGRATIONS
     deleteAndInsertClothing(),
     deleteAndInsertWork(),
@@ -108,7 +109,6 @@ async function deleteTasks() {
 }
 
 async function deleteInvestments() {
-  await UserLaunchedInvestments.deleteMany()
   await Investments.deleteMany()
   await Promise.all(
     InvestmentsMigration.map(async (item) => {
@@ -116,6 +116,10 @@ async function deleteInvestments() {
       await investments.save()
     })
   )
+}
+
+async function deleteUserInvestments() {
+  await UserLaunchedInvestments.deleteMany()
 }
 
 async function deleteUserProcesses() {
