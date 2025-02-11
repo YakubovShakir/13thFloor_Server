@@ -28,7 +28,7 @@ export default [
     energy_cost_in_hour: 150,
     mood_cost_in_hour: 22,
     hungry_cost_in_hour: 30,
-    skill_id_required: null,
+    skill_id_required: 1,
     respect_required: 50,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BA%D1%83%D1%80%D1%8C%D0%B5%D1%80.png",
     duration: 5
@@ -45,7 +45,7 @@ export default [
     energy_cost_in_hour: 200,
     mood_cost_in_hour: 24,
     hungry_cost_in_hour: 32,
-    skill_id_required: 1,
+    skill_id_required: 3,
     respect_required: 150,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BC%D0%BE%D0%B9%D1%89%D0%B8%D0%BA-%D1%82%D0%B0%D1%80%D0%B5%D0%BB%D0%BE%D0%BA.png",
     duration: 8
@@ -62,7 +62,7 @@ export default [
     energy_cost_in_hour: 300,
     mood_cost_in_hour: 26,
     hungry_cost_in_hour: 34,
-    skill_id_required: 1,
+    skill_id_required: 4,
     respect_required: 300,
     link: "https://13floorgame.ru/images/works/waiter.png",
     duration: 12
@@ -79,7 +79,7 @@ export default [
     energy_cost_in_hour: 500,
     mood_cost_in_hour: 28,
     hungry_cost_in_hour: 36,
-    skill_id_required: 1,
+    skill_id_required: 7,
     respect_required: 600,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9C%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%B5%D1%80-%D1%80%D0%B5%D1%81%D1%82%D0%B8%D0%BA%D0%B0.png",
     duration: 20
@@ -96,7 +96,7 @@ export default [
     energy_cost_in_hour: 600,
     mood_cost_in_hour: 30,
     hungry_cost_in_hour: 38,
-    skill_id_required: 3,
+    skill_id_required: 11,
     respect_required: 800,
     link: "https://13floorgame.ru/images/works/officeManager.png",
     duration: 30
@@ -113,7 +113,7 @@ export default [
     energy_cost_in_hour: 650,
     mood_cost_in_hour: 34,
     hungry_cost_in_hour: 40,
-    skill_id_required: null,
+    skill_id_required: 13,
     respect_required: 1200,
     link: "https://13floorgame.ru/images/works/admin.png",
     duration: 45

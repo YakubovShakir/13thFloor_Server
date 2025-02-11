@@ -17,17 +17,26 @@ export default [
     type: null,
     link: "https://13floorgame.ru/images/skills/podcast.png",
   },
-  // {
-  //   skill_id: 2,
-  //   name: "Спортивная одежда",
-  //   coins_price: 1,
-  //   description:
-  //     "Если во время тренировки вы одеты в спортивную одежду, вы восстанавливаете больше счастья после тренировки",
-  //   duration: 30,
-  //   skill_id_required: null,
-  //   type: null,
-  //   link: "https://13floorgame.ru/images/skills/sportswear.png",
-  // },
+  {
+    skill_id: 2,
+    
+    name: {
+      ru: "Заполнить анкету",
+      en: "Fill out a job application"
+    },
+    coins_price: 40,
+    description: 
+    {
+      ru: "Оставьте заявку для работы в ресторане",
+      en: "Leave a request to work at the restaurant"
+    },
+    
+    duration: 5,
+    requiredLevel: 2,
+    skill_id_required: 1,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%B7%D0%B0%D1%8F%D0%B2%D0%BA%D0%B0-%D0%BF%D0%BE%D1%81%D1%83%D0%B4%D0%BE%D0%BC%D0%BE%D1%8F.png",
+  },
   {
     skill_id: 3,
     
@@ -44,7 +53,7 @@ export default [
     
     duration: 8,
     requiredLevel: 2,
-    skill_id_required: 1,
+    skill_id_required: 2,
     type: null,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9C%D0%B5%D0%B4-%D1%81%D0%B5%D1%80%D1%82%D0%B8%D1%84%D0%BA%D0%B0%D1%82.png",
   },
@@ -72,6 +81,46 @@ export default [
     skill_id: 5,
     
     name: {
+      ru: "Знание меню",
+      en: "Learn the menue"
+    },
+    coins_price: 700,
+    description: 
+    {
+      ru: "Докажите менеджеру что знаете меню наизусть",
+      en: "Prove to the manager that you know the menu by heart"
+    },
+    
+    duration: 15,
+    requiredLevel: 3,
+    skill_id_required: 4,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%B2%D1%8B%D1%83%D1%87%D0%B8%D1%82%D1%8C-%D0%BC%D0%B5%D0%BD%D1%8E.png",
+  },
+  {
+    skill_id: 6,
+    
+    name: {
+      ru: "Заявка на позицию менеджера",
+      en: "Application for the position of manager"
+    },
+    coins_price: 1000,
+    description: 
+    {
+      ru: "Заполните анкету с указанием опыта работы, навыков и мотивации",
+      en: "Fills out a questionnaire indicating work experience, skills and motivation"
+    },
+    
+    duration: 30,
+    requiredLevel: 4,
+    skill_id_required: 5,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F2%D0%97%D0%B0%D0%B2%D1%8F%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BE-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%B8%D0%B5.png",
+  },
+  {
+    skill_id: 7,
+    
+    name: {
       ru: "Курсы управления персоналом",
       en: "HR Management Courses"
     },
@@ -84,12 +133,32 @@ export default [
     
     duration: 30,
     requiredLevel: 4,
-    skill_id_required: 4,
+    skill_id_required: 6,
     type: null,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D1%83%D0%BF%D1%80%D0%B0%D0%B2%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%BB%D0%BE%D0%BC.png",
   },
   {
-    skill_id: 6,
+    skill_id: 8,
+    
+    name: {
+      ru: "Собеседование на должность менеджера",
+      en: "Interview for the position of manager"
+    },
+    coins_price: 1000,
+    description: 
+    {
+      ru: "Менеджер — это не просто должность, это лидер, который вдохновляет команду и делает гостей счастливыми. Ты сделал важный шаг в своей карьере. Удачи!",
+      en: "A manager is not just a position, it is a leader who inspires the team and makes the guests happy. You've made an important step in your career. Good luck!"
+    },
+    
+    duration: 30,
+    requiredLevel: 4,
+    skill_id_required: 7,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%B8%D0%BD%D1%82%D0%B5%D0%B2%D1%8C%D1%8E.png",
+  },
+  {
+    skill_id: 9,
     
     name: {
       ru: "Офисные программы",
@@ -104,12 +173,71 @@ export default [
     
     duration: 60,
     requiredLevel: 5,
-    skill_id_required: null,
+    skill_id_required: 8,
     type: null,
     link: "https://13floorgame.ru/images/skills/officePrograms.png",
   },
   {
-    skill_id: 7,
+    skill_id: 10,
+    
+    name: {
+      ru: "Поиск работы в интернете",
+      en: "Job search on the Internet"
+    },
+    coins_price: 4500,
+    description: 
+    {
+      ru: "Это может занять время",
+      en: "It may take some time"
+    },
+    
+    duration: 60,
+    requiredLevel: 5,
+    skill_id_required: 9,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B8%D0%BC%D1%81%D0%BA-%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%8B.png",
+  },
+  {
+    skill_id: 11,
+    
+    name: {
+      ru: "Подготовка к интервью",
+      en: "Preparing for the interview"
+    },
+    coins_price: 4500,
+    description: 
+    {
+      ru: "Встречают по одежке",
+      en: "People judge each other on looks"
+    },
+    
+    duration: 60,
+    requiredLevel: 5,
+    skill_id_required: 10,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9E%D0%B4%D0%B5%D0%B6%D0%B4%D0%B0%20%D0%B4%D0%BB%D1%8F%20%D0%B8%D0%BD%D1%82%D0%B5%D0%B2%D1%8C%D1%8E.png",
+  },
+  {
+    skill_id: 12,
+    
+    name: {
+      ru: "Слушать сплетни",
+      en: "Business Correspondence Course"
+    },
+    coins_price: 6300,
+    requiredLevel: 6,
+    description: 
+    {
+      ru: "Кто то явно знает что делать для продвижения по работе",
+      en: "Someone clearly knows what to do for a job promotion"
+    },
+    duration: 120,
+    skill_id_required: 11,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A1%D0%BB%D1%83%D1%85%D0%B8.png",
+  },
+  {
+    skill_id: 13,
     
     name: {
       ru: "Курс по деловой переписке",
@@ -117,14 +245,18 @@ export default [
     },
     coins_price: 6300,
     requiredLevel: 6,
-    description: null,
+    description: 
+    {
+      ru: "Сейчас как раз ищут человека с такими навыками",
+      en: "They are currently looking for a person with such skills"
+    },
     duration: 120,
-    skill_id_required: 6,
+    skill_id_required: 12,
     type: null,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%B4%D0%B5%D0%BB%D0%BE%D0%B2%D0%B0%D1%8F-%D0%BF%D0%B5%D1%80%D0%B5%D0%BF%D0%B8%D1%81%D0%BA%D0%B0.png",
   },
   {
-    skill_id: 8,
+    skill_id: 14,
     
     name: {
       ru: "Онлайн обучение",
@@ -134,12 +266,27 @@ export default [
     requiredLevel: 7,
     description: null,
     duration: 180,
-    skill_id_required: null,
+    skill_id_required: 13,
     type: null,
     link: "https://13floorgame.ru/images/skills/onlineLearning.png",
   },
   {
-    skill_id: 9,
+    skill_id: 15,
+    
+    name: {
+      ru: "Консультация у карьерного коуча",
+      en: "Consulting with a career coach"
+    },
+    coins_price: 12150,
+    requiredLevel: 7,
+    description: null,
+    duration: 180,
+    skill_id_required: 14,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BA%D0%B0%D1%80%D1%8C%D0%B5%D1%80%D0%B0.png",
+  },
+  {
+    skill_id: 16,
     
     name: {
       ru: "Основы закупок",
@@ -154,7 +301,7 @@ export default [
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%B7%D0%B0%D0%BA%D1%83%D0%BF%D0%BA%D0%B8.png",
   },
   {
-    skill_id: 10,
+    skill_id: 17,
     
     name: {
       ru: "Тренинг по рекламе",
@@ -169,7 +316,7 @@ export default [
     link: "https://13floorgame.ru/images/skills/advertising.png",
   },
   {
-    skill_id: 11,
+    skill_id: 18,
     
     name: {
       ru: "Школа рекламы",
@@ -184,7 +331,7 @@ export default [
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BA%D0%B0%D1%80%D0%BA%D0%BA%D0%B5%D1%82%D0%B8%D0%BD%D0%B3.png",
   },
   {
-    skill_id: 12,
+    skill_id: 19,
     
     name: {
       ru: "Основы брендинга",
@@ -199,7 +346,7 @@ export default [
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9E%D1%81%D0%BD%D0%BE%D0%B2%D1%8B-%D0%B1%D1%80%D0%B5%D0%BD%D0%B4%D0%B8%D0%BD%D0%B3%D0%B0.png",
   },
   {
-    skill_id: 13,
+    skill_id: 20,
     
     name: {
       ru: "Курсы подбора персонала",
@@ -235,7 +382,7 @@ export default [
   //   link: "https://13floorgame.ru/images/skills/sleepMode.png",
   // },
   {
-    skill_id: 14,
+    skill_id: 21,
     
     name: {
       ru: "Планирование и дедлайны",
@@ -250,7 +397,7 @@ export default [
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9A%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C.png",
   },
   {
-    skill_id: 15,
+    skill_id: 22,
     
     name: {
       ru: "Школа менеджмента",
@@ -265,7 +412,7 @@ export default [
     link: "https://13floorgame.ru/images/skills/management.png",
   },
   {
-    skill_id: 16,
+    skill_id: 23,
     
     name: {
       ru: "Бизнес тренинг",
@@ -280,7 +427,7 @@ export default [
     link: "https://13floorgame.ru/images/skills/businessTraining.png",
   },
   {
-    skill_id: 17,
+    skill_id: 24,
    
     name: {
       ru: "Лидерство и мотивация",
@@ -295,7 +442,7 @@ export default [
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9C%D0%BE%D1%82%D0%B8%D0%B2%D0%B0%D1%86%D0%B8%D1%8F-%D0%B8-%D1%83%D1%81%D0%BF%D0%B5%D1%85.png",
   },
   {
-    skill_id: 18,
+    skill_id: 25,
    
     name: {
       ru: "Тренинг по автоматизации",
@@ -310,7 +457,7 @@ export default [
     link: "https://13floorgame.ru/images/skills/automationTraining.png",
   },
   {
-    skill_id: 19,
+    skill_id: 26,
     
     name: {
       ru: "Энциклопедия бодибилдинга",
@@ -330,7 +477,7 @@ export default [
     link: "https://13floorgame.ru/images/skills/bodybuilding.png",
   },
   {
-    skill_id: 20,
+    skill_id: 27,
  
     name: {
       ru: "Экономическое образование",
