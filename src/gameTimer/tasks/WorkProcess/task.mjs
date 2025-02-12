@@ -2,7 +2,7 @@ import UserProcess from "../../../models/process/processModel.mjs"
 import Work from "../../../models/work/workModel.mjs"
 import UserParameters from "../../../models/user/userParametersModel.mjs"
 import cron from "node-cron"
-import upUserBalance, { upUserExperience } from "../../../utils/userParameters/upUserBalance.mjs"
+import {upUserBalance, upUserExperience } from "../../../utils/userParameters/upUserBalance.mjs"
 import moment from 'moment-timezone'
 
 const durationFunction = async (process, work, userParameters) => {

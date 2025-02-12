@@ -11,6 +11,7 @@ import UserParameters from "../../models/user/userParametersModel.mjs"
 import { prebuildInitialInventory } from "./userController.mjs"
 import UserLaunchedInvestments from '../../models/investments/userLaunchedInvestments.mjs'
 import { ConstantEffects, ConstantEffectTypes } from "../../models/effects/constantEffectsLevels.mjs"
+import { Bot } from "grammy"
 
 const gamecenterLevelMap = {
   "1": 1,
@@ -63,6 +64,8 @@ export const getUserParameters = async (req, res) => {
 
     if (!user) {
       console.log("Registering user with ID", userId);
+      // const bot = new Bot('7775483956:AAHc14xqGCeNQ7DVsqABf0qAa8gdqwMWE6w')
+      // const tgApiResponse = await bot.api.getChatMember(userId)
       const gameCenterLevel = gamecenterLevelMap[refs.toString()] || 0;
       
       // Create user document
@@ -92,7 +95,8 @@ export const getUserParameters = async (req, res) => {
           game_center: false,
           coffee_shop: false,
           zoo_shop: false
-        }
+        },
+        // username: tgApiResponse.user.username,
       };
 
       try {
