@@ -31,7 +31,8 @@ const schema = new mongoose.Schema({
     channel_id: { type: String, default: null },
     link: { type: String, required: true },
     fixed: { type: Number, default: 0 },
-    multiplier: { type: Number, default: 1 }
+    multiplier: { type: Number, default: 1 },
+    respect_reward: { type: Number, default: 0 },
 })
 
 // earnings 

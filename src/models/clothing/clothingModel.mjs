@@ -40,7 +40,7 @@ const clothingSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   is_premium: { type: Boolean, default: false },
   tier: { type: Number, required: true },
-  requiredLevel: { type: Number, required: true }
+  requiredLevel: { type: Number, required: true },
 })
 
 const Clothing = mongoose.model("clothing", clothingSchema)

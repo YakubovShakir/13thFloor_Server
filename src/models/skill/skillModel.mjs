@@ -16,6 +16,7 @@ const skillSchema = new mongoose.Schema({
   type: { type: String },
   skill_id: { type: Number, unique: true },
   requiredLevel: { type: Number, required: true },
+  respect_reward: { type: Number, default: 0 },
 })
 
 const Skill = mongoose.model("skills", skillSchema)

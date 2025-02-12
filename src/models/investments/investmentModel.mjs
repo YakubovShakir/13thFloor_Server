@@ -11,7 +11,8 @@ const schema = new mongoose.Schema({
   },
   coins_per_hour: { type: Number, required: true },
   respect: { type: Number, required: true },
-  price: { type: Number, required: true }
+  price: { type: Number, required: true },
+  respect_reward: { type: Number, default: 0 },
 })
 
 const Investments = mongoose.model("investments", schema)
