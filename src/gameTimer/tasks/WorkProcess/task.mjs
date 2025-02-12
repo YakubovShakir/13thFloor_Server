@@ -2,7 +2,7 @@ import UserProcess from "../../../models/process/processModel.mjs"
 import Work from "../../../models/work/workModel.mjs"
 import UserParameters from "../../../models/user/userParametersModel.mjs"
 import cron from "node-cron"
-import upUserBalance from "../../../utils/userParameters/upUserBalance.mjs"
+import upUserBalance, { upUserExperience } from "../../../utils/userParameters/upUserBalance.mjs"
 import moment from 'moment-timezone'
 
 const durationFunction = async (process, work, userParameters) => {
@@ -38,9 +38,6 @@ const durationFunction = async (process, work, userParameters) => {
   const periodHungryCost = hungryCostPerSecond * diffSeconds
   const periodEnergyCost = energyCostPerSecond * diffSeconds
 
-  console.log('WORK TIME LEFT', remainingMinutes, remainingSecondsAfterMinutes)
-  console.log({ periodEnergyCost, periodMoodCost, periodHungryCost })
-
   // Check if user has enough resources
   const canContinueWork = 
     Math.floor(userParameters.mood) >= periodMoodCost &&
@@ -56,8 +53,10 @@ const durationFunction = async (process, work, userParameters) => {
     if(processDurationInSeconds >= actualWorkDuration) {
       //! Work finished
       const coinReward = (work.coins_in_hour + rewardIncreaseHourly) / 3600 * baseWorkDuration
-      console.log(coinReward)
+
       await upUserBalance(userParameters.id, coinReward)
+      await upUserExperience(userParameters.id, work.experience_reward)
+
       await process.deleteOne({ _id: process._id })
       return
     }

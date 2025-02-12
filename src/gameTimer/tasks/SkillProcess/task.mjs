@@ -5,6 +5,7 @@ import updateProcessTime from "../../../utils/updateProcessTime.js"
 import moment from "moment-timezone"
 import { ConstantEffects, ConstantEffectTypes } from "../../../models/effects/constantEffectsLevels.mjs"
 import UserParameters from "../../../models/user/userParametersModel.mjs"
+import { upUserExperience } from "../../../utils/userParameters/upUserBalance.mjs"
 
 const durationFunction = async (process, userId, skillId) => {
     // Calculate time difference since last update
@@ -30,8 +31,11 @@ const durationFunction = async (process, userId, skillId) => {
         const effect = await ConstantEffects.findOne({ id: skillId })
         const userParams = await UserParameters.findOne({ id: userId })
         userParams.constant_effects_levels[effect.type] = effect.level
+        await upUserExperience(userId, effect.experience_reward)
         await userParams.save()
       } else {
+        const skill = await ConstantEffects.findOne({ id: skillId })
+        await upUserExperience(userId, skill.experience_reward)
         await UserSkill.create({
           id: userId,
           skill_id: skillId,

@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 
 const schema = new mongoose.Schema({
   level: { type: Number, required: true, unquie: true },
-  required_earned: { type: Number, required: true },
+  experience_required: { type: Number, required: true },
   energy_capacity: { type: Number, required: true },
   sleep_duration: { type: Number, required: true },
 })

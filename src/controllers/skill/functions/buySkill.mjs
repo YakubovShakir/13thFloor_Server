@@ -7,6 +7,7 @@ import useRelaxMassage from "../../boost/functions/useRelaxMassage.mjs"
 import getMinutesAndSeconds from "../../../utils/getMinutesAndSeconds.js"
 import addActiveProcess from "../../process/functions/addActiveProcess.mjs"
 import { ConstantEffects } from "../../../models/effects/constantEffectsLevels.mjs"
+import { upUserExperience } from "../../../utils/userParameters/upUserBalance.mjs"
 
 const buySkill = async (userId, skillId, sub_type) => {
   try {
@@ -54,10 +55,11 @@ const buySkill = async (userId, skillId, sub_type) => {
       return { status: 400, data: { error: "Balance not enough!" } }
 
     user.coins -= skillPrice
+
     const durationInSeconds = skill.duration * 60
     const baseDuration = (skill?.duration || 1) * 60 // in secs for precision
     const { duration, seconds } = getMinutesAndSeconds(durationInSeconds)
-    console.log(duration, seconds)
+
     await addActiveProcess(
       userId,
       "skill",

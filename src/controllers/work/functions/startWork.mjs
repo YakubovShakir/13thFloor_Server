@@ -6,6 +6,7 @@ import process from "../../../models/process/processModel.mjs"
 import UserParameters from "../../../models/user/userParametersModel.mjs"
 import Work from "../../../models/work/workModel.mjs"
 import getMinutesAndSeconds from "../../../utils/getMinutesAndSeconds.js"
+import { upUserExperience, upUserBalance } from "../../../utils/userParameters/upUserBalance.mjs"
 import addActiveProcess from "../../process/functions/addActiveProcess.mjs"
 import moment from "moment-timezone"
 
@@ -102,14 +103,14 @@ export const checkCanStopWork = async (userId) => {
     
     const rewardIncreaseHourly = workProcess.effects.reward_increase || 0
     const workReward = (work.coins_in_hour + rewardIncreaseHourly) / 3600 * workProcess.base_duration_in_seconds
-
-    user.coins += Math.floor(workReward)
-    user.total_earned += Math.floor(workReward)
+ 
     // user.experience += 
     user.mood = Math.max(0, user.mood - moodCost)
     user.hungry = Math.max(0, user.hungry - hungryCost)
     user.energy = Math.max(0, user.energy - energyCost)
     
+    await upUserBalance(userId, Math.floor(workReward))
+    await upUserExperience(userId, work.experience_reward)
     await user.save()
 
     return { status: 200, data: { status: "ok" } }

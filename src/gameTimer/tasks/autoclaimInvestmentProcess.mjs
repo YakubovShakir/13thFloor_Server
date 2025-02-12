@@ -4,6 +4,7 @@ import User from "../../models/user/userModel.mjs"
 import Investments from '../../models/investments/investmentModel.mjs'
 import { InvestmentTypes } from "../../models/investments/userLaunchedInvestments.mjs"
 import UserLaunchedInvestments from '../../models/investments/userLaunchedInvestments.mjs'
+import { upUserBalance, upUserExperience } from "../../utils/userParameters/upUserBalance.mjs"
 
 const claim = async (investment_type, userId) => {
     if(!Object.values(InvestmentTypes).includes(investment_type)) {
@@ -32,8 +33,9 @@ const claim = async (investment_type, userId) => {
       return
     }
 
-    userParams.coins += investmentToClaim.to_claim
-    userParams.total_earned += investmentToClaim.to_claim
+    await upUserBalance(userId, investmentToClaim.to_claim)
+    await upUserExperience(userId, investment.experience_reward)
+    
     investmentToClaim.claimed = true
 
     await userParams.save()

@@ -19,6 +19,7 @@ import { Bot } from "grammy"
 import Work from "../../models/work/workModel.mjs"
 import fs from 'fs/promises'
 import path from "path"
+import { upUserBalance, upUserExperience } from "../../utils/userParameters/upUserBalance.mjs"
 
 const gamecenterLevelMap = {
   1: 1,
@@ -845,6 +846,7 @@ export const buyInvestmentLevel = async (req, res) => {
           (currentInvestment?.respect || 0) +
           nextLevelInvestment.respect
         userParams.coins = userParams.coins - nextLevelInvestment.price
+        await upUserExperience(nextLevelInvestment.experience_reward)
         await user.save()
         await userParams.save()
 
@@ -956,8 +958,9 @@ export const claimInvestment = async (req, res) => {
       investment_type
     }).save()
 
-    userParams.coins += investmentToClaim.to_claim
-    userParams.total_earned += investmentToClaim.to_claim
+    await upUserBalance(userId, investmentToClaim.to_claim)
+    await upUserExperience(userId, investment.experience_reward)
+
     investmentToClaim.claimed = true
 
     await userParams.save()
@@ -1095,7 +1098,9 @@ export const claimUserTask = async (req, res) => {
       await new CompletedTasks({ user_id: userId, task_id: task.id }).save()
       const work = await Work.findOne({ id: userParam.work_id })
       const reward = task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
-      userParam.coins += reward
+
+      await upUserBalance(userId, reward)
+      await upUserExperience(userId, work.experience_reward)
 
       await userParam.save()
     } else {
