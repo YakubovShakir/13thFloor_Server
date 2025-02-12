@@ -6,6 +6,7 @@ export default [
         id: 1,
         level: 1,
         price: 50,
+       
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 1,
         name: {
@@ -17,7 +18,9 @@ export default [
             en: 'Training duration decreased by 1%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 3,
+       required_level: 3,
+        
+        experience_reward: 35,
         duration: 3,
     },
     {
@@ -35,7 +38,9 @@ export default [
             en: 'Training duration decreased by 2%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 3,
+       required_level: 3,
+        
+        experience_reward: 35,
         duration: 5,
     },
     {
@@ -54,6 +59,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 3,
+        experience_reward: 35,
         duration: 8,
     },
     {
@@ -71,7 +77,8 @@ export default [
             en: 'Training duration decreased by 4%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 3,
+       required_level: 3,
+        experience_reward: 35,
         duration: 12,
     }, 
     {
@@ -90,6 +97,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 18,
     },
     {
@@ -108,6 +116,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 27,
     }, {
         id: 7,
@@ -125,6 +134,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 41,
     },
     {
@@ -143,6 +153,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 62,
     }, {
         id: 9,
@@ -160,6 +171,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 5,
+        experience_reward: 400,
         duration: 93,
     },
     {
@@ -178,6 +190,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 5,
+        experience_reward: 400,
         duration: 140,
     }, {
         id: 11,
@@ -195,6 +208,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 5,
+        experience_reward: 400,
         duration: 196,
     },
     {
@@ -213,6 +227,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 5,
+        experience_reward: 400,
         duration: 274,
     },
     {
@@ -231,6 +246,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 384,
     },
     {
@@ -249,6 +265,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 538,
     },
     {
@@ -267,6 +284,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 753,
     },
     {
@@ -285,6 +303,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 828,
     }, {
         id: 17,
@@ -302,6 +321,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 911,
     },
     {
@@ -320,6 +340,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 1002,
     }, {
         id: 19,
@@ -337,6 +358,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 1102,
     },
     {
@@ -355,6 +377,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 1212,
     }, {
         id: 21,
@@ -372,6 +395,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 1333,
     },
     {
@@ -390,6 +414,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 1466,
     }, {
         id: 23,
@@ -407,6 +432,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 1613,
     },
     {
@@ -425,6 +451,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 1774,
     },
     {
@@ -443,6 +470,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 1951,
     },
     {
@@ -461,6 +489,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 2146,
     },
      {
@@ -479,6 +508,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 2361,
     },
     {
@@ -497,6 +527,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 2597,
     },
     {
@@ -515,6 +546,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 2857,
     }, {
         id: 30,
@@ -532,6 +564,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 3143,
     },
     {
@@ -550,6 +583,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 3457,
     }, {
         id: 32,
@@ -567,6 +601,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 3803,
     },
     {
@@ -585,6 +620,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 11,
+        experience_reward: 3000,
         duration: 4183,
     }, {
         id: 34,
@@ -602,6 +638,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 11,
+        experience_reward: 3000,
         duration: 4601,
     },
     {
@@ -620,6 +657,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 11,
+        experience_reward: 3000,
         duration: 5061,
     }, {
         id: 36,
@@ -637,6 +675,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 11,
+        experience_reward: 3000,
         duration: 5567,
     },
     {
@@ -655,6 +694,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 12,
+        experience_reward: 4000,
         duration: 6124,
     },{
         id: 38,
@@ -672,6 +712,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 12,
+        experience_reward: 4000,
         duration: 6736,
     },
     {
@@ -690,6 +731,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 12,
+        experience_reward: 4000,
         duration: 7410,
     },
     {
@@ -708,6 +750,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 12,
+        experience_reward: 4000,
         duration: 8151,
     },
     {
@@ -726,6 +769,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 13,
+        experience_reward: 6000,
         duration: 8966,
     }, {
         id: 42,
@@ -743,6 +787,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 13,
+        experience_reward: 6000,
         duration: 9863,
     },
     {
@@ -761,6 +806,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 13,
+        experience_reward: 6000,
         duration: 10849,
     }, {
         id: 44,
@@ -778,6 +824,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 13,
+        experience_reward: 6000,
         duration: 11934,
     },
     {
@@ -796,6 +843,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 14,
+        experience_reward: 8000,
         duration: 13127,
     }, {
         id: 46,
@@ -813,6 +861,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 14,
+        experience_reward: 8000,
         duration: 14440,
     },
     {
@@ -831,6 +880,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 14,
+        experience_reward: 8000,
         duration: 15884,
     }, {
         id: 48,
@@ -848,6 +898,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 14,
+        experience_reward: 8000,
         duration: 17472,
     },
     {
@@ -866,6 +917,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 15,
+        experience_reward: 10000,
         duration: 19219,
     },{
         id: 50,
@@ -883,6 +935,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 15,
+        experience_reward: 10000,
         duration: 21141,
     },
     {
@@ -901,6 +954,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 15,
+        experience_reward: 10000,
         duration: 23255,
     },
     {
@@ -919,6 +973,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 15,
+        experience_reward: 10000,
         duration: 25581,
     },
     {
@@ -937,6 +992,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 16,
+        experience_reward: 15000,
         duration: 28139,
     }, {
         id: 54,
@@ -954,6 +1010,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 16,
+        experience_reward: 15000,
         duration: 30953,
     },
     {
@@ -972,6 +1029,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 16,
+        experience_reward: 15000,
         duration: 34048,
     }, {
         id: 56,
@@ -989,6 +1047,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 16,
+        experience_reward: 15000,
         duration: 37453,
     },
     {
@@ -1007,6 +1066,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 17,
+        experience_reward: 20000,
         duration: 41198,
     }, {
         id: 58,
@@ -1024,6 +1084,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 17,
+        experience_reward: 20000,
         duration: 45318,
     },
     {
@@ -1042,6 +1103,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 17,
+        experience_reward: 20000,
         duration: 49850,
     }, {
         id: 60,
@@ -1059,6 +1121,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 17,
+        experience_reward: 20000,
         duration: 54835,
     },
     {
@@ -1077,6 +1140,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 18,
+        experience_reward: 24000,
         duration: 60319,
     },{
         id: 62,
@@ -1094,6 +1158,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 18,
+        experience_reward: 24000,
         duration: 66351,
     },
     {
@@ -1112,6 +1177,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 18,
+        experience_reward: 24000,
         duration: 72986,
     },
     {
@@ -1130,6 +1196,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 18,
+        experience_reward: 24000,
         duration: 80285,
     },
     {
@@ -1148,6 +1215,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 19,
+        experience_reward: 24000,
         duration: 88314,
     }, {
         id: 66,
@@ -1165,6 +1233,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 19,
+        experience_reward: 24000,
         duration: 97145,
     },
     {
@@ -1183,6 +1252,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 19,
+        experience_reward: 24000,
         duration: 106860,
     }, {
         id: 68,
@@ -1200,6 +1270,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 20,
+        experience_reward: 54000,
         duration: 117546,
     },
     {
@@ -1218,6 +1289,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 20,
+        experience_reward: 54000,
         duration: 129301,
     }, {
         id: 70,
@@ -1235,6 +1307,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 20,
+        experience_reward: 54000,
         duration: 142231,
     },
     
@@ -1257,7 +1330,8 @@ export default [
             en: 'Sleep duration decreased by 1%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
-        required_level: 3,
+       required_level: 3,
+        experience_reward: 35,
         duration: 3,
     },
     {
@@ -1275,7 +1349,8 @@ export default [
             en: 'Sleep duration decreased by 2%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
-        required_level: 3,
+       required_level: 3,
+        experience_reward: 35,
         duration: 5,
     },
     {
@@ -1293,7 +1368,8 @@ export default [
             en: 'Sleep duration decreased by 3%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
-        required_level: 3,
+       required_level: 3,
+        experience_reward: 35,
         duration: 8,
     },
     {
@@ -1311,7 +1387,8 @@ export default [
             en: 'Sleep duration decreased by 4%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
-        required_level: 3,
+       required_level: 3,
+        experience_reward: 35,
         duration: 12,
     }, 
     {
@@ -1330,6 +1407,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 18,
     },
     {
@@ -1348,6 +1426,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 27,
     }, {
         id: 77,
@@ -1365,6 +1444,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 41,
     },
     {
@@ -1383,6 +1463,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 62,
     }, {
         id: 79,
@@ -1400,6 +1481,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 5,
+        experience_reward: 400,
         duration: 93,
     },
     {
@@ -1418,6 +1500,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 5,
+        experience_reward: 400,
         duration: 140,
     }, {
         id: 81,
@@ -1435,6 +1518,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 5,
+        experience_reward: 400,
         duration: 196,
     },
     {
@@ -1453,6 +1537,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 5,
+        experience_reward: 400,
         duration: 274,
     },
     {
@@ -1471,6 +1556,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 384,
     },
     {
@@ -1489,6 +1575,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 538,
     },
     {
@@ -1507,6 +1594,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 753,
     },
     {
@@ -1525,6 +1613,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 828,
     }, {
         id: 87,
@@ -1542,6 +1631,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 911,
     },
     {
@@ -1560,6 +1650,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 1002,
     }, {
         id: 89,
@@ -1577,6 +1668,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 1102,
     },
     {
@@ -1595,6 +1687,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 1212,
     }, {
         id: 91,
@@ -1612,6 +1705,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 1333,
     },
     {
@@ -1630,6 +1724,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 1466,
     }, {
         id: 93,
@@ -1647,6 +1742,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 1613,
     },
     {
@@ -1665,6 +1761,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 1774,
     },
     {
@@ -1683,6 +1780,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 1951,
     },
     {
@@ -1701,6 +1799,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 2146,
     },
      {
@@ -1719,6 +1818,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 2361,
     },
     {
@@ -1737,6 +1837,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 2597,
     },
     {
@@ -1755,6 +1856,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 2857,
     }, {
         id: 100,
@@ -1772,6 +1874,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 3143,
     },
     {
@@ -1790,6 +1893,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 3457,
     }, {
         id: 102,
@@ -1807,6 +1911,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 3803,
     },
     {
@@ -1825,6 +1930,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 11,
+        experience_reward: 3000,
         duration: 4183,
     }, {
         id: 104,
@@ -1842,6 +1948,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 11,
+        experience_reward: 3000,
         duration: 4601,
     },
     {
@@ -1860,6 +1967,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 11,
+        experience_reward: 3000,
         duration: 5061,
     }, {
         id: 106,
@@ -1877,6 +1985,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 11,
+        experience_reward: 3000,
         duration: 5567,
     },
     {
@@ -1895,6 +2004,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 12,
+        experience_reward: 4000,
         duration: 6124,
     },{
         id: 108,
@@ -1912,6 +2022,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 12,
+        experience_reward: 4000,
         duration: 6736,
     },
     {
@@ -1930,6 +2041,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 12,
+        experience_reward: 4000,
         duration: 7410,
     },
     {
@@ -1948,6 +2060,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 12,
+        experience_reward: 4000,
         duration: 8151,
     },
     {
@@ -1966,6 +2079,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 13,
+        experience_reward: 6000,
         duration: 8966,
     }, {
         id: 112,
@@ -1983,6 +2097,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 13,
+        experience_reward: 6000,
         duration: 9863,
     },
     {
@@ -2001,6 +2116,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 13,
+        experience_reward: 6000,
         duration: 10849,
     }, {
         id: 114,
@@ -2018,6 +2134,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 13,
+        experience_reward: 6000,
         duration: 11934,
     },
     {
@@ -2036,6 +2153,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 14,
+        experience_reward: 8000,
         duration: 13127,
     }, {
         id: 116,
@@ -2053,6 +2171,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 14,
+        experience_reward: 8000,
         duration: 14440,
     },
     {
@@ -2071,6 +2190,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 14,
+        experience_reward: 8000,
         duration: 15884,
     }, {
         id: 118,
@@ -2088,6 +2208,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 14,
+        experience_reward: 8000,
         duration: 17472,
     },
     {
@@ -2106,6 +2227,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 15,
+        experience_reward: 10000,
         duration: 19219,
     },{
         id: 120,
@@ -2123,6 +2245,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 15,
+        experience_reward: 10000,
         duration: 21141,
     },
     {
@@ -2141,6 +2264,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 15,
+        experience_reward: 10000,
         duration: 23255,
     },
     {
@@ -2159,6 +2283,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 15,
+        experience_reward: 10000,
         duration: 25581,
     },
     {
@@ -2177,6 +2302,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 16,
+        experience_reward: 15000,
         duration: 28139,
     }, {
         id: 124,
@@ -2194,6 +2320,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 16,
+        experience_reward: 15000,
         duration: 30953,
     },
     {
@@ -2212,6 +2339,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 16,
+        experience_reward: 15000,
         duration: 34048,
     }, {
         id: 126,
@@ -2229,6 +2357,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 16,
+        experience_reward: 15000,
         duration: 37453,
     },
     {
@@ -2247,6 +2376,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 17,
+        experience_reward: 20000,
         duration: 41198,
     }, {
         id: 128,
@@ -2264,6 +2394,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 17,
+        experience_reward: 20000,
         duration: 45318,
     },
     {
@@ -2282,6 +2413,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 17,
+        experience_reward: 20000,
         duration: 49850,
     }, {
         id: 130,
@@ -2299,6 +2431,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 17,
+        experience_reward: 20000,
         duration: 54835,
     },
     {
@@ -2317,6 +2450,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 18,
+        experience_reward: 24000,
         duration: 60319,
     },{
         id: 132,
@@ -2334,6 +2468,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 18,
+        experience_reward: 24000,
         duration: 66351,
     },
     {
@@ -2352,6 +2487,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 18,
+        experience_reward: 24000,
         duration: 72986,
     },
     {
@@ -2370,6 +2506,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 18,
+        experience_reward: 24000,
         duration: 80285,
     },
     {
@@ -2388,6 +2525,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 19,
+        experience_reward: 24000,
         duration: 88314,
     }, {
         id: 136,
@@ -2405,6 +2543,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 19,
+        experience_reward: 24000,
         duration: 97145,
     },
     {
@@ -2423,6 +2562,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 19,
+        experience_reward: 24000,
         duration: 106860,
     }, {
         id: 138,
@@ -2440,6 +2580,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 20,
+        experience_reward: 54000,
         duration: 117546,
     },
     {
@@ -2458,6 +2599,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 20,
+        experience_reward: 54000,
         duration: 129301,
     }, {
         id: 140,
@@ -2475,6 +2617,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 20,
+        experience_reward: 54000,
         duration: 142231,
     },
     
@@ -2531,7 +2674,8 @@ export default [
             en: 'Work duration decreased by 3%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 3,
+       required_level: 3,
+        experience_reward: 35,
         duration: 16
     },{
         id: 144,
@@ -2548,7 +2692,8 @@ export default [
             en: 'Work duration decreased by 4%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 3,
+       required_level: 3,
+        experience_reward: 35,
         duration: 32
     },{
         id: 145,
@@ -2566,6 +2711,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 64
     },{
         id: 146,
@@ -2583,6 +2729,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 128
     },{
         id: 147,
@@ -2600,6 +2747,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 5,
+        experience_reward: 400,
         duration: 256
     },{
         id: 148,
@@ -2617,6 +2765,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 5,
+        experience_reward: 400,
         duration: 512
     },{
         id: 149,
@@ -2651,6 +2800,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 1152
     },{
         id: 151,
@@ -2668,6 +2818,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 1728
     },{
         id: 152,
@@ -2685,6 +2836,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 2592
     },{
         id: 153,
@@ -2702,6 +2854,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 3888
     },{
         id: 154,
@@ -2719,6 +2872,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 5832
     },{
         id: 155,
@@ -2736,6 +2890,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 8748
     },{
         id: 156,
@@ -2753,6 +2908,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 13122
     },{
         id: 157,
@@ -2770,6 +2926,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 19683
     },{
         id: 158,
@@ -2787,6 +2944,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 29525
     },{
         id: 159,
@@ -2804,6 +2962,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 44288
     },{
         id: 160,
@@ -2821,6 +2980,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
         required_level: 11,
+        experience_reward: 3000,
         duration: 66432
     },
 
@@ -2860,7 +3020,8 @@ export default [
             en: 'Additional income + 240/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 3,
+       required_level: 3,
+        experience_reward: 35,
         duration: 8
     },
     {
@@ -2879,6 +3040,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 16
     },
     {
@@ -2897,6 +3059,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 4,
+        experience_reward: 300,
         duration: 32
     },
     {
@@ -2915,6 +3078,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 5,
+        experience_reward: 400,
         duration: 64
     },
     {
@@ -2933,6 +3097,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 128
     },
     {
@@ -2951,6 +3116,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 6,
+        experience_reward: 500,
         duration: 256
     },
     {
@@ -2969,6 +3135,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 512
     },
     {
@@ -2987,6 +3154,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 7,
+        experience_reward: 1500,
         duration: 768
     },
     {
@@ -3005,6 +3173,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 1152
     },
     {
@@ -3023,6 +3192,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 8,
+        experience_reward: 1900,
         duration: 1728
     },
     {
@@ -3041,6 +3211,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 2592
     },
     {
@@ -3059,6 +3230,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 9,
+        experience_reward: 1900,
         duration: 3888
     },
     {
@@ -3077,6 +3249,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 5832
     },
     {
@@ -3095,6 +3268,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 10,
+        experience_reward: 2600,
         duration: 13122
     },
     {
@@ -3113,6 +3287,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 11,
+        experience_reward: 3000,
         duration: 13122
     },
     {
@@ -3131,6 +3306,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 11,
+        experience_reward: 3000,
         duration: 19683
     },
     {
@@ -3167,6 +3343,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 12,
+        experience_reward: 4000,
         duration: 44288
     },
     {
@@ -3185,6 +3362,7 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 13,
+        experience_reward: 6000,
         duration: 66432
     },
 ]
