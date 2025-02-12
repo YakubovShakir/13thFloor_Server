@@ -1153,27 +1153,33 @@ export const getLeaderboard = async (req, res) => {
     const leaderboard = await UserParameters.aggregate([
       {
         $lookup: {
-          from: "users",          // Collection to join
-          localField: "id",       // Field from current collection (UserParameters)
-          foreignField: "id",     // Field from users collection
-          as: "user_info"         // Output array field name
+          from: "users",
+          localField: "id",
+          foreignField: "id",
+          as: "user_info"
         }
       },
       {
-        $unwind: "$user_info"     // Deconstructs the array from lookup
+        $unwind: "$user_info"
       },
       {
-        $addFields: {            // Create new field 'score'
+        // Add this stage to filter out users without personage
+        $match: {
+          "user_info.personage": { $exists: true, $ne: null }
+        }
+      },
+      {
+        $addFields: {
           score: {
             $add: ["$total_earned", "$respect", "$username"]
           }
         }
       },
       {
-        $sort: { score: -1 }      // Sort by score descending
+        $sort: { score: -1 }
       },
       {
-        $project: {              // Shape the output document
+        $project: {
           _id: 0,
           user_id: "$user_info.id",
           name: "$user_info.personage.name",
