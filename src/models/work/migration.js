@@ -14,7 +14,8 @@ export default [
     skill_id_required: null,
     respect_required: 0,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A3%D0%B1%D0%BE%D1%80%D1%89%D0%B8%D0%BA.png",
-    duration: 1
+    duration: 1,
+    experience_reward: 15
   },
   {
     work_id: 2,
@@ -31,7 +32,8 @@ export default [
     skill_id_required: 1,
     respect_required: 50,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BA%D1%83%D1%80%D1%8C%D0%B5%D1%80.png",
-    duration: 5
+    duration: 5,
+    experience_reward: 100
   },
   {
     work_id: 3,
@@ -48,7 +50,8 @@ export default [
     skill_id_required: 3,
     respect_required: 150,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BC%D0%BE%D0%B9%D1%89%D0%B8%D0%BA-%D1%82%D0%B0%D1%80%D0%B5%D0%BB%D0%BE%D0%BA.png",
-    duration: 8
+    duration: 8,
+    experience_reward: 200
   },
   {
     work_id: 4,
@@ -65,7 +68,8 @@ export default [
     skill_id_required: 5,
     respect_required: 300,
     link: "https://13floorgame.ru/images/works/waiter.png",
-    duration: 12
+    duration: 12,
+    experience_reward: 360
   },
   {
     work_id: 5,
@@ -82,7 +86,8 @@ export default [
     skill_id_required: 8,
     respect_required: 600,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9C%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%B5%D1%80-%D1%80%D0%B5%D1%81%D1%82%D0%B8%D0%BA%D0%B0.png",
-    duration: 20
+    duration: 20,
+    experience_reward: 640
   },
   {
     work_id: 6,
@@ -99,7 +104,8 @@ export default [
     skill_id_required: 11,
     respect_required: 800,
     link: "https://13floorgame.ru/images/works/officeManager.png",
-    duration: 30
+    duration: 30,
+    experience_reward: 1140
   },
   {
     work_id: 7,
@@ -116,7 +122,8 @@ export default [
     skill_id_required: 13,
     respect_required: 1200,
     link: "https://13floorgame.ru/images/works/admin.png",
-    duration: 45
+    duration: 45,
+    experience_reward: 1890
   },
   {
     work_id: 8,
@@ -133,7 +140,8 @@ export default [
     skill_id_required: 16,
     respect_required: 1400,
     link: "https://13floorgame.ru/images/works/salesManager.png",
-    duration: 50
+    duration: 50,
+    experience_reward: 2300
   },
   {
     work_id: 9,
@@ -150,7 +158,8 @@ export default [
     skill_id_required: 19,
     respect_required: 2500,
     link: "https://13floorgame.ru/images/works/purchasingManager.png",
-    duration: 55
+    duration: 55,
+    experience_reward: 3025
   },
   {
     work_id: 10,
@@ -167,7 +176,8 @@ export default [
     skill_id_required: 22,
     respect_required: 2700,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9A%D0%BE%D0%BF%D0%B8%D1%80%D0%B0%D0%B9%D1%82%D0%B5%D1%80.png",
-    duration: 60
+    duration: 60,
+    experience_reward: 3600
   },
   {
     work_id: 11,
@@ -184,7 +194,8 @@ export default [
     skill_id_required: 25,
     respect_required: 3000,
     link: "https://13floorgame.ru/images/works/marketer.png",
-    duration: 70
+    duration: 70,
+    experience_reward: 4760
   },
   {
     work_id: 12,
@@ -201,7 +212,8 @@ export default [
     skill_id_required: 28,
     respect_required: 4000,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%B1%D1%80%D0%B5%D0%BD%D0%B4-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%B5%D1%80.png",
-    duration: 75
+    duration: 75,
+    experience_reward: 5625
   },
   {
     work_id: 13,
@@ -218,7 +230,8 @@ export default [
     skill_id_required: 30,
     respect_required: 5000,
     link: "https://13floorgame.ru/images/works/hr.png",
-    duration: 85
+    duration: 85,
+    experience_reward: 7225
   },
   {
     work_id: 14,
@@ -235,7 +248,8 @@ export default [
     skill_id_required: 32,
     respect_required: 7500,
     link: "https://13floorgame.ru/images/works/productManager.png",
-    duration: 95
+    duration: 95,
+    experience_reward: 9025
   },
   {
     work_id: 15,
@@ -252,7 +266,8 @@ export default [
     skill_id_required: 34,
     respect_required: 9000,
     link: "https://13floorgame.ru/images/works/teamLid.png",
-    duration: 110
+    duration: 110,
+    experience_reward: 13200
   },
   {
     work_id: 16,
@@ -269,7 +284,8 @@ export default [
     skill_id_required: 36,
     respect_required: 12000,
     link: "https://13floorgame.ru/images/works/deputyDirector.png",
-    duration: 125
+    duration: 125,
+    experience_reward: 17500
   },
   {
     work_id: 17,
@@ -286,7 +302,8 @@ export default [
     skill_id_required: 38,
     respect_required: 15000,
     link: "https://13floorgame.ru/images/works/director.png",
-    duration: 140
+    duration: 140,
+    experience_reward: 22400
   },
   {
     work_id: 18,
@@ -303,7 +320,8 @@ export default [
     skill_id_required: 40,
     respect_required: 18000,
     link: "https://13floorgame.ru/images/works/partner.png",
-    duration: 155
+    duration: 155,
+    experience_reward: 27900
   },
   {
     work_id: 19,
@@ -320,7 +338,8 @@ export default [
     skill_id_required: 42,
     respect_required: 19000,
     link: "https://13floorgame.ru/images/works/seo.png",
-    duration: 170
+    duration: 170,
+    experience_reward: 34000
   },
   {
     work_id: 20,
@@ -337,6 +356,7 @@ export default [
     skill_id_required: 43,
     respect_required: 20000,
     link: "https://13floorgame.ru/images/works/millionaire.png",
-    duration: 185
+    duration: 185,
+    experience_reward: 46250
   },
 ]

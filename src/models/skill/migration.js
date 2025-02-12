@@ -6,6 +6,7 @@ export default [
       en: "Motivational Podcast"
     },
     coins_price: 10,
+    experience_reward: 15,
     description: 
     {
       ru: "Первый шаг на пути к самосовершенствованию",
@@ -25,6 +26,7 @@ export default [
       en: "Fill out a job application"
     },
     coins_price: 40,
+    experience_reward: 15,
     description: 
     {
       ru: "Оставьте заявку для работы в ресторане",
@@ -45,6 +47,7 @@ export default [
       en: "Medical certificate"
     },
     coins_price: 80,
+    experience_reward: 15,
     description: 
     {
       ru: "Получите медицинскую справку о допуске к работе ",
@@ -65,6 +68,7 @@ export default [
       en: "Basic Etiquette Course"
     },
     coins_price: 500,
+    experience_reward: 35,
     description: 
     {
       ru: "Освойте основы этикета",
@@ -85,13 +89,14 @@ export default [
       en: "Learn the menue"
     },
     coins_price: 700,
+    experience_reward: 35,
     description: 
     {
       ru: "Докажите менеджеру что знаете меню наизусть",
       en: "Prove to the manager that you know the menu by heart"
     },
     
-    duration: 15,
+    duration: 17,
     requiredLevel: 3,
     skill_id_required: 4,
     type: null,
@@ -105,6 +110,7 @@ export default [
       en: "Application for the position of manager"
     },
     coins_price: 1000,
+    experience_reward: 300,
     description: 
     {
       ru: "Докажи, что ты можешь управлять всем, кроме своей личной жизни",
@@ -124,14 +130,15 @@ export default [
       ru: "Курсы управления персоналом",
       en: "HR Management Courses"
     },
-    coins_price: 1000,
+    coins_price: 1800,
+    experience_reward: 300,
     description: 
     {
       ru: "Быстрое обучение основам управления персонала",
       en: "Quick training in the basics of personnel management"
     },
     
-    duration: 30,
+    duration: 40,
     requiredLevel: 4,
     skill_id_required: 6,
     type: null,
@@ -144,14 +151,15 @@ export default [
       ru: "Собеседование на должность менеджера",
       en: "Interview for the position of manager"
     },
-    coins_price: 1000,
+    coins_price: 2000,
+    experience_reward: 300,
     description: 
     {
       ru: "Ответь на вопросы так, чтобы все поверили, что ты знаешь, что делаешь",
       en: "Answer the questions so that everyone believes that you know what you're doing"
     },
     
-    duration: 30,
+    duration: 50,
     requiredLevel: 4,
     skill_id_required: 7,
     type: null,
@@ -165,6 +173,7 @@ export default [
       en: "Office programs"
     },
     coins_price: 4500,
+    experience_reward: 500,
     description: 
     {
       ru: "Изучите базовые офисные программы для продвижения по работе",
@@ -184,14 +193,15 @@ export default [
       ru: "Поиск работы в интернете",
       en: "Job search on the Internet"
     },
-    coins_price: 4500,
+    coins_price: 5500,
+    experience_reward: 500,
     description: 
     {
       ru: "Это может занять время",
       en: "It may take some time"
     },
     
-    duration: 60,
+    duration: 70,
     requiredLevel: 5,
     skill_id_required: 9,
     type: null,
@@ -204,14 +214,15 @@ export default [
       ru: "Подготовка к интервью",
       en: "Preparing for the interview"
     },
-    coins_price: 4500,
+    coins_price: 6000,
+    experience_reward: 500,
     description: 
     {
       ru: "Встречают по одежке",
       en: "People judge each other on looks"
     },
     
-    duration: 60,
+    duration: 80,
     requiredLevel: 5,
     skill_id_required: 10,
     type: null,
@@ -224,7 +235,8 @@ export default [
       ru: "Слушать сплетни",
       en: "Gossip Listening"
     },
-    coins_price: 6300,
+    coins_price: 6800,
+    experience_reward: 1000,
     requiredLevel: 6,
     description: 
     {
@@ -243,14 +255,15 @@ export default [
       ru: "Курс по деловой переписке",
       en: "Business Correspondence Course"
     },
-    coins_price: 6300,
+    coins_price: 7500,
+    experience_reward: 1000,
     requiredLevel: 6,
     description: 
     {
       ru: "Сейчас как раз ищут человека с такими навыками",
       en: "They are currently looking for a person with such skills"
     },
-    duration: 120,
+    duration: 160,
     skill_id_required: 12,
     type: null,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%B4%D0%B5%D0%BB%D0%BE%D0%B2%D0%B0%D1%8F-%D0%BF%D0%B5%D1%80%D0%B5%D0%BF%D0%B8%D1%81%D0%BA%D0%B0.png",
@@ -263,6 +276,7 @@ export default [
       en: "Consulting with a career coach"
     },
     coins_price: 12150,
+    experience_reward: 1500,
     requiredLevel: 7,
     description: null,
     duration: 180,
@@ -277,10 +291,11 @@ export default [
       ru: "Онлайн обучение",
       en: "Online education"
     },
-    coins_price: 12150,
+    coins_price: 15000,
+    experience_reward: 1500,
     requiredLevel: 7,
     description: null,
-    duration: 180,
+    duration: 220,
     skill_id_required: 14,
     type: null,
     link: "https://13floorgame.ru/images/skills/onlineLearning.png",
@@ -292,7 +307,8 @@ export default [
       ru: "Как продать ручку?",
       en: "How to sell a pen?"
     },
-    coins_price: 12150,
+    coins_price: 18000,
+    experience_reward: 1500,
     requiredLevel: 7,
     description: null,
     duration: 180,
@@ -307,7 +323,8 @@ export default [
       ru: "Аналитик-экстрасенс",
       en: "The psychic analyst"
     },
-    coins_price: 12150,
+    coins_price: 20000,
+    experience_reward: 1500,
     requiredLevel: 7,
     description: 
     {
@@ -326,7 +343,8 @@ export default [
       ru: "Основы закупок",
       en: "Fundamentals of procurement"
     },
-    coins_price: 19800,
+    coins_price: 22000,
+    experience_reward: 1900,
     requiredLevel: 8,
     description: 
     {
@@ -345,7 +363,8 @@ export default [
       ru: "Поставщик-призрак",
       en: "The Ghost Supplier"
     },
-    coins_price: 19800,
+    coins_price: 25000,
+    experience_reward: 1900,
     requiredLevel: 8,
     description: 
     {
@@ -364,7 +383,8 @@ export default [
       ru: "Мастер заголовков",
       en: "Text Header Wizard"
     },
-    coins_price: 19800,
+    coins_price: 29000,
+    experience_reward: 1900,
     requiredLevel: 8,
     description: 
     {
@@ -383,7 +403,8 @@ export default [
       ru: "Тренинг по рекламе",
       en: "Advertising training"
     },
-    coins_price: 27300,
+    coins_price: 33300,
+    experience_reward: 1900,
     requiredLevel: 9,
     description: null,
     duration: 400,
@@ -398,8 +419,9 @@ export default [
       ru: "Креатив на минималках",
       en: "Creative on minimums"
     },
-    coins_price: 19800,
-    requiredLevel: 8,
+    coins_price: 38000,
+    experience_reward: 2600,
+    requiredLevel: 9,
     description: 
     {
       ru: "Создай рекламу для чего-то скучного. Например, для серых носков",
@@ -418,6 +440,7 @@ export default [
       en: "Advertising School"
     },
     coins_price: 41000,
+    experience_reward: 2600,
     requiredLevel: 10,
     description: 
     {
@@ -436,7 +459,8 @@ export default [
       ru: "Аналитика без паники",
       en: "Analytics without panic"
     },
-    coins_price: 41000,
+    coins_price: 45000,
+    experience_reward: 2600,
     requiredLevel: 10,
     description: 
     {
@@ -455,7 +479,8 @@ export default [
       ru: "Гуру соцсетей",
       en: "The Social Media Guru"
     },
-    coins_price: 41000,
+    coins_price: 49000,
+    experience_reward: 2600,
     requiredLevel: 10,
     description: 
     {
@@ -475,6 +500,7 @@ export default [
       en: "The basics of branding"
     },
     coins_price: 54000,
+    experience_reward: 3000,
     requiredLevel: 11,
     description: 
     {
@@ -493,7 +519,8 @@ export default [
       ru: "Легенда бренда",
       en: "Brand legend"
     },
-    coins_price: 54000,
+    coins_price: 58000,
+    experience_reward: 3000,
     requiredLevel: 11,
     description: 
     {
@@ -512,7 +539,8 @@ export default [
       ru: "Кризисный менеджер",
       en: "The Crisis Manager"
     },
-    coins_price: 54000,
+    coins_price: 62000,
+    experience_reward: 3000,
     requiredLevel: 11,
     description: 
     {
@@ -532,6 +560,7 @@ export default [
       en: "Recruitment courses"
     },
     coins_price: 71000,
+    experience_reward: 4000,
     requiredLevel: 12,
     description: 
     {
@@ -550,7 +579,8 @@ export default [
       ru: "Мастер мотивации",
       en: "The Master of Motivation"
     },
-    coins_price: 71000,
+    coins_price: 79000,
+    experience_reward: 4000,
     requiredLevel: 12,
     description: 
     {
@@ -569,7 +599,8 @@ export default [
       ru: "Мастер ресурсов",
       en: "Chief of Resources"
     },
-    coins_price: 71000,
+    coins_price: 85000,
+    experience_reward: 4000,
     requiredLevel: 12,
     description: 
     {
@@ -589,6 +620,7 @@ export default [
       en: "Planning and deadlines"
     },
     coins_price: 91000,
+    experience_reward: 6000,
     requiredLevel: 13,
     description: 
     {
@@ -607,8 +639,9 @@ export default [
       ru: "Школа менеджмента",
       en: "School of Management"
     },
-    coins_price: 129600,
-    requiredLevel: 14,
+    coins_price: 100600,
+    experience_reward: 6000,
+    requiredLevel: 13,
     description: 
     {
       ru: "Научись вести команду так, чтобы никто не заметил, что ты сам не знаешь, что делаешь",
@@ -627,6 +660,7 @@ export default [
       en: "Conflict resolution"
     },
     coins_price: 129600,
+    experience_reward: 8000,
     requiredLevel: 14,
     description: 
     {
@@ -646,6 +680,7 @@ export default [
       en: "Business training"
     },
     coins_price: 168000,
+    experience_reward: 10000,
     requiredLevel: 15,
     description: 
     {
@@ -664,7 +699,8 @@ export default [
       ru: "Стратегия роста",
       en: "Growth strategy"
     },
-    coins_price: 168000,
+    coins_price: 188000,
+    experience_reward: 10000,
     requiredLevel: 15,
     description: 
     {
@@ -684,7 +720,8 @@ export default [
       en: "Leadership and motivation"
     },
     coins_price: 216000,
-    requiredLevel: 15,
+    experience_reward: 15000,
+    requiredLevel: 16,
     description: 
     {
       ru: "Веди за собой так, чтобы никто не заметил, что ты сам не знаешь куда",
@@ -702,8 +739,9 @@ export default [
       ru: "Глобальное видение",
       en: "Global vision"
     },
-    coins_price: 216000,
-    requiredLevel: 15,
+    coins_price: 276000,
+    experience_reward: 15000,
+    requiredLevel: 16,
     description: 
     {
       ru: "Придумай, куда двигаться компании. Или просто скажи вперёд",
@@ -722,6 +760,7 @@ export default [
       en: "Automation training"
     },
     coins_price: 273000,
+    experience_reward: 20000,
     requiredLevel: 17,
     description: 
     {
@@ -740,7 +779,8 @@ export default [
       ru: "Кризисное управление",
       en: "Crisis management"
     },
-    coins_price: 273000,
+    coins_price: 293000,
+    experience_reward: 20000,
     requiredLevel: 17,
     description: 
     {
@@ -759,8 +799,9 @@ export default [
       ru: "Стратегическое мышление",
       en: "Strategic thinking"
     },
-    coins_price: 273000,
-    requiredLevel: 17,
+    coins_price: 400000,
+    experience_reward: 24000,
+    requiredLevel: 18,
     description: 
     {
       ru: "Придумай, как захватить рынок. Или хотя бы как удержаться на плаву",
@@ -779,6 +820,7 @@ export default [
       en: "Economic education"
     },
     coins_price: 660000,
+    experience_reward: 24000,
     requiredLevel: 20,
     description: 
     {
@@ -797,7 +839,8 @@ export default [
       ru: "Искусство делегирования",
       en: "The Art of delegation"
     },
-    coins_price: 660000,
+    coins_price: 760000,
+    experience_reward: 24000,
     requiredLevel: 20,
     description: 
     {
@@ -817,6 +860,7 @@ export default [
       en: "Encyclopedia of Bodybuilding"
     },
     coins_price: 360000,
+    experience_reward: 24000,
      description: 
     {
       ru: "Твое настроение после тренировки улучшается на 10% больше",

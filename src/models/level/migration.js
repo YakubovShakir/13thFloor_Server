@@ -26,13 +26,13 @@ export default [
   {
     level: 5,
     energy_capacity: 2500,
-    required_earned: 18000,
+    required_earned: 7000,
     sleep_duration: 45,
   },
   {
     level: 6,
     energy_capacity: 3000,
-    required_earned: 46080,
+    required_earned: 30080,
     sleep_duration: 60,
   },
   {
