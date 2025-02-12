@@ -25,7 +25,8 @@ const constantEffectsLevelsSchema = new mongoose.Schema({
   },
   link: { type: String },
   required_level: { type: Number, default: 0},
-  duration: { type: Number, default: 0 }
+  duration: { type: Number, default: 0 },
+  experience_reward: { type: Number, default: 0 }
 })
 
 export const ConstantEffects = mongoose.model("constant_effects_levels", constantEffectsLevelsSchema)
