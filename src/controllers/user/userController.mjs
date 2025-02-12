@@ -1190,7 +1190,7 @@ export const getLeaderboard = async (req, res) => {
         }
       },
       {
-        $sort: { score: -1 }
+        $sort: { score: 1 }
       },
       {
         $project: {
