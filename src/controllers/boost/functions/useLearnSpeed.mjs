@@ -3,6 +3,7 @@ import { ConstantEffects } from "../../../models/effects/constantEffectsLevels.m
 import process from "../../../models/process/processModel.mjs"
 import Skill from "../../../models/skill/skillModel.mjs"
 import UserParameters from "../../../models/user/userParametersModel.mjs"
+import UserSkill from "../../../models/user/userSkillModel.mjs"
 
 const useLearnSpeed = async (userId, skillId, sub_type, speedRate) => {
   try {
@@ -16,9 +17,8 @@ const useLearnSpeed = async (userId, skillId, sub_type, speedRate) => {
       sub_type,
     })
 
-    console.log('@', learningSkillProcess, userId, skillId, sub_type)
     if (!learningSkillProcess) return false
-    console.log(learningSkillProcess.base_duration_in_seconds, learningSkillProcess.target_duration_in_seconds)
+
     learningSkillProcess.target_duration_in_seconds =
       learningSkillProcess.target_duration_in_seconds
         ? Math.ceil(
@@ -29,10 +29,14 @@ const useLearnSpeed = async (userId, skillId, sub_type, speedRate) => {
             learningSkillProcess.base_duration_in_seconds *
               (1 - speedRate / 100)
           )
-          console.log(learningSkillProcess.base_duration_in_seconds, learningSkillProcess.target_duration_in_seconds)
     if(learningSkillProcess.target_duration_in_seconds <= moment().diff(learningSkillProcess.createdAt, 'seconds')) {
-      const userParameters = await UserParameters.findOne({ id: userId }, { constant_effects: 1 })
-      userParameters.constant_effects_levels[skill.type] === skill.level
+      if(sub_type === 'constant_effects') {
+        const userParameters = await UserParameters.findOne({ id: userId }, { constant_effects: 1 })
+        userParameters.constant_effects_levels[skill.type] = skill.level
+      } else {
+        await new UserSkill({ id: userId, skill_id: skill.skill_id }).save()
+      }
+
       await process.deleteOne({ id: userId,
         type: "skill",
         type_id: skillId,

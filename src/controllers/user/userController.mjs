@@ -17,6 +17,8 @@ import Tasks from "../../models/tasks/taskModel.mjs"
 import CompletedTasks from "../../models/tasks/completedTask.mjs"
 import { Bot } from "grammy"
 import Work from "../../models/work/workModel.mjs"
+import fs from 'fs/promises'
+import path from "path"
 
 const gamecenterLevelMap = {
   1: 1,
@@ -996,6 +998,75 @@ export const getUserTasks = async (req, res) => {
 
 const bot = new Bot("7866433891:AAHAh-4Lc0Dvr80URgOQMJrIKB_1bfxc0KM")
 
+// stats forming step 1 
+export const collectRefStatsFromDb = async () => {
+  return Referal.aggregate([
+    {
+      $group: {
+        _id: "$refer_id",
+        referral_count: {
+          $sum: 1
+        }
+      }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "_id",
+        foreignField: "id",
+        as: "user_info"
+      }
+    },
+    {
+      $unwind: "$user_info"
+    },
+    {
+      $project: {
+        referer_id: "$_id",
+        referral_count: 1,
+        username: "$user_info.username"
+      }
+    },
+    {
+      $match: {
+        referral_count: {
+          $gte: 5
+        }
+      }
+    }
+  ])
+}
+
+// stats forming step 2
+export const addUserSubscriptionStatus = async (refsAggregationResult, channelId) => {
+  const results = [];
+  const chunkSize = 15;
+
+  const processChunk = async (chunk) => {
+    const chunkResults = await Promise.all(
+      chunk.map(async (userStat) => {
+        const result = { ...userStat, subscribed: false };
+        try {
+          await bot.api.getChatMember(channelId, result.referer_id);
+          result.subscribed = true;
+        } catch (err) {
+          // not subscribed
+        }
+        return result;
+      })
+    );
+    return chunkResults;
+  };
+
+  for (let i = 0; i < refsAggregationResult.length; i += chunkSize) {
+    const chunk = refsAggregationResult.slice(i, i + chunkSize);
+    const chunkResults = await processChunk(chunk);
+    results.push(...chunkResults);
+  }
+
+  await fs.writeFile('./refs-weekly-stats.json', JSON.stringify(results, null, 2));
+};
+
 export const claimUserTask = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
@@ -1094,7 +1165,7 @@ export const getLeaderboard = async (req, res) => {
       {
         $addFields: {            // Create new field 'score'
           score: {
-            $add: ["$total_earned", "$respect"]
+            $add: ["$total_earned", "$respect", "$username"]
           }
         }
       },
@@ -1107,6 +1178,7 @@ export const getLeaderboard = async (req, res) => {
           user_id: "$user_info.id",
           name: "$user_info.personage.name",
           gender: "$user_info.personage.gender",
+          tg_username: "$user_info.username",
           respect: 1,
           total_earned: 1
         }

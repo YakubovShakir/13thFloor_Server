@@ -105,6 +105,7 @@ export const checkCanStopWork = async (userId) => {
 
     user.coins += Math.floor(workReward)
     user.total_earned += Math.floor(workReward)
+    // user.experience += 
     user.mood = Math.max(0, user.mood - moodCost)
     user.hungry = Math.max(0, user.hungry - hungryCost)
     user.energy = Math.max(0, user.energy - energyCost)

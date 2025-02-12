@@ -34,14 +34,15 @@ import ShelfItemModel from "./models/shelfItem/shelfItemModel.js"
 import { ShelfItems } from "./models/shelfItem/migration.js"
 import UserLaunchedInvestments from "./models/investments/userLaunchedInvestments.mjs"
 import Investments from "./models/investments/investmentModel.mjs"
-import InvestmentsMigration from './models/investments/migration.js'
+import InvestmentsMigration from "./models/investments/migration.js"
 import CompletedTasks from "./models/tasks/completedTask.mjs"
 import Tasks from "./models/tasks/taskModel.mjs"
-import TasksMigration from './models/tasks/migration.mjs'
+import TasksMigration from "./models/tasks/migration.mjs"
 import UserSkill from "./models/user/userSkillModel.mjs"
-import UserProcess from './models/process/processModel.mjs'
+import UserProcess from "./models/process/processModel.mjs"
 import { ConstantEffects } from "./models/effects/constantEffectsLevels.mjs"
-import constantEffects from './models/effects/migration.mjs'
+import constantEffects from "./models/effects/migration.mjs"
+import { addUserSubscriptionStatus, collectRefStatsFromDb } from "./controllers/user/userController.mjs"
 
 dotenv.config()
 
@@ -76,12 +77,12 @@ app.listen(PORT, () => {
 async function main() {
   await Promise.all([
     //! PROGRESS
-    deleteUserParameters(),
-    deleteUserInventories(),
-    deleteUserClothing(),
-    deleteUsers(),
-    deleteUserProcesses(),
-    deleteUserInvestments(),
+    // deleteUserParameters(),
+    // deleteUserInventories(),
+    // deleteUserClothing(),
+    // deleteUsers(),
+    // deleteUserProcesses(),
+    // deleteUserInvestments(),
     //! SAFE MIGRATIONS
     deleteAndInsertClothing(),
     deleteAndInsertWork(),
@@ -93,7 +94,7 @@ async function main() {
     deleteShelfItems(),
     deleteInvestments(),
     deleteTasks(),
-    deleteConstantEffects()
+    deleteConstantEffects(),
   ])
 }
 
@@ -230,7 +231,7 @@ async function deleteUsers() {
 async function deleteConstantEffects() {
   await ConstantEffects.deleteMany()
   await Promise.all(
-    constantEffects.map(async effect => {
+    constantEffects.map(async (effect) => {
       const e = new ConstantEffects(effect)
       await e.save()
     })

@@ -6,19 +6,6 @@ const upUserBalance = async (id, amount) => {
   try {
     const user = await UserParameters.findOne({ id: id })
     const levels = await LevelsParamters.find({})
-    const robotBoost12 = await process.findOne({
-      id: id,
-      type: "boost",
-      type_id: 5,
-    })
-    const robotBoost24 = await process.findOne({
-      id: id,
-      type: "boost",
-      type_id: 6,
-    })
-
-    let earnRate = 1 // !!!
-    if (robotBoost12 || robotBoost24) earnRate = 1
 
     user.coins += amount * earnRate
     user.total_earned += amount * earnRate
