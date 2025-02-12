@@ -14,6 +14,7 @@ export default [
         channel_id: '-1002323702022',
         link: "https://t.me/Game_13thFloor",
         fixed: 100,
-        multiplier: 0
+        multiplier: 0,
+        experience_reward: 10
     }
 ]
