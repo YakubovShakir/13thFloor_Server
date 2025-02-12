@@ -107,8 +107,8 @@ export default [
     coins_price: 1000,
     description: 
     {
-      ru: "Заполните анкету с указанием опыта работы, навыков и мотивации",
-      en: "Fills out a questionnaire indicating work experience, skills and motivation"
+      ru: "Докажи, что ты можешь управлять всем, кроме своей личной жизни",
+      en: "Prove that you can control everything except your personal life"
     },
     
     duration: 30,
@@ -147,8 +147,8 @@ export default [
     coins_price: 1000,
     description: 
     {
-      ru: "Менеджер — это не просто должность, это лидер, который вдохновляет команду и делает гостей счастливыми. Ты сделал важный шаг в своей карьере. Удачи!",
-      en: "A manager is not just a position, it is a leader who inspires the team and makes the guests happy. You've made an important step in your career. Good luck!"
+      ru: "Ответь на вопросы так, чтобы все поверили, что ты знаешь, что делаешь",
+      en: "Answer the questions so that everyone believes that you know what you're doing"
     },
     
     duration: 30,
@@ -289,8 +289,8 @@ export default [
     skill_id: 16,
     
     name: {
-      ru: "Как продать ручку на собеседовании",
-      en: "How to sell a pen at an interview"
+      ru: "Как продать ручку?",
+      en: "How to sell a pen?"
     },
     coins_price: 12150,
     requiredLevel: 7,
@@ -349,8 +349,8 @@ export default [
     requiredLevel: 8,
     description: 
     {
-      ru: "Найди пропавшего рыбака. Он где-то между уже не работает и никого не волнует",
-      en: "Find the missing fisherman. It's somewhere between no longer working and nobody cares"
+      ru: "Это когда поставка где-то между уже не работает и никого не волнует",
+      en: "This is when the supply somewhere in between is no longer working and no one cares"
     },
     duration: 250,
     skill_id_required: 18,
@@ -402,8 +402,8 @@ export default [
     requiredLevel: 8,
     description: 
     {
-      ru: "Создай рекламу для чего-то скучного. Например, для серых носков. Да, это вызов",
-      en: "Create an ad for something boring. For example, for gray socks. Yes, it's a challenge"
+      ru: "Создай рекламу для чего-то скучного. Например, для серых носков",
+      en: "Create an ad for something boring. For example, for gray socks"
     },
     duration: 250,
     skill_id_required: 21,

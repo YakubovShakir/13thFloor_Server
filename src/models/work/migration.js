@@ -62,7 +62,7 @@ export default [
     energy_cost_in_hour: 300,
     mood_cost_in_hour: 26,
     hungry_cost_in_hour: 34,
-    skill_id_required: 4,
+    skill_id_required: 5,
     respect_required: 300,
     link: "https://13floorgame.ru/images/works/waiter.png",
     duration: 12
@@ -79,7 +79,7 @@ export default [
     energy_cost_in_hour: 500,
     mood_cost_in_hour: 28,
     hungry_cost_in_hour: 36,
-    skill_id_required: 7,
+    skill_id_required: 8,
     respect_required: 600,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9C%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%B5%D1%80-%D1%80%D0%B5%D1%81%D1%82%D0%B8%D0%BA%D0%B0.png",
     duration: 20
@@ -130,7 +130,7 @@ export default [
     energy_cost_in_hour: 900,
     mood_cost_in_hour: 38,
     hungry_cost_in_hour: 44,
-    skill_id_required: 4,
+    skill_id_required: 16,
     respect_required: 1400,
     link: "https://13floorgame.ru/images/works/salesManager.png",
     duration: 50
@@ -147,7 +147,7 @@ export default [
     energy_cost_in_hour: 1000,
     mood_cost_in_hour: 42,
     hungry_cost_in_hour: 48,
-    skill_id_required: null,
+    skill_id_required: 19,
     respect_required: 2500,
     link: "https://13floorgame.ru/images/works/purchasingManager.png",
     duration: 55
@@ -164,7 +164,7 @@ export default [
     energy_cost_in_hour: 1100,
     mood_cost_in_hour: 46,
     hungry_cost_in_hour: 52,
-    skill_id_required: 5,
+    skill_id_required: 22,
     respect_required: 2700,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9A%D0%BE%D0%BF%D0%B8%D1%80%D0%B0%D0%B9%D1%82%D0%B5%D1%80.png",
     duration: 60
@@ -181,7 +181,7 @@ export default [
     energy_cost_in_hour: 1200,
     mood_cost_in_hour: 50,
     hungry_cost_in_hour: 56,
-    skill_id_required: 5,
+    skill_id_required: 25,
     respect_required: 3000,
     link: "https://13floorgame.ru/images/works/marketer.png",
     duration: 70
@@ -198,7 +198,7 @@ export default [
     energy_cost_in_hour: 1300,
     mood_cost_in_hour: 54,
     hungry_cost_in_hour: 60,
-    skill_id_required: 6,
+    skill_id_required: 28,
     respect_required: 4000,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%B1%D1%80%D0%B5%D0%BD%D0%B4-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%B5%D1%80.png",
     duration: 75
@@ -215,7 +215,7 @@ export default [
     energy_cost_in_hour: 1400,
     mood_cost_in_hour: 58,
     hungry_cost_in_hour: 64,
-    skill_id_required: 6,
+    skill_id_required: 30,
     respect_required: 5000,
     link: "https://13floorgame.ru/images/works/hr.png",
     duration: 85
@@ -232,7 +232,7 @@ export default [
     energy_cost_in_hour: 1500,
     mood_cost_in_hour: 62,
     hungry_cost_in_hour: 68,
-    skill_id_required: null,
+    skill_id_required: 32,
     respect_required: 7500,
     link: "https://13floorgame.ru/images/works/productManager.png",
     duration: 95
@@ -249,7 +249,7 @@ export default [
     energy_cost_in_hour: 1600,
     mood_cost_in_hour: 66,
     hungry_cost_in_hour: 72,
-    skill_id_required: 8,
+    skill_id_required: 34,
     respect_required: 9000,
     link: "https://13floorgame.ru/images/works/teamLid.png",
     duration: 110
@@ -266,7 +266,7 @@ export default [
     energy_cost_in_hour: 1700,
     mood_cost_in_hour: 70,
     hungry_cost_in_hour: 76,
-    skill_id_required: 9,
+    skill_id_required: 36,
     respect_required: 12000,
     link: "https://13floorgame.ru/images/works/deputyDirector.png",
     duration: 125
@@ -283,7 +283,7 @@ export default [
     energy_cost_in_hour: 1800,
     mood_cost_in_hour: 74,
     hungry_cost_in_hour: 80,
-    skill_id_required: null,
+    skill_id_required: 38,
     respect_required: 15000,
     link: "https://13floorgame.ru/images/works/director.png",
     duration: 140
@@ -300,7 +300,7 @@ export default [
     energy_cost_in_hour: 1900,
     mood_cost_in_hour: 78,
     hungry_cost_in_hour: 84,
-    skill_id_required: 10,
+    skill_id_required: 40,
     respect_required: 18000,
     link: "https://13floorgame.ru/images/works/partner.png",
     duration: 155
@@ -317,7 +317,7 @@ export default [
     energy_cost_in_hour: 2000,
     mood_cost_in_hour: 82,
     hungry_cost_in_hour: 88,
-    skill_id_required: 11,
+    skill_id_required: 42,
     respect_required: 19000,
     link: "https://13floorgame.ru/images/works/seo.png",
     duration: 170
@@ -334,7 +334,7 @@ export default [
     energy_cost_in_hour: 3000,
     mood_cost_in_hour: 86,
     hungry_cost_in_hour: 92,
-    skill_id_required: null,
+    skill_id_required: 43,
     respect_required: 20000,
     link: "https://13floorgame.ru/images/works/millionaire.png",
     duration: 185
