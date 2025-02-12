@@ -1100,7 +1100,7 @@ export const claimUserTask = async (req, res) => {
       const reward = task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
 
       await upUserBalance(userId, reward)
-      await upUserExperience(userId, work.experience_reward)
+      await upUserExperience(userId, task.experience_reward)
 
       await userParam.save()
     } else {
