@@ -17,6 +17,7 @@ const workSchema = new mongoose.Schema({
   duration: { type: Number, default: null },
   requiredLevel: { type: Number, required: true },
   respect_reward: { type: Number, default: 0},
+  experience_reward: { type: Number, default: 0 },
 })
 
 const Work = mongoose.model("works", workSchema)

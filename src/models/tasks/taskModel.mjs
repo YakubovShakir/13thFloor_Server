@@ -33,6 +33,7 @@ const schema = new mongoose.Schema({
     fixed: { type: Number, default: 0 },
     multiplier: { type: Number, default: 1 },
     respect_reward: { type: Number, default: 0 },
+    experience_reward: { type: Number, default: 0 },
 })
 
 // earnings 
