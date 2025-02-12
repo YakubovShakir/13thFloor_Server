@@ -77,12 +77,12 @@ app.listen(PORT, () => {
 async function main() {
   await Promise.all([
     //! PROGRESS
-    // deleteUserParameters(),
-    // deleteUserInventories(),
-    // deleteUserClothing(),
-    // deleteUsers(),
-    // deleteUserProcesses(),
-    // deleteUserInvestments(),
+    deleteUserParameters(),
+    deleteUserInventories(),
+    deleteUserClothing(),
+    deleteUsers(),
+    deleteUserProcesses(),
+    deleteUserInvestments(),
     //! SAFE MIGRATIONS
     deleteAndInsertClothing(),
     deleteAndInsertWork(),
