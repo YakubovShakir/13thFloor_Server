@@ -1185,12 +1185,12 @@ export const getLeaderboard = async (req, res) => {
       {
         $addFields: {
           score: {
-            $add: ["$total_earned", "$respect", "$username"]
+            $add: ["$total_earned", "$respect"]
           }
         }
       },
       {
-        $sort: { score: 1 }
+        $sort: { score: -1 }
       },
       {
         $project: {
