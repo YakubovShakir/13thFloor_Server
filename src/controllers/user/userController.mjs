@@ -166,7 +166,7 @@ export const createUserPersonage = async (req, res) => {
     console.log("Creating personage", race, gender, name, userId)
     const refs = await Referal.countDocuments({ refer_id: userId })
     const gameCenterLevel = gamecenterLevelMap[refs.toString()] || 0
-    const bot = new Bot('7775483956:AAHc14xqGCeNQ7DVsqABf0qAa8gdqwMWE6w')
+    const bot = new Bot('7775483956:7866433891:AAHAh-4Lc0Dvr80URgOQMJrIKB_1bfxc0KM')
     let username = ""
     try {
       const chatMember = await bot.api.getChatMember('-1002323702022', userId)
