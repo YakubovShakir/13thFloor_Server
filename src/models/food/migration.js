@@ -15,7 +15,7 @@ export default [
     instant_mood_restore: null,
     long_mood_restore: null,
     coins_price: 15,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2F%D0%AF%D0%B1%D0%BB%D0%BE%D0%BA%D0%BE1.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FApple.webp",
     food_id: 1,
   },
   {
@@ -38,7 +38,7 @@ export default [
     },
     long_mood_restore: null,
     coins_price: 25,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2F%D0%BF%D0%B5%D1%87%D0%B5%D0%BD%D1%8C%D0%BA%D0%B0.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FCoocie.webp",
     food_id: 2,
   },
   {
@@ -58,7 +58,7 @@ export default [
     instant_mood_restore: null,
     long_mood_restore: null,
     coins_price: 75,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2F%D1%81%D0%B0%D0%BB%D0%B0%D1%821.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FSalad.webp",
     food_id: 3,
   },
    
@@ -82,7 +82,7 @@ export default [
     instant_mood_restore: null,
     long_mood_restore: null,
     coins_price: 150,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2F%D0%B7%D0%B0%D0%B2%D1%82%D1%80.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FBreakfast.webp",
     food_id: 4,
   },
   {
@@ -105,7 +105,7 @@ export default [
     },
     long_mood_restore: null,
     coins_price: 300,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2F%D0%BB%D0%B0%D0%BF%D1%88%D0%B0.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FRamen.webp",
     food_id: 5,
   },
   {
@@ -128,7 +128,7 @@ export default [
     },
     long_mood_restore: null,
     coins_price: 450,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2F%D1%81%D1%82%D0%B5%D0%B9%D0%BA2.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FSteake.webp",
     food_id: 6,
   },
   {
@@ -152,7 +152,7 @@ export default [
     },
     long_mood_restore: null,
     coins_price: 600,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2F%D0%BF%D0%B8%D1%86%D1%86%D0%B01.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FPizza.webp",
     food_id: 7,
   },
   {
@@ -175,7 +175,7 @@ export default [
     instant_mood_restore: null,
     long_mood_restore: null,
     coins_price: 1200,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2F%D0%A8%D0%BE%D0%BA%D0%BE.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FChoko.webp",
     food_id: 8,
   },
   {
@@ -198,7 +198,7 @@ export default [
     instant_mood_restore: null,
     long_mood_restore: null,
     coins_price: 1800,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2F%D0%B1%D1%83%D1%80%D0%B3%D0%B5%D1%802.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FBurger.webp",
     food_id: 9,
   },
   {
@@ -244,7 +244,7 @@ export default [
       percent: true,
     },
     coins_price: 3500,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2F%D1%80%D0%BE%D0%BF%D1%8B%D1%8B.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FSusi.webp",
     food_id: 11,
   },
   {
@@ -267,7 +267,7 @@ export default [
     instant_mood_restore: null,
     long_mood_restore: null,
     coins_price: 5000,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2F%D1%88%D0%B0%D1%83%D1%80%D0%BC%D1%8F.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FBurrito.webp",
     food_id: 12,
   },
  
