@@ -67,7 +67,7 @@ export default [
       ru: "Базовый курс Этикета",
       en: "Basic Etiquette Course"
     },
-    coins_price: 500,
+    coins_price: 250,
     experience_reward: 35,
     description: 
     {
@@ -88,7 +88,7 @@ export default [
       ru: "Знание меню",
       en: "Learn the menue"
     },
-    coins_price: 700,
+    coins_price: 400,
     experience_reward: 35,
     description: 
     {

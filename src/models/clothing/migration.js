@@ -836,7 +836,7 @@ export default [
   {
     clothing_id: 42,
     name: {
-      ru: "Черыне шорты",
+      ru: "Черные шорты",
       en: "Black Shorts",
     },
     tag: "Sport",
@@ -944,7 +944,7 @@ export default [
   {
     clothing_id: 48,
     name: {
-      ru: "Purple Edge",
+      ru: "Фиолетовый хайп",
       en: "Purple Edge",
     },
     tag: "Casual",
