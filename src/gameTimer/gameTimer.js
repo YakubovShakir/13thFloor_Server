@@ -1,10 +1,10 @@
-// import { FoodProccess } from "./tasks/FoodProcess/task.mjs"
-// import { SkillProccess } from "./tasks/SkillProcess/task.mjs"
-// import { WorkProcess } from "./tasks/WorkProcess/task.mjs"
-// import { TrainingProccess } from "./tasks/TrainingProcess/task.mjs"
-// import { SleepProccess } from "./tasks/SleepProcess/task.mjs"
-// import { AutoclaimProccess } from './tasks/autoclaimInvestmentProcess.mjs'
-// import BoostProccess from "./tasks/BoostProcess/task.mjs"
+// import { FoodProccess } from "./tasks/FoodProcess/task.js"
+// import { SkillProccess } from "./tasks/SkillProcess/task.js"
+// import { WorkProcess } from "./tasks/WorkProcess/task.js"
+// import { TrainingProccess } from "./tasks/TrainingProcess/task.js"
+// import { SleepProccess } from "./tasks/SleepProcess/task.js"
+// import { AutoclaimProccess } from './tasks/autoclaimInvestmentProcess.js'
+// import BoostProccess from "./tasks/BoostProcess/task.js"
 
 import { FoodProccess } from "./universal.js"
 import { SkillProccess } from "./universal.js"

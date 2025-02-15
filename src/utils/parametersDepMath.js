@@ -1,4 +1,4 @@
-import { upUserBalance } from "./userParameters/upUserBalance.mjs";
+import { upUserBalance } from "./userParameters/upUserBalance.js";
 
 export const isFullMood = (mood) => mood === 100;
 export const isHighMood = (mood) => mood < 100 && mood > 49;

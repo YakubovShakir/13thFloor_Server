@@ -1,24 +1,24 @@
-import process from "../models/process/processModel.mjs"
-import UserParameters from "../models/user/userParametersModel.mjs"
+import process from "../models/process/processModel.js"
+import UserParameters from "../models/user/userParametersModel.js"
 import cron from "node-cron"
 import moment from 'moment-timezone'
 import { canApplyConstantEffects } from "../utils/parametersDepMath.js"
-import { upUserExperience } from "../utils/userParameters/upUserBalance.mjs";
+import { upUserExperience } from "../utils/userParameters/upUserBalance.js";
 import { recalcValuesByParameters } from "../utils/parametersDepMath.js" // Import recalcValuesByParameters
 
 // Models
-import Work from "../models/work/workModel.mjs"
-import TrainingParameters from "../models/training/trainingParameters.mjs"
-import LevelsParameters from "../models/level/levelParametersModel.mjs"
-import { ConstantEffects } from "../models/effects/constantEffectsLevels.mjs"
-import Food from "../models/food/foodModel.mjs"
-import Boost from "../models/boost/boostModel.mjs"
-import UserSkill from "../models/user/userSkillModel.mjs";
-import User from "../models/user/userModel.mjs"
-import Investments from '../models/investments/investmentModel.mjs'
-import { InvestmentTypes } from "../models/investments/userLaunchedInvestments.mjs"
-import UserLaunchedInvestments from '../models/investments/userLaunchedInvestments.mjs'
-import { upUserBalance as upUserBalance_autoclaim } from "../utils/userParameters/upUserBalance.mjs" // Alias to avoid naming conflict
+import Work from "../models/work/workModel.js"
+import TrainingParameters from "../models/training/trainingParameters.js"
+import LevelsParameters from "../models/level/levelParametersModel.js"
+import { ConstantEffects } from "../models/effects/constantEffectsLevels.js"
+import Food from "../models/food/foodModel.js"
+import Boost from "../models/boost/boostModel.js"
+import UserSkill from "../models/user/userSkillModel.js";
+import User from "../models/user/userModel.js"
+import Investments from '../models/investments/investmentModel.js'
+import { InvestmentTypes } from "../models/investments/userLaunchedInvestments.js"
+import UserLaunchedInvestments from '../models/investments/userLaunchedInvestments.js'
+import { upUserBalance as upUserBalance_autoclaim } from "../utils/userParameters/upUserBalance.js" // Alias to avoid naming conflict
 
 // --- Logging Function ---
 const log = async (level, message, context = {}) => {
