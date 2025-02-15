@@ -4,11 +4,20 @@ import UserParameters from "../../../models/user/userParametersModel.mjs"
 import cron from "node-cron"
 import {upUserBalance, upUserExperience } from "../../../utils/userParameters/upUserBalance.mjs"
 import moment from 'moment-timezone'
+import { canApplyConstantEffects, recalcValuesByParameters } from "../../../utils/parametersDepMath"
 
 const durationFunction = async (process, work, userParameters) => {
+  // console.log(`[work][durationFunction] hit for ${}`)
+  const canUsePerks = canApplyConstantEffects(userParameters)
   // Apply duration decrease
-  const durationDecreasePercentage = process.effects.duration_decrease || 0
-  const rewardIncreaseHourly = process.effects.reward_increase || 0
+  let durationDecreasePercentage = 0
+  let rewardIncreaseHourly = 0
+  
+  if(canUsePerks) {
+    console.log(`User can use perks right now: ${userParameters.id} ${userParameters}`)
+    durationDecreasePercentage = process.effects.duration_decrease || 0
+    rewardIncreaseHourly = process.effects.reward_increase || 0
+  }
 
   const baseWorkDuration = work.duration * 60 || 60
   const actualWorkDuration = baseWorkDuration * (1 - durationDecreasePercentage / 100)
@@ -52,9 +61,10 @@ const durationFunction = async (process, work, userParameters) => {
 
     if(processDurationInSeconds >= actualWorkDuration) {
       //! Work finished
-      const coinReward = (work.coins_in_hour + rewardIncreaseHourly) / 3600 * baseWorkDuration
+      const coinsReward = (work.coins_in_hour + rewardIncreaseHourly) / 3600 * baseWorkDuration
 
-      await upUserBalance(userParameters.id, coinReward)
+      // We pass userParameters to be modified by this func and apply global gains/losses
+      await recalcValuesByParameters(userParameters, { coinsReward })
       await upUserExperience(userParameters.id, work.experience_reward)
 
       await process.deleteOne({ _id: process._id })
@@ -64,7 +74,6 @@ const durationFunction = async (process, work, userParameters) => {
     // Save changes
     process.user_parameters_updated_at = now.toDate()
     await process.save()
-    await userParameters.save()
   } else {
     // If user doesn't have enough resources, end the work process without granting reward
     await process.deleteOne({ _id: process._id })
@@ -72,7 +81,7 @@ const durationFunction = async (process, work, userParameters) => {
 }
 
 export const WorkProcess = cron.schedule(
-  "*/10 * * * * *",
+  "3 * * * * *",
   async () => {
     try {
       // Get all work processes

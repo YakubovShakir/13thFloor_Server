@@ -6,6 +6,7 @@ import process from "../../../models/process/processModel.mjs"
 import UserParameters from "../../../models/user/userParametersModel.mjs"
 import Work from "../../../models/work/workModel.mjs"
 import getMinutesAndSeconds from "../../../utils/getMinutesAndSeconds.js"
+import { canStartWorking, recalcValuesByParameters } from "../../../utils/parametersDepMath.js"
 import { upUserExperience, upUserBalance } from "../../../utils/userParameters/upUserBalance.mjs"
 import addActiveProcess from "../../process/functions/addActiveProcess.mjs"
 import moment from "moment-timezone"
@@ -18,19 +19,12 @@ const startWork = async (userId) => {
     if (!user || !work)
       return res.status(404).json({ error: "User or work not found" })
 
-    // Проверка на наличие необходимых параметров
-    const moodCosts = work?.mood_cost_in_hour / 60
-    const hungryCosts = work?.hungry_cost_in_hour / 60
-    const energyCosts = work?.energy_cost_in_hour / 60
-    const cond =
-      user?.mood >= moodCosts &&
-      user?.energy >= energyCosts &&
-      user?.hungry >= hungryCosts
-    if (!cond)
+    if (!canStartWorking(user)) {
       return {
-        status: 400,
-        data: { error: "Not enough Mood or Energy or Hungry" },
+        status: 401,
+        data: { error: "Not enough Mood or Energy, or Hungry" },
       }
+    }
 
     const { work_duration_decrease, work_hourly_income_increase } =
       user.constant_effects_levels
@@ -44,8 +38,6 @@ const startWork = async (userId) => {
       level: work_hourly_income_increase,
     })
 
-    console.log(reward_increase)
-
     const baseDuration = (work?.duration || 1) * 60 // in secs for precision
     const durationInSeconds = duration_decrease
     ? Math.floor(
@@ -56,7 +48,7 @@ const startWork = async (userId) => {
     const { duration, seconds } = getMinutesAndSeconds(durationInSeconds)
 
     const reward_at_the_end = Math.floor((work.coins_in_hour + (reward_increase?.value_change || 0)) / 3600 * baseDuration)
-    console.log(reward_at_the_end, work.coins_in_hour, reward_increase?.value_change)
+
     await addActiveProcess(userId, "work", user?.work_id, duration, seconds, {
       duration_decrease: duration_decrease?.value_change,
       reward_increase: reward_increase?.value_change,
@@ -68,7 +60,7 @@ const startWork = async (userId) => {
 
     return { status: 200, data: { status: "ok" } }
   } catch (e) {
-    console.log("ERR in buy work controller - ", e)
+    console.log("Error in startWork", e)
   }
 }
 
@@ -103,13 +95,13 @@ export const checkCanStopWork = async (userId) => {
     
     const rewardIncreaseHourly = workProcess.effects.reward_increase || 0
     const workReward = (work.coins_in_hour + rewardIncreaseHourly) / 3600 * workProcess.base_duration_in_seconds
- 
+    
     // user.experience += 
     user.mood = Math.max(0, user.mood - moodCost)
     user.hungry = Math.max(0, user.hungry - hungryCost)
     user.energy = Math.max(0, user.energy - energyCost)
-    
-    await upUserBalance(userId, Math.floor(workReward))
+
+    await recalcValuesByParameters(user, { coinsReward: workReward })
     await upUserExperience(userId, work.experience_reward)
     await user.save()
 

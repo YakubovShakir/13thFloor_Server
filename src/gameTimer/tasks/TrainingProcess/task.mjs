@@ -9,6 +9,16 @@ import getMinutesAndSeconds from '../../../utils/getMinutesAndSeconds.js'
 import User from "../../../models/user/userModel.mjs"
 
 const durationFunction = async (userId, parameters, tp, trainingProcess) => {
+   const canUsePerks = canApplyConstantEffects(userParameters)
+    // Apply duration decrease
+    let durationDecreasePercentage = 0
+    let rewardIncreaseHourly = 0
+    
+    if(canUsePerks) {
+      console.log(`User can use perks right now: ${userParameters.id} ${userParameters}`)
+      durationDecreasePercentage = process.effects.duration_decrease || 0
+      rewardIncreaseHourly = process.effects.reward_increase || 0
+    }
   const now = moment()
   const processStartTime = moment(trainingProcess.createdAt)
   const lastUpdateTime = moment(trainingProcess.user_parameters_updated_at || trainingProcess.updatedAt)
@@ -47,16 +57,7 @@ const durationFunction = async (userId, parameters, tp, trainingProcess) => {
     // Update process duration and seconds based on remaining time
     const remainingMinutes = Math.floor(seconds_left / 60)
     const remainingSeconds = seconds_left % 60
-    console.log({ 
-      energyCost, 
-      hungryCost, 
-      baseMoodProfit,
-      moodProfit,
-      baseDurationInSeconds,
-      finalDurationInSeconds,
-      elapsedSeconds,
-      seconds_left
-    }, `${remainingMinutes}:${remainingSeconds}`)
+
     trainingProcess.duration = remainingMinutes
     trainingProcess.seconds = remainingSeconds
     trainingProcess.user_parameters_updated_at = now.toDate()
