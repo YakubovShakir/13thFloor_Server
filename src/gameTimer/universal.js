@@ -74,7 +74,9 @@ const calculatePeriodProfits = (baseParameters, processEffects, diffSeconds, pro
 };
 
 
-const applyUserParameterUpdates = async (userParameters, periodCosts, periodProfits) => {
+const recalcValuesProcessTypeWhitelist = ['work', 'training', 'sleep'];
+
+const applyUserParameterUpdates = async (userParameters, periodCosts, periodProfits, processType = null) => {
     Object.keys(periodCosts).forEach(key => {
         userParameters[key] = Math.max(0, userParameters[key] - periodCosts[key]);
     });
@@ -91,8 +93,12 @@ const applyUserParameterUpdates = async (userParameters, periodCosts, periodProf
         }
     });
 
-    // IMPORTANT: Recalculate mood and coins based on hunger and mood levels AFTER applying tick changes
-    await recalcValuesByParameters(userParameters, { coinsReward: 0, moodProfit: 0 });
+    if(recalcValuesProcessTypeWhitelist.includes(processType)) {
+        await recalcValuesByParameters(userParameters, { coinsReward: 0 })
+        return 
+    }
+
+    await userParameters.save()
 };
 
 
@@ -142,7 +148,7 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
 
 
         if (canContinue) {
-            await applyUserParameterUpdates(userParameters, periodCosts, periodProfits);
+            await applyUserParameterUpdates(userParameters, periodCosts, periodProfits, process.type);
 
             if (updateUserParamsOnTick) {
                 updateUserParamsOnTick(userParameters, periodProfits, baseParameters, diffSeconds); // Pass diffSeconds if needed for tick logic
@@ -226,7 +232,7 @@ const workProcessConfig = {
     onProcessCompletion: async (process, userParameters, baseParameters) => {
         const rewardIncreaseHourly = process.effects?.reward_increase || 0;
         const coinsReward = (baseParameters.coins_in_hour + rewardIncreaseHourly) / 3600 * (baseParameters.duration * 60); //Use baseDuration for reward
-        // await recalcValuesByParameters(userParameters, { coinsReward }); // REMOVED
+        await recalcValuesByParameters(userParameters, { coinsReward }); // REMOVED
         await upUserExperience(userParameters.id, baseParameters.experience_reward);
     },
 };
