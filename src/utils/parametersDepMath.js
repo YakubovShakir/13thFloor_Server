@@ -68,14 +68,14 @@ export async function recalcValuesByParameters(
         console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, hungry > 49`);
         //Nothing in terms of mood affection
         userParameters.mood = Math.min(100, userParameters.mood + moodProfit)
-    } else if(userParameters.hungry <= 49 && userParameters.hungry > 9) {
+    } else if(userParameters.hungry <= 49 && userParameters.hungry >= 9) {
         console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, 49 <= hungry > 9`);
         // -1.5% mood + potential profit
         userParameters.mood = Math.min(100, Math.max(0, userParameters.mood - 0.09722) + moodProfit);
     } else {
         console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, hungry < 9`);
         // -3% mood + potential profit
-        userParameters.mood = Math.min(100, Math.max(0, userParameters.mood - 0,155) + moodProfit);
+        userParameters.mood = Math.min(100, Math.max(0, userParameters.mood - 0.155) + moodProfit);
     }
 
     if(userParameters.mood > 49){

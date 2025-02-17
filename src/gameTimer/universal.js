@@ -3,7 +3,7 @@ import UserParameters from "../models/user/userParametersModel.js"
 import cron from "node-cron"
 import moment from 'moment-timezone'
 import { canApplyConstantEffects } from "../utils/parametersDepMath.js"
-import { upUserExperience } from "../utils/userParameters/upUserBalance.js";
+import { upUserBalance, upUserExperience } from "../utils/userParameters/upUserBalance.js";
 import { recalcValuesByParameters } from "../utils/parametersDepMath.js" // Import recalcValuesByParameters
 
 // Models
@@ -41,9 +41,9 @@ const calculatePeriodCosts = (baseParameters, processEffects, diffSeconds, costC
         const config = costConfig[key];
         let costPerSecondBase;
         if (config.type === 'hourly') {
-            costPerSecondBase = baseParameters[config.baseValueKey] / 3600;
+            costPerSecondBase = baseParameters[config.baseValueKey] / (3600 * baseParameters[config.baseDurationKey]);
         } else if (config.type === 'per_minute') {
-            costPerSecondBase = baseParameters[config.baseValueKey] / 60;
+            costPerSecondBase = baseParameters[config.baseValueKey] / (60 * baseParameters[config.baseDurationKey]);
         }
         let effectDecrease = processEffects?.[config.effectDecreaseKey] || 0;
         let cost = costPerSecondBase * diffSeconds * ((100 - (effectDecrease !== null ? effectDecrease : 0)) / 100);
@@ -55,16 +55,16 @@ const calculatePeriodCosts = (baseParameters, processEffects, diffSeconds, costC
 
 const calculatePeriodProfits = (baseParameters, processEffects, diffSeconds, profitConfig) => {
     if (!profitConfig) return {};
-
+    console.log(baseParameters, profitConfig)
     return Object.keys(profitConfig).reduce((acc, key) => {
         const config = profitConfig[key];
         let profitPerSecondBase;
          if (config.type === 'hourly') {
-            profitPerSecondBase = baseParameters[config.baseValueKey] / 3600; // Assuming hourly profit still needs /3600 if tick is in seconds
+            profitPerSecondBase = baseParameters[config.baseValueKey] / (3600 * baseParameters[config.baseDurationKey]); // Assuming hourly profit still needs /3600 if tick is in seconds
         } else if (config.type === 'per_minute') {
-            profitPerSecondBase = baseParameters[config.baseValueKey] / 60;
+            profitPerSecondBase = baseParameters[config.baseValueKey] / (60 * baseParameters[config.baseDurationKey]);
         } else { // Default to per second if type is not specified, or explicitly 'per_second' could be added if needed
-            profitPerSecondBase = baseParameters[config.baseValueKey]; // Assuming already per second, or constant per tick
+            profitPerSecondBase = baseParameters[config.baseValueKey] / baseParameters[config.baseDurationKey]; // Assuming already per second, or constant per tick
         }
         let effectIncrease = processEffects?.[config.effectIncreaseKey] || 0;
         let profit = profitPerSecondBase * diffSeconds * ((100 + (effectIncrease !== null ? effectIncrease : 0)) / 100);
@@ -85,6 +85,7 @@ const applyUserParameterUpdates = async (userParameters, periodCosts, periodProf
             // Energy is capped by energy_capacity
             userParameters[key] = Math.min(userParameters.energy_capacity, userParameters[key] + periodProfits[key]);
         } else if (key === 'mood' || key === 'hungry') {
+            console.log(`PERIOD PROFIT`,key,  userParameters[key], periodProfits[key])
             // Mood and hungry are capped at 100
             userParameters[key] = Math.min(100, userParameters[key] + periodProfits[key]);
         } else if (userParameters[key] !== undefined) {
@@ -212,7 +213,6 @@ const genericProcessScheduler = (processType, processConfig) => {
 
 
 // --- Process Configurations ---
-
 const workProcessConfig = {
     processType: 'work',
     cronSchedule: '*/10 * * * * * *',
@@ -222,9 +222,9 @@ const workProcessConfig = {
     durationDecreaseKey: 'duration_decrease',
     rewardIncreaseKey: 'reward_increase',
     costConfig: {
-        mood: { type: 'hourly', baseValueKey: 'mood_cost_in_hour' },
-        hungry: { type: 'hourly', baseValueKey: 'hungry_cost_in_hour' },
-        energy: { type: 'hourly', baseValueKey: 'energy_cost_in_hour' }
+        mood: { type: 'per_minute', baseValueKey: 'mood_cost_per_minute', baseDurationKey: 'duration' },
+        hungry: { type: 'per_minute', baseValueKey: 'hungry_cost_per_minute', baseDurationKey: 'duration' },
+        energy: { type: 'per_minute', baseValueKey: 'energy_cost_per_minute', baseDurationKey: 'duration' }
     },
     rewardCalculation: (work, rewardIncreaseHourly, actualWorkDuration, baseWorkDuration) => { //Example still in config for reference, but moved to onProcessCompletion below
         return (work.coins_in_hour + rewardIncreaseHourly) / 3600 * baseWorkDuration;
@@ -237,7 +237,6 @@ const workProcessConfig = {
     },
 };
 
-
 const trainingProcessConfig = {
     processType: 'training',
     cronSchedule: '*/10 * * * * *',
@@ -247,8 +246,8 @@ const trainingProcessConfig = {
     durationDecreaseKey: 'duration_decrease', // Not used in training logic, but kept for consistency
     rewardIncreaseKey: 'reward_increase',     // Not used in training logic, but kept for consistency
     costConfig: {
-        energy: { type: 'per_minute', baseValueKey: 'energy_spend', effectDecreaseKey: 'energy_cost_decrease' },
-        hungry: { type: 'per_minute', baseValueKey: 'hungry_spend', effectDecreaseKey: 'hunger_cost_decrease' }
+        energy: { type: 'per_minute', baseValueKey: 'energy_spend', effectDecreaseKey: 'energy_cost_decrease', baseDurationKey: 'duration' },
+        hungry: { type: 'per_minute', baseValueKey: 'hungry_spend', effectDecreaseKey: 'hunger_cost_decrease', baseDurationKey: 'duration' }
     },
     profitConfig: {
         mood: { type: 'per_minute', baseValueKey: 'mood_profit', effectIncreaseKey: 'mood_increase' }
@@ -260,7 +259,6 @@ const trainingProcessConfig = {
         // await recalcValuesByParameters(userParameters, { moodProfit: 0 }); // REMOVED
     },
     // updateUserParamsOnTick: Not needed anymore as mood profit is handled in `applyUserParameterUpdates`
-    baseDurationKey: 'duration',
 };
 
 
@@ -271,7 +269,7 @@ const sleepProcessConfig = {
     durationFunction: processDurationHandler,
     getTypeSpecificParams: (process) => ({ level: process.type_id }),
     profitConfig: {
-        energy: { type: 'per_minute', baseValueKey: 'energy_capacity' } // Using per_minute as sleep duration is in minutes
+        energy: { type: 'per_minute', baseValueKey: 'energy_capacity', baseDurationKey: 'sleep_duration' } // Using per_minute as sleep duration is in minutes
     },
     updateUserParamsOnTick: (userParameters, periodProfits, baseParameters, diffSeconds) => {
         // Energy restore is now handled by `applyUserParameterUpdates` through profitConfig
@@ -283,7 +281,6 @@ const sleepProcessConfig = {
     onProcessCompletion: async (process, userParameters, baseParameters) => {
         // await recalcValuesByParameters(userParameters, { moodProfit: 0 }); // REMOVED
     },
-    baseDurationKey: 'sleep_duration',
 };
 
 
@@ -341,7 +338,7 @@ const boostProcessConfig = {
     getTypeSpecificParams: (process) => ({ boost_id: process.type_id }),
     processIntervalSeconds: 10,
     profitConfig: { // Using profit config for energy boost from tonic drink
-        energy: { type: 'per_minute', baseValueKey: 'energy_capacity'} // "Profit" here means restoration toward capacity
+        energy: { type: 'per_minute', baseValueKey: 'energy_capacity', baseDurationKey: 'duration'} // "Profit" here means restoration toward capacity
     },
     updateUserParamsOnTick: (userParameters, periodProfits, baseParameters, diffSeconds) => {
         if (baseParameters.type === "tonic-drink") {
@@ -357,7 +354,6 @@ const boostProcessConfig = {
     onProcessCompletion: async (process, userParameters, baseParameters) => {
          // await recalcValuesByParameters(userParameters, { moodProfit: 0 }); // REMOVED
     },
-    baseDurationKey: 'duration', // Boost duration in minutes
 };
 
 const claim = async (investment_type, userId) => {
@@ -391,7 +387,7 @@ const claim = async (investment_type, userId) => {
             return;
         }
 
-        await upUserBalance_autoclaim(userId, investmentToClaim.to_claim);
+        await recalcValuesByParameters(userParams, { coinsReward: investmentToClaim.to_claim })
         await upUserExperience(userId, investment.experience_reward);
 
         investmentToClaim.claimed = true;
