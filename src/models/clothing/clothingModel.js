@@ -31,7 +31,18 @@ const clothingSchema = new mongoose.Schema({
     required: true,
   },
   //! Using mixed type, since structure is TBD.
-  effect: {},
+  effects: {
+    //? Duration affecting
+    training_duration_decrease: { type: Number, default: null },
+    work_duration_decrease: { type: Number, default: null },
+    sleep_duration_decrease: { type: Number, default: null },
+    //? Award increases
+    mood_increase: { type: Number, default: null },
+    reward_increase: { type: Number, default: null },
+    //? Cost decreases
+    energy_cost_decrease: { type: Number, default: null },
+    hunger_cost_decrease: { type: Number, default: null },
+  },
   male_link: { type: String, required: true},
   female_link: { type: String, required: true},
   male_icon: { type: String, required: true},
