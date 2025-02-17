@@ -10,6 +10,7 @@ import {
 import getMinutesAndSeconds from "../../../utils/getMinutesAndSeconds.js"
 import moment from "moment-timezone"
 import { BoostsOnNextUse, ProcessTypes } from "../../../models/boost/boostsOnNextUse.js"
+import { canStartTraining, recalcValuesByParameters } from "../../../utils/parametersDepMath.js"
 
 const startTraining = async (userId) => {
   try {
@@ -17,9 +18,8 @@ const startTraining = async (userId) => {
     const user = await UserParameters.findOne({ id: userId })
     if (!user) user = await UserParameters.create({ id: userId })
     const level = await TrainingParameters.findOne({ level: user.level })
-    const cond = user?.energy >= 0 && user?.hungry >= 0
 
-    if (!cond)
+    if (!canStartTraining(user))
       return { status: 400, data: { error: "Not enough energy or hungry" } }
 
     // Take oldest in queue
@@ -91,29 +91,22 @@ export const checkCanStopTraining = async (userId) => {
   const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds")
   const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
 
-
   const energyCostBase = (trainingParameters.energy_spend / (trainingParameters.duration * 60)) * secondsSinceLastUpdate
   const energyCost = energyCostBase * ((100 - (trainingProcess.effects?.energy_cost_decrease !== null ? trainingProcess.effects?.energy_cost_decrease : 0)) / 100)
-  console.log(energyCost, trainingProcess.effects?.energy_cost_decrease)
   const hungryBaseCost = (trainingParameters.hungry_spend / (trainingParameters.duration * 60)) * secondsSinceLastUpdate
   const hungryCost = hungryBaseCost * ((100 - (trainingProcess.effects?.hunger_cost_decrease !== null ? trainingProcess.effects?.hunger_cost_decrease : 0)) / 100)
   
-  //! TRAINING BOOST SECTOR
-
   // Calculate mood change with increase percentage
   const baseMoodProfit = (trainingParameters.mood_profit / (trainingParameters.duration * 60)) * secondsSinceLastUpdate
   const moodProfit = baseMoodProfit * ((100 + (trainingProcess.effects?.mood_increase !== null ? trainingProcess.effects?.mood_increase : 0)) / 100)
 
-  console.log({ userId, energyCost, hungryCost, secondsSinceLastUpdate })
-
-  if (seconds_left === 0 || user.energy === 0 || user.hungry === 0) {
+  if (seconds_left === 0 || !canStartTraining(user)) {
     await process.deleteOne({ id: userId, type: 'training' })
 
     user.energy = Math.max(0, user.energy - energyCost)
     user.hungry = Math.max(0, user.hungry - hungryCost)
-    user.mood = Math.min(100, user.mood + moodProfit)
 
-    await user.save()
+    await recalcValuesByParameters(user, { moodProfit })
 
     return { status: 200, data: { status: "ok" } }
   }

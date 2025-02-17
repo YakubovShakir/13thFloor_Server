@@ -23,7 +23,7 @@ export const startProcess = async (req, res) => {
     let result
     switch (processType) {
       case "work":
-        result = await startWork(userId)
+        result = await startWork(userId) 
         break
       case "training":
         result = await startTraining(userId)
@@ -106,7 +106,6 @@ export const checkCanStop = async (req, res) => {
     case "work":
       try {
         const { status, data } = await checkCanStopWork(userId, activeProcess)
-        console.log("process stopped")
         return res.status(status).json(data)
       } catch (err) {
         console.log(err)
@@ -118,7 +117,6 @@ export const checkCanStop = async (req, res) => {
           userId,
           activeProcess
         )
-        console.log("process stopped")
         return res.status(status).json(data)
       } catch (err) {
         console.log(err)
@@ -130,7 +128,6 @@ export const checkCanStop = async (req, res) => {
             userId,
             activeProcess
           )
-          console.log("process stopped")
           return res.status(status).json(data)
         } catch (err) {
           console.log(err)
