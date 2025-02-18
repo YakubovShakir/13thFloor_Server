@@ -19,7 +19,8 @@ import {
   handleTonWalletConnect,
   handleTonWalletDisconnect,
   getLeaderboard,
-  startInvestment
+  startInvestment,
+  saveProfileData
 } from "../../controllers/user/userController.js"
 import { getUserParameters } from "../../controllers/user/userParametersController.js"
 
@@ -54,6 +55,7 @@ router.post('/:id/investments/start', startInvestment)
 router.post('/:id/investments/claim', claimInvestment)
 router.get('/:id/tasks', getUserTasks)
 router.post('/:id/tasks/claim', claimUserTask)
+router.post('/:id/profile-data', saveProfileData)
 
 //!TODO move to different place
 router.get('/leaderboard', getLeaderboard)

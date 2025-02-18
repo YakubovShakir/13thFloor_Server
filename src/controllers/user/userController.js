@@ -20,6 +20,7 @@ import Work from "../../models/work/workModel.js"
 import fs from 'fs/promises'
 import path from "path"
 import { upUserBalance, upUserExperience } from "../../utils/userParameters/upUserBalance.js"
+import { recalcValuesByParameters } from "../../utils/parametersDepMath.js"
 
 const gamecenterLevelMap = {
   1: 1,
@@ -967,7 +968,8 @@ export const claimInvestment = async (req, res) => {
       investment_type
     }).save()
 
-    await upUserBalance(userId, investmentToClaim.to_claim)
+    await recalcValuesByParameters(userParams, { coinsReward: investmentToClaim.to_claim })
+    await upUserBalance(userId, )
     await upUserExperience(userId, investment.experience_reward)
 
     investmentToClaim.claimed = true
@@ -1005,6 +1007,29 @@ export const getUserTasks = async (req, res) => {
   } catch (err) {
     console.log("Error in getUserTasks", err)
     return res.status(500).json({ error: true })
+  }
+}
+
+export const saveProfileData = async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id)
+    const { photo_url = null, first_name = null, last_name = null, username = null} = req.body
+
+    const setBlock = {}
+
+    if(photo_url) setBlock.photo_url = photo_url
+    if(first_name) setBlock.first_name = first_name
+    if(last_name) setBlock.last_name = last_name
+    if(username) setBlock.username = username
+
+    if(JSON.stringify(setBlock) !== JSON.stringify({})) {
+      await User.updateOne({ id: userId }, { $set: setBlock })
+    }
+
+    return res.status(200).json({ })
+  } catch(err) {
+    console.log("Error in saveProfileData", err)
+    return res.status(500).json({ })
   }
 }
 
@@ -1106,9 +1131,9 @@ export const claimUserTask = async (req, res) => {
 
       await new CompletedTasks({ user_id: userId, task_id: task.id }).save()
       const work = await Work.findOne({ id: userParam.work_id })
-      const reward = task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
+      const coinsReward = task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
 
-      await upUserBalance(userId, reward)
+      await recalcValuesByParameters(userParam, { coinsReward })
       await upUserExperience(userId, task.experience_reward)
 
       await userParam.save()

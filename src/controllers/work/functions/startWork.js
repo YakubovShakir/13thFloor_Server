@@ -86,9 +86,9 @@ export const checkCanStopWork = async (userId) => {
   const actualWorkedDuration = Math.min(secondsSinceLastUpdate, seconds_left)
 
   // Calculate resource consumption since last update
-  const moodCost = (work.mood_cost_in_hour / 3600) * actualWorkedDuration
-  const hungryCost = (work.hungry_cost_in_hour / 3600) * actualWorkedDuration
-  const energyCost = (work.energy_cost_in_hour / 3600) * actualWorkedDuration
+  const moodCost = (work.mood_cost_per_minute / 60) * actualWorkedDuration
+  const hungryCost = (work.hungry_cost_per_minute / 60) * actualWorkedDuration
+  const energyCost = (work.energy_cost_per_minute / 60) * actualWorkedDuration
 
   if (seconds_left === 0) {
     await process.deleteOne({ id: userId, type_id: work.work_id })

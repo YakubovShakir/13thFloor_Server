@@ -10,6 +10,15 @@ const schema = new mongoose.Schema(
     username: {
       type: String,
     },
+    photo_url: {
+      type: String,
+    },
+    first_name: {
+      type: String,
+    },
+    last_name: {
+      type: String,
+    },
     prestart: {
       type: Boolean,
       required: true,
