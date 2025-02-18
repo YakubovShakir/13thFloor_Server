@@ -13,7 +13,7 @@ export default [
     hungry_cost_per_minute: 28/60,
     skill_id_required: null,
     respect_required: 0,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A3%D0%B1%D0%BE%D1%80%D1%89%D0%B8%D0%BA.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FJanitor.webp",
     duration: 1,
     experience_reward: 15
   },
@@ -31,7 +31,7 @@ export default [
     hungry_cost_per_minute: 30/60,
     skill_id_required: 1,
     respect_required: 50,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BA%D1%83%D1%80%D1%8C%D0%B5%D1%80.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FCourier.webp",
     duration: 5,
     experience_reward: 100
   },
@@ -49,7 +49,7 @@ export default [
     hungry_cost_per_minute: 32/60,
     skill_id_required: 3,
     respect_required: 150,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BC%D0%BE%D0%B9%D1%89%D0%B8%D0%BA-%D1%82%D0%B0%D1%80%D0%B5%D0%BB%D0%BE%D0%BA.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FPlate%20washer.webp",
     duration: 8,
     experience_reward: 200
   },
@@ -67,7 +67,7 @@ export default [
     hungry_cost_per_minute: 34/60,
     skill_id_required: 5,
     respect_required: 300,
-    link: "https://13floorgame.ru/images/works/waiter.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FWaiter.webp",
     duration: 12,
     experience_reward: 360
   },
@@ -103,7 +103,7 @@ export default [
     hungry_cost_per_minute: 38/60,
     skill_id_required: 11,
     respect_required: 800,
-    link: "https://13floorgame.ru/images/works/officeManager.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FSecretary.webp",
     duration: 30,
     experience_reward: 1140
   },
@@ -139,7 +139,7 @@ export default [
     hungry_cost_per_minute: 44/60,
     skill_id_required: 16,
     respect_required: 1400,
-    link: "https://13floorgame.ru/images/works/salesManager.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FSales%20Manager.webp",
     duration: 50,
     experience_reward: 2300
   },
@@ -193,7 +193,7 @@ export default [
     hungry_cost_per_minute: 56/60,
     skill_id_required: 25,
     respect_required: 3000,
-    link: "https://13floorgame.ru/images/works/marketer.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FMarketer.webp",
     duration: 70,
     experience_reward: 4760
   },
@@ -301,7 +301,7 @@ export default [
     hungry_cost_per_minute: 80/60,
     skill_id_required: 38,
     respect_required: 15000,
-    link: "https://13floorgame.ru/images/works/director.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FExecutive.webp",
     duration: 140,
     experience_reward: 22400
   },
@@ -319,7 +319,7 @@ export default [
     hungry_cost_per_minute: 84/60,
     skill_id_required: 40,
     respect_required: 18000,
-    link: "https://13floorgame.ru/images/works/partner.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FPartner.webp",
     duration: 155,
     experience_reward: 27900
   },
@@ -355,7 +355,7 @@ export default [
     hungry_cost_per_minute: 92/60,
     skill_id_required: 43,
     respect_required: 20000,
-    link: "https://13floorgame.ru/images/works/millionaire.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FMillionaire.webp",
     duration: 185,
     experience_reward: 46250
   }
