@@ -189,6 +189,10 @@ export const getUserParameters = async (req, res) => {
     const shelf = await processShelf(user.shelf);
     const personage = Object.keys(user.personage).length > 0 ? user.personage : null;
 
+    parameters.first_name = user.first_name
+    parameters.last_name = user.last_name
+    parameters.photo_url = user.photo_url
+
     return res.status(200).json({
       parameters,
       personage,
