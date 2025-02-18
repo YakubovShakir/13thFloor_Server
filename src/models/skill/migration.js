@@ -16,7 +16,7 @@ export default [
     requiredLevel: 1,
     skill_id_required: null,
     type: null,
-    link: "https://13floorgame.ru/images/skills/podcast.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FOld%2F%D0%9D%D0%B0%D1%83%D1%88%D0%BD%D0%B8%D0%BA%D0%B8.png",
   },
   {
     skill_id: 2,
@@ -184,7 +184,7 @@ export default [
     requiredLevel: 5,
     skill_id_required: 8,
     type: null,
-    link: "https://13floorgame.ru/images/skills/officePrograms.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FOld%2F%D0%9E%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BE%D1%84%D0%B8%D1%81%D0%BD%D1%8B%D0%BC-%D0%BF%D1%80%D0%BE%D0%B3%D1%80%D0%B0%D0%BC%D0%BC%D0%B0%D0%BC.png",
   },
   {
     skill_id: 10,
@@ -298,7 +298,7 @@ export default [
     duration: 220,
     skill_id_required: 14,
     type: null,
-    link: "https://13floorgame.ru/images/skills/onlineLearning.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FOld%2FJunior-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1.png",
   },
   {
     skill_id: 16,
@@ -410,7 +410,7 @@ export default [
     duration: 400,
     skill_id_required: 20,
     type: null,
-    link: "https://13floorgame.ru/images/skills/advertising.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FOld%2F%D0%B7%D0%B0%D0%BB%D1%83%D0%BF%D0%BD%D1%83%D1%82%D1%8C-%D0%B2-%D1%82%D0%B5%D0%BB%D0%B5%D1%84%D0%BE%D0%BD%D0%B5.png",
   },
   {
     skill_id: 22,
@@ -570,7 +570,7 @@ export default [
     duration: 1100,
     skill_id_required: 28,
     type: null,
-    link: "https://13floorgame.ru/images/skills/recrutCourses.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FOld%2F%D0%9A%D1%83%D1%80%D1%81%D1%8B-%D0%BF%D0%BE%D0%B4%D0%B1%D0%BE%D1%80%D0%B0-%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%BB%D0%B0.png",
   },
   {
     skill_id: 30,
@@ -650,7 +650,7 @@ export default [
     duration: 2500,
     skill_id_required: 32,
     type: null,
-    link: "https://13floorgame.ru/images/skills/management.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FOld%2F%D0%9C%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png",
   },
   {
     skill_id: 34,
@@ -690,7 +690,7 @@ export default [
     duration: 3800,
     skill_id_required: 34,
     type: null,
-    link: "https://13floorgame.ru/images/skills/businessTraining.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FOld%2F%D0%91%D0%B8%D0%B7%D0%BD%D0%B5%D1%81-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D0%BD%D0%B3.png",
   },
   {
     skill_id: 36,
@@ -770,7 +770,7 @@ export default [
     duration: 8700,
     skill_id_required: 38,
     type: null,
-    link: "https://13floorgame.ru/images/skills/automationTraining.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FOld%2F%D0%91%D0%B8%D0%B7%D0%BD%D0%B5%D1%81-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D0%BD%D0%B3-%D0%BF%D0%BE-%D0%B0%D0%B2%D1%82%D0%BE%D0%BC%D0%B0%D1%82%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8.png",
   },
   {
     skill_id: 40,
@@ -830,7 +830,7 @@ export default [
     duration: 13800,
     skill_id_required: 41,
     type: null,
-    link: "https://13floorgame.ru/images/skills/economicEducation.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FOld%2F%D0%AD%D0%BA%D0%BE%D0%BD%D0%BE%D0%BC%D0%B8%D1%87-%D0%BE%D0%B1%D1%80%D0%B0%D0%B7%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5.png",
   },
   {
     skill_id: 43,
@@ -871,6 +871,6 @@ export default [
     requiredLevel: 12,
     skill_id_required: null,
     type: null,
-    link: "https://13floorgame.ru/images/skills/bodybuilding.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FOld%2F%D0%AD%D0%BD%D1%86%D0%B8%D0%BA%D0%BB%D0%BE%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F-%D0%B1%D0%BE%D0%B4%D0%B8%D0%B1%D0%B8%D0%BB%D0%B4%D0%B8%D0%BD%D0%B3%D0%B0.png",
   },
 ]
