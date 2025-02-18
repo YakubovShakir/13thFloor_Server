@@ -47,7 +47,7 @@ const startWork = async (userId) => {
 
     const { duration, seconds } = getMinutesAndSeconds(durationInSeconds)
 
-    const reward_at_the_end = Math.floor((work.coins_in_hour + (reward_increase?.value_change || 0)) / 3600 * baseDuration)
+    const reward_at_the_end = Math.round(((work.coins_in_hour + (reward_increase?.value_change || 0)) / 3600 * baseDuration) * 100) / 100
 
     await addActiveProcess(userId, "work", user?.work_id, duration, seconds, {
       duration_decrease: duration_decrease?.value_change,

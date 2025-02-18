@@ -158,7 +158,7 @@ export const createUserPersonage = async (req, res) => {
   try {
     //
     const userId = parseInt(req.params.id)
-    const { race, gender, name } = req.body
+    const { race, gender } = req.body
 
     if (!userId) {
       return res.status(400).json({ error: true })
@@ -167,14 +167,7 @@ export const createUserPersonage = async (req, res) => {
     console.log("Creating personage", race, gender, name, userId)
     const refs = await Referal.countDocuments({ refer_id: userId })
     const gameCenterLevel = gamecenterLevelMap[refs.toString()] || 0
-    const bot = new Bot('7866433891:AAHAh-4Lc0Dvr80URgOQMJrIKB_1bfxc0KM')
-    let username = ""
-    try {
-      const chatMember = await bot.api.getChatMember('-1002323702022', userId)
-      username = chatMember.user.username || ""
-    } catch(err) {
-      console.error(`Error while getting chat member: ${err}`)
-    }
+    
     await User.updateOne(
       {
         id: userId,
@@ -184,14 +177,12 @@ export const createUserPersonage = async (req, res) => {
           personage: {
             race,
             gender,
-            name,
           },
           investment_levels: {
             game_center: gameCenterLevel,
             coffee_shop: 0,
             zoo_shop: 0,
           },
-          username
         },
       }
     )
