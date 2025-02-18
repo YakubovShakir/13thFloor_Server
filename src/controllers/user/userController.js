@@ -1223,7 +1223,10 @@ export const getLeaderboard = async (req, res) => {
           user_id: "$user_info.id",
           name: "$user_info.personage.name",
           gender: "$user_info.personage.gender",
-          tg_username: "$user_info.username",
+          username: "$user_info.username",
+          first_name: "$user_info.first_name",
+          last_name: "$user_info.last_name",
+          photo_url: "$user_info.photo_url",
           respect: 1,
           total_earned: 1
         }
