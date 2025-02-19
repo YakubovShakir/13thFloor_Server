@@ -48,6 +48,7 @@ const calculatePeriodCosts = (baseParameters, processEffects, diffSeconds, costC
         let effectDecrease = processEffects?.[config.effectDecreaseKey] || 0;
         let cost = costPerSecondBase * diffSeconds * ((100 - (effectDecrease !== null ? effectDecrease : 0)) / 100);
         acc[key] = cost;
+        log('info', '@@@@ removing' + ` ${key} - ${cost}`)
         return acc;
     }, {});
 };
