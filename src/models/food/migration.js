@@ -33,7 +33,7 @@ export default [
     long_hungry_restore: null,
     instant_mood_restore: 
     {
-      value: 1,
+      value: 3,
       percent: true,
     },
     long_mood_restore: null,
@@ -75,7 +75,7 @@ export default [
     },
     long_energy_restore: null,
     instant_hungry_restore: {
-      value: 5,
+      value: 15,
       percent: true,
     },
     long_hungry_restore: null,
