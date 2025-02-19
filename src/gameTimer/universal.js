@@ -41,9 +41,9 @@ const calculatePeriodCosts = (baseParameters, processEffects, diffSeconds, costC
         const config = costConfig[key];
         let costPerSecondBase;
         if (config.type === 'hourly') {
-            costPerSecondBase = baseParameters[config.baseValueKey] * baseParameters[config.baseDurationKey] / 3600;
+            costPerSecondBase = baseParameters[config.baseValueKey] / 3600;
         } else if (config.type === 'per_minute') {
-            costPerSecondBase = baseParameters[config.baseValueKey] * baseParameters[config.baseDurationKey] / 60;
+            costPerSecondBase = baseParameters[config.baseValueKey] / 60;
         }
         let effectDecrease = processEffects?.[config.effectDecreaseKey] || 0;
         let cost = costPerSecondBase * diffSeconds * ((100 - (effectDecrease !== null ? effectDecrease : 0)) / 100);
@@ -60,9 +60,9 @@ const calculatePeriodProfits = (baseParameters, processEffects, diffSeconds, pro
         const config = profitConfig[key];
         let profitPerSecondBase;
          if (config.type === 'hourly') {
-            profitPerSecondBase = baseParameters[config.baseValueKey] * baseParameters[config.baseDurationKey] / 3600; // Assuming hourly profit still needs /3600 if tick is in seconds
+            profitPerSecondBase = baseParameters[config.baseValueKey] / 3600; // Assuming hourly profit still needs /3600 if tick is in seconds
         } else if (config.type === 'per_minute') {
-            profitPerSecondBase = baseParameters[config.baseValueKey] * baseParameters[config.baseDurationKey] / 60;
+            profitPerSecondBase = baseParameters[config.baseValueKey] / 60;
         } else { // Default to per second if type is not specified, or explicitly 'per_second' could be added if needed
             profitPerSecondBase = baseParameters[config.baseValueKey] / baseParameters[config.baseDurationKey]; // Assuming already per second, or constant per tick
         }
