@@ -77,7 +77,7 @@ export const checkCanStopWork = async (userId) => {
 
   const now = moment()
   const processStartTime = moment(workProcess.createdAt)
-  const lastUpdateTime = moment(workProcess.user_parameters_updated_at || processStartTime)
+  const lastUpdateTime = moment(workProcess.updatedAt)
   const elapsedSeconds = now.diff(processStartTime, "seconds")
   const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds")
   const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
