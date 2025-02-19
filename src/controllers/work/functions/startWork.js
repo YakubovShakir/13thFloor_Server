@@ -108,6 +108,8 @@ export const checkCanStopWork = async (userId) => {
     return { status: 200, data: { status: "ok" } }
   }
 
+  console.log('[checkCanStopWork] ' + userId + `actual: ${actualWorkedDuration}; left: ${seconds_left}`)
+
   throw { status: 401, data: { seconds_left } }
 }
 
