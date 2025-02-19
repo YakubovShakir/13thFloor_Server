@@ -947,7 +947,7 @@ export const claimInvestment = async (req, res) => {
 
     if (
       Date.now() - new Date(investmentToClaim.createdAt).getTime() <
-      (process.env.NODE_ENV === "test" ? 30000 : 3600000)
+      3600000
     ) {
       return res.status(403).json({ error: true })
     }

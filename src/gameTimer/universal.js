@@ -379,8 +379,7 @@ const claim = async (investment_type, userId) => {
             return;
         }
 
-        // Make claimable in 30 sec on test, 1 hour otherwise
-        const claimableTime = process.env.NODE_ENV === 'test' ? 30000 : 3600000;
+        const claimableTime = 3600000;
         if(Date.now() - new Date(investmentToClaim.createdAt).getTime() < claimableTime) {
             await log('debug', `Investment not yet claimable`, { userId, investment_type, investmentId: investmentToClaim.investment_id, timeRemainingMs: claimableTime - (Date.now() - new Date(investmentToClaim.createdAt).getTime()) });
             return;
