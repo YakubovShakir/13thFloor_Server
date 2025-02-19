@@ -86,7 +86,7 @@ export const checkCanStopTraining = async (userId) => {
 
   const now = moment()
   const processStartTime = moment(trainingProcess.createdAt)
-  const lastUpdateTime = moment(trainingProcess.user_parameters_updated_at || trainingProcess.updatedAt)
+  const lastUpdateTime = moment(trainingProcess.updatedAt)
   const elapsedSeconds = now.diff(processStartTime, "seconds")
   const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds")
   const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
