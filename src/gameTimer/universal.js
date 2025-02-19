@@ -41,9 +41,9 @@ const calculatePeriodCosts = (baseParameters, processEffects, diffSeconds, costC
         const config = costConfig[key];
         let costPerSecondBase;
         if (config.type === 'hourly') {
-            costPerSecondBase = baseParameters[config.baseValueKey] / (3600 * baseParameters[config.baseDurationKey]);
+            costPerSecondBase = baseParameters[config.baseValueKey] * baseParameters[config.baseDurationKey] / 3600;
         } else if (config.type === 'per_minute') {
-            costPerSecondBase = baseParameters[config.baseValueKey] / (60 * baseParameters[config.baseDurationKey]);
+            costPerSecondBase = baseParameters[config.baseValueKey] * baseParameters[config.baseDurationKey] / 60;
         }
         let effectDecrease = processEffects?.[config.effectDecreaseKey] || 0;
         let cost = costPerSecondBase * diffSeconds * ((100 - (effectDecrease !== null ? effectDecrease : 0)) / 100);
