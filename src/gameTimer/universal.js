@@ -55,7 +55,6 @@ const calculatePeriodCosts = (baseParameters, processEffects, diffSeconds, costC
 
 const calculatePeriodProfits = (baseParameters, processEffects, diffSeconds, profitConfig) => {
     if (!profitConfig) return {};
-    console.log(baseParameters, profitConfig)
     return Object.keys(profitConfig).reduce((acc, key) => {
         const config = profitConfig[key];
         let profitPerSecondBase;
@@ -64,7 +63,7 @@ const calculatePeriodProfits = (baseParameters, processEffects, diffSeconds, pro
         } else if (config.type === 'per_minute') {
             profitPerSecondBase = baseParameters[config.baseValueKey] / 60;
         } else { // Default to per second if type is not specified, or explicitly 'per_second' could be added if needed
-            profitPerSecondBase = baseParameters[config.baseValueKey] / baseParameters[config.baseDurationKey]; // Assuming already per second, or constant per tick
+            profitPerSecondBase = baseParameters[config.baseValueKey]
         }
         let effectIncrease = processEffects?.[config.effectIncreaseKey] || 0;
         let profit = profitPerSecondBase * diffSeconds * ((100 + (effectIncrease !== null ? effectIncrease : 0)) / 100);
@@ -83,6 +82,7 @@ const applyUserParameterUpdates = async (userParameters, periodCosts, periodProf
     Object.keys(periodProfits).forEach(key => {
         if (key === 'energy') {
             // Energy is capped by energy_capacity
+            console.log(periodProfits)
             userParameters[key] = Math.min(userParameters.energy_capacity, userParameters[key] + periodProfits[key]);
         } else if (key === 'mood' || key === 'hungry') {
             console.log(`PERIOD PROFIT`,key,  userParameters[key], periodProfits[key])
@@ -118,9 +118,9 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
     } = processConfig;
 
     try {
-        const canUsePerks = canApplyConstantEffects(userParameters);
         let durationDecreasePercentage = 0;
-        if (canUsePerks && process.effects) {
+
+        if (canApplyConstantEffects(userParameters) && process.effects ** process.type !== 'boost') {
             await log('info', `User can use perks`, { userId: userParameters.id, processType: processType, processId: process._id });
             durationDecreasePercentage = process.effects[durationDecreaseKey] || 0;
         }
@@ -149,7 +149,9 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
 
 
         if (canContinue) {
-            await applyUserParameterUpdates(userParameters, periodCosts, periodProfits, process.type);
+            if(process.type !== 'boost') {
+                await applyUserParameterUpdates(userParameters, periodCosts, periodProfits, process.type);
+            }
 
             if (updateUserParamsOnTick) {
                 updateUserParamsOnTick(userParameters, periodProfits, baseParameters, diffSeconds); // Pass diffSeconds if needed for tick logic
@@ -329,22 +331,17 @@ const foodProcessConfig = {
     },
 };
 
-
 const boostProcessConfig = {
     processType: 'boost',
     cronSchedule: '*/10 * * * * *',
     Model: Boost,
     durationFunction: processDurationHandler,
     getTypeSpecificParams: (process) => ({ boost_id: process.type_id }),
-    processIntervalSeconds: 10,
-    profitConfig: { // Using profit config for energy boost from tonic drink
-        energy: { type: 'per_minute', baseValueKey: 'energy_capacity', baseDurationKey: 'duration'} // "Profit" here means restoration toward capacity
-    },
+    profitConfig: {},
     updateUserParamsOnTick: (userParameters, periodProfits, baseParameters, diffSeconds) => {
         if (baseParameters.type === "tonic-drink") {
-            // Energy restoration is now handled by profitConfig and `applyUserParameterUpdates`
+            userParameters.energy = Math.min(userParameters.energy_capacity, userParameters.energy + userParameters.energy_capacity / (3 * 3600) * diffSeconds)
         }
-        // personal-training type boost doesn't have tick logic here
     },
     finishConditionCheck: (userParameters, periodCosts, baseParameters, process) => {
         const boostDurationSeconds = calculateDuration(baseParameters.duration, 0); // No duration decrease for boosts themselves in current logic
@@ -352,7 +349,7 @@ const boostProcessConfig = {
         return processDurationSeconds >= boostDurationSeconds;
     },
     onProcessCompletion: async (process, userParameters, baseParameters) => {
-         // await recalcValuesByParameters(userParameters, { moodProfit: 0 }); // REMOVED
+
     },
 };
 

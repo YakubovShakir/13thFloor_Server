@@ -960,7 +960,6 @@ export const claimInvestment = async (req, res) => {
     }).save()
 
     await recalcValuesByParameters(userParams, { coinsReward: investmentToClaim.to_claim })
-    await upUserBalance(userId, )
     await upUserExperience(userId, investment.experience_reward)
 
     investmentToClaim.claimed = true

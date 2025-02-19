@@ -1,6 +1,5 @@
 import UserParameters from "../../models/user/userParametersModel.js"
 import LevelsParamters from "../../models/level/levelParametersModel.js"
-import process from "../../models/process/processModel.js"
 
 export const upUserBalance = async (id, amount) => {
   try {
@@ -9,11 +8,11 @@ export const upUserBalance = async (id, amount) => {
     user.coins += amount
     user.total_earned += amount
 
-    console.log('Upping balance for user: ', id, '+' + amount)
+    console.log(`[upUserBalance] ${id} +${amount} COINS`)
 
     await user.save()
   } catch (e) {
-    console.log("Error in upUserBalance - ", e)
+    console.log(`[upUserBalance] ERROR ${id}:`, e)
   }
 }
 
@@ -23,20 +22,20 @@ export const upUserExperience = async(id, amount) => {
     const levels = await LevelsParamters.find({})
 
     user.experience += amount
-    console.log('Upping user experience: ', id, amount)
+    console.log(`[upUserExperience] ${id} +${amount} EXP`)
 
     if (user?.level != 15) {
       const nextLevel = levels.find((level) => level?.level === user?.level + 1)
       const levelUpCondition = user.experience >= nextLevel?.experience_required
 
       if (levelUpCondition) {
-        console.log('Upping level for user: ', id, user.level + 1)
         user.level += 1
         user.energy_capacity = nextLevel.energy_capacity
+        console.log(`[upUserExperience] ${id} level up ${user.level - 1}->${user.level}`)
       }
     }
     await user.save()
   } catch (e) {
-    console.log("Error in upUserExperience - ", e)
+    console.log(`[upUserExperience] ERROR ${id}:`, e)
   }
 }
