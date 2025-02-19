@@ -2,7 +2,7 @@ export default [
   {
     boost_id: 1,
     name: { ru: "Банка энергетика", en: "Energy Drink" },
-    stars_price: 1,
+    stars_price: 100,
     description: { ru: "Полностью восстанавливает энергию", en: "Fully restores energy" },
     duration: null,
     type: "energy-cap",
@@ -11,7 +11,7 @@ export default [
   {
     boost_id: 2,
     name: { ru: "Тонизирующий напиток", en: "Tonic Drink" },
-    stars_price: 1,
+    stars_price: 100,
     description: { ru: "В течении 3х часов постепенно восстанавливает энергию", en: "Gradually restores energy over 3 hours" },
     duration: 180,
     type: "tonic-drink",
@@ -20,7 +20,7 @@ export default [
   {
     boost_id: 3,
     name: { ru: "Персональная тренировка", en: "Personal Training" },
-    stars_price: 1,
+    stars_price: 100,
     description: {
       ru: "Следующая тренировка тратит в половину меньше энергии и восстанавливает вдвое больше счастья после окончания тренировки",
       en: "The next workout consumes half the energy and restores twice as much happiness after the workout is completed",
@@ -32,7 +32,7 @@ export default [
   {
     boost_id: 4,
     name: { ru: "Расслабляющий массаж", en: "Relaxing Massage" },
-    stars_price: 1,
+    stars_price: 100,
     description: {
       ru: "Расслабляющий массаж делает ваc абсолютно счастливым, на все 100%",
       en: "A relaxing massage makes you absolutely happy, 100%",
@@ -44,7 +44,7 @@ export default [
   // {
   //   boost_id: 5,
   //   name: { ru: "Робот помощник на 12 часов", en: "Robot Assistant for 12 hours" },
-  //   stars_price: 1,
+  //   stars_price: 100,
   //   description: {
   //     ru: "Забудьте о еде и отдыхе, робот поможет вам всегда иметь 100% доход, вне зависимости от ваших текущих параметров",
   //     en: "Forget about food and rest, the robot will help you always have 100% income, regardless of your current parameters",
@@ -56,7 +56,7 @@ export default [
   // {
   //   boost_id: 6,
   //   name: { ru: "Робот помощник на 24 часа", en: "Robot Assistant for 24 hours" },
-  //   stars_price: 1,
+  //   stars_price: 100,
   //   description: {
   //     ru: "Забудьте о работе! Робот поможет вам всегда иметь 100% доход, не влияя на ваши параметры",
   //     en: "Forget about work! The robot will help you always have 100% income without affecting your parameters",
@@ -68,7 +68,7 @@ export default [
   {
     boost_id: 7,
     name: { ru: "Ускорение обучения 25%", en: "Learning Speed Boost 25%" },
-    stars_price: 1,
+    stars_price: 100,
     description: {
       ru: "Ускоряет текущее обучение. Возможно применить только к одному текущему обучению",
       en: "Accelerates current learning. Can only be applied to one current learning process",
@@ -80,7 +80,7 @@ export default [
   {
     boost_id: 8,
     name: { ru: "Ускорение обучения 50%", en: "Learning Speed Boost 50%" },
-    stars_price: 1,
+    stars_price: 100,
     description: {
       ru: "Ускоряет текущее обучение. Возможно применить только к одному текущему обучению",
       en: "Accelerates current learning. Can only be applied to one current learning process",
