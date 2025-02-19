@@ -57,6 +57,7 @@ const startWork = async (userId) => {
       reward_at_the_end: reward_at_the_end,
       target_duration_in_seconds: durationInSeconds < baseDuration ? durationInSeconds : null
     })
+    console.log(`[startWork] ${userId}, duration: ${durationInSeconds}`)
 
     return { status: 200, data: { status: "ok" } }
   } catch (e) {
