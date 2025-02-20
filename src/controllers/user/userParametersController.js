@@ -139,13 +139,19 @@ export const getUserParameters = async (req, res) => {
 
     const work_duration_decrease_level = parameters.constant_effects_levels?.work_duration_decrease
     const work_hourly_income_increase_level = parameters.constant_effects_levels?.work_hourly_income_increase
+    const training_duration_decrease_level = parameters.constant_effects_levels?.training_duration_decrease
+    const sleeping_duration_decrease_level = parameters.constant_effects_levels?.sleeping_duration_decrease
     
     const work_duration_decrease_doc = await ConstantEffects.findOne({ type: ConstantEffectTypes.WorkDurationDecrease, level: work_duration_decrease_level })
-    const work_hourly_income_increase_doc = await ConstantEffects.findOne({ type: ConstantEffectTypes.WorkHourlyIncomeIncrease, level: work_hourly_income_increase_level })    // Get or create inventory
+    const work_hourly_income_increase_doc = await ConstantEffects.findOne({ type: ConstantEffectTypes.WorkHourlyIncomeIncrease, level: work_hourly_income_increase_level })   
     
-    //! TODO REMOVE
+    const training_duration_decrease_doc = await ConstantEffects.findOne({ type: ConstantEffectTypes.TrainingDurationDecrease, level: training_duration_decrease_level })    
+    const sleeping_duration_decrease_doc = await ConstantEffects.findOne({ type: ConstantEffectTypes.SleepingDurationDecrease, level: sleeping_duration_decrease_level })    
+    
     const work_duration_decrease = work_duration_decrease_doc?.value_change || null
     const work_hourly_income_increase = work_hourly_income_increase_doc?.value_change || null
+    const training_duration_decrease = training_duration_decrease_doc?.value_change || null
+    const sleeping_duration_decrease = sleeping_duration_decrease_doc?.value_change || null
 
     let inventory = await UserCurrentInventory.findOne({ user_id: userId });
     if (!inventory) {
@@ -192,7 +198,7 @@ export const getUserParameters = async (req, res) => {
     parameters.first_name = user.first_name
     parameters.last_name = user.last_name
     parameters.photo_url = user.photo_url
-
+    
     return res.status(200).json({
       parameters,
       personage,
@@ -200,7 +206,9 @@ export const getUserParameters = async (req, res) => {
       clothing: userClothing && { hat, top, pants, shoes, accessories },
       shelf,
       work_duration_decrease,
-      work_hourly_income_increase
+      work_hourly_income_increase,
+      training_duration_decrease,
+      sleeping_duration_decrease
     });
 
   } catch (error) {
