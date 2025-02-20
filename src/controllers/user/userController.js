@@ -626,11 +626,11 @@ export const buyItemsForCoins = async (req, res) => {
 
 export const requestStarsPaymentLink = async (req, res) => {
   try {
-    const { productType, id, lang = 'en' } = req.body
+    const { productType, id, lang = 'en', userId } = req.body
 
     let product, name, description, amount, title
 
-    if (productType === "boosts") {
+    if (productType === "boost") {
       product = await Boost.findOne({ id: id })
     }
 
@@ -652,10 +652,20 @@ export const requestStarsPaymentLink = async (req, res) => {
 
     if (productType === "autoclaim") {
       product = await ShelfItemModel.findOne({ id: id })
-      name = "Автоклейм"
-      description = "Автоматический сбор инвестиции с вашего бизнеса!"
-      title = "13th Floor"
-      amount = 1
+      if(product) {
+        name = {
+          ru: "Автоклейм",
+          en: 'Autoclaim'
+        }
+        description = {
+          ru: "Автоматический сбор дохода от вашего бизнеса!",
+          en: "Autoclaim of your businesses`s revenue"
+        }
+        title = "13th Floor"
+        amount = 1
+      } else {
+        throw 'Profuct not found'
+      }
     }
 
     const invoiceLink = await _fetch(`${process.env.BOT_ADDR}payment-create`, {
@@ -670,6 +680,7 @@ export const requestStarsPaymentLink = async (req, res) => {
         amount,
         productName: name,
         description,
+        userId: userId
       }),
     })
       .then((res) => res.json())
