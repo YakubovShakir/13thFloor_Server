@@ -57,6 +57,8 @@ router.get('/:id/tasks', getUserTasks)
 router.post('/:id/tasks/claim', claimUserTask)
 router.post('/:id/profile-data', saveProfileData)
 
+router.get('/time', (req, res) => res.status(200).json({ server_time: new Date() }))
+
 //!TODO move to different place
 router.get('/leaderboard', getLeaderboard)
 
