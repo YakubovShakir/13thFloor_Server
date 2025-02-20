@@ -102,7 +102,7 @@ export const ShelfItems = [
     },
     cost: {
       coins: 0,
-      stars: 10000,
+      stars: 1,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
     shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
