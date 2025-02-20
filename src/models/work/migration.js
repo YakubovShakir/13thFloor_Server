@@ -121,7 +121,7 @@ export default [
     hungry_cost_per_minute: 40/60,
     skill_id_required: 13,
     respect_required: 1200,
-    link: "https://13floorgame.ru/images/works/admin.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FOffice%20Manager.webp",
     duration: 45,
     experience_reward: 1890
   },
@@ -247,7 +247,7 @@ export default [
     hungry_cost_per_minute: 68/60,
     skill_id_required: 32,
     respect_required: 7500,
-    link: "https://13floorgame.ru/images/works/productManager.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FProject%20Manager.webp",
     duration: 95,
     experience_reward: 9025
   },
