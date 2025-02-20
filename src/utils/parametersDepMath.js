@@ -80,7 +80,7 @@ export async function recalcValuesByParameters(
 
     if(userParameters.mood > 49){
         console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, mood > 49`);
-        userParameters.coins += coinsReward
+        await upUserBalance(userParameters.id, coinsReward)
     } else if(userParameters.mood <= 49 && userParameters.mood > 9) {
         console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, 49 <= mood > 9, applying 10% income penalty`);
         // -10% from potential income
