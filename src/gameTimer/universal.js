@@ -299,6 +299,7 @@ const skillProcessConfig = {
             const effect = baseParameters;
             userParameters.constant_effects_levels[effect.type] = effect.level;
             await upUserExperience(userId, effect.experience_reward);
+            await userParameters.save()
         } else {
             await upUserExperience(userId, baseParameters.experience_reward);
             await UserSkill.create({
