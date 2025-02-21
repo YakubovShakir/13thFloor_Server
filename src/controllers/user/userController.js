@@ -655,8 +655,6 @@ export const requestStarsPaymentLink = async (req, res) => {
     }
 
     if (productType === "autoclaim") {
-      product = await ShelfItemModel.findOne({ id: id })
-      if(product) {
         name = {
           ru: "Автоклейм",
           en: 'Autoclaim'
@@ -667,9 +665,6 @@ export const requestStarsPaymentLink = async (req, res) => {
         }[lang]
         title = name
         amount = 1
-      } else {
-        throw 'Profuct not found'
-      }
     }
 
     const invoiceLink = await _fetch(`${process.env.BOT_ADDR}payment-create`, {
