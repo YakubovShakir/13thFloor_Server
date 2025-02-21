@@ -105,7 +105,7 @@ export const ShelfItems = [
       stars: 10000,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
-    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
+    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2Fstarrr.webp",
     type: ShelfItemTypes.Award
   },
   // {
