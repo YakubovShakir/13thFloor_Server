@@ -632,13 +632,17 @@ export const requestStarsPaymentLink = async (req, res) => {
 
     if (productType === "boost") {
       product = await Boost.findOne({ id: id })
+      name = product.name[lang]
+      description = product.description[lang]
+      title = name
+      amount = product.stars_price
     }
 
     if (productType === "clothes") {
       product = await Clothing.findOne({ clothing_id: id })
       name = product.name[lang]
       description = product.description[lang]
-      title = "13th Floor"
+      title = name
       amount = product.price
     }
 
@@ -646,7 +650,7 @@ export const requestStarsPaymentLink = async (req, res) => {
       product = await ShelfItemModel.findOne({ id: id })
       name = product.name[lang]
       description = product.description[lang]
-      title = "13th Floor"
+      title = name
       amount = product.cost.stars
     }
 
@@ -656,12 +660,12 @@ export const requestStarsPaymentLink = async (req, res) => {
         name = {
           ru: "Автоклейм",
           en: 'Autoclaim'
-        }
+        }[lang]
         description = {
           ru: "Автоматический сбор дохода от вашего бизнеса!",
           en: "Autoclaim of your businesses`s revenue"
-        }
-        title = "13th Floor"
+        }[lang]
+        title = name
         amount = 1
       } else {
         throw 'Profuct not found'
