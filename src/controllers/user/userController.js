@@ -680,7 +680,7 @@ export const requestStarsPaymentLink = async (req, res) => {
         amount,
         productName: name,
         description,
-        userId: userId
+        userId
       }),
     })
       .then((res) => res.json())
