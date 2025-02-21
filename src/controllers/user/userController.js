@@ -631,7 +631,7 @@ export const requestStarsPaymentLink = async (req, res) => {
     let product, name, description, amount, title
 
     if (productType === "boost") {
-      product = await Boost.findOne({ id: id })
+      product = await Boost.findOne({ boost_id: id })
       name = product.name[lang]
       description = product.description[lang]
       title = name
