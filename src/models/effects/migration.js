@@ -2623,15 +2623,12 @@ export default [
     //     duration: 142231,
     // },
     
-
-
-
     {
         id: 141,
         level: 1,
         price: 1000,
         type: ConstantEffectTypes.WorkDurationDecrease,
-        value_change: 10,
+        value_change: 1,
         name: {
             ru: 'Тайм менеджмент',
             en: 'Time management'
