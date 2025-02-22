@@ -164,7 +164,6 @@ export const createUserPersonage = async (req, res) => {
       return res.status(400).json({ error: true })
     }
 
-    console.log("Creating personage", race, gender, name, userId)
     const refs = await Referal.countDocuments({ refer_id: userId })
     const gameCenterLevel = gamecenterLevelMap[refs.toString()] || 0
     
