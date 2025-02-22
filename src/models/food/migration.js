@@ -121,11 +121,11 @@ export default [
       value: 35,
       percent: true,
     },
-    long_hungry_restore: null,
-    instant_mood_restore: {
-      value: 10,
+    long_hungry_restore: {
+      value: 20,
       percent: true,
     },
+    instant_mood_restore:  null,
     long_mood_restore: null,
     coins_price: 450,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FSteake.webp",
@@ -144,12 +144,12 @@ export default [
       value: 25,
       percent: true,
     },
-    long_hungry_restore: null,
-    instant_mood_restore: 
-    {
+    long_hungry_restore: {
       value: 10,
       percent: true,
     },
+    instant_mood_restore: null,
+    
     long_mood_restore: null,
     coins_price: 600,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FPizza.webp",
