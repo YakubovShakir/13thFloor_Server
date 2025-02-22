@@ -83,6 +83,12 @@ export const checkCanStopWork = async (userId) => {
   const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds")
   const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
 
+  if(!canStartWorking(user)) {
+    await process.deleteOne({ id: userId, type_id: work.work_id })
+
+    return { status: 200, data: { status: "ok" } }
+  }
+
   // Calculate the actual worked duration since last update
   const actualWorkedDuration = Math.min(secondsSinceLastUpdate, seconds_left)
 

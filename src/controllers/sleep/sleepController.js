@@ -78,7 +78,13 @@ export const checkCanStopSleep = async (userId) => {
   const elapsedSeconds = now.diff(processStartTime, "seconds")
   const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
 
-  if (seconds_left === 0 || !canStartSleeping(user)) {
+  if(!canStartSleeping(user)) {
+    await process.deleteOne({ id: userId, type: "sleep" })
+    
+    return { status: 200, data: { status: "ok" } }
+  }
+
+  if (seconds_left === 0) {
     console.log("Stopping sleep process")
     await process.deleteOne({ id: userId, type: "sleep" })
 
