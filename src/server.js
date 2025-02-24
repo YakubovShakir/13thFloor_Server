@@ -43,6 +43,7 @@ import UserProcess from "./models/process/processModel.js"
 import { ConstantEffects } from "./models/effects/constantEffectsLevels.js"
 import constantEffects from "./models/effects/migration.js"
 import { addUserSubscriptionStatus, collectRefStatsFromDb } from "./controllers/user/userController.js"
+import UserBoost from "./models/user/userBoostsModel.js"
 
 dotenv.config()
 
@@ -77,13 +78,14 @@ app.listen(PORT, () => {
 async function main() {
   await Promise.all([
     //! PROGRESS
-    deleteUserParameters(),
-    deleteUserInventories(),
-    deleteUserClothing(),
-    deleteUsers(),
-    deleteUserProcesses(),
-    deleteUserInvestments(),
-    deleteUserTasks(),
+    // deleteUserParameters(),
+    // deleteUserInventories(),
+    // deleteUserClothing(),
+    // deleteUsers(),
+    // deleteUserProcesses(),
+    // deleteUserInvestments(),
+    // deleteUserTasks(),
+    // deleteUserBoosts(),
     //! SAFE MIGRATIONS
     deleteAndInsertClothing(),
     deleteAndInsertWork(),
@@ -180,6 +182,10 @@ async function deleteAndInsertSkill() {
       await skill.save()
     })
   )
+}
+
+async function deleteUserBoosts() {
+  await UserBoost.deleteMany()
 }
 
 async function deleteAndInsertBoost() {

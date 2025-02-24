@@ -1,18 +1,15 @@
-// import { FoodProccess } from "./tasks/FoodProcess/task.js"
-// import { SkillProccess } from "./tasks/SkillProcess/task.js"
-// import { WorkProcess } from "./tasks/WorkProcess/task.js"
-// import { TrainingProccess } from "./tasks/TrainingProcess/task.js"
-// import { SleepProccess } from "./tasks/SleepProcess/task.js"
-// import { AutoclaimProccess } from './tasks/autoclaimInvestmentProcess.js'
-// import BoostProccess from "./tasks/BoostProcess/task.js"
+import { log } from "../utils/log.js"
 
-import { FoodProccess } from "./universal.js"
-import { SkillProccess } from "./universal.js"
-import { WorkProcess } from "./universal.js"
-import { TrainingProccess } from "./universal.js"
-import { SleepProccess } from "./universal.js"
-import { AutoclaimProccess } from "./universal.js"
-import { BoostProccess } from "./universal.js"
+import {
+  RefsRecalsProcess,
+  SkillProccess,
+  WorkProcess,
+  TrainingProccess,
+  SleepProccess,
+  AutoclaimProccess,
+  BoostProccess,
+  FoodProccess,
+} from "./universal.js"
 import dotenv from "dotenv"
 dotenv.config()
 
@@ -25,21 +22,25 @@ const gameTimer = {
   WorkProcess,
   SleepProccess,
   BoostProccess,
+  AutoclaimProccess,
+  RefsRecalsProcess,
 }
 
 connectDB()
 gameTimer.FoodProccess.start()
-console.log("Запустил процессы еды")
+log("info", "Started food processes")
 gameTimer.SkillProccess.start()
-console.log("Запустил процессы изучения навыков")
+log("info", "Started skill learning processes")
 gameTimer.TrainingProccess.start()
-console.log("Запустил процессы тренировок")
+log("info", "Started training processes")
 gameTimer.WorkProcess.start()
-console.log("Запустил процессы работы")
+log("info", "Started work processes")
 gameTimer.SleepProccess.start()
-console.log("Запустил процессы сна")
+log("info", "Started sleep processes")
 gameTimer.BoostProccess.start()
-// console.log("Запустил процессы бустов")
-// AutoclaimProccess.start()
-console.log("Запустил процесс автоклейма")
+log("info", "Started boost processes")
+AutoclaimProccess.start()
+log("info", "Started autoclaim process")
+RefsRecalsProcess.start()
+log("info", "Started refs calculation process")
 export default gameTimer

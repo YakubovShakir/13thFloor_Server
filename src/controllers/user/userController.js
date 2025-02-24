@@ -18,11 +18,32 @@ import CompletedTasks from "../../models/tasks/completedTask.js"
 import { Bot } from "grammy"
 import Work from "../../models/work/workModel.js"
 import fs from 'fs/promises'
-import path from "path"
-import { upUserBalance, upUserExperience } from "../../utils/userParameters/upUserBalance.js"
+
+import { upUserExperience } from "../../utils/userParameters/upUserBalance.js"
 import { recalcValuesByParameters } from "../../utils/parametersDepMath.js"
 
-const gamecenterLevelMap = {
+export function calculateGamecenterLevel(refsCount) {
+  const levels = Object.keys(gamecenterLevelMap).map(Number); // Get keys as numbers
+  let low = 0;
+  let high = levels.length - 1;
+
+  while (low <= high) {
+      const mid = Math.floor((low + high) / 2);
+      const threshold = levels[mid];
+
+      if (refsCount < threshold) {
+          high = mid - 1;
+      } else if (refsCount >= threshold) {
+          low = mid + 1;
+      }
+  }
+
+  // After the loop, 'high' will be the index of the largest threshold LESS THAN OR EQUAL TO refsCount.
+  if (high < 0) return 0; // Handle the case where refsCount is less than the first threshold.
+  return gamecenterLevelMap[levels[high]];
+}
+
+export const gamecenterLevelMap = {
   1: 1,
   5: 2,
   10: 3,
@@ -165,7 +186,7 @@ export const createUserPersonage = async (req, res) => {
     }
 
     const refs = await Referal.countDocuments({ refer_id: userId })
-    const gameCenterLevel = gamecenterLevelMap[refs.toString()] || 0
+    const gameCenterLevel = refs > 0 ? calculateGamecenterLevel(refs) : 0
     
     await User.updateOne(
       {
