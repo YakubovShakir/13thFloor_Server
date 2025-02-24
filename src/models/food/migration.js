@@ -128,7 +128,7 @@ export default [
     instant_mood_restore:  null,
     long_mood_restore: null,
     coins_price: 450,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FSteake.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FLunch.webp",
     food_id: 6,
   },
   {
@@ -221,7 +221,7 @@ export default [
     instant_mood_restore: null,
     long_mood_restore: null,
     coins_price: 2200,
-    link: "https://13floorgame.ru/images/foods/steak.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FSteake.webp",
     food_id: 10,
   },
   

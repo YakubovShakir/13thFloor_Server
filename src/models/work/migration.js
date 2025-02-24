@@ -85,7 +85,7 @@ export default [
     hungry_cost_per_minute: 36/60,
     skill_id_required: 8,
     respect_required: 600,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%9C%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%B5%D1%80-%D1%80%D0%B5%D1%81%D1%82%D0%B8%D0%BA%D0%B0.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FManager.webp",
     duration: 20,
     experience_reward: 640
   },
