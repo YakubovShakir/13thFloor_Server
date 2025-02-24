@@ -193,6 +193,8 @@ const processDurationHandler = async (
       profitConfig
     )
 
+    console.log(periodCosts)
+
     const canContinue = Object.keys(periodCosts).every(
       (key) => Math.floor(userParameters[key]) >= periodCosts[key]
     )
