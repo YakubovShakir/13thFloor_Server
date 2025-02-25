@@ -148,8 +148,8 @@ export default [
     skill_id: 8,
     
     name: {
-      ru: "Собеседование на должность менеджера",
-      en: "Interview for the position of manager"
+      ru: "Собеседование",
+      en: "Interview"
     },
     coins_price: 2000,
     experience_reward: 300,
