@@ -633,7 +633,7 @@ const claim = async (investment_type, userId) => {
 
 const autoclaimProcessConfig = {
   processType: "autoclaim",
-  cronSchedule: "*/10 * * * * *",
+  cronSchedule: "*/1 * * * * *",
   durationFunction: async () => {
     try {
       await log("verbose", `Autoclaim process scheduler started iteration`)
