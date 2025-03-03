@@ -64,11 +64,11 @@ export async function recalcValuesByParameters(
 ) {
     console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}`);
 
-    if(userParameters.hungry > 49) {
+    if(userParameters.hungry > 59) {
         console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, hungry > 49`);
         //Nothing in terms of mood affection
         userParameters.mood = Math.min(100, userParameters.mood + moodProfit)
-    } else if(userParameters.hungry <= 49 && userParameters.hungry >= 9) {
+    } else if(userParameters.hungry <= 59 && userParameters.hungry >= 19) {
         console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, 49 <= hungry > 9`);
         // -1.5% mood + potential profit
         userParameters.mood = Math.min(100, Math.max(0, userParameters.mood - 0.09722) + moodProfit);
@@ -78,14 +78,14 @@ export async function recalcValuesByParameters(
         userParameters.mood = Math.min(100, Math.max(0, userParameters.mood - 0.155) + moodProfit);
     }
 
-    if(userParameters.mood > 49){
+    if(userParameters.mood > 59){
         console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, mood > 49`);
         await upUserBalance(userParameters.id, coinsReward)
-    } else if(userParameters.mood <= 49 && userParameters.mood > 9) {
+    } else if(userParameters.mood <= 59 && userParameters.mood > 19) {
         console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, 49 <= mood > 9, applying 10% income penalty`);
         // -10% from potential income
         await upUserBalance(userParameters.id, coinsReward * 0.9)
-    } else if(userParameters.mood <= 9 && userParameters.mood > 1) { 
+    } else if(userParameters.mood <= 19 && userParameters.mood > 1) { 
         console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, mood <= 9 > 1, applying 50% income penalty`);
         await upUserBalance(userParameters.id, coinsReward * 0.5)
     } else {
