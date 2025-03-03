@@ -42,6 +42,11 @@ const clothingSchema = new mongoose.Schema({
     //? Cost decreases
     energy_cost_decrease: { type: Number, default: null },
     hunger_cost_decrease: { type: Number, default: null },
+    mood_cost_decrease: { type: Number, default: null },
+    //? Cost increases
+    energy_cost_increase: { type: Number, default: null },
+    hunger_cost_increase: { type: Number, default: null },
+    mood_cost_increase: { type: Number, default: null },
   },
   male_link: { type: String, required: true},
   female_link: { type: String, required: true},
