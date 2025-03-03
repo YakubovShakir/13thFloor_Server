@@ -1,11 +1,11 @@
 import mongoose from "mongoose"
 
 export const ShelfItemTypes = {
-  Flower: 'flower',
-  Event: 'event',
-  Award: 'award',
-  Flag: 'flag',
-  Neko: 'neko', 
+  Flower: "flower",
+  Event: "event",
+  Award: "award",
+  Flag: "flag",
+  Neko: "neko",
 }
 
 const ShelfItem = new mongoose.Schema({
@@ -26,27 +26,27 @@ const ShelfItem = new mongoose.Schema({
   type: {
     type: String,
     enum: Object.values(ShelfItemTypes),
-    required: true
+    required: true,
   },
   shelf_link: { type: String, required: true },
-    //! Using mixed type, since structure is TBD.
-    effects: {
-      //? Duration affecting
-      training_duration_decrease: { type: Number, default: null },
-      work_duration_decrease: { type: Number, default: null },
-      sleep_duration_decrease: { type: Number, default: null },
-      //? Award increases
-      mood_increase: { type: Number, default: null },
-      reward_increase: { type: Number, default: null },
-      //? Cost decreases
-      energy_cost_decrease: { type: Number, default: null },
-      hunger_cost_decrease: { type: Number, default: null },
-      mood_cost_decrease: { type: Number, default: null },
-      //? Cost increases
-      energy_cost_increase: { type: Number, default: null },
-      hunger_cost_increase: { type: Number, default: null },
-      mood_cost_increase: { type: Number, default: null },
-    },
+  //! Using mixed type, since structure is TBD.
+  effects: {
+    //? Duration affecting
+    training_duration_decrease: { type: Number, default: null },
+    work_duration_decrease: { type: Number, default: null },
+    sleep_duration_decrease: { type: Number, default: null },
+    //? Award increases
+    mood_increase: { type: Number, default: null },
+    reward_increase: { type: Number, default: null },
+    //? Cost decreases
+    energy_cost_decrease: { type: Number, default: null },
+    hunger_cost_decrease: { type: Number, default: null },
+    mood_cost_decrease: { type: Number, default: null },
+    //? Cost increases
+    energy_cost_increase: { type: Number, default: null },
+    hunger_cost_increase: { type: Number, default: null },
+    mood_cost_increase: { type: Number, default: null },
+  },
 })
 
 const ShelfItemModel = mongoose.model("shelf_item", ShelfItem)
