@@ -198,9 +198,16 @@ export const getUserParameters = async (req, res) => {
     parameters.first_name = user.first_name
     parameters.last_name = user.last_name
     parameters.photo_url = user.photo_url
+
+    const params = {
+      ...parameters.toJSON(),
+      first_name: user.first_name,
+      last_name: user.last_name,
+      photo_url: user.photo_url
+    }
     
     return res.status(200).json({
-      parameters,
+      parameters: params,
       personage,
       inventory,
       clothing: userClothing && { hat, top, pants, shoes, accessories },
