@@ -23,24 +23,27 @@ import { upUserExperience } from "../../utils/userParameters/upUserBalance.js"
 import { recalcValuesByParameters } from "../../utils/parametersDepMath.js"
 
 export function calculateGamecenterLevel(refsCount) {
-  const levels = Object.keys(gamecenterLevelMap).map(Number); // Get keys as numbers
+  const levels = Object.keys(gamecenterLevelMap).map(Number).sort((a, b) => a - b); // Ensure sorted order
   let low = 0;
   let high = levels.length - 1;
 
-  while (low <= high) {
-      const mid = Math.floor((low + high) / 2);
-      const threshold = levels[mid];
+  if (refsCount < levels[0]) return 0; // Below first threshold
 
-      if (refsCount < threshold) {
-          high = mid - 1;
-      } else if (refsCount >= threshold) {
-          low = mid + 1;
-      }
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    const threshold = levels[mid];
+
+    if (refsCount < threshold) {
+      high = mid - 1;
+    } else if (refsCount >= threshold && (mid === levels.length - 1 || refsCount < levels[mid + 1])) {
+      return gamecenterLevelMap[threshold]; // Found the correct level
+    } else {
+      low = mid + 1;
+    }
   }
 
-  // After the loop, 'high' will be the index of the largest threshold LESS THAN OR EQUAL TO refsCount.
-  if (high < 0) return 0; // Handle the case where refsCount is less than the first threshold.
-  return gamecenterLevelMap[levels[high]];
+  // If we exit the loop, return the highest level (shouldn't happen with proper map)
+  return gamecenterLevelMap[levels[levels.length - 1]];
 }
 
 export const gamecenterLevelMap = {
@@ -797,7 +800,7 @@ export const getUserInvestments = async (req, res) => {
           : false,
         friends: await Referal.countDocuments({ refer_id: userId }),
         this_level_friends_required: gameCenterLevelRequirements[currentGameCenter?.level || 0] || 0,
-        next_level_friends_required: gameCenterLevelRequirements[(currentGameCenter?.level || 0 + 1)] || 0,
+        next_level_friends_required: gameCenterLevelRequirements[(nextLevelGameCenter?.level || 0 + 1)] || 0,
       },
       coffee_shop: {
         type: InvestmentTypes.CoffeeShop,

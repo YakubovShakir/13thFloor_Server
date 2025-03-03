@@ -22,7 +22,10 @@ import UserLaunchedInvestments from "../models/investments/userLaunchedInvestmen
 // Utils
 import { log } from "../utils/log.js"
 import Referal from "../models/referral/referralModel.js"
-import { calculateGamecenterLevel, gamecenterLevelMap } from "../controllers/user/userController.js"
+import {
+  calculateGamecenterLevel,
+  gamecenterLevelMap,
+} from "../controllers/user/userController.js"
 
 // --- Helper Functions for Calculations ---
 
@@ -52,7 +55,6 @@ const calculatePeriodCosts = (
       diffSeconds *
       ((100 - (effectDecrease !== null ? effectDecrease : 0)) / 100)
     acc[key] = cost
-    log("info", "@@@@ removing" + ` ${key} - ${cost}`)
     return acc
   }, {})
 }
@@ -159,7 +161,6 @@ const processDurationHandler = async (
       })
       durationDecreasePercentage = process.effects[durationDecreaseKey] || 0
     }
-
 
     const baseDurationMinutes =
       baseDurationKey === "base_duration_in_seconds"
@@ -719,13 +720,18 @@ const investmentLevelsProcessConfig = {
         },
         {
           $project: {
-            referer_id: "$_id",
+            refer_id: "$_id",
             referral_count: 1,
           },
         },
       ])
 
-      await log("verbose", "Users with referrals: " + usersWithRefs?.length || 0)
+      await log(
+        "verbose",
+        "Users with referrals: " + usersWithRefs?.length || 0
+      )
+
+      console.log(usersWithRefs)
 
       let usersProcessed = 0
 
@@ -734,21 +740,23 @@ const investmentLevelsProcessConfig = {
           usersProcessed++
           const { referral_count } = user
 
-          const userDoc = await User.findOne({ id: user._id })
+          const userDoc = await User.findOne({ id: user.refer_id })
 
-          const currentGameCenterLevel = userDoc.investment_levels.game_center
-          const calculatedLevel = calculateGamecenterLevel(referral_count)
-          console.log(currentGameCenterLevel, calculatedLevel)
-
-          if (calculatedLevel > currentGameCenterLevel) {
-            await log("info", `Updating user's game_center investment level`, {
-              userId: user._id,
-              referralCount: referral_count,
-              currentGameCenterLevel,
-              calculatedLevel,
-            })
-            userDoc.investment_levels.game_center = calculatedLevel
-            await userDoc.save()
+          if(userDoc) {
+            const currentGameCenterLevel = userDoc.investment_levels.game_center
+            const calculatedLevel = calculateGamecenterLevel(referral_count)
+            console.log(currentGameCenterLevel, calculatedLevel, referral_count)
+  
+            if (calculatedLevel > currentGameCenterLevel) {
+              await log("info", `Updating user's game_center investment level`, {
+                userId: user._id,
+                referralCount: referral_count,
+                currentGameCenterLevel,
+                calculatedLevel,
+              })
+              userDoc.investment_levels.game_center = calculatedLevel
+              await userDoc.save()
+            }
           }
         } catch (e) {
           await log("error", "Error in investment_level_checks process", {
@@ -797,3 +805,66 @@ export const RefsRecalsProcess = genericProcessScheduler(
   "investment_level_checks",
   investmentLevelsProcessConfig
 )
+
+const checkNekoeosOnWallet = async (walletAddress) => {
+
+}
+
+const nftScanConfig = {
+  processType: "autoclaim",
+  cronSchedule: "*/30 * * * * *",
+  durationFunction: async () => {
+    try {
+      await log("verbose", `NFT scanning process scheduler started iteration`)
+
+      let usersWithWallets = await User.find({
+        tonWalletAddre: { $ne: null },
+      })
+
+      await log(
+        "verbose",
+        "Users with wallets connected: " + usersWithWallets?.length || 0
+      )
+
+      let usersProcessed = 0
+
+      for (let user of usersWithWallets) {
+        const address = user.tonWalletAddress
+        usersProcessed++
+        const {
+          has_autoclaim: {
+            game_center = false,
+            zoo_shop = false,
+            coffee_shop = false,
+          },
+        } = user
+
+        const claim_promises = []
+        if (game_center) {
+          claim_promises.push(claim(InvestmentTypes.GameCenter, user.id))
+        }
+        if (zoo_shop) {
+          claim_promises.push(claim(InvestmentTypes.ZooShop, user.id))
+        }
+        if (coffee_shop) {
+          claim_promises.push(claim(InvestmentTypes.CoffeeShop, user.id))
+        }
+
+        const results = await Promise.all(claim_promises)
+        claimsMade += results.filter((result) => result !== undefined).length // Count successful claims (non-undefined results)
+      }
+      await log("verbose", `Autoclaim process scheduler finished iteration`, {
+        usersEligible: usersWithAutoclaim.length,
+        usersProcessed,
+        claimsMade,
+      })
+    } catch (e) {
+      await log("error", "Error in autoclaim process", {
+        error: e.message,
+        stack: e.stack,
+      })
+    }
+  },
+  Model: User, // Although not directly used in durationFunction, needed for generic scheduler structure, can be a placeholder Model if truly unused.
+  getTypeSpecificParams: () => ({}), // No type-specific parameters needed for user query in this process.
+}
