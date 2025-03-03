@@ -1,4 +1,4 @@
-import { ShelfItemTypes }, from "./shelfItemModel.js";
+import { ShelfItemTypes } from "./shelfItemModel.js";
 
 export const ShelfItems = [
   {
