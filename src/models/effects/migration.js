@@ -5,7 +5,7 @@ export default [
     {
         id: 1,
         level: 1,
-        price: 500,
+        price: 700,
        
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 1,
@@ -20,13 +20,13 @@ export default [
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
        required_level: 3,
         
-        experience_reward: 35,
-        duration: 3,
+        experience_reward: 0,
+        duration: 180,
     },
     {
         id: 2,
         level: 2,
-        price: 750,
+        price: 1300,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 2,
         name: {
@@ -38,15 +38,15 @@ export default [
             en: 'Training duration decreased by 2%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-       required_level: 3,
+       required_level: 4,
         
-        experience_reward: 35,
-        duration: 5,
+        experience_reward: 0,
+        duration: 240,
     },
     {
         id: 3,
         level: 3,
-        price: 1150,
+        price: 2000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 3,
         name: {
@@ -58,14 +58,14 @@ export default [
             en: 'Training duration decreased by 3%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 3,
-        experience_reward: 35,
-        duration: 8,
+        required_level: 5,
+        experience_reward: 0,
+        duration: 300,
     },
     {
         id: 4,
         level: 4,
-        price: 1700,
+        price: 2600,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 4,
         name: {
@@ -77,14 +77,14 @@ export default [
             en: 'Training duration decreased by 4%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-       required_level: 3,
-        experience_reward: 35,
-        duration: 12,
+       required_level: 6,
+        experience_reward: 0,
+        duration: 360,
     }, 
     {
         id: 5,
         level: 5,
-        price: 2550,
+        price: 3300,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 5,
         name: {
@@ -96,14 +96,14 @@ export default [
             en: 'Training duration decreased by 5%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 4,
-        experience_reward: 300,
-        duration: 18,
+        required_level: 7,
+        experience_reward: 0,
+        duration: 420,
     },
     {
         id: 6,
         level: 6,
-        price: 2850,
+        price: 5000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 6,
         name: {
@@ -115,13 +115,13 @@ export default [
             en: 'Training duration decreased by 6%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 5,
-        experience_reward: 300,
-        duration: 27,
+        required_level: 8,
+        experience_reward: 0,
+        duration: 480,
     }, {
         id: 7,
         level: 7,
-        price: 5750,
+        price: 6600,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 7,
         name: {
@@ -133,14 +133,14 @@ export default [
             en: 'Training duration decreased by 7%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 7,
-        experience_reward: 300,
-        duration: 41,
+        required_level: 9,
+        experience_reward: 0,
+        duration: 540,
     },
     {
         id: 8,
         level: 8,
-        price: 8700,
+        price: 8300,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 8,
         name: {
@@ -152,13 +152,13 @@ export default [
             en: 'Training duration decreased by 8%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 8,
-        experience_reward: 300,
-        duration: 62,
+        required_level: 10,
+        experience_reward: 0,
+        duration: 600,
     }, {
         id: 9,
         level: 9,
-        price: 13000,
+        price: 10000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 9,
         name: {
@@ -170,14 +170,14 @@ export default [
             en: 'Training duration decreased by 9%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 9,
-        experience_reward: 400,
-        duration: 93,
+        required_level: 11,
+        experience_reward: 0,
+        duration: 720,
     },
     {
         id: 10,
         level: 10,
-        price: 19500,
+        price: 13000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 10,
         name: {
@@ -189,13 +189,13 @@ export default [
             en: 'Training duration decreased by 10%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 9,
-        experience_reward: 400,
-        duration: 140,
+        required_level: 12,
+        experience_reward: 0,
+        duration: 780,
     }, {
         id: 11,
         level: 11,
-        price: 27000,
+        price: 16000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 11,
         name: {
@@ -207,14 +207,14 @@ export default [
             en: 'Training duration decreased by 11%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 10,
-        experience_reward: 400,
-        duration: 196,
+        required_level: 13,
+        experience_reward: 0,
+        duration: 840,
     },
     {
         id: 12,
         level: 12,
-        price: 30000,
+        price: 20000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 12,
         name: {
@@ -226,14 +226,14 @@ export default [
             en: 'Training duration decreased by 12%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 11,
-        experience_reward: 400,
-        duration: 274,
+        required_level: 14,
+        experience_reward: 0,
+        duration: 900,
     },
     {
         id: 13,
         level: 13,
-        price: 40500,
+        price: 23000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 13,
         name: {
@@ -245,14 +245,14 @@ export default [
             en: 'Training duration decreased by 13%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 12,
-        experience_reward: 500,
-        duration: 384,
+        required_level: 15,
+        experience_reward: 0,
+        duration: 960,
     },
     {
         id: 14,
         level: 14,
-        price: 50150,
+        price: 26000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 14,
         name: {
@@ -264,14 +264,14 @@ export default [
             en: 'Training duration decreased by 14%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 13,
-        experience_reward: 500,
-        duration: 538,
+        required_level: 16,
+        experience_reward: 0,
+        duration: 1020,
     },
     {
         id: 15,
         level: 15,
-        price: 61000,
+        price: 30000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 15,
         name: {
@@ -283,14 +283,14 @@ export default [
             en: 'Training duration decreased by 15%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 14,
-        experience_reward: 500,
-        duration: 753,
+        required_level: 17,
+        experience_reward: 0,
+        duration: 2100,
     },
     {
         id: 16,
         level: 16,
-        price: 132000,
+        price: 40000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 16,
         name: {
@@ -302,13 +302,13 @@ export default [
             en: 'Training duration decreased by 16%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 15,
-        experience_reward: 500,
-        duration: 828,
+        required_level: 18,
+        experience_reward: 0,
+        duration: 2400,
     }, {
         id: 17,
         level: 17,
-        price: 158000,
+        price: 50000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 17,
         name: {
@@ -320,14 +320,14 @@ export default [
             en: 'Training duration decreased by 17%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 16,
-        experience_reward: 1500,
-        duration: 911,
+        required_level: 19,
+        experience_reward: 0,
+        duration: 2700,
     },
     {
         id: 18,
         level: 18,
-        price: 190000,
+        price: 60000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 18,
         name: {
@@ -339,13 +339,13 @@ export default [
             en: 'Training duration decreased by 18%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 17,
-        experience_reward: 1500,
-        duration: 1002,
+        required_level: 19,
+        experience_reward: 0,
+        duration: 3000,
     }, {
         id: 19,
         level: 19,
-        price: 228500,
+        price: 70000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 19,
         name: {
@@ -357,14 +357,14 @@ export default [
             en: 'Training duration decreased by 19%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
-        required_level: 18,
-        experience_reward: 1500,
-        duration: 1102,
+        required_level: 19,
+        experience_reward: 0,
+        duration: 3300,
     },
     {
         id: 20,
         level: 20,
-        price: 274000,
+        price: 80000,
         type: ConstantEffectTypes.TrainingDurationDecrease,
         value_change: 20,
         name: {
@@ -377,8 +377,8 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
         required_level: 19,
-        experience_reward: 1500,
-        duration: 1212,
+        experience_reward: 0,
+        duration: 3600,
     }, 
     // {
     //     id: 21,
@@ -1319,7 +1319,7 @@ export default [
     {
         id: 71,
         level: 1,
-        price: 500,
+        price: 700,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 1,
         name: {
@@ -1332,13 +1332,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
        required_level: 3,
-        experience_reward: 35,
-        duration: 3,
+        experience_reward: 0,
+        duration: 180,
     },
     {
         id: 72,
         level: 2,
-        price: 750,
+        price: 1300,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 2,
         name: {
@@ -1351,13 +1351,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
        required_level: 4,
-        experience_reward: 35,
-        duration: 5,
+        experience_reward: 0,
+        duration: 240,
     },
     {
         id: 73,
         level: 3,
-        price: 1150,
+        price: 2000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 3,
         name: {
@@ -1370,13 +1370,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
        required_level: 5,
-        experience_reward: 35,
-        duration: 8,
+        experience_reward: 0,
+        duration: 300,
     },
     {
         id: 74,
         level: 4,
-        price: 1700,
+        price: 2600,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 4,
         name: {
@@ -1389,13 +1389,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
        required_level: 6,
-        experience_reward: 35,
-        duration: 12,
+        experience_reward: 0,
+        duration: 360,
     }, 
     {
         id: 75,
         level: 5,
-        price: 2550,
+        price: 3300,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 5,
         name: {
@@ -1408,13 +1408,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 7,
-        experience_reward: 300,
-        duration: 18,
+        experience_reward: 0,
+        duration: 420,
     },
     {
         id: 76,
         level: 6,
-        price: 2850,
+        price: 5000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 6,
         name: {
@@ -1427,12 +1427,12 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 8,
-        experience_reward: 300,
-        duration: 27,
+        experience_reward: 0,
+        duration: 480,
     }, {
         id: 77,
         level: 7,
-        price: 5750,
+        price: 6600,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 7,
         name: {
@@ -1445,13 +1445,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 9,
-        experience_reward: 300,
-        duration: 41,
+        experience_reward: 0,
+        duration: 540,
     },
     {
         id: 78,
         level: 8,
-        price: 8700,
+        price: 8300,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 8,
         name: {
@@ -1464,12 +1464,12 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 10,
-        experience_reward: 300,
-        duration: 62,
+        experience_reward: 0,
+        duration: 600,
     }, {
         id: 79,
         level: 9,
-        price: 13000,
+        price: 10000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 9,
         name: {
@@ -1482,13 +1482,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 11,
-        experience_reward: 400,
-        duration: 93,
+        experience_reward: 0,
+        duration: 720,
     },
     {
         id: 80,
         level: 10,
-        price: 19500,
+        price: 13000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 10,
         name: {
@@ -1501,12 +1501,12 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 12,
-        experience_reward: 400,
-        duration: 140,
+        experience_reward: 0,
+        duration: 780,
     }, {
         id: 81,
         level: 11,
-        price: 27000,
+        price: 16000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 11,
         name: {
@@ -1519,13 +1519,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 13,
-        experience_reward: 400,
-        duration: 196,
+        experience_reward: 0,
+        duration: 840,
     },
     {
         id: 82,
         level: 12,
-        price: 40000,
+        price: 20000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 12,
         name: {
@@ -1538,13 +1538,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 14,
-        experience_reward: 400,
-        duration: 274,
+        experience_reward: 0,
+        duration: 900,
     },
     {
         id: 83,
         level: 13,
-        price: 50500,
+        price: 23000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 13,
         name: {
@@ -1557,13 +1557,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 15,
-        experience_reward: 500,
-        duration: 384,
+        experience_reward: 0,
+        duration: 960,
     },
     {
         id: 84,
         level: 14,
-        price: 66500,
+        price: 26000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 16,
         name: {
@@ -1576,13 +1576,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 6,
-        experience_reward: 500,
-        duration: 538,
+        experience_reward: 0,
+        duration: 1020,
     },
     {
         id: 85,
         level: 15,
-        price: 78000,
+        price: 30000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 15,
         name: {
@@ -1595,13 +1595,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 16,
-        experience_reward: 500,
-        duration: 753,
+        experience_reward: 0,
+        duration: 2100,
     },
     {
         id: 86,
         level: 16,
-        price: 89200,
+        price: 40000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 16,
         name: {
@@ -1614,12 +1614,12 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 17,
-        experience_reward: 500,
-        duration: 828,
+        experience_reward: 0,
+        duration: 2400,
     }, {
         id: 87,
         level: 17,
-        price: 100800,
+        price: 50000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 17,
         name: {
@@ -1632,13 +1632,13 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 18,
-        experience_reward: 1500,
-        duration: 911,
+        experience_reward: 0,
+        duration: 2700,
     },
     {
         id: 88,
         level: 18,
-        price: 120000,
+        price: 60000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 18,
         name: {
@@ -1650,13 +1650,13 @@ export default [
             en: 'Sleep duration decreased by 18%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
-        required_level: 7,
-        experience_reward: 1500,
-        duration: 1002,
+        required_level: 19,
+        experience_reward: 0,
+        duration: 3000,
     }, {
         id: 89,
         level: 19,
-        price: 180850,
+        price: 70000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 19,
         name: {
@@ -1668,14 +1668,14 @@ export default [
             en: 'Sleep duration decreased by 19%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
-        required_level: 18,
-        experience_reward: 1500,
-        duration: 1102,
+        required_level: 19,
+        experience_reward: 0,
+        duration: 3300,
     },
     {
         id: 90,
         level: 20,
-        price: 200400,
+        price: 80000,
         type: ConstantEffectTypes.SleepingDurationDecrease,
         value_change: 20,
         name: {
@@ -1688,8 +1688,8 @@ export default [
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
         required_level: 19,
-        experience_reward: 1500,
-        duration: 1212,
+        experience_reward: 0,
+        duration: 3600,
     }, 
     // {
     //     id: 91,
@@ -2626,7 +2626,7 @@ export default [
     {
         id: 141,
         level: 1,
-        price: 1000,
+        price: 700,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 1,
         name: {
@@ -2638,13 +2638,13 @@ export default [
             en: 'Work duration decreased by 1%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 2,
-        duration: 5
+        required_level: 3,
+        duration: 180
     },
     {
         id: 142,
         level: 2,
-        price: 2000,
+        price: 1300,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 2,
         name: {
@@ -2656,12 +2656,12 @@ export default [
             en: 'Work duration decreased by 2%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 2,
-        duration: 8
+        required_level: 4,
+        duration: 240
     },{
         id: 143,
         level: 3,
-        price: 4000,
+        price: 2000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 3,
         name: {
@@ -2673,13 +2673,13 @@ export default [
             en: 'Work duration decreased by 3%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-       required_level: 3,
-        experience_reward: 35,
-        duration: 16
+       required_level: 5,
+        experience_reward: 0,
+        duration: 300
     },{
         id: 144,
         level: 4,
-        price: 8000,
+        price: 2600,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 4,
         name: {
@@ -2691,13 +2691,13 @@ export default [
             en: 'Work duration decreased by 4%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-       required_level: 3,
-        experience_reward: 35,
-        duration: 32
+       required_level: 6,
+        experience_reward: 0,
+        duration: 360
     },{
         id: 145,
         level: 5,
-        price: 16000,
+        price: 3300,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 5,
         name: {
@@ -2709,13 +2709,13 @@ export default [
             en: 'Work duration decreased by 5%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 4,
-        experience_reward: 300,
-        duration: 64
+        required_level: 7,
+        experience_reward: 0,
+        duration: 420
     },{
         id: 146,
         level: 6,
-        price: 24000,
+        price: 5000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 6,
         name: {
@@ -2727,13 +2727,13 @@ export default [
             en: 'Work duration decreased by 6%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 4,
-        experience_reward: 300,
-        duration: 128
+        required_level: 8,
+        experience_reward: 0,
+        duration: 480
     },{
         id: 147,
         level: 7,
-        price: 36000,
+        price: 6600,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 7,
         name: {
@@ -2745,13 +2745,13 @@ export default [
             en: 'Work duration decreased by 7%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 5,
-        experience_reward: 400,
-        duration: 256
+        required_level: 9,
+        experience_reward: 0,
+        duration: 540
     },{
         id: 148,
         level: 8,
-        price: 54000,
+        price: 8300,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 8,
         name: {
@@ -2763,13 +2763,13 @@ export default [
             en: 'Work duration decreased by 8%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 5,
-        experience_reward: 400,
-        duration: 512
+        required_level: 10,
+        experience_reward: 0,
+        duration: 600
     },{
         id: 149,
         level: 9,
-        price: 81000,
+        price: 10000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 9,
         name: {
@@ -2781,12 +2781,12 @@ export default [
             en: 'Work duration decreased by 9%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 1,
-        duration: 768
+        required_level: 11,
+        duration: 720
     },{
         id: 150,
         level: 10,
-        price: 91500,
+        price: 13000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 10,
         name: {
@@ -2798,13 +2798,13 @@ export default [
             en: 'Work duration decreased by 10%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 6,
-        experience_reward: 500,
-        duration: 1152
+        required_level: 12,
+        experience_reward: 0,
+        duration: 780
     },{
         id: 151,
         level: 11,
-        price: 110225,
+        price: 16000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 11,
         name: {
@@ -2816,13 +2816,13 @@ export default [
             en: 'Work duration decreased by 11%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 6,
-        experience_reward: 500,
-        duration: 1728
+        required_level: 13,
+        experience_reward: 0,
+        duration: 840
     },{
         id: 152,
         level: 12,
-        price: 120338,
+        price: 20000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 12,
         name: {
@@ -2834,13 +2834,13 @@ export default [
             en: 'Work duration decreased by 12%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 7,
-        experience_reward: 1500,
-        duration: 2592
+        required_level: 14,
+        experience_reward: 0,
+        duration: 900
     },{
         id: 153,
         level: 13,
-        price: 140007,
+        price: 23000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 13,
         name: {
@@ -2852,13 +2852,13 @@ export default [
             en: 'Work duration decreased by 13%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 7,
-        experience_reward: 1500,
-        duration: 3888
+        required_level: 15,
+        experience_reward: 0,
+        duration: 960
     },{
         id: 154,
         level: 14,
-        price: 161511,
+        price: 26000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 14,
         name: {
@@ -2870,13 +2870,13 @@ export default [
             en: 'Work duration decreased by 14%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 8,
-        experience_reward: 1900,
-        duration: 5832
+        required_level: 16,
+        experience_reward: 0,
+        duration: 1020
     },{
         id: 155,
         level: 15,
-        price: 192267,
+        price: 30000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 15,
         name: {
@@ -2888,13 +2888,13 @@ export default [
             en: 'Work duration decreased by 15%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 8,
-        experience_reward: 1900,
-        duration: 8748
+        required_level: 17,
+        experience_reward: 0,
+        duration: 2100
     },{
         id: 156,
         level: 16,
-        price: 238401,
+        price: 40000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 16,
         name: {
@@ -2906,13 +2906,13 @@ export default [
             en: 'Work duration decreased by 16%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 9,
-        experience_reward: 1900,
-        duration: 13122
+        required_level: 18,
+        experience_reward: 0,
+        duration: 2400
     },{
         id: 157,
         level: 17,
-        price: 247602,
+        price: 50000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 17,
         name: {
@@ -2924,13 +2924,13 @@ export default [
             en: 'Work duration decreased by 17%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 9,
-        experience_reward: 1900,
-        duration: 19683
+        required_level: 19,
+        experience_reward: 0,
+        duration: 2700
     },{
         id: 158,
         level: 18,
-        price: 411403,
+        price: 60000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 18,
         name: {
@@ -2942,13 +2942,13 @@ export default [
             en: 'Work duration decreased by 18%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 10,
-        experience_reward: 2600,
-        duration: 29525
+        required_level: 19,
+        experience_reward: 0,
+        duration: 3000
     },{
         id: 159,
         level: 19,
-        price: 467105,
+        price: 70000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 19,
         name: {
@@ -2960,13 +2960,13 @@ export default [
             en: 'Work duration decreased by 19%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 10,
-        experience_reward: 2600,
-        duration: 44288
+        required_level: 19,
+        experience_reward: 0,
+        duration: 3300
     },{
         id: 160,
         level: 20,
-        price: 700658,
+        price: 80000,
         type: ConstantEffectTypes.WorkDurationDecrease,
         value_change: 20,
         name: {
@@ -2978,9 +2978,9 @@ export default [
             en: 'Work duration decreased by 20%'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
-        required_level: 11,
-        experience_reward: 3000,
-        duration: 66432
+        required_level: 19,
+        experience_reward: 0,
+        duration: 3600
     },
 
 
@@ -2989,7 +2989,7 @@ export default [
     {
         id: 161,
         level: 1,
-        price: 1000,
+        price: 700,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 60,
         name: {
@@ -2997,17 +2997,17 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 60/час',
+            ru: 'Дополнительный доход + 60/час',
             en: 'Additional income + 60/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 2,
-        duration: 5
+        duration: 180
     },
     {
         id: 162,
         level: 2,
-        price: 2000,
+        price: 1300,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 240,
         name: {
@@ -3015,18 +3015,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 240/час',
+            ru: 'Дополнительный доход + 240/час',
             en: 'Additional income + 240/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
        required_level: 3,
-        experience_reward: 35,
-        duration: 8
+        experience_reward: 0,
+        duration: 240
     },
     {
         id: 163,
         level: 3,
-        price: 4000,
+        price: 2000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 360,
         name: {
@@ -3034,18 +3034,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 360/час',
+            ru: 'Дополнительный доход + 360/час',
             en: 'Additional income + 360/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
         required_level: 4,
-        experience_reward: 300,
-        duration: 16
+        experience_reward: 0,
+        duration: 300
     },
     {
         id: 164,
         level: 4,
-        price: 8000,
+        price: 2600,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 540,
         name: {
@@ -3053,18 +3053,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 540/час',
+            ru: 'Дополнительный доход + 540/час',
             en: 'Additional income + 540/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 4,
-        experience_reward: 300,
-        duration: 32
+        required_level: 5,
+        experience_reward: 0,
+        duration: 360
     },
     {
         id: 165,
         level: 5,
-        price: 16000,
+        price: 3300,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 720,
         name: {
@@ -3072,18 +3072,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 720/час',
+            ru: 'Дополнительный доход + 720/час',
             en: 'Additional income + 720/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 5,
-        experience_reward: 400,
-        duration: 64
+        required_level: 6,
+        experience_reward: 0,
+        duration: 420
     },
     {
         id: 166,
         level: 6,
-        price: 24000,
+        price: 5000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 960,
         name: {
@@ -3091,18 +3091,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 960/час',
+            ru: 'Дополнительный доход + 960/час',
             en: 'Additional income + 960/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 6,
-        experience_reward: 500,
-        duration: 128
+        required_level: 7,
+        experience_reward: 0,
+        duration: 480
     },
     {
         id: 167,
         level: 7,
-        price: 36000,
+        price: 6600,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 1200,
         name: {
@@ -3110,18 +3110,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 1200/час',
+            ru: 'Дополнительный доход + 1200/час',
             en: 'Additional income + 1200/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 6,
-        experience_reward: 500,
-        duration: 256
+        required_level: 8,
+        experience_reward: 0,
+        duration: 540
     },
     {
         id: 168,
         level: 8,
-        price: 54000,
+        price: 8300,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 1500,
         name: {
@@ -3129,18 +3129,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 1500/час',
+            ru: 'Дополнительный доход + 1500/час',
             en: 'Additional income + 1500/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 7,
-        experience_reward: 1500,
-        duration: 512
+        required_level: 9,
+        experience_reward: 0,
+        duration: 600
     },
     {
         id: 169,
         level: 9,
-        price: 81000,
+        price: 10000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 1800,
         name: {
@@ -3148,18 +3148,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 1800/час',
+            ru: 'Дополнительный доход + 1800/час',
             en: 'Additional income + 1800/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 7,
-        experience_reward: 1500,
-        duration: 768
+        required_level: 10,
+        experience_reward: 0,
+        duration: 720
     },
     {
         id: 170,
         level: 10,
-        price: 91150,
+        price: 13000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 2160,
         name: {
@@ -3167,18 +3167,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 2160/час',
+            ru: 'Дополнительный доход + 2160/час',
             en: 'Additional income + 2160/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 8,
-        experience_reward: 1900,
-        duration: 1152
+        required_level: 11,
+        experience_reward: 0,
+        duration: 780
     },
     {
         id: 171,
         level: 11,
-        price: 128225,
+        price: 16000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 2520,
         name: {
@@ -3186,18 +3186,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 2520/час',
+            ru: 'Дополнительный доход + 2520/час',
             en: 'Additional income + 2520/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 8,
-        experience_reward: 1900,
-        duration: 1728
+        required_level: 12,
+        experience_reward: 0,
+        duration: 840
     },
     {
         id: 172,
         level: 12,
-        price: 127338,
+        price: 20000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 2940,
         name: {
@@ -3205,18 +3205,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 2940/час',
+            ru: 'Дополнительный доход + 2940/час',
             en: 'Additional income + 2940/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 9,
-        experience_reward: 1900,
-        duration: 2592
+        required_level: 13,
+        experience_reward: 0,
+        duration: 900
     },
     {
         id: 173,
         level: 13,
-        price: 141007,
+        price: 23000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 3420,
         name: {
@@ -3224,18 +3224,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 3420/час',
+            ru: 'Дополнительный доход + 3420/час',
             en: 'Additional income + 3420/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 9,
-        experience_reward: 1900,
-        duration: 3888
+        required_level: 14,
+        experience_reward: 0,
+        duration: 960
     },
     {
         id: 174,
         level: 14,
-        price: 161511,
+        price: 26000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 3360,
         name: {
@@ -3243,18 +3243,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 3360/час',
+            ru: 'Дополнительный доход + 3360/час',
             en: 'Additional income + 3360/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 10,
-        experience_reward: 2600,
-        duration: 5832
+        required_level: 15,
+        experience_reward: 0,
+        duration: 1020
     },
     {
         id: 175,
         level: 15,
-        price: 192267,
+        price: 30000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 4380,
         name: {
@@ -3262,18 +3262,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 4380/час',
+            ru: 'Дополнительный доход + 4380/час',
             en: 'Additional income + 4380/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 10,
-        experience_reward: 2600,
-        duration: 13122
+        required_level: 16,
+        experience_reward: 0,
+        duration: 2100
     },
     {
         id: 176,
         level: 16,
-        price: 238401,
+        price: 40000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 4920,
         name: {
@@ -3281,18 +3281,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 4920/час',
+            ru: 'Дополнительный доход + 4920/час',
             en: 'Additional income + 4920/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 11,
-        experience_reward: 3000,
-        duration: 13122
+        required_level: 17,
+        experience_reward: 0,
+        duration: 2400
     },
     {
         id: 177,
         level: 17,
-        price: 287602,
+        price: 50000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 5460,
         name: {
@@ -3300,18 +3300,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 5460/час',
+            ru: 'Дополнительный доход + 5460/час',
             en: 'Additional income + 5460/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 11,
-        experience_reward: 3000,
-        duration: 19683
+        required_level: 18,
+        experience_reward: 0,
+        duration: 2700
     },
     {
         id: 178,
         level: 18,
-        price: 351403,
+        price: 60000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 6000,
         name: {
@@ -3319,17 +3319,17 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 6000/час',
+            ru: 'Дополнительный доход + 6000/час',
             en: 'Additional income + 6000/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 1,
-        duration: 29525
+        required_level: 19,
+        duration: 3000
     },
     {
         id: 179,
         level: 19,
-        price: 467105,
+        price: 70000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 6600,
         name: {
@@ -3337,18 +3337,18 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 6600/час',
+            ru: 'Дополнительный доход + 6600/час',
             en: 'Additional income + 6600/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 12,
-        experience_reward: 4000,
-        duration: 44288
+        required_level: 19,
+        experience_reward: 0,
+        duration: 3300
     },
     {
         id: 180,
         level: 20,
-        price: 700658,
+        price: 80000,
         type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
         value_change: 7200,
         name: {
@@ -3356,12 +3356,12 @@ export default [
             en: 'Work income '
         },
         description: {
-            ru: 'Дополнительынй доход + 7200/час',
+            ru: 'Дополнительный доход + 7200/час',
             en: 'Additional income + 7200/hour'
         },
         link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
-        required_level: 13,
-        experience_reward: 6000,
-        duration: 66432
+        required_level: 19,
+        experience_reward: 0,
+        duration: 3600
     },
 ]
