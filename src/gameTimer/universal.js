@@ -1,4 +1,7 @@
-import process from "../models/process/processModel.js"
+import { config } from "dotenv"
+config()
+
+import gameProcess from "../models/process/processModel.js"
 import UserParameters from "../models/user/userParametersModel.js"
 import cron from "node-cron"
 import moment from "moment-timezone"
@@ -18,20 +21,38 @@ import User from "../models/user/userModel.js"
 import Investments from "../models/investments/investmentModel.js"
 import { InvestmentTypes } from "../models/investments/userLaunchedInvestments.js"
 import UserLaunchedInvestments from "../models/investments/userLaunchedInvestments.js"
+import Bottleneck from 'bottleneck';
+import { Address } from '@ton/ton';
+import nftMap from './nft_mapping.json' with { type: 'json' }
+import axios from 'axios'
 
 // Utils
 import { log } from "../utils/log.js"
 import Referal from "../models/referral/referralModel.js"
 import {
-  calculateGamecenterLevel,
-  gamecenterLevelMap,
+  calculateGamecenterLevel
 } from "../controllers/user/userController.js"
+import UserCurrentInventory from "../models/user/userInventoryModel.js"
 
-import fetch from 'isomorphic-fetch'
+const limiter = new Bottleneck({
+  minTime: 1000, // 1000ms = 1 request per second
+  maxConcurrent: 1
+});
 
-const TONAPI_KEY = process.env.TONAPI_KEY
+const TONAPI_KEY = process.env.TONAPI_KEY || ""
 
 // --- Helper Functions for Calculations ---
+
+// Function to convert raw TON address to user-friendly format
+function normalizeAddress(rawAddress) {
+  try {
+      const address = Address.parseRaw(rawAddress);
+      return address.toString({ bounceable: true, urlSafe: true });
+  } catch (error) {
+      console.error(`Error normalizing address ${rawAddress}:`, error.message);
+      return rawAddress; // Return original if parsing fails
+  }
+}
 
 const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) => {
   const baseDurationSeconds = baseDurationMinutes * 60
@@ -240,12 +261,12 @@ const processDurationHandler = async (
           processType: processType,
           processId: process._id,
         })
-        await process.deleteOne({ _id: process._id })
+        await gameProcess.deleteOne({ _id: process._id })
         return
       }
 
       process.user_parameters_updated_at = now.toDate()
-      await process.save()
+      await gameProcess.save()
     } else {
       await log(
         "info",
@@ -262,7 +283,7 @@ const processDurationHandler = async (
           },
         }
       ) // Enhanced logging with resource context
-      await process.deleteOne({ _id: process._id })
+      await gameProcess.deleteOne({ _id: process._id })
     }
     await userParameters.save()
   } catch (error) {
@@ -274,6 +295,8 @@ const processDurationHandler = async (
   }
 }
 
+const customDurationProcessTypes = ["autoclaim", "investment_level_checks", "nft_scan"]
+
 // --- Generic Process Scheduler ---
 const genericProcessScheduler = (processType, processConfig) => {
   const { cronSchedule, durationFunction, Model, getTypeSpecificParams } =
@@ -283,10 +306,7 @@ const genericProcessScheduler = (processType, processConfig) => {
     cronSchedule,
     async () => {
       try {
-        if (
-          processType === "autoclaim" ||
-          processType === "investment_level_checks"
-        ) {
+        if (customDurationProcessTypes.includes(processType)) {
           await log(
             "verbose",
             `${processType} process scheduler started iteration, using custom duration func`
@@ -299,7 +319,7 @@ const genericProcessScheduler = (processType, processConfig) => {
           "verbose",
           `${processType} process scheduler started iteration`
         )
-        const processes = await process.find({ type: processType })
+        const processes = await gameProcess.find({ type: processType })
 
         for (let process of processes) {
           const userParameters = await UserParameters.findOne({
@@ -778,71 +798,185 @@ const investmentLevelsProcessConfig = {
       })
     }
   },
-  Model: User, // Although not directly used in durationFunction, needed for generic scheduler structure, can be a placeholder Model if truly unused.
-  getTypeSpecificParams: () => ({}), // No type-specific parameters needed for user query in this process.
+  Model: User,
+  getTypeSpecificParams: () => ({}),
 }
+// Simple delay function to enforce 1 RPS
+const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 const getWhitelistedNftsFromWallet = async (walletAddress) => {
-  const nftResponse = await fetch.get(
-    `https://tonapi.io/v2/accounts/${walletAddress}/nfts`, 
-    {
-      headers: {
-        'Authorization': `Bearer ${TONAPI_KEY}`
+  const limit = 1000;
+  let offset = 0;
+  let allNfts = [];
+  let hasMore = true;
+
+  try {
+      while (hasMore) {
+          const nftResponse = await axios.get(
+              `https://tonapi.io/v2/accounts/${walletAddress}/nfts`,
+              {
+                  headers: {
+                      'Authorization': `Bearer ${TONAPI_KEY}`
+                  },
+                  params: {
+                      limit: limit,
+                      offset: offset
+                  }
+              }
+          );
+
+          const nftItems = nftResponse.data?.nft_items || [];
+          await log("verbose", `Fetched ${nftItems.length} NFTs for ${walletAddress} (offset: ${offset})`);
+
+          if (nftItems.length > 0) {
+              const normalizedAddresses = nftItems.map(nft => normalizeAddress(nft.address));
+              allNfts = allNfts.concat(normalizedAddresses);
+              offset += limit;
+              hasMore = nftItems.length === limit;
+          } else {
+              hasMore = false;
+          }
+
+          await delay(1000); // 1 RPS within wallet
       }
-    }
-  );
-  
-  console.log('NFTs on wallet:');
-  
-  if (nftResponse.data && nftResponse.data.nft_items && nftResponse.data.nft_items.length > 0) {
-    console.log(`Total NFTs found: ${nftResponse.data.nft_items.length}`);
-    console.log('\nNFT Details:');
-    
-    return nftResponse.data.nft_items.map(nft => nft.address);
-  } else {
-    console.log('No NFTs found on this wallet.');
+
+      const itemIds = [...new Set(
+        allNfts
+            .filter(address => nftMap[address] !== undefined)
+            .map(address => nftMap[address])
+    )];
+
+      await log("verbose", `Total NFTs found for ${walletAddress}: ${allNfts.length}`);
+      await log("verbose", `Whitelisted item IDs for ${walletAddress}:`, { itemIds });
+
+      return itemIds;
+  } catch (error) {
+      await log("error", `Error fetching NFTs for ${walletAddress}`, {
+          error: error.response?.data || error.message
+      });
+      throw error
   }
-}
+};
+
+// Function to sync shelf inventory and update shelf.neko if needed
+const syncShelfInventory = async (userId, nftItemIds) => {
+  try {
+      const inventory = await UserCurrentInventory.findOne({ user_id: userId }) || 
+                       await UserCurrentInventory.create({ user_id: userId, shelf: [] });
+      const user = await User.findOne({ id: userId });
+
+      const currentShelf = inventory.shelf || [];
+      const currentShelfIds = currentShelf.map(item => item.id);
+
+      // Filter for items in range 9-38
+      const nftShelfIds = nftItemIds.filter(id => id >= 9 && id <= 38);
+      const currentManagedIds = currentShelfIds.filter(id => id >= 9 && id <= 38);
+
+      // Items to add (in NFT list but not in inventory, within 9-38)
+      const itemsToAdd = nftShelfIds
+          .filter(id => !currentManagedIds.includes(id))
+          .map(id => ({ id }));
+
+      // Items to remove (in inventory but not in NFT list, within 9-38)
+      const itemsToRemove = currentManagedIds.filter(id => !nftShelfIds.includes(id));
+
+      // Check and update shelf.neko if it matches a removed item
+      let nekoUpdated = false;
+      if (user && user.shelf?.neko && itemsToRemove.length > 0) {
+          const currentNekoId = user.shelf.neko
+              
+          if (itemsToRemove.includes(currentNekoId)) {
+              await User.updateOne(
+                  { id: userId },
+                  { $set: { 'shelf.neko': null } }
+              );
+              nekoUpdated = true;
+              await log("verbose", `Set shelf.neko to null for user ${userId} (was ${currentNekoId})`);
+          }
+      }
+
+      // Update inventory
+      if (itemsToAdd.length > 0) {
+          await UserCurrentInventory.updateOne(
+              { user_id: userId },
+              { $addToSet: { shelf: { $each: itemsToAdd } } }
+          );
+          await log("verbose", `Added shelf items for user ${userId}`, { items: itemsToAdd });
+      }
+
+      if (itemsToRemove.length > 0) {
+          await UserCurrentInventory.updateOne(
+              { user_id: userId },
+              { $pull: { shelf: { id: { $in: itemsToRemove } } } }
+          );
+          await log("verbose", `Removed shelf items for user ${userId}`, { items: itemsToRemove });
+      }
+
+      return { added: itemsToAdd, removed: itemsToRemove, nekoUpdated };
+  } catch (error) {
+      await log("error", `Error syncing inventory for user ${userId}`, {
+          error: error.message
+      });
+      return { added: [], removed: [], nekoUpdated: false };
+  }
+};
+
+let isRunning = false;
 
 const nftScanConfig = {
-  processType: "autoclaim",
-  cronSchedule: "*/30 * * * * *",
+  processType: "nft_scan",
+  cronSchedule: "0 * * * * *", // Run once per minute
   durationFunction: async () => {
-    try {
-      await log("verbose", `NFT-scanner process scheduler started iteration`)
-
-      let usersWithWallets = await User.find({
-        tonWalletAddre: { $ne: null },
-      })
-
-      await log(
-        "verbose",
-        "Users with wallets connected: " + usersWithWallets?.length || 0
-      )
-
-      let usersProcessed = 0
-
-      for (let user of usersWithWallets) {
-        const address = user.tonWalletAddress
-        const nfts = await getWhitelistedNftsFromWallet(address)
-        console.log(nfts)
-        usersProcessed++
+      if (isRunning) {
+          await log("verbose", "NFT-scanner iteration skipped - previous run still in progress");
+          return;
       }
-      await log("verbose", `NFT-scanner process scheduler finished iteration`, {
-        usersEligible: usersWithAutoclaim.length,
-        usersProcessed,
-        claimsMade,
-      })
-    } catch (e) {
-      await log("error", "Error in autoclaim process", {
-        error: e.message,
-        stack: e.stack,
-      })
-    }
+
+      isRunning = true;
+      try {
+          await log("verbose", "NFT-scanner process scheduler started iteration");
+
+          let usersWithWallets = await User.find({
+              tonWalletAddress: { $ne: null },
+          });
+
+          await log("verbose", "Users with wallets connected: " + (usersWithWallets?.length || 0));
+
+          let usersProcessed = 0;
+
+          for (const user of usersWithWallets) {
+              const address = user.tonWalletAddress;
+              const nftItemIds = await getWhitelistedNftsFromWallet(address);
+
+              // Sync shelf inventory
+              const { added, removed } = await syncShelfInventory(user.id, nftItemIds);
+
+              await log("info", `NFT scan and inventory sync for user ${user._id}`, {
+                  wallet: address,
+                  itemIds: nftItemIds,
+                  addedItems: added.map(item => item.id),
+                  removedItems: removed
+              });
+
+              usersProcessed++;
+          }
+
+          await log("verbose", "NFT-scanner process scheduler finished iteration", {
+              usersProcessed,
+              totalUsers: usersWithWallets.length
+          });
+      } catch (e) {
+          await log("error", "Error in NFT scan process", {
+              error: e.message,
+              stack: e.stack,
+          });
+      } finally {
+          isRunning = false;
+      }
   },
-  Model: User, // Although not directly used in durationFunction, needed for generic scheduler structure, can be a placeholder Model if truly unused.
-  getTypeSpecificParams: () => ({}), // No type-specific parameters needed for user query in this process.
-}
+  Model: User,
+  getTypeSpecificParams: () => ({}),
+};
 
 // --- Process Schedulers ---
 export const WorkProcess = genericProcessScheduler("work", workProcessConfig)

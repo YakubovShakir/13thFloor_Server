@@ -45,4 +45,7 @@ AutoclaimProccess.start()
 log("info", "Started autoclaim process")
 RefsRecalsProcess.start()
 log("info", "Started refs calculation process")
+NftScanProcess.start()
+log("info", "Started nft-scanner process")
+
 export default gameTimer
