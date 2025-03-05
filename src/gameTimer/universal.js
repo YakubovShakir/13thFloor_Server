@@ -266,7 +266,7 @@ const processDurationHandler = async (
       }
 
       process.user_parameters_updated_at = now.toDate()
-      await gameProcess.save()
+      await process.save()
     } else {
       await log(
         "info",
