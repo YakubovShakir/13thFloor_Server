@@ -584,13 +584,6 @@ export const handleShelfUnequip = async (req, res) => {
   }
 }
 
-javascript
-
-Свернуть
-
-Перенос
-
-Копировать
 export const buyItemsForCoins = async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
