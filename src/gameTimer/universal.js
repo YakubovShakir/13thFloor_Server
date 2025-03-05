@@ -925,7 +925,7 @@ let isRunning = false;
 
 const nftScanConfig = {
   processType: "nft_scan",
-  cronSchedule: "0 * * * * *", // Run once per minute
+  cronSchedule: "*/10 * * * * *", // Run once per minute
   durationFunction: async () => {
       if (isRunning) {
           await log("verbose", "NFT-scanner iteration skipped - previous run still in progress");
