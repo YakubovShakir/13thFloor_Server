@@ -584,68 +584,85 @@ export const handleShelfUnequip = async (req, res) => {
   }
 }
 
+javascript
+
+Свернуть
+
+Перенос
+
+Копировать
 export const buyItemsForCoins = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
-    const { productType, id } = req.body
+    const userId = parseInt(req.params.id);
+    const { productType, id } = req.body;
 
-    const user = await UserParameters.findOne({ id: userId })
+    const user = await UserParameters.findOne({ id: userId });
     const userCurrentInventory = await UserCurrentInventory.findOne({
       user_id: userId,
-    })
-    let product
+    });
+    let product;
 
     if (productType === "clothes") {
       if (userCurrentInventory.clothes.find((item) => item.id === id))
-        return res.status(401).json({ ok: false })
-      product = await Clothing.findOne({ clothing_id: id })
+        return res.status(401).json({ ok: false });
+      product = await Clothing.findOne({ clothing_id: id });
       if (product && user.coins >= product.price && user.level >= product.requiredLevel) {
         await UserParameters.updateOne(
           { id: userId },
           { $inc: { coins: -product.price } }
-        )
+        );
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { clothes: { id: product.clothing_id } } }
-        )
+        );
       } else {
-        return res.status(401).json({ ok: false, reason: "Not enough funds" })
+        return res.status(401).json({ ok: false, reason: "Not enough funds" });
       }
     }
 
     if (productType === "shelf") {
       if (userCurrentInventory.shelf.find((item) => item.id === id))
-        return res.status(401).json({ ok: false })
-      product = await ShelfItemModel.findOne({ id: id })
+        return res.status(401).json({ ok: false });
+
+      product = await ShelfItemModel.findOne({ id: id });
       if (product) {
-        const { coins, stars } = product.cost
+        const { coins, stars } = product.cost;
+
+        // Block purchase for IDs 9-38
+        if (id >= 9 && id <= 38) {
+          return res.status(403).json({ 
+            ok: false, 
+            reason: "This item can only be obtained via NFT" 
+          });
+        }
+
         if (stars > 0) {
-          return res.status(500).json({ ok: false })
+          return res.status(500).json({ ok: false });
         }
         if (user.coins >= coins) {
           await UserParameters.updateOne(
             { id: userId },
             { $inc: { coins: -coins } }
-          )
+          );
           await UserCurrentInventory.updateOne(
             { user_id: userId },
             { $addToSet: { shelf: { id: product.id } } }
-          )
+          );
         } else {
-          console.log('not enough coins')
-          return res.status(401).json({ ok: false, reason: "Not enough funds" })
+          console.log('not enough coins');
+          return res.status(401).json({ ok: false, reason: "Not enough funds" });
         }
       } else {
-        return res.status(500).json({ ok: false })
+        return res.status(500).json({ ok: false });
       }
     }
 
-    return res.status(200).json({ ok: true })
+    return res.status(200).json({ ok: true });
   } catch (err) {
-    console.log("Error in buying for coins", err)
-    return res.status(500).json({ error: true })
+    console.log("Error in buying for coins", err);
+    return res.status(500).json({ error: true });
   }
-}
+};
 
 export const requestStarsPaymentLink = async (req, res) => {
   try {
