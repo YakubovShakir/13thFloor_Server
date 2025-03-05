@@ -27,6 +27,10 @@ import {
   gamecenterLevelMap,
 } from "../controllers/user/userController.js"
 
+import fetch from 'isomorphic-fetch'
+
+const TONAPI_KEY = process.env.TONAPI_KEY
+
 // --- Helper Functions for Calculations ---
 
 const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) => {
@@ -778,6 +782,68 @@ const investmentLevelsProcessConfig = {
   getTypeSpecificParams: () => ({}), // No type-specific parameters needed for user query in this process.
 }
 
+const getWhitelistedNftsFromWallet = async (walletAddress) => {
+  const nftResponse = await fetch.get(
+    `https://tonapi.io/v2/accounts/${walletAddress}/nfts`, 
+    {
+      headers: {
+        'Authorization': `Bearer ${TONAPI_KEY}`
+      }
+    }
+  );
+  
+  console.log('NFTs on wallet:');
+  
+  if (nftResponse.data && nftResponse.data.nft_items && nftResponse.data.nft_items.length > 0) {
+    console.log(`Total NFTs found: ${nftResponse.data.nft_items.length}`);
+    console.log('\nNFT Details:');
+    
+    return nftResponse.data.nft_items.map(nft => nft.address);
+  } else {
+    console.log('No NFTs found on this wallet.');
+  }
+}
+
+const nftScanConfig = {
+  processType: "autoclaim",
+  cronSchedule: "*/30 * * * * *",
+  durationFunction: async () => {
+    try {
+      await log("verbose", `NFT-scanner process scheduler started iteration`)
+
+      let usersWithWallets = await User.find({
+        tonWalletAddre: { $ne: null },
+      })
+
+      await log(
+        "verbose",
+        "Users with wallets connected: " + usersWithWallets?.length || 0
+      )
+
+      let usersProcessed = 0
+
+      for (let user of usersWithWallets) {
+        const address = user.tonWalletAddress
+        const nfts = await getWhitelistedNftsFromWallet(address)
+        console.log(nfts)
+        usersProcessed++
+      }
+      await log("verbose", `NFT-scanner process scheduler finished iteration`, {
+        usersEligible: usersWithAutoclaim.length,
+        usersProcessed,
+        claimsMade,
+      })
+    } catch (e) {
+      await log("error", "Error in autoclaim process", {
+        error: e.message,
+        stack: e.stack,
+      })
+    }
+  },
+  Model: User, // Although not directly used in durationFunction, needed for generic scheduler structure, can be a placeholder Model if truly unused.
+  getTypeSpecificParams: () => ({}), // No type-specific parameters needed for user query in this process.
+}
+
 // --- Process Schedulers ---
 export const WorkProcess = genericProcessScheduler("work", workProcessConfig)
 export const TrainingProccess = genericProcessScheduler(
@@ -806,65 +872,4 @@ export const RefsRecalsProcess = genericProcessScheduler(
   investmentLevelsProcessConfig
 )
 
-const checkNekoeosOnWallet = async (walletAddress) => {
-
-}
-
-const nftScanConfig = {
-  processType: "autoclaim",
-  cronSchedule: "*/30 * * * * *",
-  durationFunction: async () => {
-    try {
-      await log("verbose", `NFT scanning process scheduler started iteration`)
-
-      let usersWithWallets = await User.find({
-        tonWalletAddre: { $ne: null },
-      })
-
-      await log(
-        "verbose",
-        "Users with wallets connected: " + usersWithWallets?.length || 0
-      )
-
-      let usersProcessed = 0
-
-      for (let user of usersWithWallets) {
-        const address = user.tonWalletAddress
-        usersProcessed++
-        const {
-          has_autoclaim: {
-            game_center = false,
-            zoo_shop = false,
-            coffee_shop = false,
-          },
-        } = user
-
-        const claim_promises = []
-        if (game_center) {
-          claim_promises.push(claim(InvestmentTypes.GameCenter, user.id))
-        }
-        if (zoo_shop) {
-          claim_promises.push(claim(InvestmentTypes.ZooShop, user.id))
-        }
-        if (coffee_shop) {
-          claim_promises.push(claim(InvestmentTypes.CoffeeShop, user.id))
-        }
-
-        const results = await Promise.all(claim_promises)
-        claimsMade += results.filter((result) => result !== undefined).length // Count successful claims (non-undefined results)
-      }
-      await log("verbose", `Autoclaim process scheduler finished iteration`, {
-        usersEligible: usersWithAutoclaim.length,
-        usersProcessed,
-        claimsMade,
-      })
-    } catch (e) {
-      await log("error", "Error in autoclaim process", {
-        error: e.message,
-        stack: e.stack,
-      })
-    }
-  },
-  Model: User, // Although not directly used in durationFunction, needed for generic scheduler structure, can be a placeholder Model if truly unused.
-  getTypeSpecificParams: () => ({}), // No type-specific parameters needed for user query in this process.
-}
+export const NftScanProcess = genericProcessScheduler("nft_scan", nftScanConfig)

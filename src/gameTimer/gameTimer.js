@@ -9,6 +9,7 @@ import {
   AutoclaimProccess,
   BoostProccess,
   FoodProccess,
+  NftScanProcess,
 } from "./universal.js"
 import dotenv from "dotenv"
 dotenv.config()
@@ -24,23 +25,24 @@ const gameTimer = {
   BoostProccess,
   AutoclaimProccess,
   RefsRecalsProcess,
+  NftScanProcess
 }
 
 connectDB()
-// gameTimer.FoodProccess.start()
-// log("info", "Started food processes")
-// gameTimer.SkillProccess.start()
-// log("info", "Started skill learning processes")
-// gameTimer.TrainingProccess.start()
-// log("info", "Started training processes")
-// gameTimer.WorkProcess.start()
-// log("info", "Started work processes")
-// gameTimer.SleepProccess.start()
-// log("info", "Started sleep processes")
-// gameTimer.BoostProccess.start()
-// log("info", "Started boost processes")
-// AutoclaimProccess.start()
-// log("info", "Started autoclaim process")
+gameTimer.FoodProccess.start()
+log("info", "Started food processes")
+gameTimer.SkillProccess.start()
+log("info", "Started skill learning processes")
+gameTimer.TrainingProccess.start()
+log("info", "Started training processes")
+gameTimer.WorkProcess.start()
+log("info", "Started work processes")
+gameTimer.SleepProccess.start()
+log("info", "Started sleep processes")
+gameTimer.BoostProccess.start()
+log("info", "Started boost processes")
+AutoclaimProccess.start()
+log("info", "Started autoclaim process")
 RefsRecalsProcess.start()
 log("info", "Started refs calculation process")
 export default gameTimer
