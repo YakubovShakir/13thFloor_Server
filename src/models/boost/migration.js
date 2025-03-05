@@ -6,7 +6,7 @@ export default [
     description: { ru: "Полностью восстанавливает энергию", en: "Fully restores energy" },
     duration: null,
     type: "energy-cap",
-    link: "https://13floorgame.ru/images/boosts/energyCan.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Boost%2FEnergyDrink.webp",
   },
   {
     boost_id: 2,
@@ -15,7 +15,7 @@ export default [
     description: { ru: "В течении 3х часов постепенно восстанавливает энергию", en: "Gradually restores energy over 3 hours" },
     duration: 180,
     type: "tonic-drink",
-    link: "https://13floorgame.ru/images/boosts/workoutDrink.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Boost%2FTonicDrink.webp",
   },
   {
     boost_id: 3,
@@ -39,7 +39,7 @@ export default [
     },
     duration: null,
     type: "relax-massage",
-    link: "https://13floorgame.ru/images/boosts/massage.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Boost%2FRelaxingMassage.webp",
   },
   // {
   //   boost_id: 5,
