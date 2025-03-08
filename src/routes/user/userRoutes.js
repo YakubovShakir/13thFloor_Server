@@ -56,6 +56,23 @@ router.post('/:id/investments/claim', claimInvestment)
 router.get('/:id/tasks', getUserTasks)
 router.post('/:id/tasks/claim', claimUserTask)
 router.post('/:id/profile-data', saveProfileData)
+router.get('/gacha/items', (req, res) => res.status(200).json(
+ {
+  items: [
+    { id: 1, type: "weapon", name: "Knife", image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Boost%2FEnergyDrink.webp", rarity: "common" },
+    { id: 2, type: "weapon", name: "Gun",  image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Boost%2FEnergyDrink.webp", rarity: "rare" },
+    { id: 3, type: "cosmetic", name: "Skin", image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Boost%2FEnergyDrink.webp", rarity: "epic" },
+  ]
+ }
+))
+
+router.get('/gacha/attempts', (req, res) => res.status(200).json(
+  {
+   attempts: 100
+  }
+ ))
+
+router.get('/gacha/spin', (req, res) => res.status(200).json({ wonItem: { id: 1, type: 'weapon' } }))
 
 router.get('/time', (req, res) => res.status(200).json({ server_time: new Date() }))
 
