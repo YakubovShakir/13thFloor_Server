@@ -44,6 +44,7 @@ import { ConstantEffects } from "./models/effects/constantEffectsLevels.js"
 import constantEffects from "./models/effects/migration.js"
 import { addUserSubscriptionStatus, collectRefStatsFromDb } from "./controllers/user/userController.js"
 import UserBoost from "./models/user/userBoostsModel.js"
+import { UserSpins } from "./models/user/userSpinsModel.js"
 
 dotenv.config()
 
@@ -98,6 +99,7 @@ async function main() {
     deleteInvestments(),
     deleteTasks(),
     deleteConstantEffects(),
+    addSpins()
   ])
 }
 
@@ -109,6 +111,13 @@ async function deleteTasks() {
       await task.save()
     })
   )
+}
+
+async function addSpins() {
+  const users = await User.find({})
+  for (const user of users) {
+    await Promise.all(Array.from(new UserSpins({ is_used: false, user_id: user.id, type: 'daily'}).save()).fill(5))
+  }
 }
 
 async function deleteUserTasks() {
