@@ -687,6 +687,20 @@ export const requestStarsPaymentLink = async (req, res) => {
       amount = product.cost.stars
     }
 
+    //! TODO: change spin amount
+    if(productType === 'spin') {
+      name = {
+        ru: "Спин",
+        en: 'Spin'
+      }[lang]
+      description = {
+        ru: "Попытка для игры в колесо!",
+        en: 'An attempt to play the wheel!'
+      }[lang]
+      title = name
+      amount = 1
+    }
+
     if (productType === "autoclaim") {
         name = {
           ru: "Автоклейм",
