@@ -112,7 +112,7 @@ const itemsPoolRaw = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Fshittonsmoney.png",
     name: { ru: "10 Монет", en: "10 Coins" },
     chance_premium: 1,
-    chance_daily: 1,
+    chance_daily: 5,
   },
   {
     id: 2,
@@ -123,7 +123,7 @@ const itemsPoolRaw = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Fshittonsmoney.png",
     name: { ru: "25 Монет", en: "25 Coins" },
     chance_premium: 1,
-    chance_daily: 1,
+    chance_daily: 10,
   },
   {
     id: 3,
@@ -256,7 +256,13 @@ router.get("/:id/gacha/spin", async (req, res) => {
     })
     const ownedClothesIds = userInventory.clothes.map((item) => item.id)
     const pool = itemsPoolRaw.filter(
-      (item) => !ownedClothesIds.includes(item.id)
+      (item) => {
+        if(item.type === 'clothes') {
+          return !ownedClothesIds.includes(item.id)
+        } else {
+          return true
+        }
+      }
     )
 
     for (const item of pool) {
