@@ -413,7 +413,7 @@ export default [
     tag: null,
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/PinkLuxe-m.png",
+    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2F4%2FBody%2FPinkluxe-m.png",
     female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/PinkLuxe-f.png",
     male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/PinkLuxe-m-icon.png",
     female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/PinkLuxe-f-icon.png",
