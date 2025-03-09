@@ -33,6 +33,7 @@ import User from "../../models/user/userModel.js"
 import { upUserBalance } from "../../utils/userParameters/upUserBalance.js"
 import UserCurrentInventory from "../../models/user/userInventoryModel.js"
 import UserBoost from "../../models/user/userBoostsModel.js"
+import UserCheckInsModel from "../../models/user/userCheckInsModel.js"
 
 const router = express.Router()
 router.get("/user/:id", getUser)
@@ -344,6 +345,232 @@ router.get("/:id/gacha/spin", async (req, res) => {
     return res.status(500).json({ error: "Internal server error" })
   }
 })
+
+const dailyRewardsPool = [
+  { day: 1, type: "coins", amount: 10, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons/shittonsmoney.png", name: { ru: "10 Монет", en: "10 Coins" } },
+  { day: 2, type: "coins", amount: 25, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons/shittonsmoney.png", name: { ru: "25 Монет", en: "25 Coins" } },
+  { day: 3, type: "coins", amount: 50, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons/shittonsmoney.png", name: { ru: "50 Монет", en: "50 Coins" } },
+  { day: 4, type: "boost", id: 1, name: { en: "Boost" } },
+  { day: 5, type: "clothes", id: 1, name: { en: "Clothes" } },
+  { day: 6, type: "coins", amount: 100, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons/shittonsmoney.png", name: { ru: "100 Монет", en: "100 Coins" } },
+  { day: 7, type: "boost", id: 2, name: { en: "Boost" } },
+  { day: 8, type: "coins", amount: 150, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons/shittonsmoney.png", name: { ru: "150 Монет", en: "150 Coins" } },
+  { day: 9, type: "clothes", id: 2, name: { en: "Clothes" } },
+  { day: 10, type: "boost", id: 3, name: { en: "Boost" } },
+  { day: 11, type: "coins", amount: 200, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons/shittonsmoney.png", name: { ru: "200 Монет", en: "200 Coins" } },
+  { day: 12, type: "clothes", id: 3, name: { en: "Clothes" } },
+  { day: 13, type: "boost", id: 4, name: { en: "Boost" } },
+  { day: 14, type: "coins", amount: 300, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons/shittonsmoney.png", name: { ru: "300 Монет", en: "300 Coins" } },
+];
+
+router.get("/:id/daily/check-in", async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const lastCheckIn = await UserCheckInsModel.findOne(
+      { user_id: userId, is_claimed: true },
+      { check_in_date: 1, streak: 1 },
+      { sort: { check_in_date: -1 } }
+    );
+
+    if (lastCheckIn && lastCheckIn.check_in_date >= today) {
+      return res.status(403).json({ error: "Already checked in today" });
+    }
+
+    let streak = 1;
+    if (lastCheckIn) {
+      const lastDate = new Date(lastCheckIn.check_in_date);
+      lastDate.setHours(0, 0, 0, 0);
+      const yesterday = new Date(today);
+      yesterday.setDate(today.getDate() - 1);
+
+      if (lastDate.getTime() === yesterday.getTime()) {
+        streak = lastCheckIn.streak + 1;
+      }
+    }
+
+    if (streak > 14) streak = 1; // Reset to 1 after 14 days
+
+    const checkIn = new UserCheckInsModel({
+      user_id: userId,
+      check_in_date: today,
+      streak,
+      last_check_in: lastCheckIn ? lastCheckIn.check_in_date : null,
+    });
+    await checkIn.save();
+
+    const reward = dailyRewardsPool.find((item) => item.day === streak);
+
+    res.status(200).json({ streak, canClaim: true, nextReward: reward });
+  } catch (error) {
+    await log("error", "error in daily check-in", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/:id/daily/claim", async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const checkIn = await UserCheckInsModel.findOne({
+      user_id: userId,
+      check_in_date: { $gte: today },
+      is_claimed: false,
+    });
+
+    if (!checkIn) {
+      return res.status(403).json({ error: "No unclaimed check-in available" });
+    }
+
+    const selectedItem = dailyRewardsPool.find((item) => item.day === checkIn.streak);
+    if (!selectedItem) {
+      return res.status(500).json({ error: "No reward defined for this day" });
+    }
+
+    let wonItem;
+    const user = await User.findOne({ id: userId });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    switch (selectedItem.type) {
+      case "coins":
+        wonItem = {
+          id: selectedItem.id,
+          type: selectedItem.type,
+          image: selectedItem.image,
+          name: selectedItem.name,
+          amount: selectedItem.amount,
+        };
+        await upUserBalance(userId, wonItem.amount);
+        break;
+      case "boost":
+        const boost = await Boost.findOne({ boost_id: selectedItem.id });
+        wonItem = {
+          id: selectedItem.id,
+          type: selectedItem.type,
+          image: boost.link,
+          name: boost.name,
+        };
+        await new UserBoost({ id: userId, boost_id: wonItem.id }).save();
+        break;
+      case "clothes":
+        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id });
+        wonItem = {
+          id: selectedItem.id,
+          type: selectedItem.type,
+          image: user.personage.gender === "male" ? clothes.male_icon : clothes.female_icon,
+          name: clothes.name,
+        };
+        await UserCurrentInventory.updateOne(
+          { user_id: userId },
+          { $addToSet: { clothes: { id: wonItem.id } } }
+        );
+        break;
+      default:
+        return res.status(400).json({ error: "Invalid item type" });
+    }
+
+    await UserCheckInsModel.updateOne({ _id: checkIn._id }, { $set: { is_claimed: true } });
+
+    res.status(200).json({ wonItem, streak: checkIn.streak });
+  } catch (error) {
+    await log("error", "error in claiming daily reward", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+router.get("/:id/daily/status", async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const lastCheckIn = await UserCheckInsModel.findOne(
+      { user_id: userId },
+      { check_in_date: 1, streak: 1, is_claimed: 1 },
+      { sort: { check_in_date: -1 } }
+    );
+
+    const user = await User.findOne({ id: userId });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Fetch metadata for all items in dailyRewardsPool
+    const resolvedRewards = [];
+    for (const item of dailyRewardsPool) {
+      let fullItem;
+      switch (item.type) {
+        case "boost":
+          const boost = await Boost.findOne({ boost_id: item.id });
+          fullItem = {
+            day: item.day,
+            id: item.id,
+            type: item.type,
+            image: boost?.link || "path/to/default-icon.png",
+            name: boost?.name || { en: "Boost" }, // Fallback if boost not found
+          };
+          break;
+        case "clothes":
+          const clothes = await Clothing.findOne({ clothing_id: item.id });
+          fullItem = {
+            day: item.day,
+            id: item.id,
+            type: item.type,
+            image:
+              user.personage.gender === "male"
+                ? clothes?.male_icon
+                : clothes?.female_icon || "path/to/default-icon.png",
+            name: clothes?.name || { en: "Clothes" }, // Fallback if clothes not found
+          };
+          break;
+        case "coins":
+          fullItem = {
+            day: item.day,
+            id: item.id,
+            type: item.type,
+            image: item.image,
+            name: item.name,
+            amount: item.amount,
+          };
+          break;
+        default:
+          continue; // Skip invalid items
+      }
+      resolvedRewards.push(fullItem);
+    }
+
+    let streak = 0;
+    let canClaim = true;
+    let hasCheckedInToday = false;
+    let nextReward = resolvedRewards[0];
+
+    if (lastCheckIn) {
+      const isToday = lastCheckIn.check_in_date >= today;
+      hasCheckedInToday = isToday;
+      canClaim = isToday && !lastCheckIn.is_claimed;
+      streak = lastCheckIn.streak;
+      const nextStreak = hasCheckedInToday ? streak : streak + 1;
+      nextReward = resolvedRewards.find((item) => item.day === (nextStreak > 14 ? 1 : nextStreak));
+    }
+
+    res.status(200).json({
+      streak,
+      canClaim,
+      hasCheckedInToday,
+      nextReward,
+      rewards: resolvedRewards, // Fully resolved items with metadata
+    });
+  } catch (error) {
+    await log("error", "error in fetching daily status", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 router.get("/time", (req, res) =>
   res.status(200).json({ server_time: new Date() })
