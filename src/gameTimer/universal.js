@@ -98,6 +98,8 @@ const calculatePeriodProfits = (
       profitPerSecondBase = baseParameters[config.baseValueKey] / 3600 // Assuming hourly profit still needs /3600 if tick is in seconds
     } else if (config.type === "per_minute") {
       profitPerSecondBase = baseParameters[config.baseValueKey] / 60
+    } else if (config.type === "progressive") {
+      profitPerSecondBase = baseParameters[config.baseValueKey] / (baseParameters[config.baseDurationKey] * 60)
     } else {
       // Default to per second if type is not specified, or explicitly 'per_second' could be added if needed
       profitPerSecondBase = baseParameters[config.baseValueKey]
@@ -455,7 +457,7 @@ const sleepProcessConfig = {
   getTypeSpecificParams: (process) => ({ level: process.type_id }),
   profitConfig: {
     energy: {
-      type: "per_minute",
+      type: "progressive",
       baseValueKey: "energy_capacity",
       baseDurationKey: "sleep_duration",
     }, // Using per_minute as sleep duration is in minutes
