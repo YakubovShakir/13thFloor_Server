@@ -718,38 +718,21 @@ export const interactWithNeko = async (userId, targetUserId) => {
     });
     await newAction.save();
 
-    // Remove existing neko boosts for both users
-    await Active.deleteMany({
-      user_id: { $in: [userId, targetUserId] },
-      type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
-    });
-
-    // Create active effect for the clicking user
+    // Create active effect for users the clicking user
     const userEffect = new ActiveEffectsModel({
-      user_id: userId,
-      type: boostType,
+      user_id: targetUserId,
+      type: activeEffectType,
       valid_until: new Date(now.getTime() + EFFECT_DURATION_MS),
       triggered_by: userId,
     });
     await userEffect.save();
-
-    // Create active effect for the target user (if different)
-    if (userId !== targetUserId) {
-      const targetEffect = new ActiveEffectsModel({
-        user_id: targetUserId,
-        type: boostType,
-        valid_until: new Date(now.getTime() + EFFECT_DURATION_MS),
-        triggered_by: userId,
-      });
-      await targetEffect.save();
-    }
 
     await log("info", "Neko interacted", {
       userId,
       targetUserId,
       nekoId,
       boostPercentage,
-      boostType,
+      boostType: activeEffectType,
       cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
     });
 

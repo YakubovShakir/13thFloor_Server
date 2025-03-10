@@ -37,6 +37,7 @@ import {
 import { ActionTypes, ActionLogModel } from "../models/effects/actionLogModel.js"; // Import ActionLog model
 
 import UserCurrentInventory from "../models/user/userInventoryModel.js"
+import { getBoostPercentageFromType } from "../routes/user/userRoutes.js"
 
 const limiter = new Bottleneck({
   minTime: 1000, // 1 request per second
@@ -154,14 +155,22 @@ const applyUserParameterUpdates = async (
 
 // Helper function to check for active neko boost
 const getNekoBoostMultiplier = async (userId) => {
-  const activeNekoBoost = await ActiveEffect.findOne({
+  const selfActiveNekoBoost = await ActiveEffectsModel.findOne({
     user_id: userId,
     type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
     valid_until: { $gt: new Date() },
   });
 
-  if (!activeNekoBoost) return 1;
-  const boostPercentage = getBoostPercentageFromType(activeNekoBoost.type);
+  const foreignActiveNekoBoost = await ActiveEffectsModel.findOne({
+    triggered_by: userId,
+    type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
+    valid_until: { $gt: new Date() },
+  });
+
+  const boost = foreignActiveNekoBoost || selfActiveNekoBoost
+
+  if (!boost) return 1;
+  const boostPercentage = getBoostPercentageFromType(boost.type);
   return 1 + (boostPercentage / 100);
 };
 
@@ -201,8 +210,9 @@ const processDurationHandler = async (
 
     const baseDurationMinutes =
       baseDurationKey === "base_duration_in_seconds"
-        ? (process.target_duration_in_seconds || process[baseDurationKey]) / 60
+        ? (process.target_duration_in_seconds || (process[baseDurationKey])) / 60
         : baseParameters[baseDurationKey] || 1
+    console.log('@', baseDurationMinutes, process)
     const actualDurationSeconds = calculateDuration(
       baseDurationMinutes,
       durationDecreasePercentage
@@ -396,13 +406,14 @@ const workProcessConfig = {
       baseDurationKey: "duration",
     },
   },
+  baseDurationKey: 'base_duration_in_seconds',
   onProcessCompletion: async (process, userParameters, baseParameters) => {
     const nekoBoostMultiplier = await getNekoBoostMultiplier(userParameters.id);
     const baseCoinsReward = ((baseParameters.coins_in_hour / 3600) * (baseParameters.duration * 60));
     const coinsReward = baseCoinsReward * nekoBoostMultiplier;
     await recalcValuesByParameters(userParameters, { coinsReward });
     await upUserExperience(userParameters.id, baseParameters.experience_reward);
-    const activeNekoBoost = await ActiveEffect.findOne({
+    const activeNekoBoost = await ActiveEffectsModel.findOne({
       user_id: userParameters.id,
       type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
       valid_until: { $gt: new Date() },

@@ -15,4 +15,4 @@ const ActionLogSchema = new mongoose.Schema({
   }, { timestamps: true });
   
 
-export const ActionLogModel = mongoose.model('ActionLog', ActionLogSchema);
+export const ActionLogModel = mongoose.model('action_log', ActionLogSchema);
