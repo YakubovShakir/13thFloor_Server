@@ -5,8 +5,11 @@ export const ActiveEffectTypes = {
     NftNekoBoost: 'nft_neko_boost',
 }
 
-export const ActiveEffectsModel = new mongoose.Schema({
+const ActiveEffectsSchema = new mongoose.Schema({
   user_id: { type: Number, required: true },
   type: { type: String, required: true, enum: Object.values(ActiveEffectTypes) },
   valid_until: { type: Date, required: true },
-}, { timestamps: true })
+  triggered_by: { type: Number, required: true }, // User who clicked
+}, { timestamps: true });
+
+export const ActiveEffectsModel = mongoose.model('active_effect', ActiveEffectsSchema)

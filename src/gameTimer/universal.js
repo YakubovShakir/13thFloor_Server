@@ -7,7 +7,7 @@ import cron from "node-cron"
 import moment from "moment-timezone"
 import { canApplyConstantEffects } from "../utils/parametersDepMath.js"
 import { upUserExperience } from "../utils/userParameters/upUserBalance.js"
-import { recalcValuesByParameters } from "../utils/parametersDepMath.js" // Import recalcValuesByParameters
+import { recalcValuesByParameters } from "../utils/parametersDepMath.js"
 
 // Models
 import Work from "../models/work/workModel.js"
@@ -25,6 +25,7 @@ import Bottleneck from 'bottleneck';
 import { Address } from '@ton/ton';
 import nftMap from './nft_mapping.json' with { type: 'json' }
 import axios from 'axios'
+import { ActiveEffectTypes, ActiveEffectsModel } from "../models/effects/activeEffectsModel.js" // Import ActiveEffectTypes and Model
 
 // Utils
 import { log } from "../utils/log.js"
@@ -32,10 +33,13 @@ import Referal from "../models/referral/referralModel.js"
 import {
   calculateGamecenterLevel
 } from "../controllers/user/userController.js"
+
+import { ActionTypes, ActionLogModel } from "../models/effects/actionLogModel.js"; // Import ActionLog model
+
 import UserCurrentInventory from "../models/user/userInventoryModel.js"
 
 const limiter = new Bottleneck({
-  minTime: 1000, // 1000ms = 1 request per second
+  minTime: 1000, // 1 request per second
   maxConcurrent: 1
 });
 
@@ -50,7 +54,7 @@ function normalizeAddress(rawAddress) {
       return address.toString({ bounceable: true, urlSafe: true });
   } catch (error) {
       console.error(`Error normalizing address ${rawAddress}:`, error.message);
-      return rawAddress; // Return original if parsing fails
+      return rawAddress;
   }
 }
 
@@ -95,13 +99,12 @@ const calculatePeriodProfits = (
     const config = profitConfig[key]
     let profitPerSecondBase
     if (config.type === "hourly") {
-      profitPerSecondBase = baseParameters[config.baseValueKey] / 3600 // Assuming hourly profit still needs /3600 if tick is in seconds
+      profitPerSecondBase = baseParameters[config.baseValueKey] / 3600
     } else if (config.type === "per_minute") {
       profitPerSecondBase = baseParameters[config.baseValueKey] / 60
     } else if (config.type === "progressive") {
       profitPerSecondBase = baseParameters[config.baseValueKey] / (baseParameters[config.baseDurationKey] * 60)
     } else {
-      // Default to per second if type is not specified, or explicitly 'per_second' could be added if needed
       profitPerSecondBase = baseParameters[config.baseValueKey]
     }
     let effectIncrease = processEffects?.[config.effectIncreaseKey] || 0
@@ -127,21 +130,16 @@ const applyUserParameterUpdates = async (
   })
   Object.keys(periodProfits).forEach((key) => {
     if (key === "energy") {
-      // Energy is capped by energy_capacity
-      console.log(periodProfits)
       userParameters[key] = Math.min(
         userParameters.energy_capacity,
         userParameters[key] + periodProfits[key]
       )
     } else if (key === "mood" || key === "hungry") {
-      console.log(`PERIOD PROFIT`, key, userParameters[key], periodProfits[key])
-      // Mood and hungry are capped at 100
       userParameters[key] = Math.min(
         100,
         userParameters[key] + periodProfits[key]
       )
     } else if (userParameters[key] !== undefined) {
-      // For other parameters (if any in future), no cap or handle differently if needed
       userParameters[key] = userParameters[key] + periodProfits[key]
     }
   })
@@ -154,7 +152,20 @@ const applyUserParameterUpdates = async (
   await userParameters.save()
 }
 
-// --- Core Process Duration Handler (more modular) ---
+// Helper function to check for active neko boost
+const getNekoBoostMultiplier = async (userId) => {
+  const activeNekoBoost = await ActiveEffect.findOne({
+    user_id: userId,
+    type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
+    valid_until: { $gt: new Date() },
+  });
+
+  if (!activeNekoBoost) return 1;
+  const boostPercentage = getBoostPercentageFromType(activeNekoBoost.type);
+  return 1 + (boostPercentage / 100);
+};
+
+// --- Core Process Duration Handler ---
 const processDurationHandler = async (
   process,
   userParameters,
@@ -165,7 +176,6 @@ const processDurationHandler = async (
     durationDecreaseKey,
     costConfig,
     profitConfig,
-    rewardCalculation,
     finishConditionCheck,
     updateUserParamsOnTick,
     onProcessCompletion,
@@ -221,8 +231,6 @@ const processDurationHandler = async (
       profitConfig
     )
 
-    console.log(periodCosts)
-
     const canContinue = Object.keys(periodCosts).every(
       (key) => Math.floor(userParameters[key]) >= periodCosts[key]
     )
@@ -243,7 +251,7 @@ const processDurationHandler = async (
           periodProfits,
           baseParameters,
           diffSeconds
-        ) // Pass diffSeconds if needed for tick logic
+        )
       }
 
       if (
@@ -256,7 +264,7 @@ const processDurationHandler = async (
         )
       ) {
         if (onProcessCompletion) {
-          await onProcessCompletion(process, userParameters, baseParameters) // Reward calc inside completion now
+          await onProcessCompletion(process, userParameters, baseParameters)
         }
         await log("info", `${processType} process finished`, {
           userId: userParameters.id,
@@ -284,7 +292,7 @@ const processDurationHandler = async (
             mood: userParameters.mood,
           },
         }
-      ) // Enhanced logging with resource context
+      )
       await gameProcess.deleteOne({ _id: process._id })
     }
     await userParameters.save()
@@ -363,16 +371,14 @@ const genericProcessScheduler = (processType, processConfig) => {
     }
   )
 }
-
 // --- Process Configurations ---
 const workProcessConfig = {
   processType: "work",
-  cronSchedule: "*/10 * * * * * *",
+  cronSchedule: "*/10 * * * * *",
   Model: Work,
   durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ work_id: process.type_id }),
   durationDecreaseKey: "duration_decrease",
-  rewardIncreaseKey: "reward_increase",
   costConfig: {
     mood: {
       type: "per_minute",
@@ -390,27 +396,31 @@ const workProcessConfig = {
       baseDurationKey: "duration",
     },
   },
-  rewardCalculation: (
-    work,
-    rewardIncreaseHourly,
-    actualWorkDuration,
-    baseWorkDuration
-  ) => {
-    //Example still in config for reference, but moved to onProcessCompletion below
-    return (
-      ((work.coins_in_hour + rewardIncreaseHourly) / 3600) * baseWorkDuration
-    )
-  },
   onProcessCompletion: async (process, userParameters, baseParameters) => {
-    const rewardIncreaseHourly = process.effects?.reward_increase || 0
-    const coinsReward =
-      ((baseParameters.coins_in_hour + rewardIncreaseHourly) / 3600) *
-      (baseParameters.duration * 60) //Use baseDuration for reward
-    await recalcValuesByParameters(userParameters, { coinsReward }) // REMOVED
-    await upUserExperience(userParameters.id, baseParameters.experience_reward)
+    const nekoBoostMultiplier = await getNekoBoostMultiplier(userParameters.id);
+    const baseCoinsReward = ((baseParameters.coins_in_hour / 3600) * (baseParameters.duration * 60));
+    const coinsReward = baseCoinsReward * nekoBoostMultiplier;
+    await recalcValuesByParameters(userParameters, { coinsReward });
+    await upUserExperience(userParameters.id, baseParameters.experience_reward);
+    const activeNekoBoost = await ActiveEffect.findOne({
+      user_id: userParameters.id,
+      type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
+      valid_until: { $gt: new Date() },
+    });
+    const triggeredByUser = activeNekoBoost ? await User.findOne({ id: activeNekoBoost.triggered_by }, { "shelf.neko": 1 }) : null;
+    const boostPercentage = activeNekoBoost ? getBoostPercentageFromType(activeNekoBoost.type) : 0;
+    await log("info", `Work process completed with neko boost`, {
+      userId: userParameters.id,
+      baseCoinsReward,
+      coinsReward,
+      nekoBoostMultiplier,
+      boostType: activeNekoBoost?.type || null,
+      boostPercentage,
+      triggeredBy: activeNekoBoost?.triggered_by || null,
+      triggeredByNekoId: triggeredByUser?.shelf?.neko || null,
+    });
   },
 }
-
 const trainingProcessConfig = {
   processType: "training",
   cronSchedule: "*/10 * * * * *",
