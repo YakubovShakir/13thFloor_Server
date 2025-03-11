@@ -27,7 +27,7 @@ export default [
     },
     duration: null,
     type: "personal-training",
-    link: "https://13floorgame.ru/images/boosts/personalTraining.png",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Boost%2FpersonalTraining.webp",
   },
   {
     boost_id: 4,
