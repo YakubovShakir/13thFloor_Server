@@ -217,7 +217,7 @@ const processDurationHandler = async (
       baseDurationMinutes,
       durationDecreasePercentage
     )
-
+    
     const now = moment()
     const lastUpdateTime = moment(
       process.user_parameters_updated_at || process.updatedAt
@@ -483,6 +483,7 @@ const sleepProcessConfig = {
       baseDurationKey: "sleep_duration",
     }, // Using per_minute as sleep duration is in minutes
   },
+  baseDurationKey: "sleep_duration",
   updateUserParamsOnTick: (
     userParameters,
     periodProfits,
