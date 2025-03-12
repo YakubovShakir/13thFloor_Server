@@ -763,6 +763,8 @@ export const getUserNekoState = async (userId) => {
     return {
       canClick,
       cooldownUntil,
+      incomeBoostPercentage: 
+        lastAction ? (lastAction?.metadata.activeEffectType === ActiveEffectTypes.BasicNekoBoost ? 5 : 10) : 0
     };
   } catch (error) {
     console.error(`Error fetching neko state for user ${userId}:`, error);
