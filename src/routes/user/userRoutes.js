@@ -186,7 +186,7 @@ const itemsPoolRaw = [
     chance_daily: 3,
   },
   {
-    id: 8,
+    id: 10000,
     type: "coins",
     chance: 1,
     amount: 10000,
@@ -314,8 +314,6 @@ router.get("/:id/gacha/items", async (req, res) => {
     return res.status(404).send()
   }
 
-  const userInventory = await UserCurrentInventory.findOne({ user_id: userId })
-
   for (const item of itemsPoolRaw) {
     let fullItem
     switch (item.type) {
@@ -422,14 +420,8 @@ router.get("/:id/gacha/spin", async (req, res) => {
     const userInventory = await UserCurrentInventory.findOne({
       user_id: userId,
     })
-    const ownedClothesIds = userInventory.clothes.map((item) => item.id)
-    const pool = itemsPoolRaw.filter((item) => {
-      if (item.type === "clothes") {
-        return !ownedClothesIds.includes(item.id)
-      } else {
-        return true
-      }
-    })
+    
+    const pool = itemsPoolRaw
 
     for (const item of pool) {
       cumulativeWeight += item[chanceField]
