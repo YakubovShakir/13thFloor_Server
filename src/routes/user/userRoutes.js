@@ -34,8 +34,16 @@ import { upUserBalance } from "../../utils/userParameters/upUserBalance.js"
 import UserCurrentInventory from "../../models/user/userInventoryModel.js"
 import UserBoost from "../../models/user/userBoostsModel.js"
 import UserCheckInsModel from "../../models/user/userCheckInsModel.js"
-import { ActiveEffectsModel, ActiveEffectTypes } from "../../models/effects/activeEffectsModel.js"
-import { ActionLogModel, ActionTypes } from "../../models/effects/actionLogModel.js"
+import {
+  ActiveEffectsModel,
+  ActiveEffectTypes,
+} from "../../models/effects/activeEffectsModel.js"
+import {
+  ActionLogModel,
+  ActionTypes,
+} from "../../models/effects/actionLogModel.js"
+import moment from "moment-timezone"
+import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
 
 const router = express.Router()
 router.get("/user/:id", getUser)
@@ -103,6 +111,18 @@ const itemsPoolRaw = [
     type: "clothes",
     chance_premium: 15,
     chance_daily: 20,
+    prize_equivalent: {
+      type: "coins",
+      amount: 100
+    }
+    // prize_equivalent: {
+    //   type: "boost",
+    //   amount: 100
+    // }
+    // prize_equivalent: {
+    //   type: "spin",
+    //   amount: 100
+    // }
   },
   {
     id: 3,
@@ -278,7 +298,7 @@ const itemsPoolRaw = [
   },
   {
     id: 8,
-    type: "Shelf",
+    type: "shelf",
     chance_premium: 1,
     chance_daily: 3,
   },
@@ -328,15 +348,17 @@ router.get("/:id/gacha/items", async (req, res) => {
           name: item.name,
         }
         break
+      case "shelf":
+        const shelfItem = await ShelfItemModel.findOne({ id: item.id })
+          fullItem = {
+            id: item.id,
+            type: item.type,
+            image: shelfItem.link,
+            name: shelfItem.name,
+          }
+          break
       default:
         return res.status(400).send()
-    }
-
-    if (
-      fullItem.type === "clothes" &&
-      userInventory.clothes.find((item) => item.id === fullItem.id)
-    ) {
-      continue
     }
 
     result.push(fullItem)
@@ -401,15 +423,13 @@ router.get("/:id/gacha/spin", async (req, res) => {
       user_id: userId,
     })
     const ownedClothesIds = userInventory.clothes.map((item) => item.id)
-    const pool = itemsPoolRaw.filter(
-      (item) => {
-        if(item.type === 'clothes') {
-          return !ownedClothesIds.includes(item.id)
-        } else {
-          return true
-        }
+    const pool = itemsPoolRaw.filter((item) => {
+      if (item.type === "clothes") {
+        return !ownedClothesIds.includes(item.id)
+      } else {
+        return true
       }
-    )
+    })
 
     for (const item of pool) {
       cumulativeWeight += item[chanceField]
@@ -470,6 +490,19 @@ router.get("/:id/gacha/spin", async (req, res) => {
         }
         await upUserBalance(userId, wonItem.amount)
         break
+      case "shelf":
+        const item = await ShelfItemModel.findOne({ id: selectedItem.id })
+        wonItem = {
+          id: selectedItem.id,
+          type: selectedItem.type,
+          image: item.link,
+          name: item.name,
+        }
+        await UserCurrentInventory.updateOne(
+          { user_id: userId },
+          { $addToSet: { shelf: { id: wonItem.id } } }
+        )
+        break
       default:
         return res.status(400).json({ error: "Invalid item type" })
     }
@@ -486,224 +519,269 @@ router.get("/:id/gacha/spin", async (req, res) => {
 })
 
 const dailyRewardsPool = [
-  { day: 1, type: "coins", amount: 50, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins1.webp", name: { ru: "50 Монет", en: "50 Coins" } },
-  { day: 2, type: "coins", amount: 100, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins2.webp", name: { ru: "100 Монет", en: "100 Coins" } },
-  { day: 3, type: "coins", amount: 300, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp", name: { ru: "300 Монет", en: "300 Coins" } },
+  {
+    day: 1,
+    type: "coins",
+    amount: 50,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins1.webp",
+    name: { ru: "50 Монет", en: "50 Coins" },
+  },
+  {
+    day: 2,
+    type: "coins",
+    amount: 100,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins2.webp",
+    name: { ru: "100 Монет", en: "100 Coins" },
+  },
+  {
+    day: 3,
+    type: "coins",
+    amount: 300,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp",
+    name: { ru: "300 Монет", en: "300 Coins" },
+  },
   { day: 4, type: "boost", id: 2, name: { en: "Boost" } },
-  { day: 5, type: "coins", amount: 1500, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins4.webp", name: { ru: "1500 Монет", en: "1500 Coins" } },
+  {
+    day: 5,
+    type: "coins",
+    amount: 1500,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins4.webp",
+    name: { ru: "1500 Монет", en: "1500 Coins" },
+  },
   { day: 6, type: "boost", id: 7, name: { en: "Boost" } },
-  { day: 7, type: "coins", amount: 5000, image: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp", name: { ru: "5000 Монет", en: "5000 Coins" } },
- 
-];
+  {
+    day: 7,
+    type: "coins",
+    amount: 5000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "5000 Монет", en: "5000 Coins" },
+  },
+]
 
-router.get("/:id/daily/check-in", async (req, res) => {
+// Helper function to get the start of the day in the server's local timezone
+const getStartOfDay = () => {
+  const now = moment() // Uses server's local timezone
+  const startOfDay = now.startOf("day") // 00:00:00 in local timezone
+  return startOfDay
+}
+
+// Helper function to create a date that MongoDB will store as YYYY-MM-DD 00:00:00.000+00:00
+const createMongoDate = (momentDate) => {
+  // Get the year, month, and day in the server's local timezone
+  const year = momentDate.year()
+  const month = momentDate.month() // 0-11
+  const day = momentDate.date()
+
+  // Create a new Date object in UTC with the same year, month, and day
+  // This ensures MongoDB stores it as YYYY-MM-DD 00:00:00.000+00:00
+  const mongoDate = new Date(Date.UTC(year, month, day, 0, 0, 0, 0))
+  return mongoDate
+}
+
+// Claim Reward Endpoint
+router.get("/:id/daily/claim", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const userId = parseInt(req.params.id)
+    // Get the start of the day in the server's local timezone
+    const todayMoment = getStartOfDay()
+    const today = todayMoment.toDate()
 
-    const lastCheckIn = await UserCheckInsModel.findOne(
+    // Check if user has claimed today
+    const lastClaim = await UserCheckInsModel.findOne(
       { user_id: userId, is_claimed: true },
       { check_in_date: 1, streak: 1 },
       { sort: { check_in_date: -1 } }
-    );
+    )
 
-    if (lastCheckIn && lastCheckIn.check_in_date >= today) {
-      return res.status(403).json({ error: "Already checked in today" });
+    // Log for debugging
+    console.log("Server timezone offset (minutes):", moment().utcOffset())
+    console.log("Today (local):", todayMoment.format())
+    console.log(
+      "Last claim date:",
+      lastClaim ? lastClaim.check_in_date : "None"
+    )
+
+    if (
+      lastClaim &&
+      moment(lastClaim.check_in_date).isSameOrAfter(today, "day")
+    ) {
+      return res.status(403).json({ error: "Reward already claimed today" })
     }
 
-    let streak = 1;
-    if (lastCheckIn) {
-      const lastDate = new Date(lastCheckIn.check_in_date);
-      lastDate.setHours(0, 0, 0, 0);
-      const yesterday = new Date(today);
-      yesterday.setDate(today.getDate() - 1);
+    // Calculate streak
+    let streak = 1
+    if (lastClaim) {
+      const lastDate = moment(lastClaim.check_in_date).startOf("day")
+      const yesterday = moment(today).subtract(1, "day").startOf("day")
 
-      if (lastDate.getTime() === yesterday.getTime()) {
-        streak = lastCheckIn.streak + 1;
+      if (lastDate.isSame(yesterday, "day")) {
+        streak = lastClaim.streak + 1
       }
     }
+    if (streak > 14) streak = 1 // Reset after 14 days
 
-    if (streak > 14) streak = 1; // Reset to 1 after 14 days
-
-    const checkIn = new UserCheckInsModel({
-      user_id: userId,
-      check_in_date: today,
-      streak,
-      last_check_in: lastCheckIn ? lastCheckIn.check_in_date : null,
-    });
-    await checkIn.save();
-
-    const reward = dailyRewardsPool.find((item) => item.day === streak);
-
-    res.status(200).json({ streak, canClaim: true, nextReward: reward });
-  } catch (error) {
-    await log("error", "error in daily check-in", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-router.get("/:id/daily/claim", async (req, res) => {
-  try {
-    const userId = parseInt(req.params.id);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const checkIn = await UserCheckInsModel.findOne({
-      user_id: userId,
-      check_in_date: { $gte: today },
-      is_claimed: false,
-    });
-
-    if (!checkIn) {
-      return res.status(403).json({ error: "No unclaimed check-in available" });
-    }
-
-    const selectedItem = dailyRewardsPool.find((item) => item.day === checkIn.streak);
+    // Find reward for the current streak
+    const selectedItem = dailyRewardsPool.find((item) => item.day === streak)
     if (!selectedItem) {
-      return res.status(500).json({ error: "No reward defined for this day" });
+      return res.status(500).json({ error: "No reward defined for this day" })
     }
 
-    let wonItem;
-    const user = await User.findOne({ id: userId });
+    const user = await User.findOne({ id: userId })
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "User not found" })
     }
 
+    let wonItem
     switch (selectedItem.type) {
       case "coins":
-        wonItem = {
-          id: selectedItem.id,
-          type: selectedItem.type,
-          image: selectedItem.image,
-          name: selectedItem.name,
-          amount: selectedItem.amount,
-        };
-        await upUserBalance(userId, wonItem.amount);
-        break;
+        wonItem = { ...selectedItem }
+        await upUserBalance(userId, wonItem.amount)
+        break
       case "boost":
-        const boost = await Boost.findOne({ boost_id: selectedItem.id });
+        const boost = await Boost.findOne({ boost_id: selectedItem.id })
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
           image: boost.link,
           name: boost.name,
-        };
-        await new UserBoost({ id: userId, boost_id: wonItem.id }).save();
-        break;
+        }
+        await new UserBoost({ id: userId, boost_id: wonItem.id }).save()
+        break
       case "clothes":
-        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id });
+        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id })
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
-          image: user.personage.gender === "male" ? clothes.male_icon : clothes.female_icon,
+          image:
+            user.personage.gender === "male"
+              ? clothes.male_icon
+              : clothes.female_icon,
           name: clothes.name,
-        };
+        }
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { clothes: { id: wonItem.id } } }
-        );
-        break;
+        )
+        break
+      case "shelf":
+        const item = await ShelfItemModel.findOne({ id: selectedItem.id })
+        wonItem = {
+          id: selectedItem.id,
+          type: selectedItem.type,
+          image: item.link,
+          name: item.name,
+        }
+        await UserCurrentInventory.updateOne(
+          { user_id: userId },
+          { $addToSet: { shelf: { id: wonItem.id } } }
+        )
+        break
       default:
-        return res.status(400).json({ error: "Invalid item type" });
+        return res.status(400).json({ error: "Invalid item type" })
     }
 
-    await UserCheckInsModel.updateOne({ _id: checkIn._id }, { $set: { is_claimed: true } });
+    // Create a date that MongoDB will store as YYYY-MM-DD 00:00:00.000+00:00
+    const mongoDate = createMongoDate(todayMoment)
 
-    res.status(200).json({ wonItem, streak: checkIn.streak });
+    // Log the date we're saving
+    console.log("Date to save in MongoDB:", mongoDate)
+
+    // Record the claim
+    const claim = new UserCheckInsModel({
+      user_id: userId,
+      check_in_date: mongoDate,
+      streak,
+      is_claimed: true,
+      last_check_in: lastClaim ? lastClaim.check_in_date : null,
+    })
+    await claim.save()
+
+    res.status(200).json({ wonItem, streak })
   } catch (error) {
-    await log("error", "error in claiming daily reward", error);
-    res.status(500).json({ error: "Internal server error" });
+    await log("error", "error in claiming daily reward", error)
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
+// Status Endpoint
 router.get("/:id/daily/status", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const userId = parseInt(req.params.id)
+    // Get the start of the day in the server's local timezone
+    const todayMoment = getStartOfDay()
+    const today = todayMoment.toDate()
 
-    const lastCheckIn = await UserCheckInsModel.findOne(
+    const lastClaim = await UserCheckInsModel.findOne(
       { user_id: userId },
-      { check_in_date: 1, streak: 1, is_claimed: 1 },
+      { check_in_date: 1, streak: 1 },
       { sort: { check_in_date: -1 } }
-    );
+    )
 
-    const user = await User.findOne({ id: userId });
+    const user = await User.findOne({ id: userId })
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "User not found" })
     }
 
-    // Fetch metadata for all items in dailyRewardsPool
-    const resolvedRewards = [];
-    for (const item of dailyRewardsPool) {
-      let fullItem;
-      switch (item.type) {
-        case "boost":
-          const boost = await Boost.findOne({ boost_id: item.id });
-          fullItem = {
-            day: item.day,
-            id: item.id,
-            type: item.type,
-            image: boost?.link || "path/to/default-icon.png",
-            name: boost?.name || { en: "Boost" }, // Fallback if boost not found
-          };
-          break;
-        case "clothes":
-          const clothes = await Clothing.findOne({ clothing_id: item.id });
-          fullItem = {
-            day: item.day,
-            id: item.id,
-            type: item.type,
-            image:
-              user.personage.gender === "male"
-                ? clothes?.male_icon
-                : clothes?.female_icon || "path/to/default-icon.png",
-            name: clothes?.name || { en: "Clothes" }, // Fallback if clothes not found
-          };
-          break;
-        case "coins":
-          fullItem = {
-            day: item.day,
-            id: item.id,
-            type: item.type,
-            image: item.image,
-            name: item.name,
-            amount: item.amount,
-          };
-          break;
-        default:
-          continue; // Skip invalid items
-      }
-      resolvedRewards.push(fullItem);
-    }
+    // Resolve rewards metadata
+    const resolvedRewards = await Promise.all(
+      dailyRewardsPool.map(async (item) => {
+        switch (item.type) {
+          case "boost":
+            const boost = await Boost.findOne({ boost_id: item.id })
+            return {
+              ...item,
+              image: boost?.link || "default.png",
+              name: boost?.name || item.name,
+            }
+          case "clothes":
+            const clothes = await Clothing.findOne({ clothing_id: item.id })
+            return {
+              ...item,
+              image:
+                user.personage.gender === "male"
+                  ? clothes?.male_icon
+                  : clothes?.female_icon || "default.png",
+              name: clothes?.name || item.name,
+            }
+          case "coins":
+            return { ...item }
+          default:
+            return null
+        }
+      })
+    ).then((results) => results.filter(Boolean))
 
-    let streak = 0;
-    let canClaim = true;
-    let hasCheckedInToday = false;
-    let nextReward = resolvedRewards[0];
+    let streak = 0
+    let canClaim = true
+    let nextReward = resolvedRewards[0]
 
-    if (lastCheckIn) {
-      const isToday = lastCheckIn.check_in_date >= today;
-      hasCheckedInToday = isToday;
-      canClaim = isToday && !lastCheckIn.is_claimed;
-      streak = lastCheckIn.streak;
-      const nextStreak = hasCheckedInToday ? streak : streak + 1;
-      nextReward = resolvedRewards.find((item) => item.day === (nextStreak > 14 ? 1 : nextStreak));
+    if (lastClaim) {
+      const lastClaimMoment = moment(lastClaim.check_in_date)
+      const isToday = lastClaimMoment.isSame(today, "day")
+      streak = lastClaim.streak
+      canClaim = !isToday
+      const nextStreak = isToday ? streak : streak + 1
+      nextReward = resolvedRewards.find(
+        (item) => item.day === (nextStreak > 14 ? 1 : nextStreak)
+      )
     }
 
     res.status(200).json({
       streak,
       canClaim,
-      hasCheckedInToday,
       nextReward,
-      rewards: resolvedRewards, // Fully resolved items with metadata
-    });
+      rewards: resolvedRewards,
+    })
   } catch (error) {
-    await log("error", "error in fetching daily status", error);
-    res.status(500).json({ error: "Internal server error" });
+    await log("error", "error in fetching daily status", error)
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
 router.get("/time", (req, res) =>
   res.status(200).json({ server_time: new Date() })
@@ -713,22 +791,22 @@ router.get("/time", (req, res) =>
 router.get("/leaderboard", getLeaderboard)
 
 // Constants
-const COOLDOWN_HOURS = 24;
-const COOLDOWN_MS = COOLDOWN_HOURS * 60 * 60 * 1000; // 24 hours in milliseconds
-const EFFECT_DURATION_MS = 60 * 60 * 1000; // 1 hour in milliseconds
+const COOLDOWN_HOURS = 24
+const COOLDOWN_MS = COOLDOWN_HOURS * 60 * 60 * 1000 // 24 hours in milliseconds
+const EFFECT_DURATION_MS = 60 * 60 * 1000 // 1 hour in milliseconds
 
 // Helper function to check if cooldown has expired
 const isCooldownExpired = (lastActionTimestamp) => {
-  const now = new Date();
-  return (now - lastActionTimestamp) >= COOLDOWN_MS;
-};
+  const now = new Date()
+  return now - lastActionTimestamp >= COOLDOWN_MS
+}
 
 // Helper function to get boost percentage from effect type
 //! add checks!!!!!!!
 export const getActiveEffectTypeByNekoId = (id) => {
-  if(id === 8) {
+  if (id === 8) {
     return ActiveEffectTypes.BasicNekoBoost
-  } else if(id > 8) {
+  } else if (id > 8) {
     return ActiveEffectTypes.NftNekoBoost
   }
 
@@ -737,13 +815,13 @@ export const getActiveEffectTypeByNekoId = (id) => {
 export const getBoostPercentageFromType = (type) => {
   switch (type) {
     case ActiveEffectTypes.BasicNekoBoost:
-      return 5;
+      return 5
     case ActiveEffectTypes.NftNekoBoost:
-      return 10;
+      return 10
     default:
-      return 0;
+      return 0
   }
-};
+}
 
 // Service functions
 
@@ -754,23 +832,29 @@ export const getUserNekoState = async (userId) => {
       { triggered_by: userId, action_type: ActionTypes.NekoInteract },
       null,
       { sort: { action_timestamp: -1 } }
-    );
-    const canClick = !lastAction || isCooldownExpired(lastAction.action_timestamp);
-    const cooldownUntil = lastAction && !canClick
-      ? new Date(lastAction.action_timestamp.getTime() + COOLDOWN_MS)
-      : null;
+    )
+    const canClick =
+      !lastAction || isCooldownExpired(lastAction.action_timestamp)
+    const cooldownUntil =
+      lastAction && !canClick
+        ? new Date(lastAction.action_timestamp.getTime() + COOLDOWN_MS)
+        : null
 
     return {
       canClick,
       cooldownUntil,
-      incomeBoostPercentage: 
-        lastAction ? (lastAction?.metadata.activeEffectType === ActiveEffectTypes.BasicNekoBoost ? 5 : 10) : 0
-    };
+      incomeBoostPercentage: lastAction
+        ? lastAction?.metadata.activeEffectType ===
+          ActiveEffectTypes.BasicNekoBoost
+          ? 5
+          : 10
+        : 0,
+    }
   } catch (error) {
-    console.error(`Error fetching neko state for user ${userId}:`, error);
-    throw error;
+    console.error(`Error fetching neko state for user ${userId}:`, error)
+    throw error
   }
-};
+}
 
 // Check interaction state (ForeignHome page)
 export const getNekoInteractionState = async (userId, targetUserId) => {
@@ -780,18 +864,20 @@ export const getNekoInteractionState = async (userId, targetUserId) => {
       { triggered_by: userId, action_type: ActionTypes.NekoInteract },
       null,
       { sort: { action_timestamp: -1 } }
-    );
-    const userCanClick = !lastUserAction || isCooldownExpired(lastUserAction.action_timestamp);
-    const userCooldownUntil = lastUserAction && !userCanClick
-      ? new Date(lastUserAction.action_timestamp.getTime() + COOLDOWN_MS)
-      : null;
+    )
+    const userCanClick =
+      !lastUserAction || isCooldownExpired(lastUserAction.action_timestamp)
+    const userCooldownUntil =
+      lastUserAction && !userCanClick
+        ? new Date(lastUserAction.action_timestamp.getTime() + COOLDOWN_MS)
+        : null
 
     if (!userCanClick) {
       return {
         canClick: false,
         cooldownUntil: userCooldownUntil,
-        whoseCooldown: 'user',
-      };
+        whoseCooldown: "user",
+      }
     }
 
     // Check target user's neko cooldown
@@ -799,57 +885,72 @@ export const getNekoInteractionState = async (userId, targetUserId) => {
       { user_id: targetUserId, action_type: ActionTypes.NekoInteract },
       null,
       { sort: { action_timestamp: -1 } }
-    );
-    const targetCanBeClicked = !lastTargetAction || isCooldownExpired(lastTargetAction.action_timestamp);
-    const targetCooldownUntil = lastTargetAction && !targetCanBeClicked
-      ? new Date(lastTargetAction.action_timestamp.getTime() + COOLDOWN_MS)
-      : null;
+    )
+    const targetCanBeClicked =
+      !lastTargetAction || isCooldownExpired(lastTargetAction.action_timestamp)
+    const targetCooldownUntil =
+      lastTargetAction && !targetCanBeClicked
+        ? new Date(lastTargetAction.action_timestamp.getTime() + COOLDOWN_MS)
+        : null
 
     return {
       canClick: targetCanBeClicked,
       cooldownUntil: targetCooldownUntil,
-      whoseCooldown: targetCanBeClicked ? null : 'target',
-    };
+      whoseCooldown: targetCanBeClicked ? null : "target",
+    }
   } catch (error) {
-    console.error(`Error fetching interaction state for user ${userId} on target ${targetUserId}:`, error);
-    throw error;
+    console.error(
+      `Error fetching interaction state for user ${userId} on target ${targetUserId}:`,
+      error
+    )
+    throw error
   }
-};
+}
 
 export const interactWithNeko = async (userId, targetUserId) => {
   try {
-    if(userId === targetUserId || !targetUserId) {
-      throw new Error("Cannot interact with yourself or nobody");
+    if (userId === targetUserId || !targetUserId) {
+      throw new Error("Cannot interact with yourself or nobody")
     }
     // Check both cooldowns
-    const userState = await getUserNekoState(userId);
-    const interactionState = await getNekoInteractionState(userId, targetUserId);
+    const userState = await getUserNekoState(userId)
+    const interactionState = await getNekoInteractionState(userId, targetUserId)
     if (!userState.canClick) {
-      throw new Error("You are still on cooldown from clicking a neko");
+      throw new Error("You are still on cooldown from clicking a neko")
     }
     if (!interactionState.canClick) {
-      throw new Error("This user's neko is still on cooldown from being clicked");
+      throw new Error(
+        "This user's neko is still on cooldown from being clicked"
+      )
     }
 
     // Fetch the target user's neko
-    const targetUser = await User.findOne({ id: targetUserId }, { "shelf.neko": 1 });
+    const targetUser = await User.findOne(
+      { id: targetUserId },
+      { "shelf.neko": 1 }
+    )
     if (!targetUser) {
-      throw new Error("Target user not found");
+      throw new Error("Target user not found")
     }
-    const nekoId = targetUser?.shelf?.neko || null;
+    const nekoId = targetUser?.shelf?.neko || null
     const activeEffectType = getActiveEffectTypeByNekoId(nekoId)
-    const boostPercentage = getBoostPercentageFromType(activeEffectType);
+    const boostPercentage = getBoostPercentageFromType(activeEffectType)
 
     // Log the interaction
-    const now = new Date();
+    const now = new Date()
     const newAction = new ActionLogModel({
       user_id: targetUserId, // Target whose neko was clicked
       action_type: ActionTypes.NekoInteract,
       action_timestamp: now,
-      metadata: { nekoId, boostPercentage, activeEffectType, clickedBy: userId },
+      metadata: {
+        nekoId,
+        boostPercentage,
+        activeEffectType,
+        clickedBy: userId,
+      },
       triggered_by: userId,
-    });
-    await newAction.save();
+    })
+    await newAction.save()
 
     // Create active effect for users the clicking user
     const userEffect = new ActiveEffectsModel({
@@ -857,8 +958,8 @@ export const interactWithNeko = async (userId, targetUserId) => {
       type: activeEffectType,
       valid_until: new Date(now.getTime() + EFFECT_DURATION_MS),
       triggered_by: userId,
-    });
-    await userEffect.save();
+    })
+    await userEffect.save()
 
     await log("info", "Neko interacted", {
       userId,
@@ -867,14 +968,17 @@ export const interactWithNeko = async (userId, targetUserId) => {
       boostPercentage,
       boostType: activeEffectType,
       cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
-    });
+    })
 
-    return { cooldownUntil: new Date(now.getTime() + COOLDOWN_MS) };
+    return { cooldownUntil: new Date(now.getTime() + COOLDOWN_MS) }
   } catch (error) {
-    console.error(`Error interacting with neko for user ${userId} on target ${targetUserId}:`, error);
-    throw error;
+    console.error(
+      `Error interacting with neko for user ${userId} on target ${targetUserId}:`,
+      error
+    )
+    throw error
   }
-};
+}
 
 // Generic function to log any action
 export const logAction = async (userId, actionType, metadata = {}) => {
@@ -884,56 +988,68 @@ export const logAction = async (userId, actionType, metadata = {}) => {
       action_type: actionType,
       action_timestamp: new Date(),
       metadata,
-    });
-    await action.save();
-    return action;
+    })
+    await action.save()
+    return action
   } catch (error) {
-    console.error(`Error logging action ${actionType} for user ${userId}:`, error);
-    throw error;
+    console.error(
+      `Error logging action ${actionType} for user ${userId}:`,
+      error
+    )
+    throw error
   }
-};
+}
 
 // Route for Home page: Get user's clicking cooldown
-router.get('/neko/user-state/:userId', async (req, res) => {
+router.get("/neko/user-state/:userId", async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId);
-    const state = await getUserNekoState(userId);
-    res.json(state);
+    const userId = parseInt(req.params.userId)
+    const state = await getUserNekoState(userId)
+    res.json(state)
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch user neko state' });
+    res.status(500).json({ error: "Failed to fetch user neko state" })
   }
-});
+})
 
 // Route for ForeignHome page: Get interaction state
-router.post('/neko/interaction-state', async (req, res) => {
+router.post("/neko/interaction-state", async (req, res) => {
   try {
-    const { userId, targetUserId } = req.body;
+    const { userId, targetUserId } = req.body
     if (!userId || !targetUserId) {
-      return res.status(400).json({ error: 'Both userId and targetUserId are required' });
+      return res
+        .status(400)
+        .json({ error: "Both userId and targetUserId are required" })
     }
-    const parsedUserId = parseInt(userId);
-    const parsedTargetUserId = parseInt(targetUserId);
-    const state = await getNekoInteractionState(parsedUserId, parsedTargetUserId);
-    res.json(state);
+    const parsedUserId = parseInt(userId)
+    const parsedTargetUserId = parseInt(targetUserId)
+    const state = await getNekoInteractionState(
+      parsedUserId,
+      parsedTargetUserId
+    )
+    res.json(state)
   } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch neko interaction state' });
+    res.status(500).json({ error: "Failed to fetch neko interaction state" })
   }
-});
+})
 
 // Route to interact with a target user's neko
-router.post('/neko/interact', async (req, res) => {
+router.post("/neko/interact", async (req, res) => {
   try {
-    const { userId, targetUserId } = req.body;
+    const { userId, targetUserId } = req.body
     if (!userId || !targetUserId) {
-      return res.status(400).json({ error: 'Both userId and targetUserId are required' });
+      return res
+        .status(400)
+        .json({ error: "Both userId and targetUserId are required" })
     }
-    const parsedUserId = parseInt(userId);
-    const parsedTargetUserId = parseInt(targetUserId);
-    const result = await interactWithNeko(parsedUserId, parsedTargetUserId);
-    res.json(result);
+    const parsedUserId = parseInt(userId)
+    const parsedTargetUserId = parseInt(targetUserId)
+    const result = await interactWithNeko(parsedUserId, parsedTargetUserId)
+    res.json(result)
   } catch (error) {
-    res.status(400).json({ error: error.message || 'Failed to interact with neko' });
+    res
+      .status(400)
+      .json({ error: error.message || "Failed to interact with neko" })
   }
-});
+})
 
 export default router
