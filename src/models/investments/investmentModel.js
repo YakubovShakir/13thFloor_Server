@@ -14,6 +14,8 @@ const schema = new mongoose.Schema({
   price: { type: Number, required: true },
   respect_reward: { type: Number, default: 0 },
   experience_reward: { type: Number, default: 0 },
+  skill_id_required: { type: Number, default: null },
+  level_required: { type: Number, default: null }
 })
 
 const Investments = mongoose.model("investments", schema)

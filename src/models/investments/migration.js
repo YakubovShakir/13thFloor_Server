@@ -11,6 +11,8 @@ export default [
       ru: "Игровой центр",
       en: "Game Center"
     },
+    skill_id_required: 1,
+    level_required: 1
   },
   {
     id: 2,
