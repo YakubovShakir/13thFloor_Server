@@ -190,60 +190,88 @@ const processDurationHandler = async (
     onProcessCompletion,
     baseDurationKey = "duration",
     processType,
-  } = processConfig
+  } = processConfig;
 
   try {
-    let durationDecreasePercentage = 0
+    let durationDecreasePercentage = 0;
+    let combinedEffects = {};
 
-    if (
-      canApplyConstantEffects(userParameters) &&
-      process.effects &&
-      process.type !== "boost"
-    ) {
-      await log("info", `User can use perks`, {
-        userId: userParameters.id,
-        processType: processType,
-        processId: process._id,
-      })
-      durationDecreasePercentage = process.effects[durationDecreaseKey] || 0
+    // Fetch user inventory and worn clothing
+    const userInventory = await UserCurrentInventory.findOne({ user_id: process.id });
+    const user = await User.findOne({ id: process.id }, { "personage.clothes": 1 });
+
+    // Aggregate effects from shelf items
+    if (userInventory?.shelf?.length) {
+      const shelfItems = await ShelfItemModel.find({ id: { $in: userInventory.shelf.map(s => s.id) } });
+      shelfItems.forEach(item => {
+        if (item.effects) {
+          Object.keys(item.effects).forEach(key => {
+            combinedEffects[key] = combinedEffects[key] || [];
+            combinedEffects[key].push(...(item.effects[key] || []));
+          });
+        }
+      });
+    }
+
+    // Aggregate effects from worn clothing
+    if (user?.personage?.clothes?.length) {
+      const clothing = await Clothing.find({ clothing_id: { $in: user.personage.clothes } });
+      clothing.forEach(item => {
+        if (item.effects) {
+          Object.keys(item.effects).forEach(key => {
+            combinedEffects[key] = combinedEffects[key] || [];
+            combinedEffects[key].push(...(item.effects[key] || []));
+          });
+        }
+      });
+    }
+
+    // Include process-specific effects (e.g., from boosts)
+    if (process.effects && process.type !== "boost") {
+      Object.keys(process.effects).forEach(key => {
+        combinedEffects[key] = combinedEffects[key] || [];
+        combinedEffects[key].push(...(process.effects[key] || []));
+      });
+    }
+
+    // Calculate duration decrease (sum all relevant effects)
+    if (canApplyConstantEffects(userParameters)) {
+      durationDecreasePercentage = combinedEffects[durationDecreaseKey]?.reduce(
+        (sum, effect) => sum + (effect.value || 0), 0
+      ) || 0;
     }
 
     const baseDurationMinutes =
       baseDurationKey === "base_duration_in_seconds"
-        ? (process.target_duration_in_seconds || (process[baseDurationKey])) / 60
-        : baseParameters[baseDurationKey] || 1
-    console.log('@', baseDurationMinutes, process)
+        ? (process.target_duration_in_seconds || process[baseDurationKey]) / 60
+        : baseParameters[baseDurationKey] || 1;
     const actualDurationSeconds = calculateDuration(
       baseDurationMinutes,
       durationDecreasePercentage
-    )
-    
-    const now = moment()
-    const lastUpdateTime = moment(
-      process.user_parameters_updated_at || process.updatedAt
-    )
-    const diffSeconds = now.diff(lastUpdateTime, "seconds")
-    const processDurationSeconds = now.diff(
-      moment(process.createdAt),
-      "seconds"
-    )
+    );
 
+    const now = moment();
+    const lastUpdateTime = moment(process.user_parameters_updated_at || process.updatedAt);
+    const diffSeconds = now.diff(lastUpdateTime, "seconds");
+    const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
+
+    // Apply combined effects to costs and profits
     const periodCosts = calculatePeriodCosts(
       baseParameters,
-      process.effects,
+      combinedEffects,
       diffSeconds,
       costConfig
-    )
+    );
     const periodProfits = calculatePeriodProfits(
       baseParameters,
-      process.effects,
+      combinedEffects,
       diffSeconds,
       profitConfig
-    )
+    );
 
     const canContinue = Object.keys(periodCosts).every(
-      (key) => Math.floor(userParameters[key]) >= periodCosts[key]
-    )
+      key => Math.floor(userParameters[key]) >= periodCosts[key]
+    );
 
     if (canContinue) {
       if (process.type !== "boost") {
@@ -252,68 +280,54 @@ const processDurationHandler = async (
           periodCosts,
           periodProfits,
           process.type
-        )
+        );
       }
 
       if (updateUserParamsOnTick) {
-        updateUserParamsOnTick(
-          userParameters,
-          periodProfits,
-          baseParameters,
-          diffSeconds
-        )
+        updateUserParamsOnTick(userParameters, periodProfits, baseParameters, diffSeconds);
       }
 
       if (
         processDurationSeconds >= actualDurationSeconds ||
-        finishConditionCheck?.(
-          userParameters,
-          periodCosts,
-          baseParameters,
-          process
-        )
+        finishConditionCheck?.(userParameters, periodCosts, baseParameters, process)
       ) {
         if (onProcessCompletion) {
-          await onProcessCompletion(process, userParameters, baseParameters)
+          await onProcessCompletion(process, userParameters, baseParameters);
         }
         await log("info", `${processType} process finished`, {
           userId: userParameters.id,
-          processType: processType,
+          processType,
           processId: process._id,
-        })
-        await gameProcess.deleteOne({ _id: process._id })
-        return
+        });
+        await gameProcess.deleteOne({ _id: process._id });
+        return;
       }
 
-      process.user_parameters_updated_at = now.toDate()
-      await process.save()
+      process.user_parameters_updated_at = now.toDate();
+      await process.save();
     } else {
-      await log(
-        "info",
-        `${processType} process ended - insufficient resources`,
-        {
-          userId: userParameters.id,
-          processType: processType,
-          processId: process._id,
-          costs: periodCosts,
-          userResources: {
-            energy: userParameters.energy,
-            hungry: userParameters.hungry,
-            mood: userParameters.mood,
-          },
-        }
-      )
-      await gameProcess.deleteOne({ _id: process._id })
+      await log("info", `${processType} process ended - insufficient resources`, {
+        userId: userParameters.id,
+        processType,
+        processId: process._id,
+        costs: periodCosts,
+        userResources: {
+          energy: userParameters.energy,
+          hungry: userParameters.hungry,
+          mood: userParameters.mood,
+        },
+      });
+      await gameProcess.deleteOne({ _id: process._id });
     }
-    await userParameters.save()
+    await userParameters.save();
   } catch (error) {
     await log("error", `Error in ${processType} process duration handler`, {
       processId: process._id,
       error: error.message,
       stack: error.stack,
-    })
+    });
   }
-}
+};
 
 const customDurationProcessTypes = ["autoclaim", "investment_level_checks", "nft_scan"]
 

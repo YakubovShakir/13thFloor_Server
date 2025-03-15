@@ -23,7 +23,7 @@ import {
   saveProfileData,
 } from "../../controllers/user/userController.js"
 import { getUserParameters } from "../../controllers/user/userParametersController.js"
-
+import gameProcess from "../../models/process/processModel.js"
 import { getUserTrainingParameters } from "../../controllers/training/trainingController.js"
 import { UserSpins } from "../../models/user/userSpinsModel.js"
 import { log } from "../../utils/log.js"
@@ -44,6 +44,8 @@ import {
 } from "../../models/effects/actionLogModel.js"
 import moment from "moment-timezone"
 import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
+import UserClothing from "../../models/user/userClothingModel.js"
+import SkillModel from '../../models/skill/skillModel.js'
 
 const router = express.Router()
 router.get("/user/:id", getUser)
@@ -795,6 +797,91 @@ router.get("/:id/daily/status", async (req, res) => {
   }
 })
 
+// Sum effects from multiple sources with defensive checks
+const sumEffects = (effectArrays) => {
+  const result = {
+    cant_fall_below_percent: {},
+    profit_hourly_percent: {},
+    cost_hourly_percent: {},
+    profit_per_tick_fixed: {},
+    cost_per_tick_fixed: {},
+    autostart: {},
+  };
+
+  // Filter out invalid entries and process valid effect objects
+  effectArrays
+    .filter(effects => effects && typeof effects === "object") // Ensure effects is defined and an object
+    .forEach(effects => {
+      Object.keys(effects).forEach(key => {
+        // Initialize category if not present
+        if (!result[key]) result[key] = {};
+        // Ensure the effect array exists and is iterable
+        const effectList = Array.isArray(effects[key]) ? effects[key] : [];
+        effectList.forEach(effect => {
+          if (effect && effect.param && typeof effect.value !== "undefined") {
+            const { param, value } = effect;
+            result[key][param] = (result[key][param] || 0) + (value || 0);
+          }
+        });
+      });
+    });
+
+  return result;
+};
+
+// Endpoint to get current applied effect sums
+router.get("/:id/effects/current", async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const effectSources = [];
+
+    // Shelf items
+    const inventory = await UserCurrentInventory.findOne({ user_id: userId });
+    if (inventory?.shelf?.length) {
+      const shelfItems = await ShelfItemModel.find({ id: { $in: inventory.shelf.map(s => s.id) } });
+      shelfItems.forEach(item => {
+        if (item.effects) effectSources.push(item.effects); // Only push if effects exist
+      });
+    }
+
+    // Worn clothing
+    const userClothing = await UserClothing.findOne({ user_id: userId });
+    
+    if(userClothing) {
+      const { hat, top, pants, shoes, accessories } = userClothing
+      const userClothingIds = [hat, top, pants, shoes, accessories].filter(val => val !== null)
+      if (userClothingIds.length) {
+        console.log(userClothingIds)
+        const clothing = await Clothing.find({ clothing_id: { $in: userClothingIds } });
+        console.log(clothing)
+        clothing.forEach(item => {
+          if (item.effects) effectSources.push(item.effects); // Only push if effects exist
+        });
+      }
+    }
+
+    console.log(effectSources)
+
+    // Active boosts
+    const activeBoostProcesses = await gameProcess.find({ id: userId, type: "boost" });
+    if (activeBoostProcesses.length) {
+      const boostIds = activeBoostProcesses.map(p => p.type_id);
+      const boosts = await Boost.find({ boost_id: { $in: boostIds } });
+      boosts.forEach(boost => {
+        if (boost.effects) effectSources.push(boost.effects); // Only push if effects exist
+      });
+    }
+
+    // Sum all effects
+    const summedEffects = sumEffects(effectSources);
+
+    res.status(200).json({ effects: summedEffects });
+  } catch (error) {
+    console.error("Error fetching current effects:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 router.get("/time", (req, res) =>
   res.status(200).json({ server_time: new Date() })
 )
@@ -1063,5 +1150,35 @@ router.post("/neko/interact", async (req, res) => {
       .json({ error: error.message || "Failed to interact with neko" })
   }
 })
+
+// Get skill details by skill_id
+router.get("/skills/:skillId", async (req, res) => {
+  try {
+    const skillId = parseInt(req.params.skillId);
+
+    // Fetch the skill from the database
+    const skill = await SkillModel.findOne({ skill_id: skillId });
+
+    if (!skill) {
+      return res.status(404).json({ error: true, message: "Skill not found" });
+    }
+
+    // Construct the response
+    const response = {
+      skill_id: skill.skill_id,
+      name: skill.name, // Object with { ru: "...", en: "..." }
+      link: skill.link, // URL to the skill icon/image
+      description: skill.description || {}, // Optional, if it exists
+      coins_price: skill.coins_price || 0, // Optional, for context
+      duration: skill.duration || 0, // Optional, in minutes
+      required_level: skill.requiredLevel || 0, // Optional, if applicable
+    };
+
+    return res.status(200).json(response);
+  } catch (err) {
+    console.error("Error fetching skill details:", err);
+    return res.status(500).json({ error: true, message: "Internal server error" });
+  }
+});
 
 export default router

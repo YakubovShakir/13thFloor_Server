@@ -21,6 +21,7 @@ import fs from 'fs/promises'
 
 import { upUserExperience } from "../../utils/userParameters/upUserBalance.js"
 import { recalcValuesByParameters } from "../../utils/parametersDepMath.js"
+import UserSkill from "../../models/user/userSkillModel.js"
 
 export function calculateGamecenterLevel(refsCount) {
   const levels = Object.keys(gamecenterLevelMap).map(Number).sort((a, b) => a - b); // Ensure sorted order
@@ -739,43 +740,45 @@ export const requestStarsPaymentLink = async (req, res) => {
   }
 }
 
-// investments
 export const getUserInvestments = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.params.id);
     const user = await User.findOne(
       { id: userId },
       { investment_levels: 1, has_autoclaim: 1 }
-    )
+    );
+    const userParams = await UserParameters.findOne({ id: userId }, { level: 1 });
+    const userSkills = await UserSkill.find({ user_id: userId }); // Fetch user's learned skills
 
-    // current investments by user level
+    // Current investments by user level
     const currentGameCenter = await Investments.findOne({
       type: InvestmentTypes.GameCenter,
       level: user.investment_levels[InvestmentTypes.GameCenter],
-    })
+    });
     const currentCoffeeShop = await Investments.findOne({
       type: InvestmentTypes.CoffeeShop,
       level: user.investment_levels[InvestmentTypes.CoffeeShop],
-    })
+    });
     const currentZooShop = await Investments.findOne({
       type: InvestmentTypes.ZooShop,
       level: user.investment_levels[InvestmentTypes.ZooShop],
-    })
+    });
 
-    // next levels
+    // Next levels
     const nextLevelGameCenter = await Investments.findOne({
       type: InvestmentTypes.GameCenter,
       level: user.investment_levels[InvestmentTypes.GameCenter] + 1,
-    })
+    });
     const nextLevelCoffeeShop = await Investments.findOne({
       type: InvestmentTypes.CoffeeShop,
       level: user.investment_levels[InvestmentTypes.CoffeeShop] + 1,
-    })
+    });
     const nextLevelZooShop = await Investments.findOne({
       type: InvestmentTypes.ZooShop,
       level: user.investment_levels[InvestmentTypes.ZooShop] + 1,
-    })
+    });
 
+    // Active investments
     const activeGameCenter = currentGameCenter
       ? (
           await UserLaunchedInvestments.find(
@@ -784,7 +787,7 @@ export const getUserInvestments = async (req, res) => {
             { sort: { createdAt: -1 } }
           )
         )[0]
-      : null
+      : null;
     const activeCoffeeShop = currentCoffeeShop
       ? (
           await UserLaunchedInvestments.find(
@@ -793,7 +796,7 @@ export const getUserInvestments = async (req, res) => {
             { sort: { createdAt: -1 } }
           )
         )[0]
-      : null
+      : null;
     const activeZooShop = currentZooShop
       ? (
           await UserLaunchedInvestments.find(
@@ -802,7 +805,9 @@ export const getUserInvestments = async (req, res) => {
             { sort: { createdAt: -1 } }
           )
         )[0]
-      : null
+      : null;
+
+    const learnedSkillIds = userSkills.map(skill => skill.skill_id);
 
     const response = {
       tz: moment.tz.guess(),
@@ -824,7 +829,7 @@ export const getUserInvestments = async (req, res) => {
           : false,
         friends: await Referal.countDocuments({ refer_id: userId }),
         this_level_friends_required: gameCenterLevelRequirements[currentGameCenter?.level || 0] || 0,
-        next_level_friends_required: gameCenterLevelRequirements[(nextLevelGameCenter?.level || 0 + 1)] || 0,
+        next_level_friends_required: gameCenterLevelRequirements[(nextLevelGameCenter?.level || 0)] || 0,
       },
       coffee_shop: {
         type: InvestmentTypes.CoffeeShop,
@@ -840,6 +845,8 @@ export const getUserInvestments = async (req, res) => {
               price: nextLevelCoffeeShop.price,
               from: currentCoffeeShop?.coins_per_hour || 0,
               to: nextLevelCoffeeShop.coins_per_hour,
+              skill_id_required: nextLevelCoffeeShop.skill_id_required || null,
+              level_required: nextLevelCoffeeShop.level_required || 0,
             }
           : false,
       },
@@ -857,73 +864,90 @@ export const getUserInvestments = async (req, res) => {
               price: nextLevelZooShop.price,
               from: currentZooShop?.coins_per_hour || 0,
               to: nextLevelZooShop.coins_per_hour,
+              skill_id_required: nextLevelZooShop.skill_id_required || null,
+              level_required: nextLevelZooShop.level_required || 0,
             }
-          : null,
+          : false,
       },
-    }
+      user_level: userParams.level,
+      user_skills: learnedSkillIds,
+    };
 
-    return res.status(200).json(response)
+    return res.status(200).json(response);
   } catch (err) {
-    console.log("Error in get investment", err)
-    return res.status(500).json({ error: true })
+    console.log("Error in get investment", err);
+    return res.status(500).json({ error: true });
   }
-}
+};
 
 export const buyInvestmentLevel = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
-    const { investment_type } = req.body
+    const userId = parseInt(req.params.id);
+    const { investment_type } = req.body;
 
     if (!Object.values(InvestmentTypes).includes(investment_type)) {
-      return res.status(400).json({ error: true })
+      return res.status(400).json({ error: true });
     }
 
-    const user = await User.findOne({ id: userId }, { investment_levels: 1 })
-    const userParams = await UserParameters.findOne({ id: userId })
-    const userInvestmentLevel = user.investment_levels[investment_type]
+    const user = await User.findOne({ id: userId }, { investment_levels: 1 });
+    const userParams = await UserParameters.findOne({ id: userId });
+    const userSkills = await UserSkill.find({ user_id: userId });
+    const userInvestmentLevel = user.investment_levels[investment_type];
 
     const currentInvestment = await Investments.findOne(
       { type: investment_type, level: userInvestmentLevel },
       { respect: 1 }
-    )
+    );
     const nextLevelInvestment = await Investments.findOne({
       type: investment_type,
       level: userInvestmentLevel + 1,
-    })
+    });
 
     if (!nextLevelInvestment) {
-      console.log("Error in buyInvestmentLevel - nowhere to upgrade")
-      return res.status(404).json({ error: true })
+      console.log("Error in buyInvestmentLevel - nowhere to upgrade");
+      return res.status(404).json({ error: true });
+    }
+
+    // Check requirements (skip for Game Center)
+    if (investment_type !== InvestmentTypes.GameCenter) {
+      const hasRequiredSkill = nextLevelInvestment.skill_id_required
+        ? userSkills.some(skill => skill.skill_id === nextLevelInvestment.skill_id_required)
+        : true;
+      const meetsLevelRequirement = userParams.level >= (nextLevelInvestment.level_required || 0);
+
+      if (!hasRequiredSkill) {
+        return res.status(403).json({ error: true, message: "Required skill not learned" });
+      }
+      if (!meetsLevelRequirement) {
+        return res.status(403).json({ error: true, message: "Level requirement not met" });
+      }
     }
 
     if (userParams.coins >= nextLevelInvestment.price) {
       if (investment_type !== InvestmentTypes.GameCenter) {
-        user.investment_levels[investment_type] += 1
+        user.investment_levels[investment_type] += 1;
         userParams.respect =
           userParams.respect -
           (currentInvestment?.respect || 0) +
-          nextLevelInvestment.respect
-        userParams.coins = userParams.coins - nextLevelInvestment.price
-        await upUserExperience(nextLevelInvestment.experience_reward)
-        await user.save()
-        await userParams.save()
+          nextLevelInvestment.respect;
+        userParams.coins = userParams.coins - nextLevelInvestment.price;
+        await upUserExperience(userId, nextLevelInvestment.experience_reward);
+        await user.save();
+        await userParams.save();
 
-        return res.status(200).json({ ok: true })
+        return res.status(200).json({ ok: true });
       }
 
-      // Cannot buy gamecenter
-      return res.status(400).json({ error: true })
+      // Cannot buy Game Center directly (requires friends)
+      return res.status(400).json({ error: true });
     }
 
-    // not enough coins
-    return res
-      .status(403)
-      .json({ error: true, message: "Insufficient balance" })
+    return res.status(403).json({ error: true, message: "Insufficient balance" });
   } catch (err) {
-    console.log("Error in investment upgrade", err)
-    return res.status(500).json({ error: true })
+    console.log("Error in investment upgrade", err);
+    return res.status(500).json({ error: true });
   }
-}
+};
 
 export const startInvestment = async (req, res) => {
   try {
