@@ -162,6 +162,10 @@ const itemsPoolRaw = [
     type: "clothes",
     chance_premium: 15,
     chance_daily: 10,
+    prize_equivalent: {
+      type: "coins",
+      amount: 100
+    }
   },
   {
     id: 6,
@@ -201,6 +205,10 @@ const itemsPoolRaw = [
     type: "clothes",
     chance_premium: 25,
     chance_daily: 20,
+    prize_equivalent: {
+      type: "coins",
+      amount: 100
+    }
   },
   {
     id: 9,
@@ -251,6 +259,10 @@ const itemsPoolRaw = [
     type: "clothes",
     chance_premium: 20,
     chance_daily: 15,
+    prize_equivalent: {
+      type: "coins",
+      amount: 100
+    }
   },
   {
     id: 13,
@@ -301,6 +313,10 @@ const itemsPoolRaw = [
     type: "shelf",
     chance_premium: 1,
     chance_daily: 3,
+    prize_equivalent: {
+      type: "coins",
+      amount: 100
+    }
   },
 ]
 
@@ -448,10 +464,13 @@ router.get("/:id/gacha/spin", async (req, res) => {
           burnedTo = selectedItem.prize_equivalent;
           if (burnedTo.type === "coins") {
             await upUserBalance(userId, burnedTo.amount);
+            burnedTo.image = "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp"; // Assuming a static coin image from Assets
           } else if (burnedTo.type === "boost") {
+            const burnedBoost = await Boost.findOne({ boost_id: burnedTo.amount });
             await new UserBoost({ id: userId, boost_id: burnedTo.amount }).save();
+            burnedTo.image = burnedBoost.link; // Actual boost image
+            burnedTo.name = burnedBoost.name; // Boost name for display
           }
-          wonItem = null; // Original item is not kept
         } else {
           await UserCurrentInventory.updateOne(
             { user_id: userId },
@@ -463,7 +482,7 @@ router.get("/:id/gacha/spin", async (req, res) => {
         wonItem = {
           id: selectedItem.id,
           type: "coins",
-          image: selectedItem.image,
+          image: selectedItem.image || "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp", // Use item-specific or default coin image
           name: selectedItem.name,
           amount: selectedItem.amount,
         };
@@ -478,10 +497,13 @@ router.get("/:id/gacha/spin", async (req, res) => {
           burnedTo = selectedItem.prize_equivalent;
           if (burnedTo.type === "coins") {
             await upUserBalance(userId, burnedTo.amount);
+            burnedTo.image = "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp"; // Coin image
           } else if (burnedTo.type === "boost") {
+            const burnedBoost = await Boost.findOne({ boost_id: burnedTo.amount });
             await new UserBoost({ id: userId, boost_id: burnedTo.amount }).save();
+            burnedTo.image = burnedBoost.link; // Actual boost image
+            burnedTo.name = burnedBoost.name; // Boost name
           }
-          wonItem = null; // Original item is not kept
         } else {
           await UserCurrentInventory.updateOne(
             { user_id: userId },
@@ -499,53 +521,11 @@ router.get("/:id/gacha/spin", async (req, res) => {
     );
 
     res.status(200).json({
-      wonItem, // Null if burned
-      burnedTo, // Prize equivalent if burned (e.g., { type: "coins", amount: 100 })
+      wonItem, // Always return the won item for roulette display
+      burnedTo, // Prize if burned, including image
     });
   } catch (error) {
     console.error("Error in gacha spin:", error);
-    res.status(500).json({ error: "Internal server error" });
-  }
-});
-
-router.post("/:id/gacha/burn", async (req, res) => {
-  try {
-    const userId = parseInt(req.params.id);
-    const { spinAttemptId } = req.body;
-
-    const spinAttempt = await UserSpins.findOne({
-      _id: spinAttemptId,
-      user_id: userId,
-      is_used: true,
-      can_burn: true,
-      is_burned: false,
-    });
-
-    if (!spinAttempt) {
-      return res.status(403).json({ error: "Invalid or already burned spin attempt" });
-    }
-
-    const { prize_equivalent } = spinAttempt;
-
-    switch (prize_equivalent.type) {
-      case "coins":
-        await upUserBalance(userId, prize_equivalent.amount);
-        break;
-      case "boost":
-        await new UserBoost({ id: userId, boost_id: prize_equivalent.amount }).save();
-        break;
-      default:
-        return res.status(400).json({ error: "Invalid prize equivalent type" });
-    }
-
-    await UserSpins.updateOne({ _id: spinAttemptId }, { $set: { is_burned: true } });
-
-    res.status(200).json({
-      message: "Item burned successfully",
-      prize: { type: prize_equivalent.type, amount: prize_equivalent.amount },
-    });
-  } catch (error) {
-    console.error("Error in gacha burn:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
