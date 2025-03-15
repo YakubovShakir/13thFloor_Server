@@ -25,7 +25,7 @@ import {
 import { getUserParameters } from "../../controllers/user/userParametersController.js"
 
 import { getUserTrainingParameters } from "../../controllers/training/trainingController.js"
-import { SpinTypes, UserSpins } from "../../models/user/userSpinsModel.js"
+import { UserSpins } from "../../models/user/userSpinsModel.js"
 import { log } from "../../utils/log.js"
 import Boost from "../../models/boost/boostModel.js"
 import Clothing from "../../models/clothing/clothingModel.js"
@@ -370,11 +370,14 @@ router.get("/:id/gacha/items", async (req, res) => {
 router.get("/:id/gacha/attempts", async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
+    console.log(userId)
     const attempts = await UserSpins.find(
       { user_id: userId, is_used: false },
       { _id: 1 },
       { sort: { createdAt: -1 } }
     )
+
+    console.log(attempts)
 
     return res.status(200).json({
       attempts: attempts?.length || 0,
@@ -388,127 +391,150 @@ router.get("/:id/gacha/attempts", async (req, res) => {
 
 router.get("/:id/gacha/spin", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.params.id);
 
-    // Fetch the most recent spin for the user
     const attempts = await UserSpins.find(
       { user_id: userId, is_used: false },
       { _id: 1, type: 1 },
       { sort: { createdAt: -1 }, limit: 1 }
-    )
+    );
 
-    if (!attempts || attempts.length === 0) {
-      return res.status(403).json({ error: "Not enough spins" })
+    if (!attempts.length) {
+      return res.status(403).json({ error: "Not enough spins" });
     }
 
-    const attempt = attempts[0]
-    const spinType = attempt.type
+    const attempt = attempts[0];
+    const spinType = attempt.type;
+    const chanceField = spinType === "daily" ? "chance_daily" : "chance_premium";
+    const totalWeight = itemsPoolRaw.reduce((sum, item) => sum + item[chanceField], 0);
 
-    // Calculate total weight based on spin type
-    const chanceField =
-      spinType === SpinTypes.Daily ? "chance_daily" : "chance_premium"
-    const totalWeight = itemsPoolRaw.reduce(
-      (sum, item) => sum + item[chanceField],
-      0
-    )
+    const randomValue = Math.random() * totalWeight;
+    let cumulativeWeight = 0;
+    let selectedItem;
 
-    // Weighted random selection
-    const randomValue = Math.random() * totalWeight
-    let cumulativeWeight = 0
-    let selectedItem
-
-    const userInventory = await UserCurrentInventory.findOne({
-      user_id: userId,
-    })
-    
-    const pool = itemsPoolRaw
-
-    for (const item of pool) {
-      cumulativeWeight += item[chanceField]
+    for (const item of itemsPoolRaw) {
+      cumulativeWeight += item[chanceField];
       if (randomValue <= cumulativeWeight) {
-        selectedItem = item
-        break
+        selectedItem = item;
+        break;
       }
     }
 
-    if (!selectedItem) {
-      // Fallback in case of rounding errors (shouldn't happen)
-      selectedItem = itemsPoolRaw[itemsPoolRaw.length - 1]
-    }
+    if (!selectedItem) selectedItem = itemsPoolRaw[itemsPoolRaw.length - 1];
 
-    // Fetch full item details based on type
-    let wonItem
-    const user = await User.findOne({ id: userId })
-    if (!user) {
-      return res.status(404).json({ error: "User not found" })
-    }
+    const user = await User.findOne({ id: userId });
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    let wonItem;
+    let canBurn = false;
+    let prizeEquivalent = selectedItem.prize_equivalent;
 
     switch (selectedItem.type) {
       case "boost":
-        const boost = await Boost.findOne({ boost_id: selectedItem.id })
-        wonItem = {
-          id: selectedItem.id,
-          type: selectedItem.type,
-          image: boost.link,
-          name: boost.name,
-        }
-
-        await new UserBoost({ id: userId, boost_id: wonItem.id }).save()
-        break
+        const boost = await Boost.findOne({ boost_id: selectedItem.id });
+        wonItem = { id: selectedItem.id, type: "boost", image: boost.link, name: boost.name };
+        await new UserBoost({ id: userId, boost_id: wonItem.id }).save();
+        break;
       case "clothes":
-        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id })
+        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id });
         wonItem = {
           id: selectedItem.id,
-          type: selectedItem.type,
-          image:
-            user.personage.gender === "male"
-              ? clothes.male_icon
-              : clothes.female_icon,
+          type: "clothes",
+          image: user.personage.gender === "male" ? clothes.male_icon : clothes.female_icon,
           name: clothes.name,
-        }
-
+        };
+        const userInventoryClothes = await UserCurrentInventory.findOne({ user_id: userId });
+        canBurn = userInventoryClothes?.clothes.some(c => c.id === wonItem.id) && !!prizeEquivalent;
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { clothes: { id: wonItem.id } } }
-        )
-        break
+        );
+        break;
       case "coins":
         wonItem = {
           id: selectedItem.id,
-          type: selectedItem.type,
+          type: "coins",
           image: selectedItem.image,
           name: selectedItem.name,
           amount: selectedItem.amount,
-        }
-        await upUserBalance(userId, wonItem.amount)
-        break
+        };
+        await upUserBalance(userId, wonItem.amount);
+        break;
       case "shelf":
-        const item = await ShelfItemModel.findOne({ id: selectedItem.id })
-        wonItem = {
-          id: selectedItem.id,
-          type: selectedItem.type,
-          image: item.link,
-          name: item.name,
-        }
+        const shelfItem = await ShelfItemModel.findOne({ id: selectedItem.id });
+        wonItem = { id: selectedItem.id, type: "shelf", image: shelfItem.link, name: shelfItem.name };
+        const userInventoryShelf = await UserCurrentInventory.findOne({ user_id: userId });
+        canBurn = userInventoryShelf?.shelf.some(s => s.id === wonItem.id) && !!prizeEquivalent;
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { shelf: { id: wonItem.id } } }
-        )
-        break
+        );
+        break;
       default:
-        return res.status(400).json({ error: "Invalid item type" })
+        return res.status(400).json({ error: "Invalid item type" });
     }
 
-    // Remove the used spin
-    await UserSpins.updateOne({ _id: attempt._id }, { $set: { is_used: true } })
+    await UserSpins.updateOne(
+      { _id: attempt._id },
+      {
+        $set: {
+          is_used: true,
+          won_item_id: wonItem.id,
+          won_item_type: wonItem.type,
+          can_burn: canBurn,
+          prize_equivalent: prizeEquivalent,
+        },
+      }
+    );
 
-    // Return the won item
-    res.status(200).json({ wonItem })
+    res.status(200).json({ wonItem, spinAttemptId: attempt._id, canBurn, prizeEquivalent });
   } catch (error) {
-    await log("error", "error in fetching gacha spins", error) // Assuming log is defined
-    return res.status(500).json({ error: "Internal server error" })
+    console.error("Error in gacha spin:", error);
+    res.status(500).json({ error: "Internal server error" });
   }
-})
+});
+
+router.post("/:id/gacha/burn", async (req, res) => {
+  try {
+    const userId = parseInt(req.params.id);
+    const { spinAttemptId } = req.body;
+
+    const spinAttempt = await UserSpins.findOne({
+      _id: spinAttemptId,
+      user_id: userId,
+      is_used: true,
+      can_burn: true,
+      is_burned: false,
+    });
+
+    if (!spinAttempt) {
+      return res.status(403).json({ error: "Invalid or already burned spin attempt" });
+    }
+
+    const { prize_equivalent } = spinAttempt;
+
+    switch (prize_equivalent.type) {
+      case "coins":
+        await upUserBalance(userId, prize_equivalent.amount);
+        break;
+      case "boost":
+        await new UserBoost({ id: userId, boost_id: prize_equivalent.amount }).save();
+        break;
+      default:
+        return res.status(400).json({ error: "Invalid prize equivalent type" });
+    }
+
+    await UserSpins.updateOne({ _id: spinAttemptId }, { $set: { is_burned: true } });
+
+    res.status(200).json({
+      message: "Item burned successfully",
+      prize: { type: prize_equivalent.type, amount: prize_equivalent.amount },
+    });
+  } catch (error) {
+    console.error("Error in gacha burn:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 const dailyRewardsPool = [
   {

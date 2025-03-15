@@ -1,4 +1,4 @@
-import { ShelfItemTypes } from "./shelfItemModel.js";
+import { ShelfItemTypes } from "./shelfItemModel.js"
 
 export const ShelfItems = [
   {
@@ -16,8 +16,40 @@ export const ShelfItems = [
       stars: 0,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/FlowerType1.png",
-    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/цветок-2-полка.png",
+    shelf_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/цветок-2-полка.png",
     type: ShelfItemTypes.Flower,
+    effects: {
+      cant_fall_below_percent: [
+        { param: "mood", value: 15 }, // Настроение не опустится ниже 15%
+        { param: "energy", value: 10 }, // Энергия не опустится ниже 10%
+        // Голод (hungry) отсутствует, значит, может упасть до 0%
+      ],
+      profit_hourly_percent: [
+        { param: "hungry", value: 5 }, // Голод увеличивается на 5% в час (например, еда)
+        { param: "energy", value: 10 }, // Энергия увеличивается на 10% в час (например, кофе)
+        // Настроение (mood) без почасовой прибыли, зависит от других источников
+      ],
+      cost_hourly_percent: [
+        { param: "mood", value: 3 }, // Настроение уменьшается на 3% в час (например, скука)
+        { param: "energy", value: 2 }, // Энергия уменьшается на 2% в час (естественный спад)
+        // Голод (hungry) без почасовых затрат, зависит от тиков
+      ],
+      profit_per_tick_fixed: [
+        { param: "energy", value: 1.5 }, // Энергия получает +1.5 единицы за тик (короткий буфф)
+        // Голод и настроение без фиксированной прибыли за тик
+      ],
+      cost_per_tick_fixed: [
+        { param: "hungry", value: 0.8 }, // Голод теряет 0.8 единицы за тик (метаболизм)
+        { param: "mood", value: 0.2 }, // Настроение теряет 0.2 единицы за тик (легкое раздражение)
+        // Энергия без фиксированных затрат за тик, только почасовые
+      ],
+      autostart: [
+        { param: "training_when_mood_below", value: 25 }, // Начать тренировку, если настроение ниже 25%
+        { param: "working_when_energy_above", value: 70 }, // Начать работу, если энергия выше 70%
+        { param: "sleeping_when_energy_below", value: 20 }, // Начать сон, если энергия ниже 20%
+      ],
+    },
   },
   {
     id: 2,
@@ -34,8 +66,9 @@ export const ShelfItems = [
       stars: 0,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/Beta.png",
-    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/Бета-полка.png",
-    type: ShelfItemTypes.Award
+    shelf_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/Бета-полка.png",
+    type: ShelfItemTypes.Award,
   },
   // {
   //   id: 3,
@@ -87,8 +120,9 @@ export const ShelfItems = [
       stars: 0,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/SnowGlass.png",
-    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шар-полка.png",
-    type: ShelfItemTypes.Event
+    shelf_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шар-полка.png",
+    type: ShelfItemTypes.Event,
   },
   {
     id: 6,
@@ -105,8 +139,9 @@ export const ShelfItems = [
       stars: 1,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
-    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2Fstarrr.webp",
-    type: ShelfItemTypes.Award
+    shelf_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2Fstarrr.webp",
+    type: ShelfItemTypes.Award,
   },
   // {
   //   id: 7,
@@ -139,547 +174,578 @@ export const ShelfItems = [
       stars: 10000,
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/нфт-исходник.gif",
-    shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/нфт-исходник2.gif",
-    type: ShelfItemTypes.Neko
+    shelf_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/нфт-исходник2.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 9,
-    "name": {
-      "ru": "Pancat",
-      "en": "Pancat"
+    id: 9,
+    name: {
+      ru: "Pancat",
+      en: "Pancat",
     },
-    "description": {
-      "ru": "Pancat - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Pancat - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Pancat - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Pancat - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/0.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/0.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/0.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/0.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 10,
-    "name": {
-      "ru": "Meowmen",
-      "en": "Meowmen"
+    id: 10,
+    name: {
+      ru: "Meowmen",
+      en: "Meowmen",
     },
-    "description": {
-      "ru": "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/1.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/1.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/1.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/1.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 11,
-    "name": {
-      "ru": "Lazyfield",
-      "en": "Lazyfield"
+    id: 11,
+    name: {
+      ru: "Lazyfield",
+      en: "Lazyfield",
     },
-    "description": {
-      "ru": "Lazyfield - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Lazyfield - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Lazyfield - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Lazyfield - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/2.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/2.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/2.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/2.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 12,
-    "name": {
-      "ru": "Catpool",
-      "en": "Catpool"
+    id: 12,
+    name: {
+      ru: "Catpool",
+      en: "Catpool",
     },
-    "description": {
-      "ru": "Catpool - A rare Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Catpool - A rare Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Catpool - A rare Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Catpool - A rare Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/4.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/4.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/4.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/4.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 13,
-    "name": {
-      "ru": "Meowki",
-      "en": "Meowki"
+    id: 13,
+    name: {
+      ru: "Meowki",
+      en: "Meowki",
     },
-    "description": {
-      "ru": "Meowki - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Meowki - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Meowki - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Meowki - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/5.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/5.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/5.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/5.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 14,
-    "name": {
-      "ru": "Laserneko",
-      "en": "Laserneko"
+    id: 14,
+    name: {
+      ru: "Laserneko",
+      en: "Laserneko",
     },
-    "description": {
-      "ru": "Laserneko - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Laserneko - An uncommon Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Laserneko - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Laserneko - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/6.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/6.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/6.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/6.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 15,
-    "name": {
-      "ru": "Saberra",
-      "en": "Saberra"
+    id: 15,
+    name: {
+      ru: "Saberra",
+      en: "Saberra",
     },
-    "description": {
-      "ru": "Saberra - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Saberra - An uncommon Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Saberra - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Saberra - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/7.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/7.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/7.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/7.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 16,
-    "name": {
-      "ru": "Bunnymeow",
-      "en": "Bunnymeow"
+    id: 16,
+    name: {
+      ru: "Bunnymeow",
+      en: "Bunnymeow",
     },
-    "description": {
-      "ru": "Bunnymeow - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Bunnymeow - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Bunnymeow - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Bunnymeow - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/8.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/8.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/8.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/8.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 17,
-    "name": {
-      "ru": "Goldpaw",
-      "en": "Goldpaw"
+    id: 17,
+    name: {
+      ru: "Goldpaw",
+      en: "Goldpaw",
     },
-    "description": {
-      "ru": "Goldpaw - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Goldpaw - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Goldpaw - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Goldpaw - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/9.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/9.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/9.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/9.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 18,
-    "name": {
-      "ru": "Rockneko",
-      "en": "Rockneko"
+    id: 18,
+    name: {
+      ru: "Rockneko",
+      en: "Rockneko",
     },
-    "description": {
-      "ru": "Rockneko - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Rockneko - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Rockneko - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Rockneko - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/10.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/10.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/10.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/10.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 19,
-    "name": {
-      "ru": "Meowstronaut",
-      "en": "Meowstronaut"
+    id: 19,
+    name: {
+      ru: "Meowstronaut",
+      en: "Meowstronaut",
     },
-    "description": {
-      "ru": "Meowstronaut - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Meowstronaut - An uncommon Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Meowstronaut - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Meowstronaut - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/11.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/11.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/11.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/11.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 20,
-    "name": {
-      "ru": "Nightpaw",
-      "en": "Nightpaw"
+    id: 20,
+    name: {
+      ru: "Nightpaw",
+      en: "Nightpaw",
     },
-    "description": {
-      "ru": "Nightpaw - A rare Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Nightpaw - A rare Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Nightpaw - A rare Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Nightpaw - A rare Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/12.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/12.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/12.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/12.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 21,
-    "name": {
-      "ru": "Nephritus",
-      "en": "Nephritus"
+    id: 21,
+    name: {
+      ru: "Nephritus",
+      en: "Nephritus",
     },
-    "description": {
-      "ru": "Nephritus - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Nephritus - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Nephritus - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Nephritus - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/13.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/13.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/13.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/13.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 22,
-    "name": {
-      "ru": "Assassipaw",
-      "en": "Assassipaw"
+    id: 22,
+    name: {
+      ru: "Assassipaw",
+      en: "Assassipaw",
     },
-    "description": {
-      "ru": "Assassipaw - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Assassipaw - An uncommon Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Assassipaw - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Assassipaw - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/14.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/14.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/14.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/14.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 23,
-    "name": {
-      "ru": "Meowroe",
-      "en": "Meowroe"
+    id: 23,
+    name: {
+      ru: "Meowroe",
+      en: "Meowroe",
     },
-    "description": {
-      "ru": "Meowroe - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Meowroe - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Meowroe - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Meowroe - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/15.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/15.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/15.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/15.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 24,
-    "name": {
-      "ru": "Magmocat",
-      "en": "Magmocat"
+    id: 24,
+    name: {
+      ru: "Magmocat",
+      en: "Magmocat",
     },
-    "description": {
-      "ru": "Magmocat - A legendary Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Magmocat - A legendary Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Magmocat - A legendary Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Magmocat - A legendary Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/16.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/16.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/16.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/16.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 25,
-    "name": {
-      "ru": "Mandalpurr",
-      "en": "Mandalpurr"
+    id: 25,
+    name: {
+      ru: "Mandalpurr",
+      en: "Mandalpurr",
     },
-    "description": {
-      "ru": "Mandalpurr - A rare Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Mandalpurr - A rare Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Mandalpurr - A rare Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Mandalpurr - A rare Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/17.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/17.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/17.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/17.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 26,
-    "name": {
-      "ru": "Starglem",
-      "en": "Starglem"
+    id: 26,
+    name: {
+      ru: "Starglem",
+      en: "Starglem",
     },
-    "description": {
-      "ru": "Starglem - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Starglem - An uncommon Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Starglem - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Starglem - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/19.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/19.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/19.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/19.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 27,
-    "name": {
-      "ru": "Xpaw",
-      "en": "Xpaw"
+    id: 27,
+    name: {
+      ru: "Xpaw",
+      en: "Xpaw",
     },
-    "description": {
-      "ru": "Xpaw - A rare Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Xpaw - A rare Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Xpaw - A rare Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Xpaw - A rare Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/20.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/20.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/20.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/20.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 28,
-    "name": {
-      "ru": "Yaku-cat",
-      "en": "Yaku-cat"
+    id: 28,
+    name: {
+      ru: "Yaku-cat",
+      en: "Yaku-cat",
     },
-    "description": {
-      "ru": "Yaku-cat - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Yaku-cat - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Yaku-cat - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Yaku-cat - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/21.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/21.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/21.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/21.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 29,
-    "name": {
-      "ru": "Steelwhisker",
-      "en": "Steelwhisker"
+    id: 29,
+    name: {
+      ru: "Steelwhisker",
+      en: "Steelwhisker",
     },
-    "description": {
-      "ru": "Steelwhisker - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Steelwhisker - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Steelwhisker - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Steelwhisker - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/22.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/22.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/22.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/22.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 30,
-    "name": {
-      "ru": "Guitarcat",
-      "en": "Guitarcat"
+    id: 30,
+    name: {
+      ru: "Guitarcat",
+      en: "Guitarcat",
     },
-    "description": {
-      "ru": "Guitarcat - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Guitarcat - An uncommon Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Guitarcat - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Guitarcat - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/23.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/23.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/23.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/23.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 31,
-    "name": {
-      "ru": "Roastie",
-      "en": "Roastie"
+    id: 31,
+    name: {
+      ru: "Roastie",
+      en: "Roastie",
     },
-    "description": {
-      "ru": "Roastie - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Roastie - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Roastie - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Roastie - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/24.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/24.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/24.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/24.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 32,
-    "name": {
-      "ru": "Bonefish",
-      "en": "Bonefish"
+    id: 32,
+    name: {
+      ru: "Bonefish",
+      en: "Bonefish",
     },
-    "description": {
-      "ru": "Bonefish - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Bonefish - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Bonefish - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Bonefish - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/25.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/25.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/25.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/25.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 33,
-    "name": {
-      "ru": "Parisianpaw",
-      "en": "Parisianpaw"
+    id: 33,
+    name: {
+      ru: "Parisianpaw",
+      en: "Parisianpaw",
     },
-    "description": {
-      "ru": "Parisianpaw - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Parisianpaw - An uncommon Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Parisianpaw - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Parisianpaw - An uncommon Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/26.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/26.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/26.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/26.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 34,
-    "name": {
-      "ru": "Catarachnid",
-      "en": "Catarachnid"
+    id: 34,
+    name: {
+      ru: "Catarachnid",
+      en: "Catarachnid",
     },
-    "description": {
-      "ru": "Catarachnid - A rare Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Catarachnid - A rare Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Catarachnid - A rare Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Catarachnid - A rare Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/27.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/27.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/27.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/27.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 35,
-    "name": {
-      "ru": "Coffeecat",
-      "en": "Coffeecat"
+    id: 35,
+    name: {
+      ru: "Coffeecat",
+      en: "Coffeecat",
     },
-    "description": {
-      "ru": "Coffeecat - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Coffeecat - A common Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Coffeecat - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Coffeecat - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/28.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/28.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/28.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/28.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 36,
-    "name": {
-      "ru": "Venocat",
-      "en": "Venocat"
+    id: 36,
+    name: {
+      ru: "Venocat",
+      en: "Venocat",
     },
-    "description": {
-      "ru": "Venocat - A rare Maneki-neko from the 13th Floor Collection | Season 1",
-      "en": "Venocat - A rare Maneki-neko from the 13th Floor Collection | Season 1"
+    description: {
+      ru: "Venocat - A rare Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Venocat - A rare Maneki-neko from the 13th Floor Collection | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/29.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/29.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/29.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/29.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 37,
-    "name": {
-      "ru": "Meowhale",
-      "en": "Meowhale"
+    id: 37,
+    name: {
+      ru: "Meowhale",
+      en: "Meowhale",
     },
-    "description": {
-      "ru": "Meowhale - A special Maneki-neko from the 13th Floor Collection for holders of 1 million $13FUTY | Season 1",
-      "en": "Meowhale - A special Maneki-neko from the 13th Floor Collection for holders of 1 million $13FUTY | Season 1"
+    description: {
+      ru: "Meowhale - A special Maneki-neko from the 13th Floor Collection for holders of 1 million $13FUTY | Season 1",
+      en: "Meowhale - A special Maneki-neko from the 13th Floor Collection for holders of 1 million $13FUTY | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/30.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/30.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/30.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/30.gif",
+    type: ShelfItemTypes.Neko,
   },
   {
-    "id": 38,
-    "name": {
-      "ru": "Purrfect Launch",
-      "en": "Purrfect Launch"
+    id: 38,
+    name: {
+      ru: "Purrfect Launch",
+      en: "Purrfect Launch",
     },
-    "description": {
-      "ru": "Purrfect Launch - A special Maneki-neko from the 13th Floor Collection for holders of 10 million $13FUTY | Season 1",
-      "en": "Purrfect Launch - A special Maneki-neko from the 13th Floor Collection for holders of 10 million $13FUTY | Season 1"
+    description: {
+      ru: "Purrfect Launch - A special Maneki-neko from the 13th Floor Collection for holders of 10 million $13FUTY | Season 1",
+      en: "Purrfect Launch - A special Maneki-neko from the 13th Floor Collection for holders of 10 million $13FUTY | Season 1",
     },
-    "cost": {
-      "coins": 0,
-      "stars": 0
+    cost: {
+      coins: 0,
+      stars: 0,
     },
-    "link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/31.gif",
-    "shelf_link": "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/31.gif",
-    "type": ShelfItemTypes.Neko,
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/31.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/31.gif",
+    type: ShelfItemTypes.Neko,
   },
 ]

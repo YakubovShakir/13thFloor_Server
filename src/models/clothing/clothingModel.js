@@ -32,21 +32,45 @@ const clothingSchema = new mongoose.Schema({
   },
   //! Using mixed type, since structure is TBD.
   effects: {
-    //? Duration affecting
-    training_duration_decrease: { type: Number, default: null },
-    work_duration_decrease: { type: Number, default: null },
-    sleep_duration_decrease: { type: Number, default: null },
-    //? Award increases
-    mood_increase: { type: Number, default: null },
-    reward_increase: { type: Number, default: null },
-    //? Cost decreases
-    energy_cost_decrease: { type: Number, default: null },
-    hunger_cost_decrease: { type: Number, default: null },
-    mood_cost_decrease: { type: Number, default: null },
-    //? Cost increases
-    energy_cost_increase: { type: Number, default: null },
-    hunger_cost_increase: { type: Number, default: null },
-    mood_cost_increase: { type: Number, default: null },
+    cant_fall_below_percent: [{
+      param: {
+        type: String,
+        enum: ['hungry', 'mood', 'energy'], // Restrict to valid stats
+        required: true,
+      },
+      value: {
+        type: Number,
+        default: null, // Nullable for migration
+        min: 0,
+        max: 100,
+      },
+    }],
+    profit_hourly_percent: [{
+      param: { type: String, enum: ['hungry', 'mood', 'energy'], required: true },
+      value: { type: Number, default: null, min: 0 },
+    }],
+    cost_hourly_percent: [{
+      param: { type: String, enum: ['hungry', 'mood', 'energy'], required: true },
+      value: { type: Number, default: null, min: 0 },
+    }],
+    profit_per_tick_fixed: [{
+      param: { type: String, enum: ['hungry', 'mood', 'energy'], required: true },
+      value: { type: Number, default: null, min: 0 },
+    }],
+    cost_per_tick_fixed: [{
+      param: { type: String, enum: ['hungry', 'mood', 'energy'], required: true },
+      value: { type: Number, default: null, min: 0 },
+    }],
+    autostart: [{
+      param: {
+        type: String,
+        enum: [
+          'sleeping_when_energy_below',
+        ],
+        required: true,
+      },
+      value: { type: Number, default: null, min: 0, max: 100 },
+    }],
   },
   male_link: { type: String, required: true},
   female_link: { type: String, required: true},
