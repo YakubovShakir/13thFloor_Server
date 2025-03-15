@@ -426,8 +426,7 @@ router.get("/:id/gacha/spin", async (req, res) => {
     if (!user) return res.status(404).json({ error: "User not found" });
 
     let wonItem;
-    let canBurn = false;
-    let prizeEquivalent = selectedItem.prize_equivalent;
+    let burnedTo = null; // What the item was burned into, if applicable
 
     switch (selectedItem.type) {
       case "boost":
@@ -444,11 +443,21 @@ router.get("/:id/gacha/spin", async (req, res) => {
           name: clothes.name,
         };
         const userInventoryClothes = await UserCurrentInventory.findOne({ user_id: userId });
-        canBurn = userInventoryClothes?.clothes.some(c => c.id === wonItem.id) && !!prizeEquivalent;
-        await UserCurrentInventory.updateOne(
-          { user_id: userId },
-          { $addToSet: { clothes: { id: wonItem.id } } }
-        );
+        const isDuplicateClothes = userInventoryClothes?.clothes.some(c => c.id === wonItem.id);
+        if (isDuplicateClothes && selectedItem.prize_equivalent) {
+          burnedTo = selectedItem.prize_equivalent;
+          if (burnedTo.type === "coins") {
+            await upUserBalance(userId, burnedTo.amount);
+          } else if (burnedTo.type === "boost") {
+            await new UserBoost({ id: userId, boost_id: burnedTo.amount }).save();
+          }
+          wonItem = null; // Original item is not kept
+        } else {
+          await UserCurrentInventory.updateOne(
+            { user_id: userId },
+            { $addToSet: { clothes: { id: wonItem.id } } }
+          );
+        }
         break;
       case "coins":
         wonItem = {
@@ -464,11 +473,21 @@ router.get("/:id/gacha/spin", async (req, res) => {
         const shelfItem = await ShelfItemModel.findOne({ id: selectedItem.id });
         wonItem = { id: selectedItem.id, type: "shelf", image: shelfItem.link, name: shelfItem.name };
         const userInventoryShelf = await UserCurrentInventory.findOne({ user_id: userId });
-        canBurn = userInventoryShelf?.shelf.some(s => s.id === wonItem.id) && !!prizeEquivalent;
-        await UserCurrentInventory.updateOne(
-          { user_id: userId },
-          { $addToSet: { shelf: { id: wonItem.id } } }
-        );
+        const isDuplicateShelf = userInventoryShelf?.shelf.some(s => s.id === wonItem.id);
+        if (isDuplicateShelf && selectedItem.prize_equivalent) {
+          burnedTo = selectedItem.prize_equivalent;
+          if (burnedTo.type === "coins") {
+            await upUserBalance(userId, burnedTo.amount);
+          } else if (burnedTo.type === "boost") {
+            await new UserBoost({ id: userId, boost_id: burnedTo.amount }).save();
+          }
+          wonItem = null; // Original item is not kept
+        } else {
+          await UserCurrentInventory.updateOne(
+            { user_id: userId },
+            { $addToSet: { shelf: { id: wonItem.id } } }
+          );
+        }
         break;
       default:
         return res.status(400).json({ error: "Invalid item type" });
@@ -476,18 +495,13 @@ router.get("/:id/gacha/spin", async (req, res) => {
 
     await UserSpins.updateOne(
       { _id: attempt._id },
-      {
-        $set: {
-          is_used: true,
-          won_item_id: wonItem.id,
-          won_item_type: wonItem.type,
-          can_burn: canBurn,
-          prize_equivalent: prizeEquivalent,
-        },
-      }
+      { $set: { is_used: true } }
     );
 
-    res.status(200).json({ wonItem, spinAttemptId: attempt._id, canBurn, prizeEquivalent });
+    res.status(200).json({
+      wonItem, // Null if burned
+      burnedTo, // Prize equivalent if burned (e.g., { type: "coins", amount: 100 })
+    });
   } catch (error) {
     console.error("Error in gacha spin:", error);
     res.status(500).json({ error: "Internal server error" });

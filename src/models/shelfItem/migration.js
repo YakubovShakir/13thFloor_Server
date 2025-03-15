@@ -19,37 +19,7 @@ export const ShelfItems = [
     shelf_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/цветок-2-полка.png",
     type: ShelfItemTypes.Flower,
-    effects: {
-      cant_fall_below_percent: [
-        { param: "mood", value: 15 }, // Настроение не опустится ниже 15%
-        { param: "energy", value: 10 }, // Энергия не опустится ниже 10%
-        // Голод (hungry) отсутствует, значит, может упасть до 0%
-      ],
-      profit_hourly_percent: [
-        { param: "hungry", value: 5 }, // Голод увеличивается на 5% в час (например, еда)
-        { param: "energy", value: 10 }, // Энергия увеличивается на 10% в час (например, кофе)
-        // Настроение (mood) без почасовой прибыли, зависит от других источников
-      ],
-      cost_hourly_percent: [
-        { param: "mood", value: 3 }, // Настроение уменьшается на 3% в час (например, скука)
-        { param: "energy", value: 2 }, // Энергия уменьшается на 2% в час (естественный спад)
-        // Голод (hungry) без почасовых затрат, зависит от тиков
-      ],
-      profit_per_tick_fixed: [
-        { param: "energy", value: 1.5 }, // Энергия получает +1.5 единицы за тик (короткий буфф)
-        // Голод и настроение без фиксированной прибыли за тик
-      ],
-      cost_per_tick_fixed: [
-        { param: "hungry", value: 0.8 }, // Голод теряет 0.8 единицы за тик (метаболизм)
-        { param: "mood", value: 0.2 }, // Настроение теряет 0.2 единицы за тик (легкое раздражение)
-        // Энергия без фиксированных затрат за тик, только почасовые
-      ],
-      autostart: [
-        { param: "training_when_mood_below", value: 25 }, // Начать тренировку, если настроение ниже 25%
-        { param: "working_when_energy_above", value: 70 }, // Начать работу, если энергия выше 70%
-        { param: "sleeping_when_energy_below", value: 20 }, // Начать сон, если энергия ниже 20%
-      ],
-    },
+    effects: null
   },
   {
     id: 2,
