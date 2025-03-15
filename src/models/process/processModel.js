@@ -24,7 +24,22 @@ const schema = new mongoose.Schema(
     base_duration_in_seconds: { type: Number, required: true },
     target_duration_in_seconds: { type: Number, default: null },
     reward_at_the_end: { type: Number, default: null },
-    user_parameters_updated_at: { type: Date, default: null }
+    user_parameters_updated_at: { type: Date, default: null },
+    sleep_game: {
+      coins: [{
+        id: { type: String, required: true },
+        spawnTime: { type: Date, required: true },
+        x: { type: Number, required: true },
+        y: { type: Number, required: true },
+        collected: { type: Boolean, default: false },
+        collectionToken: { type: String, required: true },
+      }],
+      playerJumps: [{
+        time: { type: Date, required: true },
+        y: { type: Number, required: true },
+      }],
+      lastSpawnTime: { type: Date, default: Date.now }, // Track last coin spawn
+    },
   },
   { timestamps: true }
 )

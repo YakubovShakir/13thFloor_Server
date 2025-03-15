@@ -46,6 +46,8 @@ import moment from "moment-timezone"
 import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
 import UserClothing from "../../models/user/userClothingModel.js"
 import SkillModel from '../../models/skill/skillModel.js'
+import Bottleneck from "bottleneck"
+import crypto from 'crypto'
 
 const router = express.Router()
 router.get("/user/:id", getUser)
@@ -1180,5 +1182,208 @@ router.get("/skills/:skillId", async (req, res) => {
     return res.status(500).json({ error: true, message: "Internal server error" });
   }
 });
+
+const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 1 });
+
+// Configurable settings (could be moved to env vars or config file)
+const COIN_SPEED = -50; // pixels/second
+const COIN_EXPIRATION = 10; // seconds
+const SPAWN_INTERVAL = 30; // seconds
+const MAX_COINS = 100;
+
+// Helper to spawn a coin
+const spawnCoin = (process) => {
+  const coinId = crypto.randomBytes(8).toString("hex");
+  const token = crypto.createHmac("sha256", process._id.toString())
+    .update(coinId + moment().tz("Europe/Moscow").toISOString())
+    .digest("hex");
+  return {
+    id: coinId,
+    spawnTime: moment().tz("Europe/Moscow").toDate(),
+    x: 374,
+    y: Math.floor(Math.random() * 100) + 50,
+    collectionToken: token,
+  };
+};
+
+router.post("/sleep/start/:userId", async (req, res) => {
+  const userId = parseInt(req.params.userId);
+  try {
+    const userParams = await UserParameters.findOne({ id: userId });
+    if (!userParams || userParams.energy >= userParams.energy_capacity) {
+      return res.status(400).json({ error: true, message: "Cannot start sleep" });
+    }
+
+    const levelParams = await LevelsParameters.findOne({ level: userParams.level });
+    if (!levelParams) {
+      return res.status(500).json({ error: true, message: "Level parameters not found" });
+    }
+
+    const existingProcess = await gameProcess.findOne({ id: userId, type: "sleep", active: true });
+    if (existingProcess) {
+      return res.status(400).json({ error: true, message: "Sleep process already active" });
+    }
+
+    const sleepDuration = levelParams.sleep_duration * 60;
+    const process = new gameProcess({
+      id: userId,
+      type: "sleep",
+      type_id: userParams.level,
+      base_duration_in_seconds: sleepDuration,
+      target_duration_in_seconds: sleepDuration,
+      sleep_game: { coins: [spawnCoin()], playerJumps: [], lastSpawnTime: moment().tz("Europe/Moscow").toDate() },
+    });
+    await process.save();
+
+    await log("info", "Sleep process started with initial coin", { userId, processId: process._id });
+    return res.status(201).json({ success: true, processId: process._id });
+  } catch (err) {
+    await log("error", "Error starting sleep", { userId, error: err.message });
+    return res.status(500).json({ error: true, message: "Internal server error" });
+  }
+});
+
+router.get("/sleep/state/:userId", limiter.wrap(async (req, res) => {
+  const userId = parseInt(req.params.userId);
+  try {
+    const process = await gameProcess.findOne({ id: userId, type: "sleep", active: true });
+    if (!process) {
+      return res.status(404).json({ error: true, message: "No active sleep process" });
+    }
+
+    const now = moment().tz("Europe/Moscow");
+    const elapsedSeconds = now.diff(moment(process.createdAt), "seconds");
+    const remainingSeconds = Math.max(0, process.target_duration_in_seconds - elapsedSeconds);
+
+    return res.status(200).json({
+      success: true,
+      remainingSeconds,
+      coins: process.sleep_game.coins.map((coin) => ({
+        id: coin.id,
+        spawnTime: coin.spawnTime,
+        x: coin.x,
+        y: coin.y,
+        collected: coin.collected,
+        collectionToken: coin.collectionToken,
+      })),
+      playerJumps: process.sleep_game.playerJumps,
+    });
+  } catch (err) {
+    await log("error", "Error fetching sleep state", { userId, error: err.message });
+    return res.status(500).json({ error: true, message: "Internal server error" });
+  }
+}));
+
+router.post("/sleep/jump/:userId", limiter.wrap(async (req, res) => {
+  const userId = parseInt(req.params.userId);
+  const { y, time } = req.body;
+
+  try {
+    const process = await gameProcess.findOne({ id: userId, type: "sleep", active: true });
+    if (!process) {
+      return res.status(404).json({ error: true, message: "No active sleep process" });
+    }
+
+    const now = moment().tz("Europe/Moscow");
+    process.sleep_game.playerJumps.push({ time: new Date(time), y });
+
+    const activeCoins = process.sleep_game.coins.filter((c) => !c.collected && now.diff(moment(c.spawnTime), "seconds") <= COIN_EXPIRATION);
+    const timeSinceLastSpawn = now.diff(moment(process.sleep_game.lastSpawnTime), "seconds");
+    if (activeCoins.length < MAX_COINS && timeSinceLastSpawn >= SPAWN_INTERVAL / MAX_COINS) {
+      const newCoin = spawnCoin(process);
+      process.sleep_game.coins.push(newCoin);
+      process.sleep_game.lastSpawnTime = now.toDate();
+      await log("verbose", "Coin spawned on jump", { userId, coinId: newCoin.id });
+    }
+
+    await process.save();
+    await log("verbose", "Player jump recorded", { userId, y, time });
+    return res.status(200).json({ success: true });
+  } catch (err) {
+    await log("error", "Error recording jump", { userId, error: err.message });
+    return res.status(500).json({ error: true, message: "Internal server error" });
+  }
+}));
+
+router.post("/sleep/collect-coin/:userId", limiter.wrap(async (req, res) => {
+  const userId = parseInt(req.params.userId);
+  const { coinId, collectionToken, playerX, playerY, jumpTime, clientCoinX } = req.body;
+
+  try {
+    const process = await gameProcess.findOne({ id: userId, type: "sleep", active: true });
+    if (!process) {
+      return res.status(404).json({ error: true, message: "No active sleep process" });
+    }
+
+    const now = moment().tz("Europe/Moscow");
+    const elapsedSeconds = now.diff(moment(process.createdAt), "seconds");
+    const remainingSeconds = process.target_duration_in_seconds - elapsedSeconds;
+    if (remainingSeconds <= 0) {
+      return res.status(400).json({ error: true, message: "Sleep process completed" });
+    }
+
+    const coin = process.sleep_game.coins.find((c) => c.id === coinId && !c.collected);
+    if (!coin || coin.collectionToken !== collectionToken) {
+      return res.status(400).json({ error: true, message: "Invalid coin or token" });
+    }
+
+    const coinAge = now.diff(moment(coin.spawnTime), "milliseconds") / 1000;
+    const serverCoinX = coin.x + COIN_SPEED * coinAge;
+    const bufferX = 120;
+    const bufferY = 120;
+    const tolerance = 120; // Increased tolerance to 40px
+
+  if (
+    coinAge > COIN_EXPIRATION ||
+    Math.abs(clientCoinX - serverCoinX) > tolerance || // Wider tolerance
+    playerX + 40 < clientCoinX - bufferX || // Use clientCoinX for x-checks
+    playerX > clientCoinX + 20 + bufferX ||
+    playerY + 40 < coin.y - bufferY ||
+    playerY > coin.y + 20 + bufferY
+  ) {
+    await log("debug", "Coin collision check failed", {
+      userId,
+      coinId,
+      coinAge,
+      serverCoinX,
+      clientCoinX,
+      coinY: coin.y,
+      playerX,
+      playerY,
+      bufferX,
+      bufferY,
+      tolerance,
+    });
+    return res.status(400).json({ error: true, message: "Coin out of reach" });
+  }
+
+    const jump = process.sleep_game.playerJumps.find((j) =>
+      moment(j.time).isSame(moment(jumpTime), "second")
+    );
+    if (!jump) {
+      return res.status(400).json({ error: true, message: "No matching jump recorded" });
+    }
+
+    coin.collected = true;
+    process.target_duration_in_seconds = Math.max(10, process.target_duration_in_seconds - 10);
+    process.updatedAt = now.toDate();
+    await process.save();
+
+    await log("info", "Sleep coin collected", {
+      userId,
+      processId: process._id,
+      coinId,
+      newDuration: process.target_duration_in_seconds,
+    });
+
+    return res.status(200).json({
+      success: true,
+      remainingSeconds: Math.max(0, process.target_duration_in_seconds - elapsedSeconds),
+    });
+  } catch (err) {
+    await log("error", "Error collecting sleep coin", { userId, error: err.message });
+    return res.status(500).json({ error: true, message: "Internal server error" });
+  }
+}));
 
 export default router
