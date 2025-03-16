@@ -403,7 +403,7 @@ const workProcessConfig = {
   Model: Work,
   durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ work_id: process.type_id }),
-  durationDecreaseKey: "duration_decrease",
+  durationDecreaseKey: "work_duration_decrease",
   costConfig: {
     mood: {
       type: "per_minute",
@@ -453,7 +453,6 @@ const trainingProcessConfig = {
   Model: TrainingParameters,
   durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ level: process.type_id }),
-  durationDecreaseKey: "duration_decrease", // Not used in training logic, but kept for consistency
   rewardIncreaseKey: "reward_increase", // Not used in training logic, but kept for consistency
   costConfig: {
     energy: {
@@ -476,6 +475,7 @@ const trainingProcessConfig = {
       effectIncreaseKey: "mood_increase",
     },
   },
+  durationDecreaseKey: "training_duration_decrease",
   finishConditionCheck: (userParameters) => {
     return userParameters.energy <= 0 || userParameters.hungry <= 0
   },
@@ -499,6 +499,7 @@ const sleepProcessConfig = {
     }, // Using per_minute as sleep duration is in minutes
   },
   baseDurationKey: "sleep_duration",
+  durationDecreaseKey: 'sleeping_duration_decrease',
   updateUserParamsOnTick: (
     userParameters,
     periodProfits,
