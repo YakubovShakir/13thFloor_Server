@@ -38,6 +38,7 @@ import { ActionTypes, ActionLogModel } from "../models/effects/actionLogModel.js
 
 import UserCurrentInventory from "../models/user/userInventoryModel.js"
 import { getBoostPercentageFromType } from "../routes/user/userRoutes.js"
+import ShelfItemModel from "../models/shelfItem/shelfItemModel.js"
 
 const limiter = new Bottleneck({
   minTime: 1000, // 1 request per second

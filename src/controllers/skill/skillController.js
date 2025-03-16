@@ -3,6 +3,7 @@ import Skill from "../../models/skill/skillModel.js"
 import UserSkill from "../../models/user/userSkillModel.js"
 import { ConstantEffects, ConstantEffectTypes } from "../../models/effects/constantEffectsLevels.js"
 import UserParameters from "../../models/user/userParametersModel.js"
+import gameProcess from '../../models/process/processModel.js'
 
 export const getSkills = async (req, res) => {
   try {
@@ -56,4 +57,37 @@ export const getConstantEffects = async (req, res) => {
   } catch (e) {
     console.log("Error in getUserSkills - ", e)
   }
+}
+
+export const checkCanStopLearning = async (userId, skillProcess) => {
+  // Получение параметров и тренировки
+  const user = await UserParameters.findOne({ id: userId })
+
+  if (!user || !skillProcess)
+    return { status: 403, data: { } }
+
+  const durationInSeconds = trainingProcess.target_duration_in_seconds || trainingProcess.base_duration_in_seconds
+
+  const now = moment()
+  const processStartTime = moment(trainingProcess.createdAt)
+  const elapsedSeconds = now.diff(processStartTime, "seconds")
+  const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
+
+  if (seconds_left === 0) {
+    if(skillProcess.sub_type === 'constant_effects') {
+      const doc = await ConstantEffects.findOne({ id: skillProcess.type_id })
+      
+      if(doc) {
+        user.constant_effects_levels[doc.type] = doc.level
+        await user.save()
+      }
+    } else {
+      await new UserSkill({ skill_id: skillProcess.type_id, id: userId }).save()
+    }
+
+    await gameProcess.deleteOne({ _id: skillProcess._id })
+    return { status: 200, data: { status: "ok" } }
+  }
+
+  throw { status: 401, data: { seconds_left } }
 }

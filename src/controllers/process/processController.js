@@ -97,6 +97,7 @@ export const getUserProcesses = async (req, res) => {
 export const checkCanStop = async (req, res) => {
   console.log("yes")
   const userId = parseInt(req.params.id)
+  const { sub_type: subType = null, id } = req.body
 
   const activeProcess = await process.findOne({ id: userId, active: true })
   if(!activeProcess) {
@@ -130,6 +131,21 @@ export const checkCanStop = async (req, res) => {
           )
           return res.status(status).json(data)
         } catch (err) {
+          console.log(err)
+          return res.status(err.status).json(err.data)
+        }
+      case "skill":
+        try {
+          const skillProcess = await process.findOne({
+            type: 'skill',
+            sub_type: subType
+          })
+          const { status, data } = await checkCanStopLearning(
+            userId,
+            skillProcess
+          )
+          return res.status(status).json(data)
+        } catch(err) {
           console.log(err)
           return res.status(err.status).json(err.data)
         }
