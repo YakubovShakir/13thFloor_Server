@@ -873,4 +873,204 @@ export default [
     type: null,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FOld%2F%D0%AD%D0%BD%D1%86%D0%B8%D0%BA%D0%BB%D0%BE%D0%BF%D0%B5%D0%B4%D0%B8%D1%8F-%D0%B1%D0%BE%D0%B4%D0%B8%D0%B1%D0%B8%D0%BB%D0%B4%D0%B8%D0%BD%D0%B3%D0%B0.png",
   },
+  {
+    skill_id: 45,
+    
+    name: {
+      ru: "Чтение финансовых отчетов",
+      en: "Reading Financial Reports"
+    },
+    coins_price: 1500,
+    experience_reward: 0,
+    requiredLevel: 3,
+    description: 
+    {
+      ru: "Как детективного романа",
+      en: "Like a Detective Novel"
+    },
+    duration: 60,
+    skill_id_required: null,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Finvest%20skills%2FReading-Financial-Reports-Like-a-Detective-Novel.png",
+  },
+  {
+    skill_id: 46,
+    
+    name: {
+      ru: "Искусство паниковать с умом",
+      en: "The Art of Panicking Smartly"
+    },
+    coins_price: 2500,
+    experience_reward: 0,
+    requiredLevel: 4,
+    description: 
+    {
+      ru: "Знать, когда продавать все на фоне краха рынка, но делать это с видом эксперта",
+      en: "Know when to sell everything against the background of a market crash, but do it with the air of an expert"
+    },
+    duration: 90,
+    skill_id_required: 45,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Finvest%20skills%2FThe-Art-of-Panicking-Smartly.png",
+  },
+  {
+    skill_id: 47,
+    
+    name: {
+      ru: "Технический анализ",
+      en: "Technical Analysis"
+    },
+    coins_price: 6000,
+    experience_reward: 0,
+    requiredLevel: 5,
+    description: 
+    {
+      ru: "Гадание на графиках",
+      en: "Fortune-Telling with Charts"
+    },
+    duration: 300,
+    skill_id_required: 46,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Finvest%20skills%2FTechnical-Analysis-Fortune-Telling-with-Charts.png",
+  },
+  {
+    skill_id: 48,
+    
+    name: {
+      ru: "Фундаментальный анализ",
+      en: "Fundamental Analysis"
+    },
+    coins_price: 10000,
+    experience_reward: 0,
+    requiredLevel: 6,
+    description: 
+    {
+      ru: "Или почему это рухнуло?",
+      en: "...or 'Why Did This Crash?"
+    },
+    duration: 480,
+    skill_id_required: 47,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Finvest%20skills%2FFundamental-Analysis.png",
+  },
+  {
+    skill_id: 49,
+    
+    name: {
+      ru: "Управление портфелем",
+      en: "Portfolio Management"
+    },
+    coins_price: 20000,
+    experience_reward: 0,
+    requiredLevel: 8,
+    description: 
+    {
+      ru: "Жонглирование горящими факелами",
+      en: "Juggling Flaming Torches"
+    },
+    duration: 800,
+    skill_id_required: 48,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Finvest%20skills%2FThree-flaming-objects.png",
+  },
+  {
+    skill_id: 50,
+    
+    name: {
+      ru: "Макроэкономика",
+      en: "Macroeconomics"
+    },
+    coins_price: 40000,
+    experience_reward: 0,
+    requiredLevel: 10,
+    description: 
+    {
+      ru: "Как угадать, что сломает мир завтра",
+      en: "Guessing What Breaks the World Tomorrow"
+    },
+    duration: 2500,
+    skill_id_required: 49,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Finvest%20skills%2FMacroeconomics.png",
+  },
+  {
+    skill_id: 51,
+    
+    name: {
+      ru: "Переговоры",
+      en: "Negotiations"
+    },
+    coins_price: 60000,
+    experience_reward: 0,
+    requiredLevel: 12,
+    description: 
+    {
+      ru: "Продать лед эскимосам, а долг — банкирам",
+      en: "Selling Ice to Eskimos, Debt to Bankers"
+    },
+    duration: 4200,
+    skill_id_required: 50,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Finvest%20skills%2FSelling-Ice-to-Eskimos.png",
+  },
+  {
+    skill_id: 52,
+    
+    name: {
+      ru: "Краудфандинг",
+      en: "Crowdfunding"
+    },
+    coins_price: 90000,
+    experience_reward: 0,
+    requiredLevel: 14,
+    description: 
+    {
+      ru: "Искусство клянчить красиво",
+      en: "The Art of Begging Beautifully"
+    },
+    duration: 5400,
+    skill_id_required: 51,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Finvest%20skills%2FCrowdfunding.png",
+  },
+  {
+    skill_id: 53,
+    
+    name: {
+      ru: "Налоговое планирование",
+      en: "Tax Planning"
+    },
+    coins_price: 120000,
+    experience_reward: 0,
+    requiredLevel: 16,
+    description: 
+    {
+      ru: "Спрятать копейку от дяди Сэма",
+      en: "Hiding a Penny from Uncle Sam"
+    },
+    duration: 6500,
+    skill_id_required: 52,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Finvest%20skills%2FTax-Planning.png",
+  },
+  {
+    skill_id: 54,
+    
+    name: {
+      ru: "Психология инвестора",
+      en: "Investor Psychology"
+    },
+    coins_price: 190000,
+    experience_reward: 0,
+    requiredLevel: 18,
+    description: 
+    {
+      ru: "Как не рыдать над графиками",
+      en: "How Not to Cry Over Charts"
+    },
+    duration: 7200,
+    skill_id_required: 53,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Finvest%20skills%2FTax-Planning.png",
+  },
 ]
