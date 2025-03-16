@@ -1253,24 +1253,18 @@ router.get("/sleep/state/:userId", limiter.wrap(async (req, res) => {
 
     const now = moment().tz("Europe/Moscow");
     const elapsedSeconds = now.diff(moment(process.createdAt), "seconds");
-    const remainingSeconds = Math.max(0, process.target_duration_in_seconds - elapsedSeconds);
+    const remainingSeconds = process.target_duration_in_seconds - elapsedSeconds;
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
-      remainingSeconds,
-      coins: process.sleep_game.coins.map((coin) => ({
-        id: coin.id,
-        spawnTime: coin.spawnTime,
-        x: coin.x,
-        y: coin.y,
-        collected: coin.collected,
-        collectionToken: coin.collectionToken,
-      })),
+      coins: process.sleep_game.coins,
+      remainingSeconds: Math.max(0, remainingSeconds),
       playerJumps: process.sleep_game.playerJumps,
+      serverTime: now.toISOString(), // Ensure serverTime is included
     });
   } catch (err) {
-    await log("error", "Error fetching sleep state", { userId, error: err.message });
-    return res.status(500).json({ error: true, message: "Internal server error" });
+    await log("error", "Error fetching sleep game state", { userId, error: err.message });
+    res.status(500).json({ error: true, message: "Internal server error" });
   }
 }));
 
