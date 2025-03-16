@@ -231,7 +231,7 @@ const processDurationHandler = async (
     if (process.effects && process.type !== "boost") {
       Object.keys(process.effects).forEach(key => {
         combinedEffects[key] = combinedEffects[key] || [];
-        combinedEffects[key].push(...(process.effects[key] || []));
+        combinedEffects[key].push(process.effects[key] || null);
       });
     }
 
