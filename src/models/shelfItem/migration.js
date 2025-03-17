@@ -40,23 +40,26 @@ export const ShelfItems = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/Бета-полка.png",
     type: ShelfItemTypes.Award,
   },
-  // {
-  //   id: 3,
-  //   name: {
-  //     ru: "Ретро Консоль",
-  //     en: "Retro Console",
-  //   },
-  //   description: {
-  //     ru: "Сразу видно первопроходца",
-  //     en: "A true pioneer shines through!",
-  //   },
-  //   cost: {
-  //     coins: 0,
-  //     stars: 0,
-  //   },
-  //   link: "",
-  //   type: ShelfItemTypes.Award
-  // },
+  {
+    id: 3,
+    name: {
+      ru: "Ретро Консоль",
+      en: "Retro Console",
+    },
+    description: {
+      ru: "Сразу видно первопроходца",
+      en: "A true pioneer shines through!",
+    },
+    cost: {
+      coins: 0,
+      stars: 0,
+    },
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2FRetroConsole.png",
+    shelf_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2FChselfRetroConsole.png",
+    type: ShelfItemTypes.Award,
+   
+  },
   // {
   //   id: 4,
   //   name: {
