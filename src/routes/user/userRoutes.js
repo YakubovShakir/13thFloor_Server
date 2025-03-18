@@ -1185,13 +1185,11 @@ router.get("/skills/:skillId", async (req, res) => {
 
 const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 1 });
 
-// Configurable settings
-const COIN_SPEED = -50; // pixels/second
-const COIN_EXPIRATION = 10; // seconds
-const SPAWN_INTERVAL = 30; // seconds
-const MAX_COINS = 100;
+const COIN_SPEED = -50;
+const COIN_EXPIRATION = 10;
+const SPAWN_INTERVAL = 2; // Spawn every 30s
+const MAX_COINS = 10000;
 
-// Helper to spawn a coin
 const spawnCoin = (process) => {
   const coinId = crypto.randomBytes(8).toString("hex");
   const token = crypto.createHmac("sha256", process._id.toString())
@@ -1201,7 +1199,7 @@ const spawnCoin = (process) => {
     id: coinId,
     spawnTime: moment().tz("Europe/Moscow").toDate(),
     x: 374,
-    y: Math.floor(Math.random() * 100) + 50,
+    y: Math.floor(Math.random() * 80) + 20, // 20-100
     collectionToken: token,
     collected: false,
   };
@@ -1245,7 +1243,7 @@ router.post("/sleep/start/:userId", async (req, res) => {
   }
 });
 
-// Get sleep state
+// Get sleep state (Auto-spawn coins)
 router.get("/sleep/state/:userId", limiter.wrap(async (req, res) => {
   const userId = parseInt(req.params.userId);
   try {
@@ -1257,6 +1255,16 @@ router.get("/sleep/state/:userId", limiter.wrap(async (req, res) => {
     const now = moment().tz("Europe/Moscow");
     const elapsedSeconds = now.diff(moment(process.createdAt), "seconds");
     const remainingSeconds = process.target_duration_in_seconds - elapsedSeconds;
+
+    const activeCoins = process.sleep_game.coins.filter(c => !c.collected && now.diff(moment(c.spawnTime), "seconds") <= COIN_EXPIRATION);
+    const timeSinceLastSpawn = now.diff(moment(process.sleep_game.lastSpawnTime), "seconds");
+    if (activeCoins.length < MAX_COINS && timeSinceLastSpawn >= SPAWN_INTERVAL) {
+      const newCoin = spawnCoin(process);
+      process.sleep_game.coins.push(newCoin);
+      process.sleep_game.lastSpawnTime = now.toDate();
+      await log("verbose", "Coin spawned in state", { userId, coinId: newCoin.id });
+      await process.save();
+    }
 
     res.status(200).json({
       success: true,
@@ -1271,7 +1279,7 @@ router.get("/sleep/state/:userId", limiter.wrap(async (req, res) => {
   }
 }));
 
-// Record jump
+// Record jump (No spawning here)
 router.post("/sleep/jump/:userId", limiter.wrap(async (req, res) => {
   const userId = parseInt(req.params.userId);
   const { y, time } = req.body;
@@ -1284,16 +1292,6 @@ router.post("/sleep/jump/:userId", limiter.wrap(async (req, res) => {
 
     const now = moment().tz("Europe/Moscow");
     process.sleep_game.playerJumps.push({ time: new Date(time), y });
-
-    const activeCoins = process.sleep_game.coins.filter((c) => !c.collected && now.diff(moment(c.spawnTime), "seconds") <= COIN_EXPIRATION);
-    const timeSinceLastSpawn = now.diff(moment(process.sleep_game.lastSpawnTime), "seconds");
-    if (activeCoins.length < MAX_COINS && timeSinceLastSpawn >= SPAWN_INTERVAL / MAX_COINS) {
-      const newCoin = spawnCoin(process);
-      process.sleep_game.coins.push(newCoin);
-      process.sleep_game.lastSpawnTime = now.toDate();
-      await log("verbose", "Coin spawned on jump", { userId, coinId: newCoin.id });
-    }
-
     await process.save();
     await log("verbose", "Player jump recorded", { userId, y, time });
     return res.status(200).json({ success: true });
@@ -1314,7 +1312,7 @@ router.post("/sleep/collect-coin/:userId", limiter.wrap(async (req, res) => {
       return res.status(404).json({ error: true, message: "No active sleep process" });
     }
 
-    const now = moment(collectionTime).tz("Europe/Moscow"); // Use client-provided time
+    const now = moment(collectionTime).tz("Europe/Moscow");
     const elapsedSeconds = now.diff(moment(process.createdAt), "seconds");
     const remainingSeconds = process.target_duration_in_seconds - elapsedSeconds;
     if (remainingSeconds <= 0) {
@@ -1328,15 +1326,15 @@ router.post("/sleep/collect-coin/:userId", limiter.wrap(async (req, res) => {
 
     const coinAge = now.diff(moment(coin.spawnTime), "milliseconds") / 1000;
     const serverCoinX = coin.x + COIN_SPEED * coinAge;
-    const bufferX = 60;
-    const bufferY = 60;
-    const tolerance = 50; // Stricter tolerance to prevent cheating
+    const bufferX = 20;
+    const bufferY = 20;
+    const tolerance = 50;
 
     if (
       coinAge > COIN_EXPIRATION ||
       Math.abs(clientCoinX - serverCoinX) > tolerance ||
-      playerX + 40 < clientCoinX - bufferX ||
-      playerX > clientCoinX + 20 + bufferX ||
+      playerX + tolerance < clientCoinX - bufferX || // Fixed: player must reach coin
+      playerX > clientCoinX + bufferX ||
       playerY + 40 < coin.y - bufferY ||
       playerY > coin.y + 20 + bufferY
     ) {
@@ -1355,87 +1353,6 @@ router.post("/sleep/collect-coin/:userId", limiter.wrap(async (req, res) => {
       });
       return res.status(400).json({ error: true, message: "Coin out of reach" });
     }
-
-    const jump = process.sleep_game.playerJumps.find((j) =>
-      moment(j.time).isSame(moment(jumpTime), "second")
-    );
-    if (!jump) {
-      return res.status(400).json({ error: true, message: "No matching jump recorded" });
-    }
-
-    coin.collected = true;
-    process.target_duration_in_seconds = Math.max(10, process.target_duration_in_seconds - 10);
-    process.updatedAt = now.toDate();
-    await process.save();
-
-    await log("info", "Sleep coin collected", {
-      userId,
-      processId: process._id,
-      coinId,
-      newDuration: process.target_duration_in_seconds,
-    });
-
-    return res.status(200).json({
-      success: true,
-      remainingSeconds: Math.max(0, process.target_duration_in_seconds - elapsedSeconds),
-    });
-  } catch (err) {
-    await log("error", "Error collecting sleep coin", { userId, error: err.message });
-    return res.status(500).json({ error: true, message: "Internal server error" });
-  }
-}));
-
-router.post("/sleep/collect-coin/:userId", limiter.wrap(async (req, res) => {
-  const userId = parseInt(req.params.userId);
-  const { coinId, collectionToken, playerX, playerY, jumpTime, clientCoinX } = req.body;
-
-  try {
-    const process = await gameProcess.findOne({ id: userId, type: "sleep", active: true });
-    if (!process) {
-      return res.status(404).json({ error: true, message: "No active sleep process" });
-    }
-
-    const now = moment().tz("Europe/Moscow");
-    const elapsedSeconds = now.diff(moment(process.createdAt), "seconds");
-    const remainingSeconds = process.target_duration_in_seconds - elapsedSeconds;
-    if (remainingSeconds <= 0) {
-      return res.status(400).json({ error: true, message: "Sleep process completed" });
-    }
-
-    const coin = process.sleep_game.coins.find((c) => c.id === coinId && !c.collected);
-    if (!coin || coin.collectionToken !== collectionToken) {
-      return res.status(400).json({ error: true, message: "Invalid coin or token" });
-    }
-
-    const coinAge = now.diff(moment(coin.spawnTime), "milliseconds") / 1000;
-    const serverCoinX = coin.x + COIN_SPEED * coinAge;
-    const bufferX = 20;
-    const bufferY = 20;
-    const tolerance = 50; // Increased tolerance to 40px
-
-  if (
-    coinAge > COIN_EXPIRATION ||
-    Math.abs(clientCoinX - serverCoinX) > tolerance || // Wider tolerance
-    playerX - tolerance < clientCoinX - bufferX || // Use clientCoinX for x-checks
-    playerX > clientCoinX + bufferX ||
-    playerY + 40 < coin.y - bufferY ||
-    playerY > coin.y + 20 + bufferY
-  ) {
-    await log("debug", "Coin collision check failed", {
-      userId,
-      coinId,
-      coinAge,
-      serverCoinX,
-      clientCoinX,
-      coinY: coin.y,
-      playerX,
-      playerY,
-      bufferX,
-      bufferY,
-      tolerance,
-    });
-    return res.status(400).json({ error: true, message: "Coin out of reach" });
-  }
 
     const jump = process.sleep_game.playerJumps.find((j) =>
       moment(j.time).isSame(moment(jumpTime), "second")
