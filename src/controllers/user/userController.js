@@ -847,6 +847,8 @@ export const getUserInvestments = async (req, res) => {
               to: nextLevelCoffeeShop.coins_per_hour,
               skill_id_required: nextLevelCoffeeShop.skill_id_required || null,
               level_required: nextLevelCoffeeShop.level_required || 0,
+              respect_required: nextLevelCoffeeShop.respect_required || 0,
+              stars_price: nextLevelCoffeeShop.stars_price || 0,
             }
           : false,
       },
@@ -866,6 +868,8 @@ export const getUserInvestments = async (req, res) => {
               to: nextLevelZooShop.coins_per_hour,
               skill_id_required: nextLevelZooShop.skill_id_required || null,
               level_required: nextLevelZooShop.level_required || 0,
+              respect_required: nextLevelZooShop.respect_required || 0,
+              stars_price: nextLevelZooShop.stars_price || 0,
             }
           : false,
       },
