@@ -97,6 +97,7 @@ const ShelfItem = new mongoose.Schema({
       },
     ],
   },
+  respect: { type: Number, default: null }
 })
 
 const ShelfItemModel = mongoose.model("shelf_item", ShelfItem)
