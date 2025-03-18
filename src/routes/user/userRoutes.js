@@ -1410,14 +1410,14 @@ router.post("/sleep/collect-coin/:userId", limiter.wrap(async (req, res) => {
     const coinAge = now.diff(moment(coin.spawnTime), "milliseconds") / 1000;
     const serverCoinX = coin.x + COIN_SPEED * coinAge;
     const bufferX = 120;
-    const bufferY = 120;
-    const tolerance = 120; // Increased tolerance to 40px
+    const bufferY = 50;
+    const tolerance = 50; // Increased tolerance to 40px
 
   if (
     coinAge > COIN_EXPIRATION ||
     Math.abs(clientCoinX - serverCoinX) > tolerance || // Wider tolerance
     playerX + 40 < clientCoinX - bufferX || // Use clientCoinX for x-checks
-    playerX > clientCoinX + 20 + bufferX ||
+    playerX > clientCoinX + bufferX ||
     playerY + 40 < coin.y - bufferY ||
     playerY > coin.y + 20 + bufferY
   ) {
