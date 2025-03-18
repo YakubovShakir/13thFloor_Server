@@ -19,7 +19,8 @@ export const ShelfItems = [
     shelf_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/цветок-2-полка.png",
     type: ShelfItemTypes.Flower,
-    effects: null
+    effects: null, 
+    respect: 100,
   },
   {
     id: 2,
@@ -39,7 +40,9 @@ export const ShelfItems = [
     shelf_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/Бета-полка.png",
     type: ShelfItemTypes.Award,
+    respect: 1000,
   },
+  
   {
     id: 3,
     name: {
@@ -58,6 +61,7 @@ export const ShelfItems = [
     shelf_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2FChselfRetroConsole.png",
     type: ShelfItemTypes.Award,
+    respect: 2000,
    
   },
   // {
@@ -78,25 +82,25 @@ export const ShelfItems = [
   //   shelf_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шкатурка-полка.png",
   //   type: ShelfItemTypes.Event
   // },
-  {
-    id: 5,
-    name: {
-      ru: "Шар со Снегом",
-      en: "Snow Globe",
-    },
-    description: {
-      ru: "Аккуратнее! А то весь снег рассыпется",
-      en: "Careful! You'll Scatter All the Snow",
-    },
-    cost: {
-      coins: 150,
-      stars: 0,
-    },
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/SnowGlass.png",
-    shelf_link:
-      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шар-полка.png",
-    type: ShelfItemTypes.Event,
-  },
+  // {
+  //   id: 5,
+  //   name: {
+  //     ru: "Шар со Снегом",
+  //     en: "Snow Globe",
+  //   },
+  //   description: {
+  //     ru: "Аккуратнее! А то весь снег рассыпется",
+  //     en: "Careful! You'll Scatter All the Snow",
+  //   },
+  //   cost: {
+  //     coins: 150,
+  //     stars: 0,
+  //   },
+  //   link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/SnowGlass.png",
+  //   shelf_link:
+  //     "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/шар-полка.png",
+  //   type: ShelfItemTypes.Event,
+  // },
   {
     id: 6,
     name: {
@@ -115,7 +119,7 @@ export const ShelfItems = [
     shelf_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2Fstarrr.webp",
     type: ShelfItemTypes.Award,
-    respect: 300
+    respect: 10000,
   },
   // {
   //   id: 7,
@@ -151,6 +155,7 @@ export const ShelfItems = [
     shelf_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/нфт-исходник2.gif",
     type: ShelfItemTypes.Neko,
+    respect: 5000,
   },
   {
     id: 9,
@@ -170,6 +175,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/0.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 10,
@@ -189,6 +195,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/1.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 11,
@@ -208,6 +215,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/2.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 12,
@@ -227,6 +235,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/4.gif",
     type: ShelfItemTypes.Neko,
+    respect: 5000,
   },
   {
     id: 13,
@@ -246,6 +255,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/5.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 14,
@@ -265,6 +275,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/6.gif",
     type: ShelfItemTypes.Neko,
+    respect: 2500,
   },
   {
     id: 15,
@@ -284,6 +295,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/7.gif",
     type: ShelfItemTypes.Neko,
+    respect: 2500,
   },
   {
     id: 16,
@@ -303,6 +315,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/8.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 17,
@@ -322,6 +335,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/9.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 18,
@@ -341,6 +355,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/10.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 19,
@@ -360,6 +375,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/11.gif",
     type: ShelfItemTypes.Neko,
+    respect: 2500,
   },
   {
     id: 20,
@@ -379,6 +395,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/12.gif",
     type: ShelfItemTypes.Neko,
+    respect: 5000,
   },
   {
     id: 21,
@@ -398,6 +415,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/13.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 22,
@@ -417,6 +435,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/14.gif",
     type: ShelfItemTypes.Neko,
+    respect: 2500,
   },
   {
     id: 23,
@@ -436,6 +455,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/15.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 24,
@@ -455,6 +475,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/16.gif",
     type: ShelfItemTypes.Neko,
+    respect: 10000,
   },
   {
     id: 25,
@@ -474,6 +495,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/17.gif",
     type: ShelfItemTypes.Neko,
+    respect: 5000,
   },
   {
     id: 26,
@@ -493,6 +515,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/19.gif",
     type: ShelfItemTypes.Neko,
+    respect: 2500,
   },
   {
     id: 27,
@@ -512,6 +535,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/20.gif",
     type: ShelfItemTypes.Neko,
+    respect: 5000,
   },
   {
     id: 28,
@@ -531,6 +555,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/21.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 29,
@@ -550,6 +575,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/22.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 30,
@@ -569,6 +595,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/23.gif",
     type: ShelfItemTypes.Neko,
+    respect: 2500,
   },
   {
     id: 31,
@@ -588,6 +615,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/24.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 32,
@@ -607,6 +635,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/25.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 33,
@@ -626,6 +655,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/26.gif",
     type: ShelfItemTypes.Neko,
+    respect: 2500,
   },
   {
     id: 34,
@@ -645,6 +675,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/27.gif",
     type: ShelfItemTypes.Neko,
+    respect: 5000,
   },
   {
     id: 35,
@@ -664,6 +695,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/28.gif",
     type: ShelfItemTypes.Neko,
+    respect: 1500,
   },
   {
     id: 36,
@@ -683,6 +715,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/29.gif",
     type: ShelfItemTypes.Neko,
+    respect: 5000,
   },
   {
     id: 37,
@@ -702,6 +735,7 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/30.gif",
     type: ShelfItemTypes.Neko,
+    respect: 7500,
   },
   {
     id: 38,
@@ -721,5 +755,6 @@ export const ShelfItems = [
     shelf_link:
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/31.gif",
     type: ShelfItemTypes.Neko,
+    respect: 7500,
   },
 ]

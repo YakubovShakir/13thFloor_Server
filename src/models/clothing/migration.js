@@ -7,37 +7,7 @@ export default [
     },
     tag: [],
     type: "Hat",
-    effect: {
-      cant_fall_below_percent: [
-        { param: "mood", value: 15 },     // Настроение не опустится ниже 15%
-        { param: "energy", value: 10 },   // Энергия не опустится ниже 10%
-        // Голод (hungry) отсутствует, значит, может упасть до 0%
-      ],
-      profit_hourly_percent: [
-        { param: "hungry", value: 5 },    // Голод увеличивается на 5% в час (например, еда)
-        { param: "energy", value: 10 },   // Энергия увеличивается на 10% в час (например, кофе)
-        // Настроение (mood) без почасовой прибыли, зависит от других источников
-      ],
-      cost_hourly_percent: [
-        { param: "mood", value: 3 },      // Настроение уменьшается на 3% в час (например, скука)
-        { param: "energy", value: 2 },    // Энергия уменьшается на 2% в час (естественный спад)
-        // Голод (hungry) без почасовых затрат, зависит от тиков
-      ],
-      profit_per_tick_fixed: [
-        { param: "energy", value: 1.5 },  // Энергия получает +1.5 единицы за тик (короткий буфф)
-        // Голод и настроение без фиксированной прибыли за тик
-      ],
-      cost_per_tick_fixed: [
-        { param: "hungry", value: 0.8 },  // Голод теряет 0.8 единицы за тик (метаболизм)
-        { param: "mood", value: 0.2 },    // Настроение теряет 0.2 единицы за тик (легкое раздражение)
-        // Энергия без фиксированных затрат за тик, только почасовые
-      ],
-      autostart: [
-        { param: "training_when_mood_below", value: 25 },      // Начать тренировку, если настроение ниже 25%
-        { param: "working_when_energy_above", value: 70 },     // Начать работу, если энергия выше 70%
-        { param: "sleeping_when_energy_below", value: 20 },    // Начать сон, если энергия ниже 20%
-      ],
-    },
+    
     male_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_Ashen_m.png",
     female_link:
@@ -103,37 +73,7 @@ export default [
     },
     tag: [],
     type: "Hat",
-    effects: {
-      cant_fall_below_percent: [
-        { param: "mood", value: 15 },     // Настроение не опустится ниже 15%
-        { param: "energy", value: 10 },   // Энергия не опустится ниже 10%
-        // Голод (hungry) отсутствует, значит, может упасть до 0%
-      ],
-      profit_hourly_percent: [
-        { param: "hungry", value: 5 },    // Голод увеличивается на 5% в час (например, еда)
-        { param: "energy", value: 10 },   // Энергия увеличивается на 10% в час (например, кофе)
-        // Настроение (mood) без почасовой прибыли, зависит от других источников
-      ],
-      cost_hourly_percent: [
-        { param: "mood", value: 3 },      // Настроение уменьшается на 3% в час (например, скука)
-        { param: "energy", value: 2 },    // Энергия уменьшается на 2% в час (естественный спад)
-        // Голод (hungry) без почасовых затрат, зависит от тиков
-      ],
-      profit_per_tick_fixed: [
-        { param: "energy", value: 1.5 },  // Энергия получает +1.5 единицы за тик (короткий буфф)
-        // Голод и настроение без фиксированной прибыли за тик
-      ],
-      cost_per_tick_fixed: [
-        { param: "hungry", value: 0.8 },  // Голод теряет 0.8 единицы за тик (метаболизм)
-        { param: "mood", value: 0.2 },    // Настроение теряет 0.2 единицы за тик (легкое раздражение)
-        // Энергия без фиксированных затрат за тик, только почасовые
-      ],
-      autostart: [
-        // { param: "training_when_mood_below", value: 25 },      // Начать тренировку, если настроение ниже 25%
-        // { param: "working_when_energy_above", value: 70 },     // Начать работу, если энергия выше 70%
-        { param: "sleeping_when_energy_below", value: 20 },    // Начать сон, если энергия ниже 20%
-      ],
-    },
+    
     male_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_dark_m.png",
     female_link:
@@ -629,10 +569,7 @@ export default [
     price: 2600,
     tier: 3,
     requiredLevel: 9,
-    profit_hourly_percent: [
-      { param: "mood", value: 2 },    // Голод увеличивается на 5% в час (например, еда)
     
-    ],
   },
 
   {
@@ -652,6 +589,10 @@ export default [
     price: 3800,
     tier: 4,
     requiredLevel: 10,
+    profit_hourly_percent: [
+      { param: "mood", value: 2 },    
+      
+    ],
   },
   {
     clothing_id: 31,
@@ -670,6 +611,10 @@ export default [
     price: 4200,
     tier: 4,
     requiredLevel: 10,
+    profit_hourly_percent: [
+      { param: "hungry", value: 2 },    // Голод увеличивается на 5% в час (например, еда)
+    
+    ],
   },
   {
     clothing_id: 32,
@@ -726,9 +671,11 @@ export default [
     tier: 4,
     requiredLevel: 12,
     profit_hourly_percent: [
-      { param: "mood", value: 3 },    
+      { param: "mood", value: 3 },   
+       
       
     ],
+    
   },
   {
     clothing_id: 35,
@@ -747,6 +694,10 @@ export default [
     price: 9500,
     tier: 4,
     requiredLevel: 12,
+    profit_hourly_percent: [
+      { param: "hungry", value: 3 },    // Голод увеличивается на 5% в час (например, еда)
+    
+    ],
   },
   {
     clothing_id: 36,
@@ -765,6 +716,10 @@ export default [
     price: 12000,
     tier: 4,
     requiredLevel: 13,
+    profit_hourly_percent: [
+      { param: "mood", value: 5 },    
+      
+    ],
   },
   {
     clothing_id: 37,
@@ -783,6 +738,10 @@ export default [
     price: 13000,
     tier: 4,
     requiredLevel: 13,
+    profit_hourly_percent: [
+      { param: "hungry", value: 5 },    // Голод увеличивается на 5% в час (например, еда)
+    
+    ],
   },
   {
     clothing_id: 38,
@@ -837,6 +796,9 @@ export default [
     price: 29000,
     tier: 5,
     requiredLevel: 15,
+    profit_hourly_percent: [
+      { param: "mood", value: 10 }, 
+    ],
   },
   {
     clothing_id: 41,
@@ -855,6 +817,9 @@ export default [
     price: 32000,
     tier: 5,
     requiredLevel: 15,
+    profit_hourly_percent: [
+      { param: "hungry", value: 10 }, 
+    ],
   },
   {
     clothing_id: 42,
@@ -873,6 +838,9 @@ export default [
     price: 43000,
     tier: 5,
     requiredLevel: 16,
+    profit_hourly_percent: [
+      { param: "mood", value: 10 }, 
+    ],
   },
   {
     clothing_id: 43,
@@ -891,6 +859,9 @@ export default [
     price: 55000,
     tier: 5,
     requiredLevel: 15,
+    profit_hourly_percent: [
+      { param: "mood", value: 10 }, 
+    ],
   },
   {
     clothing_id: 44,
@@ -932,8 +903,7 @@ export default [
     tier: 5,
     requiredLevel: 17,
     profit_hourly_percent: [
-      { param: "mood", value: 10 },    
-      
+      { param: "hungry", value: 10 }, 
     ],
   },
   {
@@ -953,6 +923,7 @@ export default [
     price: 100000,
     tier: 5,
     requiredLevel: 18,
+    
   },
   {
     clothing_id: 47,
