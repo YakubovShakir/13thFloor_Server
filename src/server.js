@@ -80,9 +80,9 @@ async function main() {
   await Promise.all([
     //! PROGRESS
     // deleteUserParameters(),
-    // deleteUserInventories(),
-    // deleteUserClothing(),
-    // deleteUsers(),
+    deleteUserInventories(),
+    deleteUserClothing(),
+    deleteUsers(),
     // deleteUserProcesses(),
     // deleteUserInvestments(),
     // deleteUserTasks(),
