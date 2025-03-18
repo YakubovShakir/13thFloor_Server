@@ -115,6 +115,7 @@ export const ShelfItems = [
     shelf_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2Fstarrr.webp",
     type: ShelfItemTypes.Award,
+    respect: 300
   },
   // {
   //   id: 7,

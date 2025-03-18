@@ -50,7 +50,17 @@ const ShelfItem = new mongoose.Schema({
       {
         param: {
           type: String,
-          enum: ["hungry", "mood", "energy"],
+          enum: ["hungry", "mood", "energy", "coins"],
+          required: true,
+        },
+        value: { type: Number, default: null, min: 0 },
+      },
+    ],
+    profit_hourly_fixed: [
+      {
+        param: {
+          type: String,
+          enum: ["hungry", "mood", "energy", "coins"],
           required: true,
         },
         value: { type: Number, default: null, min: 0 },
@@ -97,7 +107,7 @@ const ShelfItem = new mongoose.Schema({
       },
     ],
   },
-  respect: { type: Number, default: null }
+  respect: { type: Number, default: null },
 })
 
 const ShelfItemModel = mongoose.model("shelf_item", ShelfItem)
