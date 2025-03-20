@@ -10,7 +10,7 @@ const schema = new mongoose.Schema({
     en: { type: String, required: true }
   },
   coins_per_hour: { type: Number, required: true },
-  respect: { type: Number, required: true },
+  // respect: { type: Number, required: true },
   price: { type: Number, required: true },
   respect_reward: { type: Number, default: 0 },
   experience_reward: { type: Number, default: 0 },
