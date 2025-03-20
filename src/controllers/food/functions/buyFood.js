@@ -35,6 +35,14 @@ const buyFood = async (userId, foodId) => {
         user?.energy + instantEnergyRestore
       )
 
+    const instantMoodCost = food?.instant_mood_cost?.value
+    if (instantMoodCost)
+      user.mood = Math.max(
+        0,
+        user?.mood - instantMoodCost
+      )
+
+
     // Моментельное восстановление голода
     const instantHungryRestore = food?.instant_hungry_restore?.value
     if (instantHungryRestore)
