@@ -46,7 +46,11 @@ const clothingSchema = new mongoose.Schema({
       },
     }],
     profit_hourly_percent: [{
-      param: { type: String, enum: ['hungry', 'mood', 'energy'], required: true },
+      param: { type: String, enum: ['hungry', 'mood', 'energy', 'coins'], required: true },
+      value: { type: Number, default: null, min: 0 },
+    }],
+    profit_hourly_fixed: [{
+      param: { type: String, enum: ['hungry', 'mood', 'energy', 'coins'], required: true },
       value: { type: Number, default: null, min: 0 },
     }],
     cost_hourly_percent: [{
