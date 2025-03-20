@@ -312,9 +312,11 @@ export const getInventoryItems = async (req, res) => {
     clothes = await Promise.all(
       clothes.map((c) => Clothing.findOne({ clothing_id: c.id }))
     )
+    clothes = clothes.filter(item => item != null)
     shelf = await Promise.all(
       shelf.map((c) => ShelfItemModel.findOne({ id: c.id }))
     )
+    shelf = shelf.filter(item => item != null)
     const currentlyUsedClothes = await UserClothing.findOne({ user_id: userId })
     const currentlyUsedShelf = (await User.findOne({ id: userId })).shelf
 

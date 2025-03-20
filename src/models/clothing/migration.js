@@ -170,6 +170,11 @@ export default [
     price: 10,
     tier: 0,
     requiredLevel: 1,
+    effects: {
+      profit_hourly_percent: [
+        { param: "hungry", value: 10 }, 
+      ],
+    }
   },
   {
     clothing_id: 9,
