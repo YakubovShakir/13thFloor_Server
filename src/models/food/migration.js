@@ -261,5 +261,30 @@ export default [
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FBurrito.webp",
     food_id: 12,
   },
+  {
+    user_level_require: 1,
+    
+    name: {
+      ru: "Старый сухарь",
+      en: "The old cracker"},
+    duration: 30,
+    instant_energy_restore: null,
+    long_energy_restore: null,
+    instant_hungry_restore: {
+      value: 30,
+      percent: true,
+    },
+    instant_mood_cost: {
+      percent: true,
+      value: 60,
+      
+    },
+    long_hungry_restore: null,
+    instant_mood_restore: null,
+    long_mood_restore: null,
+    coins_price: 0,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2Fcracker.webp",
+    food_id: 13,
+  },
  
 ]
