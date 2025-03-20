@@ -21,6 +21,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Flower,
     effects: null, 
     respect: 100,
+    
   },
   {
     id: 2,
@@ -41,6 +42,12 @@ export const ShelfItems = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/Бета-полка.png",
     type: ShelfItemTypes.Award,
     respect: 1000,
+    effect: {
+      profit_hourly_percent: [
+       
+        { param: "energy", value: 10 },   
+      ],
+    }
   },
   
   {
@@ -62,7 +69,12 @@ export const ShelfItems = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2FChselfRetroConsole.png",
     type: ShelfItemTypes.Award,
     respect: 2000,
-   
+    effect: {
+      cant_fall_below_percent: [
+        { param: "mood", value: 15 },   
+       
+      ],
+    }
   },
   // {
   //   id: 4,
@@ -120,6 +132,12 @@ export const ShelfItems = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2Fstarrr.webp",
     type: ShelfItemTypes.Award,
     respect: 10000,
+    effect: {
+      profit_hourly_percent: [
+       
+        { param: "mood", value: 15 },   
+      ],
+    }
   },
   // {
   //   id: 7,
