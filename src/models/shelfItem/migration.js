@@ -19,7 +19,7 @@ export const ShelfItems = [
     shelf_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/цветок-2-полка.png",
     type: ShelfItemTypes.Flower,
-    effectss: null, 
+    effects: null, 
     respect: 100,
     
   },
@@ -66,7 +66,7 @@ export const ShelfItems = [
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2FRetroConsole.png",
     shelf_link:
-      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2Fcos2.gif",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2FChselfRetroConsole.png",
     type: ShelfItemTypes.Award,
     respect: 2000,
     effects: {
