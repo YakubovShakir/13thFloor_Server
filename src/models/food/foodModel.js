@@ -17,6 +17,7 @@ const schema = new mongoose.Schema({
   instant_hungry_restore: { type: restoreSchema },
   long_hungry_restore: { type: restoreSchema },
   instant_mood_restore: { type: restoreSchema },
+  instant_mood_cost: { type: restoreSchema },
   long_mood_restore: { type: restoreSchema },
   coins_price: { type: Number, required: true },
   link: { type: String, required: true, unique: true },
