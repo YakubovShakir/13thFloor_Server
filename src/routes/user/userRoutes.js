@@ -831,53 +831,101 @@ const sumEffects = (effectArrays) => {
   return result;
 };
 
-// Endpoint to get current applied effect sums
 router.get("/:id/effects/current", async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
-    const effectSources = [];
+    console.log(`Fetching effects for userId: ${userId}`);
+
+    const effectSources = { shelf: [], clothing: [], boosts: [] };
+    const allEffects = {
+      cant_fall_below_percent: [],
+      profit_hourly_percent: [],
+      profit_hourly_fixed: [],
+      cost_hourly_percent: [],
+      profit_per_tick_fixed: [],
+      cost_per_tick_fixed: [],
+      autostart: [],
+    };
 
     // Shelf items
     const inventory = await UserCurrentInventory.findOne({ user_id: userId });
+    console.log('Inventory:', inventory);
     if (inventory?.shelf?.length) {
+      console.log('Shelf items IDs:', inventory.shelf.map(s => s.id));
       const shelfItems = await ShelfItemModel.find({ id: { $in: inventory.shelf.map(s => s.id) } });
+      console.log('Shelf items:', shelfItems);
       shelfItems.forEach(item => {
-        if (item.effects) effectSources.push(item.effects); // Only push if effects exist
+        if (item.effects) {
+          console.log('Shelf item effects:', item.effects);
+          effectSources.shelf.push(item.effects);
+        }
       });
     }
 
     // Worn clothing
     const userClothing = await UserClothing.findOne({ user_id: userId });
-    
-    if(userClothing) {
-      const { hat, top, pants, shoes, accessories } = userClothing
-      const userClothingIds = [hat, top, pants, shoes, accessories].filter(val => val !== null)
+    console.log('User clothing:', userClothing);
+    if (userClothing) {
+      const { hat, top, pants, shoes, accessories } = userClothing;
+      const userClothingIds = [hat, top, pants, shoes, accessories].filter(val => val !== null);
+      console.log('Clothing IDs:', userClothingIds);
       if (userClothingIds.length) {
-        console.log(userClothingIds)
         const clothing = await Clothing.find({ clothing_id: { $in: userClothingIds } });
-        console.log(clothing)
+        console.log('Clothing items:', clothing);
         clothing.forEach(item => {
-          if (item.effects) effectSources.push(item.effects); // Only push if effects exist
+          if (item.effects) {
+            console.log('Clothing item effects:', item.effects);
+            effectSources.clothing.push(item.effects);
+          }
         });
       }
     }
 
-    console.log(effectSources)
-
     // Active boosts
     const activeBoostProcesses = await gameProcess.find({ id: userId, type: "boost" });
+    console.log('Active boost processes:', activeBoostProcesses);
     if (activeBoostProcesses.length) {
       const boostIds = activeBoostProcesses.map(p => p.type_id);
+      console.log('Boost IDs:', boostIds);
       const boosts = await Boost.find({ boost_id: { $in: boostIds } });
+      console.log('Boosts:', boosts);
       boosts.forEach(boost => {
-        if (boost.effects) effectSources.push(boost.effects); // Only push if effects exist
+        if (boost.effects) {
+          console.log('Boost effects:', boost.effects);
+          effectSources.boosts.push(boost.effects);
+        }
       });
     }
 
-    // Sum all effects
-    const summedEffects = sumEffects(effectSources);
+    console.log('Collected effect sources:', effectSources);
 
-    res.status(200).json({ effects: summedEffects });
+    // Helper function to combine effects
+    const combineEffects = (effects, target) => {
+      effects.forEach(effectObj => {
+        // Skip null or invalid objects
+        if (!effectObj || typeof effectObj !== 'object') return;
+
+        Object.entries(effectObj).forEach(([category, effectArray]) => {
+          if (target[category] && Array.isArray(effectArray)) {
+            // Append each effect from the array to the target category
+            effectArray.forEach(effect => {
+              if (effect && typeof effect === 'object' && 'param' in effect && 'value' in effect) {
+                console.log(`Adding effect: ${category} - ${effect.param}: ${effect.value}`);
+                target[category].push({ param: effect.param, value: effect.value });
+              }
+            });
+          }
+        });
+      });
+    };
+
+    combineEffects(effectSources.shelf, allEffects);
+    combineEffects(effectSources.clothing, allEffects);
+    combineEffects(effectSources.boosts, allEffects);
+
+    console.log('Final allEffects:', allEffects);
+
+    res.status(200).json({ effects: allEffects });
   } catch (error) {
     console.error("Error fetching current effects:", error);
     res.status(500).json({ error: "Internal server error" });
