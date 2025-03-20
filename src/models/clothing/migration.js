@@ -589,10 +589,11 @@ export default [
     price: 3800,
     tier: 4,
     requiredLevel: 10,
+    effect: {
     profit_hourly_percent: [
       { param: "mood", value: 2 },    
       
-    ],
+    ],}
   },
   {
     clothing_id: 31,
@@ -611,10 +612,11 @@ export default [
     price: 4200,
     tier: 4,
     requiredLevel: 10,
+    effect: {
     profit_hourly_percent: [
       { param: "hungry", value: 2 },    // Голод увеличивается на 5% в час (например, еда)
     
-    ],
+    ],}
   },
   {
     clothing_id: 32,
@@ -670,11 +672,12 @@ export default [
     price: 8600,
     tier: 4,
     requiredLevel: 12,
+    effect: {
     profit_hourly_percent: [
       { param: "mood", value: 3 },   
        
       
-    ],
+    ],}
     
   },
   {
@@ -694,10 +697,11 @@ export default [
     price: 9500,
     tier: 4,
     requiredLevel: 12,
+    effect: {
     profit_hourly_percent: [
       { param: "hungry", value: 3 },    // Голод увеличивается на 5% в час (например, еда)
     
-    ],
+    ],}
   },
   {
     clothing_id: 36,
@@ -716,10 +720,11 @@ export default [
     price: 12000,
     tier: 4,
     requiredLevel: 13,
+    effect: {
     profit_hourly_percent: [
       { param: "mood", value: 5 },    
       
-    ],
+    ],}
   },
   {
     clothing_id: 37,
@@ -738,10 +743,11 @@ export default [
     price: 13000,
     tier: 4,
     requiredLevel: 13,
+    effect: {
     profit_hourly_percent: [
       { param: "hungry", value: 5 },    // Голод увеличивается на 5% в час (например, еда)
     
-    ],
+    ],}
   },
   {
     clothing_id: 38,
@@ -796,9 +802,10 @@ export default [
     price: 29000,
     tier: 5,
     requiredLevel: 15,
+    effect: {
     profit_hourly_percent: [
       { param: "mood", value: 10 }, 
-    ],
+    ],}
   },
   {
     clothing_id: 41,
@@ -817,9 +824,10 @@ export default [
     price: 32000,
     tier: 5,
     requiredLevel: 15,
+    effect: {
     profit_hourly_percent: [
       { param: "hungry", value: 10 }, 
-    ],
+    ],}
   },
   {
     clothing_id: 42,
@@ -838,9 +846,10 @@ export default [
     price: 43000,
     tier: 5,
     requiredLevel: 16,
+    effect: {
     profit_hourly_percent: [
       { param: "mood", value: 10 }, 
-    ],
+    ],}
   },
   {
     clothing_id: 43,
@@ -859,9 +868,10 @@ export default [
     price: 55000,
     tier: 5,
     requiredLevel: 15,
+    effect: {
     profit_hourly_percent: [
       { param: "mood", value: 10 }, 
-    ],
+    ],}
   },
   {
     clothing_id: 44,
@@ -880,10 +890,11 @@ export default [
     price: 65000,
     tier: 5,
     requiredLevel: 17,
+    effect: {
     profit_hourly_percent: [
       { param: "mood", value: 10 },    
       
-    ],
+    ],}
   },
   {
     clothing_id: 45,
@@ -902,9 +913,10 @@ export default [
     price: 80000,
     tier: 5,
     requiredLevel: 17,
+    effect: {
     profit_hourly_percent: [
       { param: "hungry", value: 10 }, 
-    ],
+    ],}
   },
   {
     clothing_id: 46,
@@ -996,10 +1008,11 @@ export default [
     price: 0,
     tier: 3,
     requiredLevel: 0, 
+    effect: {
     profit_per_tick_fixed: [
       { param: "energy", value: 1.5 },  // Энергия получает +1.5 единицы за тик (короткий буфф)
       // Голод и настроение без фиксированной прибыли за тик
-    ],
+    ],}
   },
   {
     clothing_id: 51,
