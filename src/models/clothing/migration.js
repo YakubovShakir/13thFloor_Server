@@ -1004,7 +1004,7 @@ export default [
     },
     tag: "Sport",
     type: "Top",
-    effect: null,
+   
     male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FUncommon%2FFan%2FFan-m.webp",
     female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FUncommon%2FFan%2FFan-f.webp",
     male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FUncommon%2FFan%2FFan-m-icon.webp",
@@ -1013,11 +1013,12 @@ export default [
     price: 0,
     tier: 3,
     requiredLevel: 0, 
-    effect: {
-    profit_per_tick_fixed: [
-      { param: "energy", value: 1.5 },  // Энергия получает +1.5 единицы за тик (короткий буфф)
-      // Голод и настроение без фиксированной прибыли за тик
-    ],}
+    effects: {
+    
+      profit_hourly_percent: [
+        { param: "hungry", value: 10 }, 
+      ], 
+    }
   },
   {
     clothing_id: 51,
