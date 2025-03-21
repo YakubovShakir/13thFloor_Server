@@ -263,11 +263,14 @@ export default [
   },
   {
     user_level_require: 1,
-    
     name: {
       ru: "Старый сухарь",
       en: "The old cracker"},
     duration: 30,
+    description: {
+      ru: 'Жесть, сломал зубы',
+      en: 'Fuck, no insurance'
+    },
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {

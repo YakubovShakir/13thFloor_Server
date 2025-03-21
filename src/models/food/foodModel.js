@@ -12,8 +12,8 @@ const schema = new mongoose.Schema({
     en: { type: String, required: true, unique: true }
   },
   description: {
-    ru: { type: String, required: true, unique: true },
-    en: { type: String, required: true, unique: true }
+    ru: { type: String, unique: true, default: null },
+    en: { type: String, unique: true, default: null },
   },
   duration: { type: Number, required: true },
   instant_energy_restore: { type: restoreSchema },
