@@ -493,9 +493,12 @@ const workProcessConfig = {
   },
   baseDurationKey: "base_duration_in_seconds",
   onProcessCompletion: async (process, userParameters, baseParameters) => {
+    await log("verbose", colors.blue("Fetching neko multiplier for user..."), { processId: process._id, userId: process.id });
     const nekoBoostMultiplier = await getNekoBoostMultiplier(userParameters.id);
+    await log("verbose", colors.blue("Fetched neko multiplier for user"), { processId: process._id, userId: process.id, nekoBoostMultiplier });
     const baseCoinsReward = (baseParameters.coins_in_hour / 3600) * (baseParameters.duration * 60);
     const coinsReward = baseCoinsReward * nekoBoostMultiplier;
+    await log("verbose", colors.yellow("Base work reward for user: " + coinsReward), { processId: process._id, userId: process.id, nekoBoostMultiplier, workId: process.type_id });
     await recalcValuesByParameters(userParameters, { coinsReward });
     await upUserExperience(userParameters.id, baseParameters.experience_reward);
   },
