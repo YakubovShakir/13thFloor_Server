@@ -32,6 +32,8 @@ import { ActionTypes, ActionLogModel } from "../models/effects/actionLogModel.js
 import UserCurrentInventory from "../models/user/userInventoryModel.js";
 import { getBoostPercentageFromType } from "../routes/user/userRoutes.js";
 import ShelfItemModel from "../models/shelfItem/shelfItemModel.js";
+import UserClothing from "../models/user/userClothingModel.js";
+import Clothing from "../models/clothing/clothingModel.js";
 
 const limiter = new Bottleneck({
   minTime: 1000, // 1 request per second
@@ -114,38 +116,68 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
     let durationDecreasePercentage = 0;
     let combinedEffects = {};
 
-    const userInventory = await UserCurrentInventory.findOne({ user_id: process.id });
-    const user = await User.findOne({ id: process.id }, { "personage.clothes": 1 });
-
+    console.log(userParameters, process); // Keep for debugging
+    const userClothing = await UserClothing.findOne({ user_id: process.id }, { _id: 0, user_id: 0 });
+    const user = await User.findOne({ id: process.id });
     log("debug", colors.cyan(`Collecting effects for ${processType} (processId: ${process._id})`));
     
-    if (userInventory?.shelf?.length) {
-      const shelfItems = await ShelfItemModel.find({ id: { $in: userInventory.shelf.map(s => s.id) } });
-      shelfItems.forEach(item => {
+    // Shelf items
+    const shelfItems = Object.values(user.shelf).filter(Boolean);
+    if (shelfItems.length > 0) {
+      const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } });
+      log("debug", colors.cyan(`Found ${shelf.length} shelf items`));
+      shelf.forEach((item, index) => {
         if (item.effects) {
-          log("debug", `${colors.cyan(`Shelf item effects`)}: ${JSON.stringify(item.effects)}`);
+          log("debug", `${colors.cyan(`Shelf item ${index} effects`)}: ${JSON.stringify(item.effects)}`);
           mergeEffects(combinedEffects, item.effects);
+        } else {
+          log("debug", colors.yellow(`Shelf item ${index} has no effects`));
         }
       });
+    } else {
+      log("debug", colors.yellow(`No shelf items found for user ${process.id}`));
     }
 
-    if (user?.personage?.clothes?.length) {
-      const clothing = await Clothing.find({ clothing_id: { $in: user.personage.clothes } });
-      clothing.forEach(item => {
+   // Clothing items
+   if (userClothing) {
+    log("debug", colors.cyan(`Raw userClothing: ${JSON.stringify(userClothing)}`));
+    // Explicitly extract clothing IDs
+    const clothesItems = [
+      userClothing.hat,
+      userClothing.top,
+      userClothing.pants,
+      userClothing.shoes,
+      userClothing.accessories
+    ].filter(item => item !== null && item !== undefined);
+    log("debug", colors.cyan(`Filtered clothesItems: ${JSON.stringify(clothesItems)}`));
+    if (clothesItems.length > 0) {
+      const clothing = await Clothing.find({ clothing_id: { $in: clothesItems } });
+      log("debug", colors.cyan(`Found ${clothing.length} clothing items`));
+      clothing.forEach((item, index) => {
         if (item.effects) {
-          log("debug", `${colors.cyan(`Clothing effects`)}: ${JSON.stringify(item.effects)}`);
+          log("debug", `${colors.cyan(`Clothing item ${index} effects`)}: ${JSON.stringify(item.effects)}`);
           mergeEffects(combinedEffects, item.effects);
+        } else {
+          log("debug", colors.yellow(`Clothing item ${index} has no effects`));
         }
       });
+    } else {
+      log("debug", colors.yellow(`No valid clothing items after filtering for user ${process.id}`));
     }
+  } else {
+    log("debug", colors.yellow(`No userClothing found for user ${process.id}`));
+  }
 
+    // Process effects
     if (process.effects && process.type !== "boost") {
       log("debug", `${colors.cyan(`Process effects`)}: ${JSON.stringify(process.effects)}`);
       mergeEffects(combinedEffects, process.effects);
+    } else {
+      log("debug", colors.yellow(`No process effects or process is boost type`));
     }
 
     log("debug", `${colors.cyan(`Final combinedEffects`)}: ${JSON.stringify(combinedEffects)}`);
-
+    
     const canApplyEffects = canApplyConstantEffects(userParameters);
     log("debug", colors.cyan(`canApplyConstantEffects check for ${processType} (userId: ${userParameters.id}): ${canApplyEffects}`));
 
@@ -173,7 +205,7 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
       }
     });
 
-    if (!canApplyEffects) {
+    if (!canApplyEffects || !recalcValuesProcessTypeWhitelist.includes(process.type)) {
       effectEntries = effectEntries.filter(entry => 
         !["cant_fall_below_percent", "profit_hourly_percent", "profit_hourly_fixed", "cost_hourly_percent", "profit_per_tick_fixed", "cost_per_tick_fixed"].includes(entry.key)
       );
@@ -212,6 +244,11 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
 
       switch (key) {
         case "profit_hourly_percent":
+          if (targetKey === "coins") {
+            // Skip coins for now as requested
+            log("debug", colors.yellow(`Skipping profit_hourly_percent for coins`));
+            break;
+          }
           const currentValue = userParameters[targetKey] || 0;
           const capacity = baseParameters[`${targetKey}_capacity`] || 100;
           log("debug", colors.cyan(`Calculating ${targetKey} profit: current=${currentValue}, capacity=${capacity}, value=${value}`));
@@ -221,19 +258,23 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
           log("info", `${colors.green(`Additional profit ${targetKey} from ${key}`)}: +${hourlyProfit.toFixed(2)} (${value}%)`);
           break;
         case "profit_hourly_fixed":
+          if (targetKey === "coins") break; // Skip coins
           additionalProfits[targetKey] = (additionalProfits[targetKey] || 0) + (value / 3600) * diffSeconds;
           log("info", `${colors.green(`Additional profit ${targetKey} from ${key}`)}: +${((value / 3600) * diffSeconds).toFixed(2)}`);
           break;
         case "profit_per_tick_fixed":
+          if (targetKey === "coins") break; // Skip coins
           additionalProfits[targetKey] = (additionalProfits[targetKey] || 0) + value;
           log("info", `${colors.green(`Additional profit ${targetKey} from ${key}`)}: +${value.toFixed(2)}`);
           break;
         case "cost_hourly_percent":
+          if (targetKey === "coins") break; // Skip coins
           const hourlyBaseCost = (baseParameters[`${targetKey}_cost_per_minute`] || 0) / 3600 * diffSeconds;
           additionalCosts[targetKey] = (additionalCosts[targetKey] || 0) + hourlyBaseCost * (value / 100);
           log("info", `${colors.red(`Additional cost ${targetKey} from ${key}`)}: +${(hourlyBaseCost * (value / 100)).toFixed(2)} (${value}%)`);
           break;
         case "cost_per_tick_fixed":
+          if (targetKey === "coins") break; // Skip coins
           additionalCosts[targetKey] = (additionalCosts[targetKey] || 0) + value;
           log("info", `${colors.red(`Additional cost ${targetKey} from ${key}`)}: +${value.toFixed(2)}`);
           break;
@@ -249,7 +290,7 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
       additionalProfits[nekoTargetParam] = (additionalProfits[nekoTargetParam] || 0) + nekoProfit;
       log("info", `${colors.green(`Neko profit ${nekoTargetParam}`)}: +${nekoProfit.toFixed(2)} (${((nekoMultiplier - 1) * 100).toFixed(0)}%)`);
     }
-    
+
     // Step 4: Combine all costs and profits
     const finalCosts = { ...periodCosts };
     for (const [key, cost] of Object.entries(additionalCosts)) {
@@ -416,7 +457,9 @@ const genericProcessScheduler = (processType, processConfig) => {
 
       await Promise.all(processes.map(async (process) => {
         const userParameters = await UserParameters.findOne({ id: process.id });
-        const baseParameters = await Model.findOne(getTypeSpecificParams(process));
+        const baseParameters = Model ? await Model.findOne(getTypeSpecificParams(process)) : {};
+        
+        await log("verbose", `${processType} process scheduler fetched params`, { userParameters, baseParameters });
 
         if (!userParameters || !baseParameters) {
           await log("error", `${processType} process error: base parameters or userParameters not found`, { processId: process._id });
@@ -492,7 +535,6 @@ const sleepProcessConfig = {
 const skillProcessConfig = {
   processType: "skill",
   cronSchedule: "*/10 * * * * *",
-  Model: ConstantEffects,
   durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ id: process.type_id }),
   baseDurationKey: "base_duration_in_seconds",
