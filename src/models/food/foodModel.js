@@ -11,6 +11,10 @@ const schema = new mongoose.Schema({
     ru: { type: String, required: true, unique: true },
     en: { type: String, required: true, unique: true }
   },
+  description: {
+    ru: { type: String, required: true, unique: true },
+    en: { type: String, required: true, unique: true }
+  },
   duration: { type: Number, required: true },
   instant_energy_restore: { type: restoreSchema },
   long_energy_restore: { type: restoreSchema },

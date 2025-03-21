@@ -21,15 +21,15 @@ import {
 const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 
 const gameTimer = {
-  FoodProccess,
-  SkillProccess,
-  TrainingProccess,
+  // FoodProccess,
+  // SkillProccess,
+  // TrainingProccess,
   WorkProcess,
-  SleepProccess,
-  BoostProccess,
-  AutoclaimProccess,
-  RefsRecalsProcess,
-  NftScanProcess,
+  // SleepProccess,
+  // BoostProccess,
+  // AutoclaimProccess,
+  // RefsRecalsProcess,
+  // NftScanProcess,
   stopAll() {
     Object.values(this).forEach((scheduler) => {
       if (scheduler && typeof scheduler.stop === "function") {
