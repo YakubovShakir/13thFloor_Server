@@ -54,88 +54,6 @@ function normalizeAddress(rawAddress) {
 const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) =>
   baseDurationMinutes * 60 * (1 - durationDecreasePercentage / 100);
 
-const calculatePeriodProfits = (baseParameters, processEffects, diffSeconds, profitConfig, effectEntries) => {
-  if (!profitConfig) {
-    log("debug", colors.yellow("No profitConfig provided, returning empty profits"));
-    return {};
-  }
-
-  // Process effectEntries for profit-related rules
-  const profitModifiers = {};
-  for (const entry of effectEntries || []) {
-    switch (entry.key) {
-      case "profit_hourly_percent":
-        profitModifiers[entry.targetKey] = {
-          ...profitModifiers[entry.targetKey],
-          hourlyPercentBoost: entry.value || 0,
-        };
-        log("debug", `${colors.magenta("Effect 'profit_hourly_percent'")} applied to ${entry.targetKey}: +${entry.value}% hourly`);
-        break;
-      case "profit_hourly_fixed":
-        profitModifiers[entry.targetKey] = {
-          ...profitModifiers[entry.targetKey],
-          hourlyFixed: entry.value || 0,
-        };
-        log("debug", `${colors.magenta("Effect 'profit_hourly_fixed'")} applied to ${entry.targetKey}: +${entry.value} per hour`);
-        break;
-      case "profit_per_tick_fixed":
-        profitModifiers[entry.targetKey] = {
-          ...profitModifiers[entry.targetKey],
-          perTickFixed: entry.value || 0,
-        };
-        log("debug", `${colors.magenta("Effect 'profit_per_tick_fixed'")} applied to ${entry.targetKey}: +${entry.value} per tick`);
-        break;
-      default:
-        break;
-    }
-  }
-
-  return Object.keys(profitConfig).reduce((acc, key) => {
-    const config = profitConfig[key];
-    let profitPerSecondBase =
-      config.type === "hourly"
-        ? (baseParameters[config.baseValueKey] || 0) / 3600
-        : config.type === "per_minute"
-        ? (baseParameters[config.baseValueKey] || 0) / 60
-        : config.type === "progressive"
-        ? (baseParameters[config.baseValueKey] || 0) / (baseParameters[config.baseDurationKey] * 60)
-        : (baseParameters[config.baseValueKey] || 0);
-    
-    log("debug", `${colors.cyan(`Calculating base profit for ${key}`)}: ${profitPerSecondBase.toFixed(4)}/s from ${config.baseValueKey}=${baseParameters[config.baseValueKey] || 0} over ${config.type === "hourly" ? "3600s" : config.type === "per_minute" ? "60s" : "duration"}`);
-
-    let effectIncrease = processEffects?.[config.effectIncreaseKey] || 0;
-    let baseProfit = profitPerSecondBase * diffSeconds * ((100 + effectIncrease) / 100);
-    log("debug", `${colors.cyan(`Base profit for ${key}`)}: ${baseProfit.toFixed(2)} (${profitPerSecondBase.toFixed(4)} * ${diffSeconds}s * ${(100 + effectIncrease) / 100})`);
-
-    // Apply profit modifiers from effectEntries
-    if (profitModifiers[key]) {
-      const { hourlyPercentBoost, hourlyFixed, perTickFixed } = profitModifiers[key];
-
-      if (hourlyPercentBoost) {
-        const hourlyBase = (baseParameters[config.baseValueKey] || 0) / 3600 * diffSeconds;
-        const boost = hourlyBase * (hourlyPercentBoost / 100);
-        baseProfit += boost;
-        log("info", `${colors.green(`Added to ${key} profit`)}: +${boost.toFixed(2)} from hourly ${hourlyPercentBoost}% (${hourlyBase.toFixed(2)} * ${hourlyPercentBoost / 100})`);
-      }
-
-      if (hourlyFixed) {
-        const fixedProfit = (hourlyFixed / 3600) * diffSeconds;
-        baseProfit += fixedProfit;
-        log("info", `${colors.green(`Added to ${key} profit`)}: +${fixedProfit.toFixed(2)} from hourly fixed ${hourlyFixed} (${hourlyFixed} / 3600 * ${diffSeconds}s)`);
-      }
-
-      if (perTickFixed) {
-        baseProfit += perTickFixed;
-        log("info", `${colors.green(`Added to ${key} profit`)}: +${perTickFixed.toFixed(2)} from per-tick fixed effect`);
-      }
-    }
-
-    acc[key] = baseProfit;
-    log("info", `${colors.green(`Final profit for ${key}`)}: ${acc[key].toFixed(2)} added`);
-    return acc;
-  }, {});
-};
-
 const recalcValuesProcessTypeWhitelist = ["work", "training", "sleep"];
 
 const applyUserParameterUpdates = async (userParameters, periodCosts, periodProfits, processType) => {
@@ -173,9 +91,9 @@ const mergeEffects = (target, source) => {
   for (const [key, value] of Object.entries(source)) {
     if (Array.isArray(value)) {
       target[key] = target[key] || [];
-      target[key] = [...target[key], ...value]; // Concatenate arrays
+      target[key] = [...target[key], ...value];
     } else {
-      target[key] = value; // Overwrite scalars
+      target[key] = value;
     }
   }
 };
@@ -281,12 +199,71 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
 
     log("debug", colors.cyan(`Starting cost/profit calc for ${processType} (processId: ${process._id}) over ${diffSeconds}s, mood: ${userParameters.mood}`));
+    
+    // Step 1: Calculate initial process costs and profits
     const periodCosts = calculatePeriodCosts(baseParameters, combinedEffects, diffSeconds, costConfig, effectEntries, userParameters);
     const periodProfits = calculatePeriodProfits(baseParameters, combinedEffects, diffSeconds, profitConfig, effectEntries);
 
-    const canContinue = Object.keys(periodCosts).every(key => {
+    const additionalCosts = {};
+    const additionalProfits = {};
+    effectEntries.forEach(entry => {
+      const { key, value, targetKey } = entry;
+      if (!value || !targetKey) return;
+
+      switch (key) {
+        case "profit_hourly_percent":
+          const currentValue = userParameters[targetKey] || 0;
+          const capacity = baseParameters[`${targetKey}_capacity`] || 100;
+          log("debug", colors.cyan(`Calculating ${targetKey} profit: current=${currentValue}, capacity=${capacity}, value=${value}`));
+          const profitBase = (currentValue / capacity) * value; // e.g., (50 / 100) * 10 = 5
+          const hourlyProfit = (profitBase / 3600) * diffSeconds; // Prorate hourly
+          additionalProfits[targetKey] = (additionalProfits[targetKey] || 0) + hourlyProfit;
+          log("info", `${colors.green(`Additional profit ${targetKey} from ${key}`)}: +${hourlyProfit.toFixed(2)} (${value}%)`);
+          break;
+        case "profit_hourly_fixed":
+          additionalProfits[targetKey] = (additionalProfits[targetKey] || 0) + (value / 3600) * diffSeconds;
+          log("info", `${colors.green(`Additional profit ${targetKey} from ${key}`)}: +${((value / 3600) * diffSeconds).toFixed(2)}`);
+          break;
+        case "profit_per_tick_fixed":
+          additionalProfits[targetKey] = (additionalProfits[targetKey] || 0) + value;
+          log("info", `${colors.green(`Additional profit ${targetKey} from ${key}`)}: +${value.toFixed(2)}`);
+          break;
+        case "cost_hourly_percent":
+          const hourlyBaseCost = (baseParameters[`${targetKey}_cost_per_minute`] || 0) / 3600 * diffSeconds;
+          additionalCosts[targetKey] = (additionalCosts[targetKey] || 0) + hourlyBaseCost * (value / 100);
+          log("info", `${colors.red(`Additional cost ${targetKey} from ${key}`)}: +${(hourlyBaseCost * (value / 100)).toFixed(2)} (${value}%)`);
+          break;
+        case "cost_per_tick_fixed":
+          additionalCosts[targetKey] = (additionalCosts[targetKey] || 0) + value;
+          log("info", `${colors.red(`Additional cost ${targetKey} from ${key}`)}: +${value.toFixed(2)}`);
+          break;
+      }
+    });
+
+    // Step 3: Calculate Neko profit
+    const nekoMultiplier = await getNekoBoostMultiplier(userParameters.id);
+    const nekoTargetParam = "energy"; // Adjust to 'coins' or whatever Neko boosts
+    const nekoBase = (baseParameters[`${nekoTargetParam}_base`] || 0) / 3600 * diffSeconds;
+    const nekoProfit = nekoBase * (nekoMultiplier - 1);
+    if (nekoProfit > 0) {
+      additionalProfits[nekoTargetParam] = (additionalProfits[nekoTargetParam] || 0) + nekoProfit;
+      log("info", `${colors.green(`Neko profit ${nekoTargetParam}`)}: +${nekoProfit.toFixed(2)} (${((nekoMultiplier - 1) * 100).toFixed(0)}%)`);
+    }
+    
+    // Step 4: Combine all costs and profits
+    const finalCosts = { ...periodCosts };
+    for (const [key, cost] of Object.entries(additionalCosts)) {
+      finalCosts[key] = (finalCosts[key] || 0) + cost;
+    }
+    const finalProfits = { ...periodProfits };
+    for (const [key, profit] of Object.entries(additionalProfits)) {
+      finalProfits[key] = (finalProfits[key] || 0) + profit;
+    }
+
+    // Step 5: Check if we can continue
+    const canContinue = Object.keys(finalCosts).every(key => {
       const available = Math.floor(userParameters[key] || 0);
-      const cost = periodCosts[key];
+      const cost = finalCosts[key];
       const ok = available >= cost;
       if (!ok) log("warn", colors.yellow(`Insufficient ${key}: ${available} < ${cost}`));
       return ok;
@@ -294,15 +271,22 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
 
     if (canContinue) {
       if (process.type !== "boost") {
-        await applyUserParameterUpdates(userParameters, periodCosts, periodProfits, process.type);
-        log("info", colors.cyan(`Updated params - mood: ${userParameters.mood}, costs: ${JSON.stringify(periodCosts)}`));
+        // Step 6: Apply all changes at once
+        for (const [key, cost] of Object.entries(finalCosts)) {
+          userParameters[key] = Math.max(0, (userParameters[key] || 0) - cost);
+        }
+        for (const [key, profit] of Object.entries(finalProfits)) {
+          userParameters[key] = (userParameters[key] || 0) + profit;
+        }
+        await userParameters.save();
+        log("info", colors.cyan(`Updated params - mood: ${userParameters.mood}, finalCosts: ${JSON.stringify(finalCosts)}, finalProfits: ${JSON.stringify(finalProfits)}`));
       }
 
       if (updateUserParamsOnTick) {
-        updateUserParamsOnTick(userParameters, periodProfits, baseParameters, diffSeconds);
+        updateUserParamsOnTick(userParameters, finalProfits, baseParameters, diffSeconds);
       }
 
-      if (processDurationSeconds >= actualDurationSeconds || finishConditionCheck?.(userParameters, periodCosts, baseParameters, process)) {
+      if (processDurationSeconds >= actualDurationSeconds || finishConditionCheck?.(userParameters, finalCosts, baseParameters, process)) {
         if (onProcessCompletion) await onProcessCompletion(process, userParameters, baseParameters);
         await log("info", `${colors.green(`${processType} process finished`)}`, { userId: userParameters.id, processType, processId: process._id });
         await gameProcess.deleteOne({ _id: process._id });
@@ -316,7 +300,7 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
         userId: userParameters.id,
         processType,
         processId: process._id,
-        costs: periodCosts,
+        costs: finalCosts,
         available: { ...userParameters },
       });
       await gameProcess.deleteOne({ _id: process._id });
@@ -340,30 +324,12 @@ const calculatePeriodCosts = (baseParameters, processEffects, diffSeconds, costC
 
   const costModifiers = {};
   for (const entry of effectEntries || []) {
-    switch (entry.key) {
-      case "cant_fall_below_percent":
-        costModifiers[entry.targetKey] = {
-          minPercent: entry.value || 0,
-          maxValue: baseParameters[`${entry.targetKey}_capacity`] || 100,
-        };
-        log("debug", `${colors.magenta("Effect 'cant_fall_below_percent'")} applied to ${entry.targetKey}: min ${entry.value}% of ${costModifiers[entry.targetKey].maxValue}`);
-        break;
-      case "cost_hourly_percent":
-        costModifiers[entry.targetKey] = {
-          ...costModifiers[entry.targetKey],
-          hourlyPercentIncrease: entry.value || 0,
-        };
-        log("debug", `${colors.magenta("Effect 'cost_hourly_percent'")} applied to ${entry.targetKey}: +${entry.value}% hourly`);
-        break;
-      case "cost_per_tick_fixed":
-        costModifiers[entry.targetKey] = {
-          ...costModifiers[entry.targetKey],
-          perTickFixed: entry.value || 0,
-        };
-        log("debug", `${colors.magenta("Effect 'cost_per_tick_fixed'")} applied to ${entry.targetKey}: +${entry.value} per tick`);
-        break;
-      default:
-        break;
+    if (entry.key === "cant_fall_below_percent") {
+      costModifiers[entry.targetKey] = {
+        minPercent: entry.value || 0,
+        maxValue: baseParameters[`${entry.targetKey}_capacity`] || 100,
+      };
+      log("debug", `${colors.magenta("Effect 'cant_fall_below_percent'")} applied to ${entry.targetKey}: min ${entry.value}% of ${costModifiers[entry.targetKey].maxValue}`);
     }
   }
 
@@ -381,20 +347,7 @@ const calculatePeriodCosts = (baseParameters, processEffects, diffSeconds, costC
     log("debug", `${colors.cyan(`Base cost for ${key}`)}: ${baseCost.toFixed(2)} (${costPerSecondBase.toFixed(4)} * ${diffSeconds}s * ${(100 - effectDecrease) / 100})`);
 
     if (costModifiers[key]) {
-      const { minPercent, maxValue, hourlyPercentIncrease, perTickFixed } = costModifiers[key];
-
-      if (hourlyPercentIncrease) {
-        const hourlyBase = (baseParameters[config.baseValueKey] || 0) / 3600 * diffSeconds;
-        const increase = hourlyBase * (hourlyPercentIncrease / 100);
-        baseCost += increase;
-        log("info", `${colors.red(`Added to ${key} cost`)}: +${increase.toFixed(2)} from hourly ${hourlyPercentIncrease}% (${hourlyBase.toFixed(2)} * ${hourlyPercentIncrease / 100})`);
-      }
-
-      if (perTickFixed) {
-        baseCost += perTickFixed;
-        log("info", `${colors.red(`Added to ${key} cost`)}: +${perTickFixed.toFixed(2)} from per-tick fixed effect`);
-      }
-
+      const { minPercent, maxValue } = costModifiers[key];
       if (minPercent && maxValue) {
         const minValue = (minPercent / 100) * maxValue;
         const currentValue = userParameters[key] || 0;
@@ -411,7 +364,36 @@ const calculatePeriodCosts = (baseParameters, processEffects, diffSeconds, costC
     }
 
     acc[key] = Math.max(0, baseCost);
-    log("info", `${colors.red(`Final cost for ${key}`)}: ${acc[key].toFixed(2)} subtracted`);
+    log("info", `${colors.red(`Final process cost for ${key}`)}: ${acc[key].toFixed(2)} subtracted`);
+    return acc;
+  }, {});
+};
+
+const calculatePeriodProfits = (baseParameters, processEffects, diffSeconds, profitConfig, effectEntries) => {
+  if (!profitConfig) {
+    log("debug", colors.yellow("No profitConfig provided, returning empty profits"));
+    return {};
+  }
+
+  return Object.keys(profitConfig).reduce((acc, key) => {
+    const config = profitConfig[key];
+    let profitPerSecondBase =
+      config.type === "hourly"
+        ? (baseParameters[config.baseValueKey] || 0) / 3600
+        : config.type === "per_minute"
+        ? (baseParameters[config.baseValueKey] || 0) / 60
+        : config.type === "progressive"
+        ? (baseParameters[config.baseValueKey] || 0) / (baseParameters[config.baseDurationKey] * 60)
+        : (baseParameters[config.baseValueKey] || 0);
+    
+    log("debug", `${colors.cyan(`Calculating base profit for ${key}`)}: ${profitPerSecondBase.toFixed(4)}/s from ${config.baseValueKey}=${baseParameters[config.baseValueKey] || 0} over ${config.type === "hourly" ? "3600s" : config.type === "per_minute" ? "60s" : "duration"}`);
+
+    let effectIncrease = processEffects?.[config.effectIncreaseKey] || 0;
+    let baseProfit = profitPerSecondBase * diffSeconds * ((100 + effectIncrease) / 100);
+    log("debug", `${colors.cyan(`Base profit for ${key}`)}: ${baseProfit.toFixed(2)} (${profitPerSecondBase.toFixed(4)} * ${diffSeconds}s * ${(100 + effectIncrease) / 100})`);
+
+    acc[key] = baseProfit;
+    log("info", `${colors.green(`Final process profit for ${key}`)}: ${acc[key].toFixed(2)} added`);
     return acc;
   }, {});
 };
