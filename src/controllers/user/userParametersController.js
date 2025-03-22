@@ -12,6 +12,7 @@ import { prebuildInitialInventory } from "./userController.js"
 import UserLaunchedInvestments from '../../models/investments/userLaunchedInvestments.js'
 import { ConstantEffects, ConstantEffectTypes } from "../../models/effects/constantEffectsLevels.js"
 import { Bot } from "grammy"
+import { getNekoBoostMultiplier } from "../../gameTimer/universal.js"
 
 const gamecenterLevelMap = {
   "1": 1,
@@ -153,6 +154,8 @@ export const getUserParameters = async (req, res) => {
     const training_duration_decrease = training_duration_decrease_doc?.value_change || null
     const sleeping_duration_decrease = sleeping_duration_decrease_doc?.value_change || null
 
+    const neko_boost_percentage = await getNekoBoostMultiplier(userId)
+
     let inventory = await UserCurrentInventory.findOne({ user_id: userId });
     if (!inventory) {
       inventory = await prebuildInitialInventory(userId);
@@ -215,7 +218,8 @@ export const getUserParameters = async (req, res) => {
       work_duration_decrease,
       work_hourly_income_increase,
       training_duration_decrease,
-      sleeping_duration_decrease
+      sleeping_duration_decrease,
+      neko_boost_percentage
     });
 
   } catch (error) {

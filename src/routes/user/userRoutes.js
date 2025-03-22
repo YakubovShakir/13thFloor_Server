@@ -48,6 +48,9 @@ import UserClothing from "../../models/user/userClothingModel.js"
 import SkillModel from '../../models/skill/skillModel.js'
 import Bottleneck from "bottleneck"
 import crypto from 'crypto'
+import { canApplyConstantEffects } from "../../utils/parametersDepMath.js"
+import UserParameters from "../../models/user/userParametersModel.js"
+import { getNekoBoostMultiplier } from "../../gameTimer/universal.js"
 
 const router = express.Router()
 router.get("/user/:id", getUser)
@@ -836,6 +839,11 @@ router.get("/:id/effects/current", async (req, res) => {
     const userId = parseInt(req.params.id);
     console.log(`Fetching effects for userId: ${userId}`);
 
+    const userParameters = await UserParameters.findOne({ id: userId });
+    if (!userParameters) {
+      return res.status(404).json({ error: "User parameters not found" });
+    }
+
     const effectSources = { shelf: [], clothing: [], boosts: [] };
     const allEffects = {
       cant_fall_below_percent: [],
@@ -845,87 +853,112 @@ router.get("/:id/effects/current", async (req, res) => {
       profit_per_tick_fixed: [],
       cost_per_tick_fixed: [],
       autostart: [],
+      duration_decrease: null,
+      mood_increase: null,
+      reward_increase: null,
+      energy_cost_decrease: null,
+      hunger_cost_decrease: null,
     };
+    let nekoBoostPercentage = 0;
 
-    // Shelf items
-    const inventory = await UserCurrentInventory.findOne({ user_id: userId });
-    console.log('Inventory:', inventory);
-    if (inventory?.shelf?.length) {
-      console.log('Shelf items IDs:', inventory.shelf.map(s => s.id));
-      const shelfItems = await ShelfItemModel.find({ id: { $in: inventory.shelf.map(s => s.id) } });
-      console.log('Shelf items:', shelfItems);
-      shelfItems.forEach(item => {
-        if (item.effects) {
-          console.log('Shelf item effects:', item.effects);
-          effectSources.shelf.push(item.effects);
-        }
-      });
-    }
-
-    // Worn clothing
-    const userClothing = await UserClothing.findOne({ user_id: userId });
-    console.log('User clothing:', userClothing);
-    if (userClothing) {
-      const { hat, top, pants, shoes, accessories } = userClothing;
-      const userClothingIds = [hat, top, pants, shoes, accessories].filter(val => val !== null);
-      console.log('Clothing IDs:', userClothingIds);
-      if (userClothingIds.length) {
-        const clothing = await Clothing.find({ clothing_id: { $in: userClothingIds } });
-        console.log('Clothing items:', clothing);
-        clothing.forEach(item => {
+    // Fetch effects only if canApplyConstantEffects is true
+    if (canApplyConstantEffects(userParameters)) {
+      // Shelf items
+      const user = await User.findOne({ id: userId });
+      if (!user) {
+        return res.status(404).json({ error: "User not found" });
+      }
+      const shelfItems = Object.values(user.shelf).filter(Boolean);
+      if (shelfItems.length > 0) {
+        const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } });
+        console.log(`Found ${shelf.length} shelf items for user ${userId}`);
+        shelf.forEach((item, index) => {
           if (item.effects) {
-            console.log('Clothing item effects:', item.effects);
-            effectSources.clothing.push(item.effects);
+            console.log(`Shelf item ${index} effects: ${JSON.stringify(item.effects)}`);
+            effectSources.shelf.push(item.effects);
           }
         });
       }
-    }
 
-    // Active boosts
-    const activeBoostProcesses = await gameProcess.find({ id: userId, type: "boost" });
-    console.log('Active boost processes:', activeBoostProcesses);
-    if (activeBoostProcesses.length) {
-      const boostIds = activeBoostProcesses.map(p => p.type_id);
-      console.log('Boost IDs:', boostIds);
-      const boosts = await Boost.find({ boost_id: { $in: boostIds } });
-      console.log('Boosts:', boosts);
-      boosts.forEach(boost => {
-        if (boost.effects) {
-          console.log('Boost effects:', boost.effects);
-          effectSources.boosts.push(boost.effects);
+      // Worn clothing
+      const userClothing = await UserClothing.findOne({ user_id: userId }, { _id: 0, user_id: 0 });
+      if (userClothing) {
+        const clothesItems = [
+          userClothing.hat,
+          userClothing.top,
+          userClothing.pants,
+          userClothing.shoes,
+          userClothing.accessories,
+        ].filter(item => item !== null && item !== undefined);
+        if (clothesItems.length > 0) {
+          const clothing = await Clothing.find({ clothing_id: { $in: clothesItems } });
+          console.log(`Found ${clothing.length} clothing items for user ${userId}`);
+          clothing.forEach((item, index) => {
+            if (item.effects) {
+              console.log(`Clothing item ${index} effects: ${JSON.stringify(item.effects)}`);
+              effectSources.clothing.push(item.effects);
+            }
+          });
         }
-      });
-    }
+      }
 
-    console.log('Collected effect sources:', effectSources);
-
-    // Helper function to combine effects
-    const combineEffects = (effects, target) => {
-      effects.forEach(effectObj => {
-        // Skip null or invalid objects
-        if (!effectObj || typeof effectObj !== 'object') return;
-
-        Object.entries(effectObj).forEach(([category, effectArray]) => {
-          if (target[category] && Array.isArray(effectArray)) {
-            // Append each effect from the array to the target category
-            effectArray.forEach(effect => {
-              if (effect && typeof effect === 'object' && 'param' in effect && 'value' in effect) {
-                console.log(`Adding effect: ${category} - ${effect.param}: ${effect.value}`);
-                target[category].push({ param: effect.param, value: effect.value });
-              }
-            });
+      // Active boosts
+      const activeBoostProcesses = await gameProcess.find({ id: userId, type: "boost" });
+      if (activeBoostProcesses.length) {
+        const boostIds = activeBoostProcesses.map(p => p.type_id);
+        const boosts = await Boost.find({ boost_id: { $in: boostIds } });
+        console.log(`Found ${boosts.length} active boosts for user ${userId}`);
+        boosts.forEach((boost, index) => {
+          if (boost.effects) {
+            console.log(`Boost ${index} effects: ${JSON.stringify(boost.effects)}`);
+            effectSources.boosts.push(boost.effects);
           }
         });
-      });
-    };
+      }
 
-    combineEffects(effectSources.shelf, allEffects);
-    combineEffects(effectSources.clothing, allEffects);
-    combineEffects(effectSources.boosts, allEffects);
+      // Combine effects
+      const combineEffects = (effects, target) => {
+        effects.forEach(effectObj => {
+          if (!effectObj || typeof effectObj !== 'object') return;
 
-    console.log('Final allEffects:', allEffects);
+          Object.entries(effectObj).forEach(([category, value]) => {
+            // Handle array effects
+            if (target[category] && Array.isArray(target[category])) {
+              if (Array.isArray(value)) {
+                value.forEach(effect => {
+                  if (effect && typeof effect === 'object' && 'param' in effect && 'value' in effect) {
+                    console.log(`Adding effect: ${category} - ${effect.param}: ${effect.value}`);
+                    target[category].push({ param: effect.param, value: effect.value });
+                  }
+                });
+              }
+            }
+            // Handle scalar effects
+            else if (target[category] !== undefined && !Array.isArray(value)) {
+              console.log(`Setting scalar effect: ${category} - ${value}`);
+              target[category] = value;
+            }
+          });
+        });
+      };
 
-    res.status(200).json({ effects: allEffects });
+      combineEffects(effectSources.shelf, allEffects);
+      combineEffects(effectSources.clothing, allEffects);
+      combineEffects(effectSources.boosts, allEffects);
+    } else {
+      console.log(`Effects not applied for user ${userId}: canApplyConstantEffects returned false`);
+    }
+
+    // Neko Boost Percentage
+    const nekoBoostMultiplier = await getNekoBoostMultiplier(userId);
+    nekoBoostPercentage = (nekoBoostMultiplier - 1) * 100;
+    console.log(`Neko Boost Multiplier: ${nekoBoostMultiplier}, Percentage: ${nekoBoostPercentage}%`);
+
+    console.log('Final allEffects:', JSON.stringify(allEffects));
+
+    res.status(200).json({
+      effects: { ...allEffects, neko_boost_percentage: nekoBoostPercentage },
+    });
   } catch (error) {
     console.error("Error fetching current effects:", error);
     res.status(500).json({ error: "Internal server error" });

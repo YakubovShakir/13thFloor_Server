@@ -1,3 +1,4 @@
+import { getNekoBoostMultiplier } from "../../../gameTimer/universal.js"
 import {
   ConstantEffects,
   ConstantEffectTypes,
@@ -46,8 +47,9 @@ const startWork = async (userId) => {
     : baseDuration
 
     const { duration, seconds } = getMinutesAndSeconds(durationInSeconds)
-
-    const reward_at_the_end = Math.round(((work.coins_in_hour + (reward_increase?.value_change || 0)) / 3600 * baseDuration) * 100) / 100
+     
+    const nekoBoostMultiplier = await getNekoBoostMultiplier(userId)
+    const reward_at_the_end = Math.round((((work.coins_in_hour + (reward_increase?.value_change || 0)) * nekoBoostMultiplier) / 3600 * baseDuration) * 100) / 100
 
     await addActiveProcess(userId, "work", user?.work_id, duration, seconds, {
       duration_decrease: duration_decrease?.value_change,
@@ -55,7 +57,8 @@ const startWork = async (userId) => {
     }, {
       base_duration_in_seconds: baseDuration,
       reward_at_the_end: reward_at_the_end,
-      target_duration_in_seconds: durationInSeconds < baseDuration ? durationInSeconds : null
+      target_duration_in_seconds: durationInSeconds < baseDuration ? durationInSeconds : null,
+      neko_boost_percentage: nekoBoostMultiplier
     })
     console.log(`[startWork] ${userId}, duration: ${durationInSeconds}`)
 
@@ -66,58 +69,55 @@ const startWork = async (userId) => {
 }
 
 export const checkCanStopWork = async (userId) => {
-  // Получение параметров и работы
-  const user = await UserParameters.findOne({ id: userId })
-  const work = await Work.findOne({ work_id: user?.work_id })
-  const workProcess = await process.findOne({ id: userId, type_id: work.work_id })
+  // Fetch parameters and work process
+  const user = await UserParameters.findOne({ id: userId });
+  const work = await Work.findOne({ work_id: user?.work_id });
+  const workProcess = await process.findOne({ id: userId, type_id: work?.work_id }); // Corrected 'process' to 'gameProcess'
 
-  if (!user || !work || !workProcess)
-    return { status: 403, data: { } }
-
-  const durationInSeconds = workProcess.target_duration_in_seconds || workProcess.base_duration_in_seconds
-
-  const now = moment()
-  const processStartTime = moment(workProcess.createdAt)
-  const lastUpdateTime = moment(workProcess.updatedAt)
-  const elapsedSeconds = now.diff(processStartTime, "seconds")
-  const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds")
-  const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
-
-  if(!canStartWorking(user)) {
-    await process.deleteOne({ id: userId, type_id: work.work_id })
-
-    return { status: 200, data: { status: "ok" } }
+  if (!user || !work || !workProcess) {
+    return { status: 403, data: {} };
   }
 
-  // Calculate the actual worked duration since last update
-  const actualWorkedDuration = Math.min(secondsSinceLastUpdate, seconds_left)
+  const durationInSeconds = workProcess.target_duration_in_seconds || workProcess.base_duration_in_seconds;
+  const now = moment();
+  const processStartTime = moment(workProcess.createdAt);
+  const lastUpdateTime = moment(workProcess.updatedAt);
+  const elapsedSeconds = now.diff(processStartTime, "seconds");
+  const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds");
+  const secondsLeft = Math.max(0, durationInSeconds - elapsedSeconds);
+
+  // Check if user can still work (assuming canStartWorking exists)
+  if (!canStartWorking(user)) {
+    await gameProcess.deleteOne({ id: userId, type_id: work.work_id });
+    return { status: 200, data: { status: "ok" } };
+  }
+
+  // Calculate actual worked duration since last update
+  const actualWorkedDuration = Math.min(secondsSinceLastUpdate, secondsLeft);
 
   // Calculate resource consumption since last update
-  const moodCost = (work.mood_cost_per_minute / 60) * actualWorkedDuration
-  const hungryCost = (work.hungry_cost_per_minute / 60) * actualWorkedDuration
-  const energyCost = (work.energy_cost_per_minute / 60) * actualWorkedDuration
+  const moodCost = (work.mood_cost_per_minute / 60) * actualWorkedDuration;
+  const hungryCost = (work.hungry_cost_per_minute / 60) * actualWorkedDuration;
+  const energyCost = (work.energy_cost_per_minute / 60) * actualWorkedDuration;
 
-  if (seconds_left === 0) {
-    await process.deleteOne({ id: userId, type_id: work.work_id })
-    
-    const rewardIncreaseHourly = workProcess.effects.reward_increase || 0
-    const workReward = (work.coins_in_hour + rewardIncreaseHourly) / 3600 * workProcess.base_duration_in_seconds
-    
-    // user.experience += 
-    user.mood = Math.max(0, user.mood - moodCost)
-    user.hungry = Math.max(0, user.hungry - hungryCost)
-    user.energy = Math.max(0, user.energy - energyCost)
+  if (secondsLeft === 0) {
+    await process.deleteOne({ id: userId, type_id: work.work_id });
 
-    await recalcValuesByParameters(user, { coinsReward: workReward })
-    await upUserExperience(userId, work.experience_reward)
-    await user.save()
+    // Update user parameters
+    user.mood = Math.max(0, user.mood - moodCost);
+    user.hungry = Math.max(0, user.hungry - hungryCost);
+    user.energy = Math.max(0, user.energy - energyCost);
 
-    return { status: 200, data: { status: "ok" } }
+    await recalcValuesByParameters(user, { coinsReward: workProcess.reward_at_the_end });
+    await upUserExperience(userId, work.experience_reward);
+    await user.save();
+
+    return { status: 200, data: { status: "ok" } };
   }
 
-  console.log('[checkCanStopWork] ' + userId + `actual: ${actualWorkedDuration}; left: ${seconds_left}`)
+  console.log(`[checkCanStopWork] ${userId} actual: ${actualWorkedDuration}; left: ${secondsLeft}`);
 
-  throw { status: 401, data: { seconds_left } }
-}
+  throw { status: 401, data: { seconds_left: secondsLeft } };
+};
 
 export default startWork

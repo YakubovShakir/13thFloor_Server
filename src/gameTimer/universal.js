@@ -80,7 +80,7 @@ const applyUserParameterUpdates = async (userParameters, periodCosts, periodProf
   }
 };
 
-const getNekoBoostMultiplier = async (userId) => {
+export const getNekoBoostMultiplier = async (userId) => {
   const boost = await ActiveEffectsModel.findOne({
     $or: [{ user_id: userId }, { triggered_by: userId }],
     type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
@@ -116,7 +116,7 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
     let durationDecreasePercentage = 0;
     let combinedEffects = {};
 
-    // Normalize costConfig and profitConfig for training
+    // Normalize costConfig and profitConfig
     let costConfig, profitConfig;
     if (processType === "training") {
       costConfig = {
@@ -127,6 +127,12 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
         mood: baseParameters.mood_profit || 0,
       };
       log("debug", `Training costConfig: ${JSON.stringify(costConfig)}, profitConfig: ${JSON.stringify(profitConfig)}`);
+    } else if (processType === "sleep") {
+      costConfig = {}; // No costs for sleep
+      profitConfig = {
+        energy: baseParameters.energy_capacity || 100, // Full recovery over duration
+      };
+      log("debug", `Sleep costConfig: ${JSON.stringify(costConfig)}, profitConfig: ${JSON.stringify(profitConfig)}`);
     } else {
       costConfig = rawCostConfig || {
         energy: baseParameters[`${processType}_energy_cost`] || 0,
@@ -197,13 +203,29 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
     const finalCosts = { ...periodCosts };
     const finalProfits = { ...periodProfits };
 
-    const canContinue = Object.keys(finalCosts).every(key => {
+    // Check resource costs
+    const hasSufficientResources = Object.keys(finalCosts).length === 0 || Object.keys(finalCosts).every(key => {
       const available = Math.floor(userParameters[key] || 0);
       const cost = Math.floor(finalCosts[key] || 0);
       const ok = available >= cost;
       if (!ok) log("warn", colors.yellow(`Insufficient ${key}: ${available} < ${cost}`));
       return ok;
     });
+
+    // Check profit caps as termination conditions
+    const profitCapsReached = Object.keys(finalProfits).some(key => {
+      if (key === "mood" && userParameters[key] >= 100) {
+        log("info", colors.yellow(`Training stopped: ${key} reached cap (100)`));
+        return true;
+      }
+      if (key === "energy" && userParameters[key] >= userParameters.energy_capacity) {
+        log("info", colors.yellow(`Sleep stopped: ${key} reached cap (${userParameters.energy_capacity})`));
+        return true;
+      }
+      return false;
+    });
+
+    const canContinue = hasSufficientResources && !profitCapsReached;
 
     if (canContinue) {
       await applyUserParameterUpdates(userParameters, finalCosts, finalProfits, processType);
@@ -212,7 +234,8 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
         updateUserParamsOnTick(userParameters, finalProfits, baseParameters, diffSeconds);
       }
 
-      if (processDurationSeconds >= actualDurationSeconds || finishConditionCheck?.(userParameters, finalCosts, baseParameters, process)) {
+      // End if duration is reached or explicit finish condition is met
+      if (processDurationSeconds >= actualDurationSeconds || (finishConditionCheck && finishConditionCheck(userParameters, finalCosts, baseParameters, process))) {
         if (onProcessCompletion) await onProcessCompletion(process, userParameters, baseParameters);
         await log("info", `${colors.green(`${processType} process finished`)}`, { userId: userParameters.id, processType, processId: process._id });
         await gameProcess.deleteOne({ _id: process._id });
@@ -222,11 +245,12 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
       process.user_parameters_updated_at = now.toDate();
       await process.save();
     } else {
-      await log("info", `${colors.yellow(`${processType} process ended - insufficient resources`)}`, {
+      await log("info", `${colors.yellow(`${processType} process ended${!hasSufficientResources ? ' - insufficient resources' : ' - profit cap reached'}`)}`, {
         userId: userParameters.id,
         processType,
         processId: process._id,
         costs: finalCosts,
+        profits: finalProfits,
         available: { ...userParameters },
       });
       await gameProcess.deleteOne({ _id: process._id });
@@ -357,7 +381,7 @@ const trainingProcessConfig = {
     mood: { type: "per_minute", baseValueKey: "mood_profit", effectIncreaseKey: "mood_increase" },
   },
   durationDecreaseKey: "training_duration_decrease",
-  finishConditionCheck: (userParameters) => userParameters.energy <= 0 || userParameters.hungry <= 0,
+  finishConditionCheck: (userParameters) => userParameters.energy <= 0 || userParameters.hungry <= 0, // Additional termination conditions
 };
 
 const sleepProcessConfig = {
@@ -371,7 +395,7 @@ const sleepProcessConfig = {
   },
   baseDurationKey: "sleep_duration",
   durationDecreaseKey: "sleeping_duration_decrease",
-  finishConditionCheck: (userParameters) => userParameters.energy === userParameters.energy_capacity,
+  finishConditionCheck: (userParameters) => false, // Rely on profit cap check in canContinue
 };
 
 const skillProcessConfig = {
