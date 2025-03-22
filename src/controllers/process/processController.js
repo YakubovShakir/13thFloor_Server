@@ -5,6 +5,7 @@ import startTraining, {
   checkCanStopTraining,
 } from "../training/functions/startTraining.js"
 import { checkCanStopSleep, startSleep } from "../sleep/sleepController.js"
+import { checkCanStopLearning } from '../skill/skillController.js'
 import buySkill from "../skill/functions/buySkill.js"
 import buyFood from "../food/functions/buyFood.js"
 import Work from "../../models/work/workModel.js"
@@ -95,11 +96,10 @@ export const getUserProcesses = async (req, res) => {
 }
 
 export const checkCanStop = async (req, res) => {
-  console.log("yes")
   const userId = parseInt(req.params.id)
   const { sub_type: subType = null, id } = req.body
 
-  const activeProcess = await process.findOne({ id: userId, active: true })
+  const activeProcess = await process.findOne({ id: userId })
   if(!activeProcess) {
     return res.status(404).json({})
   }

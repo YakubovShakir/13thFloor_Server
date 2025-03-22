@@ -4,6 +4,7 @@ import UserSkill from "../../models/user/userSkillModel.js"
 import { ConstantEffects, ConstantEffectTypes } from "../../models/effects/constantEffectsLevels.js"
 import UserParameters from "../../models/user/userParametersModel.js"
 import gameProcess from '../../models/process/processModel.js'
+import moment from 'moment-timezone'
 
 export const getSkills = async (req, res) => {
   try {
@@ -66,10 +67,10 @@ export const checkCanStopLearning = async (userId, skillProcess) => {
   if (!user || !skillProcess)
     return { status: 403, data: { } }
 
-  const durationInSeconds = trainingProcess.target_duration_in_seconds || trainingProcess.base_duration_in_seconds
+  const durationInSeconds = skillProcess.target_duration_in_seconds || skillProcess.base_duration_in_seconds
 
   const now = moment()
-  const processStartTime = moment(trainingProcess.createdAt)
+  const processStartTime = moment(skillProcess.createdAt)
   const elapsedSeconds = now.diff(processStartTime, "seconds")
   const seconds_left = Math.max(0, durationInSeconds - elapsedSeconds)
 
