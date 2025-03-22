@@ -102,341 +102,217 @@ const mergeEffects = (target, source) => {
 
 const processDurationHandler = async (process, userParameters, baseParameters, processConfig) => {
   const {
-    durationDecreaseKey,
-    costConfig,
-    profitConfig,
-    finishConditionCheck,
-    updateUserParamsOnTick,
-    onProcessCompletion,
-    baseDurationKey = "duration",
-    processType,
+      durationDecreaseKey,
+      costConfig: rawCostConfig,
+      profitConfig: rawProfitConfig,
+      finishConditionCheck,
+      updateUserParamsOnTick,
+      onProcessCompletion,
+      baseDurationKey = "duration",
+      processType,
+      duration,
+      energy_spend,
+      hungry_spend,
+      mood_profit,
   } = processConfig;
 
   try {
-    let durationDecreasePercentage = 0;
-    let combinedEffects = {};
+      let durationDecreasePercentage = 0;
+      let combinedEffects = {};
 
-    console.log(userParameters, process); // Keep for debugging
-    const userClothing = await UserClothing.findOne({ user_id: process.id }, { _id: 0, user_id: 0 });
-    const user = await User.findOne({ id: process.id });
-    log("debug", colors.cyan(`Collecting effects for ${processType} (processId: ${process._id})`));
-    
-    // Shelf items
-    const shelfItems = Object.values(user.shelf).filter(Boolean);
-    if (shelfItems.length > 0) {
-      const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } });
-      log("debug", colors.cyan(`Found ${shelf.length} shelf items`));
-      shelf.forEach((item, index) => {
-        if (item.effects) {
-          log("debug", `${colors.cyan(`Shelf item ${index} effects`)}: ${JSON.stringify(item.effects)}`);
-          mergeEffects(combinedEffects, item.effects);
-        } else {
-          log("debug", colors.yellow(`Shelf item ${index} has no effects`));
-        }
-      });
-    } else {
-      log("debug", colors.yellow(`No shelf items found for user ${process.id}`));
-    }
-
-   // Clothing items
-   if (userClothing) {
-    log("debug", colors.cyan(`Raw userClothing: ${JSON.stringify(userClothing)}`));
-    // Explicitly extract clothing IDs
-    const clothesItems = [
-      userClothing.hat,
-      userClothing.top,
-      userClothing.pants,
-      userClothing.shoes,
-      userClothing.accessories
-    ].filter(item => item !== null && item !== undefined);
-    log("debug", colors.cyan(`Filtered clothesItems: ${JSON.stringify(clothesItems)}`));
-    if (clothesItems.length > 0) {
-      const clothing = await Clothing.find({ clothing_id: { $in: clothesItems } });
-      log("debug", colors.cyan(`Found ${clothing.length} clothing items`));
-      clothing.forEach((item, index) => {
-        if (item.effects) {
-          log("debug", `${colors.cyan(`Clothing item ${index} effects`)}: ${JSON.stringify(item.effects)}`);
-          mergeEffects(combinedEffects, item.effects);
-        } else {
-          log("debug", colors.yellow(`Clothing item ${index} has no effects`));
-        }
-      });
-    } else {
-      log("debug", colors.yellow(`No valid clothing items after filtering for user ${process.id}`));
-    }
-  } else {
-    log("debug", colors.yellow(`No userClothing found for user ${process.id}`));
-  }
-
-    // Process effects
-    if (process.effects && process.type !== "boost") {
-      log("debug", `${colors.cyan(`Process effects`)}: ${JSON.stringify(process.effects)}`);
-      mergeEffects(combinedEffects, process.effects);
-    } else {
-      log("debug", colors.yellow(`No process effects or process is boost type`));
-    }
-
-    log("debug", `${colors.cyan(`Final combinedEffects`)}: ${JSON.stringify(combinedEffects)}`);
-    
-    const canApplyEffects = canApplyConstantEffects(userParameters);
-    log("debug", colors.cyan(`canApplyConstantEffects check for ${processType} (userId: ${userParameters.id}): ${canApplyEffects}`));
-
-    let effectEntries = [];
-    Object.entries(combinedEffects).forEach(([key, value]) => {
-      if (Array.isArray(value)) {
-        value.forEach(effect => {
-          const entry = {
-            key,
-            value: effect.value,
-            targetKey: effect.param || key,
+      // Normalize costConfig and profitConfig
+      let costConfig, profitConfig;
+      if (processType === "training" || processType === "skill") {
+          costConfig = {
+              energy: energy_spend !== undefined ? energy_spend : (rawCostConfig?.energy_spend || rawCostConfig?.energy || 0),
+              hungry: hungry_spend !== undefined ? hungry_spend : (rawCostConfig?.hungry_spend || rawCostConfig?.hungry || 0),
           };
-          effectEntries.push(entry);
-          log("debug", `${colors.magenta(`Parsed effect: ${key}`)} -> target: ${entry.targetKey}, value: ${entry.value}`);
-        });
+          profitConfig = {
+              mood: mood_profit !== undefined ? mood_profit : (rawProfitConfig?.mood_profit || rawProfitConfig?.mood || 0),
+          };
       } else {
-        const match = key.match(/^(cant_fall_below_percent|profit_hourly_percent|profit_hourly_fixed|cost_hourly_percent|profit_per_tick_fixed|cost_per_tick_fixed)_(.+)$/);
-        const entry = {
-          key: match ? match[1] : key,
-          value,
-          targetKey: match ? match[2] : key,
-        };
-        effectEntries.push(entry);
-        log("debug", `${colors.magenta(`Parsed effect: ${key}`)} -> target: ${entry.targetKey}, value: ${entry.value}`);
+          costConfig = rawCostConfig || {
+              energy: baseParameters[`${processType}_energy_cost`] || 0,
+              hungry: baseParameters[`${processType}_hungry_cost`] || 0,
+          };
+          profitConfig = rawProfitConfig || {
+              mood: baseParameters[`${processType}_mood_profit`] || 0,
+              coins: baseParameters[`${processType}_coin_profit`] || 0,
+          };
       }
-    });
 
-    if (!canApplyEffects || !recalcValuesProcessTypeWhitelist.includes(process.type)) {
-      effectEntries = effectEntries.filter(entry => 
-        !["cant_fall_below_percent", "profit_hourly_percent", "profit_hourly_fixed", "cost_hourly_percent", "profit_per_tick_fixed", "cost_per_tick_fixed"].includes(entry.key)
-      );
-      log("info", colors.yellow(`Constant effects filtered out for ${processType} due to canApplyConstantEffects=false`));
-    }
-
-    if (canApplyEffects && durationDecreaseKey in combinedEffects) {
-      const effects = Array.isArray(combinedEffects[durationDecreaseKey]) ? combinedEffects[durationDecreaseKey] : [{ value: combinedEffects[durationDecreaseKey] }];
-      durationDecreasePercentage = effects.reduce((sum, effect) => sum + (effect.value || 0), 0) || 0;
-      log("debug", `${colors.cyan(`Duration decrease for ${processType}`)}: ${durationDecreasePercentage}% from ${durationDecreaseKey}`);
-    } else {
-      log("debug", colors.yellow(`No duration decrease applied for ${processType}: canApply=${canApplyEffects}, key=${durationDecreaseKey in combinedEffects}`));
-    }
-
-    const baseDurationMinutes = baseDurationKey === "base_duration_in_seconds"
-      ? (process.target_duration_in_seconds || process[baseDurationKey]) / 60
-      : baseParameters[baseDurationKey] || 1;
-    const actualDurationSeconds = calculateDuration(baseDurationMinutes, durationDecreasePercentage);
-
-    const now = moment();
-    const lastUpdateTime = moment(process.user_parameters_updated_at || process.updatedAt);
-    const diffSeconds = now.diff(lastUpdateTime, "seconds");
-    const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
-
-    log("debug", colors.cyan(`Starting cost/profit calc for ${processType} (processId: ${process._id}) over ${diffSeconds}s, mood: ${userParameters.mood}`));
-    
-    // Step 1: Calculate initial process costs and profits
-    const periodCosts = calculatePeriodCosts(baseParameters, combinedEffects, diffSeconds, costConfig, effectEntries, userParameters);
-    const periodProfits = calculatePeriodProfits(baseParameters, combinedEffects, diffSeconds, profitConfig, effectEntries);
-
-    const additionalCosts = {};
-    const additionalProfits = {};
-    effectEntries.forEach(entry => {
-      const { key, value, targetKey } = entry;
-      if (!value || !targetKey) return;
-
-      switch (key) {
-        case "profit_hourly_percent":
-          if (targetKey === "coins") {
-            // Skip coins for now as requested
-            log("debug", colors.yellow(`Skipping profit_hourly_percent for coins`));
-            break;
+      // Skip effects for skills/training
+      if (processType !== "skill") {
+          const userClothing = await UserClothing.findOne({ user_id: process.id }, { _id: 0, user_id: 0 });
+          const user = await User.findOne({ id: process.id });
+          log("debug", colors.cyan(`Collecting effects for ${processType} (processId: ${process._id})`));
+          
+          const shelfItems = Object.values(user.shelf).filter(Boolean);
+          if (shelfItems.length > 0) {
+              const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } });
+              log("debug", colors.cyan(`Found ${shelf.length} shelf items`));
+              shelf.forEach((item, index) => {
+                  if (item.effects) {
+                      log("debug", `${colors.cyan(`Shelf item ${index} effects`)}: ${JSON.stringify(item.effects)}`);
+                      mergeEffects(combinedEffects, item.effects);
+                  } else {
+                      log("debug", colors.yellow(`Shelf item ${index} has no effects`));
+                  }
+              });
           }
-          const currentValue = userParameters[targetKey] || 0;
-          const capacity = baseParameters[`${targetKey}_capacity`] || 100;
-          log("debug", colors.cyan(`Calculating ${targetKey} profit: current=${currentValue}, capacity=${capacity}, value=${value}`));
-          const profitBase = (currentValue / capacity) * value; // e.g., (50 / 100) * 10 = 5
-          const hourlyProfit = (profitBase / 3600) * diffSeconds; // Prorate hourly
-          additionalProfits[targetKey] = (additionalProfits[targetKey] || 0) + hourlyProfit;
-          log("info", `${colors.green(`Additional profit ${targetKey} from ${key}`)}: +${hourlyProfit.toFixed(2)} (${value}%)`);
-          break;
-        case "profit_hourly_fixed":
-          if (targetKey === "coins") break; // Skip coins
-          additionalProfits[targetKey] = (additionalProfits[targetKey] || 0) + (value / 3600) * diffSeconds;
-          log("info", `${colors.green(`Additional profit ${targetKey} from ${key}`)}: +${((value / 3600) * diffSeconds).toFixed(2)}`);
-          break;
-        case "profit_per_tick_fixed":
-          if (targetKey === "coins") break; // Skip coins
-          additionalProfits[targetKey] = (additionalProfits[targetKey] || 0) + value;
-          log("info", `${colors.green(`Additional profit ${targetKey} from ${key}`)}: +${value.toFixed(2)}`);
-          break;
-        case "cost_hourly_percent":
-          if (targetKey === "coins") break; // Skip coins
-          const hourlyBaseCost = (baseParameters[`${targetKey}_cost_per_minute`] || 0) / 3600 * diffSeconds;
-          additionalCosts[targetKey] = (additionalCosts[targetKey] || 0) + hourlyBaseCost * (value / 100);
-          log("info", `${colors.red(`Additional cost ${targetKey} from ${key}`)}: +${(hourlyBaseCost * (value / 100)).toFixed(2)} (${value}%)`);
-          break;
-        case "cost_per_tick_fixed":
-          if (targetKey === "coins") break; // Skip coins
-          additionalCosts[targetKey] = (additionalCosts[targetKey] || 0) + value;
-          log("info", `${colors.red(`Additional cost ${targetKey} from ${key}`)}: +${value.toFixed(2)}`);
-          break;
-      }
-    });
 
-    // Step 3: Calculate Neko profit
-    const nekoMultiplier = await getNekoBoostMultiplier(userParameters.id);
-    const nekoTargetParam = "energy"; // Adjust to 'coins' or whatever Neko boosts
-    const nekoBase = (baseParameters[`${nekoTargetParam}_base`] || 0) / 3600 * diffSeconds;
-    const nekoProfit = nekoBase * (nekoMultiplier - 1);
-    if (nekoProfit > 0) {
-      additionalProfits[nekoTargetParam] = (additionalProfits[nekoTargetParam] || 0) + nekoProfit;
-      log("info", `${colors.green(`Neko profit ${nekoTargetParam}`)}: +${nekoProfit.toFixed(2)} (${((nekoMultiplier - 1) * 100).toFixed(0)}%)`);
-    }
+          if (userClothing) {
+              const clothesItems = [userClothing.hat, userClothing.top, userClothing.pants, userClothing.shoes, userClothing.accessories]
+                  .filter(item => item !== null && item !== undefined);
+              if (clothesItems.length > 0) {
+                  const clothing = await Clothing.find({ clothing_id: { $in: clothesItems } });
+                  clothing.forEach((item, index) => {
+                      if (item.effects) mergeEffects(combinedEffects, item.effects);
+                  });
+              }
+          }
 
-    // Step 4: Combine all costs and profits
-    const finalCosts = { ...periodCosts };
-    for (const [key, cost] of Object.entries(additionalCosts)) {
-      finalCosts[key] = (finalCosts[key] || 0) + cost;
-    }
-    const finalProfits = { ...periodProfits };
-    for (const [key, profit] of Object.entries(additionalProfits)) {
-      finalProfits[key] = (finalProfits[key] || 0) + profit;
-    }
+          if (process.effects && process.type !== "boost") {
+              mergeEffects(combinedEffects, process.effects);
+          }
 
-    // Step 5: Check if we can continue
-    const canContinue = Object.keys(finalCosts).every(key => {
-      const available = Math.floor(userParameters[key] || 0);
-      const cost = finalCosts[key];
-      const ok = available >= cost;
-      if (!ok) log("warn", colors.yellow(`Insufficient ${key}: ${available} < ${cost}`));
-      return ok;
-    });
-
-    if (canContinue) {
-      if (process.type !== "boost") {
-        // Step 6: Apply all changes at once
-        for (const [key, cost] of Object.entries(finalCosts)) {
-          userParameters[key] = Math.max(0, (userParameters[key] || 0) - cost);
-        }
-        for (const [key, profit] of Object.entries(finalProfits)) {
-          userParameters[key] = (userParameters[key] || 0) + profit;
-        }
-        await userParameters.save();
-        log("info", colors.cyan(`Updated params - mood: ${userParameters.mood}, finalCosts: ${JSON.stringify(finalCosts)}, finalProfits: ${JSON.stringify(finalProfits)}`));
+          log("debug", `${colors.cyan(`Final combinedEffects`)}: ${JSON.stringify(combinedEffects)}`);
+      } else {
+          log("debug", colors.yellow(`Skipping effects for ${processType} process`));
       }
 
-      if (updateUserParamsOnTick) {
-        updateUserParamsOnTick(userParameters, finalProfits, baseParameters, diffSeconds);
+      const canApplyEffects = processType !== "skill" && processType !== "training" && canApplyConstantEffects(userParameters);
+      log("debug", colors.cyan(`canApplyConstantEffects check for ${processType} (userId: ${userParameters.id}): ${canApplyEffects}`));
+
+      let effectEntries = [];
+      if (canApplyEffects) {
+          Object.entries(combinedEffects).forEach(([key, value]) => {
+              if (Array.isArray(value)) {
+                  value.forEach(effect => {
+                      effectEntries.push({ key, value: effect.value, targetKey: effect.param || key });
+                  });
+              } else {
+                  const match = key.match(/^(cant_fall_below_percent|profit_hourly_percent|profit_hourly_fixed|cost_hourly_percent|profit_per_tick_fixed|cost_per_tick_fixed)_(.+)$/);
+                  effectEntries.push({ key: match ? match[1] : key, value, targetKey: match ? match[2] : key });
+              }
+          });
       }
 
-      if (processDurationSeconds >= actualDurationSeconds || finishConditionCheck?.(userParameters, finalCosts, baseParameters, process)) {
-        if (onProcessCompletion) await onProcessCompletion(process, userParameters, baseParameters);
-        await log("info", `${colors.green(`${processType} process finished`)}`, { userId: userParameters.id, processType, processId: process._id });
-        await gameProcess.deleteOne({ _id: process._id });
-        return;
-      }
+      const baseDurationMinutes = baseDurationKey === "base_duration_in_seconds"
+          ? (process.target_duration_in_seconds || process[baseDurationKey]) / 60
+          : duration || baseParameters[baseDurationKey] || 1;
+      const totalDurationSeconds = baseDurationMinutes * 60;
+      const actualDurationSeconds = calculateDuration(baseDurationMinutes, durationDecreasePercentage);
 
-      process.user_parameters_updated_at = now.toDate();
-      await process.save();
-    } else {
-      await log("info", `${colors.yellow(`${processType} process ended - insufficient resources`)}`, {
-        userId: userParameters.id,
-        processType,
-        processId: process._id,
-        costs: finalCosts,
-        available: { ...userParameters },
+      const now = moment();
+      const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.updatedAt), "seconds");
+      const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
+
+      log("debug", colors.cyan(`Starting cost/profit calc for ${processType} (processId: ${process._id}) over ${diffSeconds}s, mood: ${userParameters.mood}`));
+      
+      const periodCosts = calculatePeriodCosts(baseParameters, combinedEffects, diffSeconds, costConfig, effectEntries, userParameters, totalDurationSeconds);
+      const periodProfits = calculatePeriodProfits(baseParameters, combinedEffects, diffSeconds, profitConfig, effectEntries, totalDurationSeconds);
+
+      const finalCosts = { ...periodCosts };
+      const finalProfits = { ...periodProfits };
+
+      const canContinue = Object.keys(finalCosts).every(key => {
+          const available = Math.floor(userParameters[key] || 0);
+          const cost = finalCosts[key];
+          const ok = available >= cost;
+          if (!ok) log("warn", colors.yellow(`Insufficient ${key}: ${available} < ${cost}`));
+          return ok;
       });
-      await gameProcess.deleteOne({ _id: process._id });
-    }
-    await userParameters.save();
-  } catch (error) {
-    await log("error", `${colors.red(`Error in ${processType} process duration handler`)}`, {
-      processId: process._id,
-      error: error.message,
-      stack: error.stack,
-    });
-    throw error;
-  }
-};
 
-const calculatePeriodCosts = (baseParameters, processEffects, diffSeconds, costConfig, effectEntries, userParameters) => {
-  if (!costConfig) {
-    log("debug", colors.yellow("No costConfig provided, returning empty costs"));
-    return {};
-  }
+      if (canContinue) {
+          if (process.type !== "boost") {
+              for (const [key, cost] of Object.entries(finalCosts)) {
+                  userParameters[key] = Math.max(0, (userParameters[key] || 0) - cost);
+              }
+              for (const [key, profit] of Object.entries(finalProfits)) {
+                  let newValue = (userParameters[key] || 0) + profit;
+                  if (key === "mood" || key === "hungry") {
+                      newValue = Math.min(100, Math.max(0, newValue));
+                  } else if (key === "energy") {
+                      const energyCap = baseParameters.energy_capacity || 100;
+                      newValue = Math.min(energyCap, Math.max(0, newValue));
+                  }
+                  userParameters[key] = newValue;
+                  log("debug", colors.cyan(`Applied ${key}: ${newValue} (profit: ${profit.toFixed(2)})`));
+              }
+              await userParameters.save();
+              log("info", colors.cyan(`Updated params - mood: ${userParameters.mood}, finalCosts: ${JSON.stringify(finalCosts)}, finalProfits: ${JSON.stringify(finalProfits)}`));
+          }
 
-  const costModifiers = {};
-  for (const entry of effectEntries || []) {
-    if (entry.key === "cant_fall_below_percent") {
-      costModifiers[entry.targetKey] = {
-        minPercent: entry.value || 0,
-        maxValue: baseParameters[`${entry.targetKey}_capacity`] || 100,
-      };
-      log("debug", `${colors.magenta("Effect 'cant_fall_below_percent'")} applied to ${entry.targetKey}: min ${entry.value}% of ${costModifiers[entry.targetKey].maxValue}`);
-    }
-  }
+          if (updateUserParamsOnTick) {
+              updateUserParamsOnTick(userParameters, finalProfits, baseParameters, diffSeconds);
+          }
 
-  return Object.keys(costConfig).reduce((acc, key) => {
-    const config = costConfig[key];
-    let costPerSecondBase =
-      config.type === "hourly"
-        ? (baseParameters[config.baseValueKey] || 0) / 3600
-        : (baseParameters[config.baseValueKey] || 0) / 60;
-    
-    log("debug", `${colors.cyan(`Calculating base cost for ${key}`)}: ${costPerSecondBase.toFixed(4)}/s from ${config.baseValueKey}=${baseParameters[config.baseValueKey] || 0} over ${config.type === "hourly" ? "3600s" : "60s"}`);
+          if (processDurationSeconds >= actualDurationSeconds || finishConditionCheck?.(userParameters, finalCosts, baseParameters, process)) {
+              if (onProcessCompletion) await onProcessCompletion(process, userParameters, baseParameters);
+              await log("info", `${colors.green(`${processType} process finished`)}`, { userId: userParameters.id, processType, processId: process._id });
+              await gameProcess.deleteOne({ _id: process._id });
+              return;
+          }
 
-    let effectDecrease = processEffects?.[config.effectDecreaseKey] || 0;
-    let baseCost = costPerSecondBase * diffSeconds * ((100 - effectDecrease) / 100);
-    log("debug", `${colors.cyan(`Base cost for ${key}`)}: ${baseCost.toFixed(2)} (${costPerSecondBase.toFixed(4)} * ${diffSeconds}s * ${(100 - effectDecrease) / 100})`);
-
-    if (costModifiers[key]) {
-      const { minPercent, maxValue } = costModifiers[key];
-      if (minPercent && maxValue) {
-        const minValue = (minPercent / 100) * maxValue;
-        const currentValue = userParameters[key] || 0;
-        const potentialNewValue = currentValue - baseCost;
-        log("debug", `${colors.cyan(`Checking ${key} limit`)}: current=${currentValue}, potential=${potentialNewValue.toFixed(2)}, min=${minValue}`);
-        if (potentialNewValue < minValue) {
-          const oldCost = baseCost;
-          baseCost = Math.max(0, currentValue - minValue);
-          log("warn", `${colors.yellow(`Limited ${key} cost`)}: Reduced from ${oldCost.toFixed(2)} to ${baseCost.toFixed(2)} to keep ${key} ≥ ${minValue} (current: ${currentValue}, ${minPercent}% of ${maxValue})`);
-        } else {
-          log("debug", `${colors.cyan(`${key} cost check`)}: ${potentialNewValue.toFixed(2)} ≥ ${minValue}, no limit applied (current: ${currentValue})`);
-        }
+          process.user_parameters_updated_at = now.toDate();
+          await process.save();
+      } else {
+          await log("info", `${colors.yellow(`${processType} process ended - insufficient resources`)}`, {
+              userId: userParameters.id,
+              processType,
+              processId: process._id,
+              costs: finalCosts,
+              available: { ...userParameters },
+          });
+          await gameProcess.deleteOne({ _id: process._id });
       }
-    }
-
-    acc[key] = Math.max(0, baseCost);
-    log("info", `${colors.red(`Final process cost for ${key}`)}: ${acc[key].toFixed(2)} subtracted`);
-    return acc;
-  }, {});
+      await userParameters.save();
+  } catch (error) {
+      await log("error", `${colors.red(`Error in ${processType} process duration handler`)}`, {
+          processId: process._id,
+          error: error.message,
+          stack: error.stack,
+      });
+      throw error;
+  }
 };
 
-const calculatePeriodProfits = (baseParameters, processEffects, diffSeconds, profitConfig, effectEntries) => {
+// calculatePeriodCosts
+const calculatePeriodCosts = (baseParameters, combinedEffects, diffSeconds, costConfig, effectEntries, userParameters, totalDurationSeconds) => {
+  const costs = {};
+  if (!costConfig) return costs;
+
+  Object.entries(costConfig).forEach(([key, value]) => {
+    const ratePerSecond = value / totalDurationSeconds; // Total cost over full duration
+    const cost = ratePerSecond * diffSeconds;
+    costs[key] = cost;
+    log("debug", colors.cyan(`Calculating base cost for ${key}: ${ratePerSecond.toFixed(4)}/s from ${key}_spend=${value} over ${totalDurationSeconds}s`));
+    log("debug", colors.cyan(`Base cost for ${key}: ${cost.toFixed(2)} (${ratePerSecond.toFixed(4)} * ${diffSeconds}s * 1)`));
+    log("info", `${colors.red(`Final process cost for ${key}`)}: ${cost.toFixed(2)} subtracted`);
+  });
+
+  return costs;
+};
+
+// calculatePeriodProfits
+const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, profitConfig, effectEntries, totalDurationSeconds) => {
+  const profits = {};
   if (!profitConfig) {
-    log("debug", colors.yellow("No profitConfig provided, returning empty profits"));
-    return {};
+    log("debug", colors.yellow(`No profitConfig provided, returning empty profits`));
+    return profits;
   }
 
-  return Object.keys(profitConfig).reduce((acc, key) => {
-    const config = profitConfig[key];
-    let profitPerSecondBase =
-      config.type === "hourly"
-        ? (baseParameters[config.baseValueKey] || 0) / 3600
-        : config.type === "per_minute"
-        ? (baseParameters[config.baseValueKey] || 0) / 60
-        : config.type === "progressive"
-        ? (baseParameters[config.baseValueKey] || 0) / (baseParameters[config.baseDurationKey] * 60)
-        : (baseParameters[config.baseValueKey] || 0);
-    
-    log("debug", `${colors.cyan(`Calculating base profit for ${key}`)}: ${profitPerSecondBase.toFixed(4)}/s from ${config.baseValueKey}=${baseParameters[config.baseValueKey] || 0} over ${config.type === "hourly" ? "3600s" : config.type === "per_minute" ? "60s" : "duration"}`);
+  Object.entries(profitConfig).forEach(([key, value]) => {
+    const ratePerSecond = value / totalDurationSeconds; // Total profit over full duration
+    const profit = ratePerSecond * diffSeconds;
+    profits[key] = profit;
+    log("debug", colors.cyan(`Calculating base profit for ${key}: ${ratePerSecond.toFixed(4)}/s from ${key}_profit=${value} over ${totalDurationSeconds}s`));
+    log("debug", colors.cyan(`Base profit for ${key}: ${profit.toFixed(2)} (${ratePerSecond.toFixed(4)} * ${diffSeconds}s * 1)`));
+    log("info", `${colors.green(`Final process profit for ${key}`)}: ${profit.toFixed(2)} added`);
+  });
 
-    let effectIncrease = processEffects?.[config.effectIncreaseKey] || 0;
-    let baseProfit = profitPerSecondBase * diffSeconds * ((100 + effectIncrease) / 100);
-    log("debug", `${colors.cyan(`Base profit for ${key}`)}: ${baseProfit.toFixed(2)} (${profitPerSecondBase.toFixed(4)} * ${diffSeconds}s * ${(100 + effectIncrease) / 100})`);
-
-    acc[key] = baseProfit;
-    log("info", `${colors.green(`Final process profit for ${key}`)}: ${acc[key].toFixed(2)} added`);
-    return acc;
-  }, {});
+  return profits;
 };
 
 const customDurationProcessTypes = ["autoclaim", "investment_level_checks", "nft_scan"];
