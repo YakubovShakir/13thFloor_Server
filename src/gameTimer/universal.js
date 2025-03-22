@@ -34,6 +34,7 @@ import { getBoostPercentageFromType } from "../routes/user/userRoutes.js";
 import ShelfItemModel from "../models/shelfItem/shelfItemModel.js";
 import UserClothing from "../models/user/userClothingModel.js";
 import Clothing from "../models/clothing/clothingModel.js";
+import Skill from "../models/skill/skillModel.js";
 
 const limiter = new Bottleneck({
   minTime: 1000, // 1 request per second
@@ -407,12 +408,14 @@ const skillProcessConfig = {
   onProcessCompletion: async (process, userParameters, baseParameters) => {
     const userId = process.id;
     const skillId = process.type_id;
+    const skill = process.sub_type === 'constant_effects' ? await ConstantEffects.findOne({ id: skillId }) : await Skill.find({ skill_id: skillId })
+    
     if (process.sub_type === "constant_effects") {
       userParameters.constant_effects_levels[baseParameters.type] = baseParameters.level;
-      await upUserExperience(userId, baseParameters.experience_reward);
+      await upUserExperience(userId, skill.experience_reward);
       await userParameters.save();
     } else {
-      await upUserExperience(userId, baseParameters.experience_reward);
+      await upUserExperience(userId, skill.experience_reward);
       await UserSkill.create({ id: userId, skill_id: skillId });
     }
   },
@@ -425,11 +428,11 @@ const foodProcessConfig = {
   durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ food_id: process.type_id }),
   onProcessCompletion: async (process, userParameters, baseParameters) => {
-    const profits = {};
-    if (baseParameters?.long_hungry_restore?.value) profits.hungry = (baseParameters.long_hungry_restore.value / 60) * 60;
-    if (baseParameters?.long_mood_restore?.value) profits.mood = (baseParameters.long_mood_restore.value / 60) * 60;
-    if (baseParameters?.long_energy_restore?.value) profits.energy = (baseParameters.long_energy_restore.value / 60) * 60;
-    await applyUserParameterUpdates(userParameters, {}, profits);
+    // const profits = {};
+    // if (baseParameters?.long_hungry_restore?.value) profits.hungry = (baseParameters.long_hungry_restore.value / 60) * 60;
+    // if (baseParameters?.long_mood_restore?.value) profits.mood = (baseParameters.long_mood_restore.value / 60) * 60;
+    // if (baseParameters?.long_energy_restore?.value) profits.energy = (baseParameters.long_energy_restore.value / 60) * 60;
+    // await applyUserParameterUpdates(userParameters, {}, profits);
   },
 };
 

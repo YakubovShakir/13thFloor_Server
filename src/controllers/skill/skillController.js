@@ -5,6 +5,7 @@ import { ConstantEffects, ConstantEffectTypes } from "../../models/effects/const
 import UserParameters from "../../models/user/userParametersModel.js"
 import gameProcess from '../../models/process/processModel.js'
 import moment from 'moment-timezone'
+import { upUserExperience } from "../../utils/userParameters/upUserBalance.js"
 
 export const getSkills = async (req, res) => {
   try {
@@ -82,10 +83,12 @@ export const checkCanStopLearning = async (userId, skillProcess) => {
         user.constant_effects_levels[doc.type] = doc.level
         await user.save()
       }
+
     } else {
       await new UserSkill({ skill_id: skillProcess.type_id, id: userId }).save()
     }
 
+    await upUserExperience(userId, doc.experience_reward)
     await gameProcess.deleteOne({ _id: skillProcess._id })
     return { status: 200, data: { status: "ok" } }
   }
