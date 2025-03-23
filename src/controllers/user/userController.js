@@ -1266,52 +1266,95 @@ export const handleTonWalletDisconnect = async (req, res) => {
 
 export const getLeaderboard = async (req, res) => {
   try {
-    const leaderboard = await UserParameters.aggregate([
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+    const userId = req.query.userId ? parseInt(req.query.userId) : null; // Ensure userId is parsed
+
+    const leaderboardPipeline = [
       {
         $lookup: {
           from: "users",
           localField: "id",
           foreignField: "id",
-          as: "user_info"
-        }
+          as: "user_info",
+        },
       },
       {
-        $unwind: "$user_info"
-      },
-      {
-        // Add this stage to filter out users without personage
-        $match: {
-          "user_info.personage": { $exists: true, $ne: null }
-        }
+        $unwind: {
+          path: "$user_info",
+          preserveNullAndEmptyArrays: true,
+        },
       },
       {
         $addFields: {
           score: {
-            $add: ["$total_earned", "$respect"]
-          }
-        }
+            $add: ["$total_earned", "$respect"],
+          },
+          "user_info.personage": { $ifNull: ["$user_info.personage", {}] },
+          "user_info.username": { $ifNull: ["$user_info.username", "Unknown"] },
+          "user_info.first_name": { $ifNull: ["$user_info.first_name", ""] },
+          "user_info.last_name": { $ifNull: ["$user_info.last_name", ""] },
+          "user_info.photo_url": { $ifNull: ["$user_info.photo_url", null] },
+        },
       },
       {
-        $sort: { score: -1 }
+        $sort: { score: -1 },
       },
       {
-        $project: {
-          _id: 0,
-          user_id: "$user_info.id",
-          name: "$user_info.personage.name",
-          gender: "$user_info.personage.gender",
-          username: "$user_info.username",
-          first_name: "$user_info.first_name",
-          last_name: "$user_info.last_name",
-          photo_url: "$user_info.photo_url",
-          respect: 1,
-          total_earned: 1
-        }
-      }
-    ]);
-    console.log(leaderboard)
-    return res.status(200).json({ leaderboard })
-  } catch(err) {
-    res.status(500).json({ error: true })
+        $group: {
+          _id: null,
+          allUsers: { $push: "$$ROOT" },
+        },
+      },
+      {
+        $unwind: {
+          path: "$allUsers",
+          includeArrayIndex: "rank",
+        },
+      },
+    ];
+
+    const fullList = await UserParameters.aggregate([...leaderboardPipeline]);
+    const rankedUsers = fullList.map((doc) => ({
+      user_id: doc.allUsers.user_info.id,
+      name: doc.allUsers.user_info.personage.name || doc.allUsers.user_info.username || "Unknown",
+      gender: doc.allUsers.user_info.personage.gender || "unknown",
+      username: doc.allUsers.user_info.username,
+      first_name: doc.allUsers.user_info.first_name,
+      last_name: doc.allUsers.user_info.last_name,
+      photo_url: doc.allUsers.user_info.photo_url,
+      respect: doc.allUsers.respect,
+      total_earned: doc.allUsers.total_earned,
+      rank: doc.rank + 1,
+    }));
+
+    // Find current user's entry
+    const currentUser = rankedUsers.find((user) => user.user_id === userId) || {
+      user_id: userId,
+      name: "Unknown",
+      gender: "unknown",
+      username: "Unknown",
+      first_name: "",
+      last_name: "",
+      photo_url: null,
+      respect: 0,
+      total_earned: 0,
+      rank: "N/A",
+    };
+
+    // Paginate the leaderboard
+    const leaderboard = rankedUsers.slice(skip, skip + limit);
+
+    const response = {
+      leaderboard,
+      currentUser,
+    };
+
+    console.log(`Leaderboard fetched: page=${page}, limit=${limit}, results=${leaderboard.length}`, JSON.stringify(response, null, 2));
+    return res.status(200).json(response);
+  } catch (err) {
+    console.error("Error in getLeaderboard:", err);
+    res.status(500).json({ error: true });
   }
-}
+};
