@@ -117,8 +117,15 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
     let durationDecreasePercentage = 0;
     let combinedEffects = {};
 
-    // Normalize costConfig and profitConfig
-    let costConfig, profitConfig;
+    const extractNumericValue = (config, key, defaultKey) => {
+      if (!config || !config[key]) return baseParameters[defaultKey] || 0;
+      const { baseValueKey } = config[key];
+      return baseParameters[baseValueKey] || 0;
+    };
+
+    let costConfig = {};
+    let profitConfig = {};
+
     if (processType === "training") {
       costConfig = {
         energy: baseParameters.energy_spend || 0,
@@ -127,25 +134,30 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
       profitConfig = {
         mood: baseParameters.mood_profit || 0,
       };
-      log("debug", `Training costConfig: ${JSON.stringify(costConfig)}, profitConfig: ${JSON.stringify(profitConfig)}`);
     } else if (processType === "sleep") {
-      costConfig = {}; // No costs for sleep
+      costConfig = {};
       profitConfig = {
-        energy: baseParameters.energy_capacity || 100, // Full recovery over duration
+        energy: baseParameters.energy_capacity || 100,
       };
-      log("debug", `Sleep costConfig: ${JSON.stringify(costConfig)}, profitConfig: ${JSON.stringify(profitConfig)}`);
+    } else if (processType === "work") {
+      costConfig = {
+        mood: extractNumericValue(rawCostConfig, "mood", `${processType}_mood_cost`),
+        hungry: extractNumericValue(rawCostConfig, "hungry", `${processType}_hungry_cost`),
+        energy: extractNumericValue(rawCostConfig, "energy", `${processType}_energy_cost`),
+      };
+      profitConfig = {
+        mood: extractNumericValue(rawProfitConfig, "mood", `${processType}_mood_profit`),
+        coins: extractNumericValue(rawProfitConfig, "coins", `${processType}_coin_profit`),
+        energy: 0,  // Placeholder, profit from effects
+        hungry: 0,  // Placeholder, profit from effects
+      };
     } else {
-      costConfig = rawCostConfig || {
-        energy: baseParameters[`${processType}_energy_cost`] || 0,
-        hungry: baseParameters[`${processType}_hungry_cost`] || 0,
-      };
-      profitConfig = rawProfitConfig || {
-        mood: baseParameters[`${processType}_mood_profit`] || 0,
-        coins: baseParameters[`${processType}_coin_profit`] || 0,
-      };
+      log("info", colors.yellow('Skipping calc'));
     }
 
-    // Effects for non-skill processes
+    log("debug", colors.cyan(`Normalized costConfig: ${JSON.stringify(costConfig)}`));
+    log("debug", colors.cyan(`Normalized profitConfig: ${JSON.stringify(profitConfig)}`));
+
     if (processType !== "skill") {
       const userClothing = await UserClothing.findOne({ user_id: process.id }, { _id: 0, user_id: 0 });
       const user = await User.findOne({ id: process.id });
@@ -154,14 +166,8 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
       const shelfItems = Object.values(user.shelf).filter(Boolean);
       if (shelfItems.length > 0) {
         const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } });
-        log("debug", colors.cyan(`Found ${shelf.length} shelf items`));
-        shelf.forEach((item, index) => {
-          if (item.effects) {
-            log("debug", `${colors.cyan(`Shelf item ${index} effects`)}: ${JSON.stringify(item.effects)}`);
-            mergeEffects(combinedEffects, item.effects);
-          } else {
-            log("debug", colors.yellow(`Shelf item ${index} has no effects`));
-          }
+        shelf.forEach((item) => {
+          if (item.effects) mergeEffects(combinedEffects, item.effects);
         });
       }
 
@@ -179,32 +185,35 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
       if (process.effects && process.type !== "boost") {
         mergeEffects(combinedEffects, process.effects);
       }
-
-      log("debug", `${colors.cyan(`Final combinedEffects`)}: ${JSON.stringify(combinedEffects)}`);
+      log("debug", colors.cyan(`Final combinedEffects: ${JSON.stringify(combinedEffects)}`));
     }
 
-    // Apply duration decrease
     if (durationDecreaseKey && userParameters.constant_effects_levels[durationDecreaseKey]) {
       durationDecreasePercentage = userParameters.constant_effects_levels[durationDecreaseKey];
+      log("debug", colors.yellow(`Applied ${durationDecreaseKey}: ${durationDecreasePercentage}%`));
     }
 
     const baseDurationMinutes = baseParameters[baseDurationKey] || 1;
     const totalDurationSeconds = baseDurationMinutes * 60;
     const actualDurationSeconds = calculateDuration(baseDurationMinutes, durationDecreasePercentage);
+    log("debug", colors.cyan(`Duration: base=${baseDurationMinutes}min, total=${totalDurationSeconds}s, actual=${actualDurationSeconds}s`));
 
     const now = moment();
-    const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.updatedAt), "seconds");
+    const lastUpdate = moment(process.user_parameters_updated_at || process.updatedAt || process.createdAt);
+    const diffSeconds = Math.max(now.diff(lastUpdate, "seconds"), 1);
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
+    log("debug", colors.cyan(`Timing: diffSeconds=${diffSeconds}s, processDurationSeconds=${processDurationSeconds}s`));
 
     log("debug", colors.cyan(`Starting cost/profit calc for ${processType} (processId: ${process._id}) over ${diffSeconds}s`));
 
     const periodCosts = calculatePeriodCosts(baseParameters, combinedEffects, diffSeconds, costConfig, [], userParameters, totalDurationSeconds);
-    const periodProfits = calculatePeriodProfits(baseParameters, combinedEffects, diffSeconds, profitConfig, [], totalDurationSeconds);
+    const periodProfits = calculatePeriodProfits(baseParameters, combinedEffects, diffSeconds, profitConfig, [], userParameters, totalDurationSeconds);
 
     const finalCosts = { ...periodCosts };
     const finalProfits = { ...periodProfits };
+    log("debug", colors.cyan(`Final costs: ${JSON.stringify(finalCosts)}`));
+    log("debug", colors.cyan(`Final profits: ${JSON.stringify(finalProfits)}`));
 
-    // Check resource costs
     const hasSufficientResources = Object.keys(finalCosts).length === 0 || Object.keys(finalCosts).every(key => {
       const available = Math.floor(userParameters[key] || 0);
       const cost = Math.floor(finalCosts[key] || 0);
@@ -213,7 +222,6 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
       return ok;
     });
 
-    // Check profit caps as termination conditions
     const profitCapsReached = Object.keys(finalProfits).some(key => {
       if (key === "mood" && userParameters[key] >= 100 && process.type === 'training') {
         log("info", colors.yellow(`Training stopped: ${key} reached cap (100)`));
@@ -230,19 +238,16 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
 
     if (canContinue) {
       await applyUserParameterUpdates(userParameters, finalCosts, finalProfits, processType);
-
+      log("debug", colors.cyan(`Applied updates: costs=${JSON.stringify(finalCosts)}, profits=${JSON.stringify(finalProfits)}`));
       if (updateUserParamsOnTick) {
         updateUserParamsOnTick(userParameters, finalProfits, baseParameters, diffSeconds);
       }
-
-      // End if duration is reached or explicit finish condition is met
       if (processDurationSeconds >= actualDurationSeconds || (finishConditionCheck && finishConditionCheck(userParameters, finalCosts, baseParameters, process))) {
         if (onProcessCompletion) await onProcessCompletion(process, userParameters, baseParameters);
         await log("info", `${colors.green(`${processType} process finished`)}`, { userId: userParameters.id, processType, processId: process._id });
         await gameProcess.deleteOne({ _id: process._id });
         return;
       }
-
       process.user_parameters_updated_at = now.toDate();
       await process.save();
     } else {
@@ -266,37 +271,112 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
   }
 };
 
-// Updated calculatePeriodCosts
 const calculatePeriodCosts = (baseParameters, combinedEffects, diffSeconds, costConfig, effectEntries, userParameters, totalDurationSeconds) => {
   const costs = {};
-  if (!costConfig) return costs;
+  if (!costConfig) {
+    log("debug", colors.yellow(`No costConfig provided, returning empty costs`));
+    return costs;
+  }
 
-  Object.entries(costConfig).forEach(([key, value]) => {
-    const ratePerSecond = value / totalDurationSeconds;
+  Object.entries(costConfig).forEach(([key, baseValue]) => {
+    log("debug", colors.cyan(`Starting cost calc for ${key}: baseValue=${baseValue}`));
+    let adjustedValue = baseValue;
+
+    // Apply specific cost decrease effects (e.g., energy_cost_decrease)
+    if (combinedEffects[`${key}_cost_decrease`]) {
+      const decreasePercent = combinedEffects[`${key}_cost_decrease`] || 0;
+      const reduction = adjustedValue * (decreasePercent / 100);
+      adjustedValue -= reduction;
+      log("debug", colors.yellow(`Applied ${key}_cost_decrease: ${decreasePercent}% of ${baseValue} = -${reduction.toFixed(4)}, adjustedValue=${adjustedValue.toFixed(4)}`));
+    } else {
+      log("debug", colors.yellow(`No ${key}_cost_decrease effect found`));
+    }
+
+    const ratePerSecond = adjustedValue / totalDurationSeconds;
+    log("debug", colors.cyan(`Rate per second for ${key}: ${adjustedValue.toFixed(4)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
+
     const cost = ratePerSecond * diffSeconds;
-    costs[key] = isNaN(cost) ? 0 : cost;
-    log("debug", colors.cyan(`Calculating base cost for ${key}: ${ratePerSecond.toFixed(4)}/s from ${key}_spend=${value} over ${totalDurationSeconds}s`));
-    log("debug", colors.cyan(`Base cost for ${key}: ${costs[key].toFixed(2)} (${ratePerSecond.toFixed(4)} * ${diffSeconds}s)`));
+    costs[key] = isNaN(cost) || cost < 0 ? 0 : cost;
+    log("debug", colors.cyan(`Cost for ${key} over ${diffSeconds}s: ${ratePerSecond.toFixed(4)} * ${diffSeconds} = ${cost.toFixed(4)}`));
+
     log("info", `${colors.red(`Final process cost for ${key}`)}: ${costs[key].toFixed(2)} subtracted`);
   });
 
   return costs;
 };
 
-// Updated calculatePeriodProfits
-const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, profitConfig, effectEntries, totalDurationSeconds) => {
+const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, profitConfig, effectEntries, userParameters, totalDurationSeconds) => {
   const profits = {};
   if (!profitConfig) {
     log("debug", colors.yellow(`No profitConfig provided, returning empty profits`));
     return profits;
   }
 
-  Object.entries(profitConfig).forEach(([key, value]) => {
-    const ratePerSecond = value / totalDurationSeconds;
+  // Initialize profits from profitConfig
+  Object.entries(profitConfig).forEach(([key, baseValue]) => {
+    log("debug", colors.cyan(`Starting profit calc for ${key}: baseValue=${baseValue}`));
+    let adjustedValue = baseValue;
+
+    if (combinedEffects[`${key}_increase`]) {
+      const increasePercent = combinedEffects[`${key}_increase`] || 0;
+      const increase = adjustedValue * (increasePercent / 100);
+      adjustedValue += increase;
+      log("debug", colors.yellow(`Applied ${key}_increase: ${increasePercent}% of ${baseValue} = +${increase.toFixed(4)}, adjustedValue=${adjustedValue.toFixed(4)}`));
+    } else {
+      log("debug", colors.yellow(`No ${key}_increase effect found`));
+    }
+
+    const ratePerSecond = adjustedValue / totalDurationSeconds;
+    log("debug", colors.cyan(`Base rate per second for ${key}: ${adjustedValue.toFixed(4)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
+
     const profit = ratePerSecond * diffSeconds;
     profits[key] = isNaN(profit) ? 0 : profit;
-    log("debug", colors.cyan(`Calculating base profit for ${key}: ${ratePerSecond.toFixed(4)}/s from ${key}_profit=${value} over ${totalDurationSeconds}s`));
-    log("debug", colors.cyan(`Base profit for ${key}: ${profits[key].toFixed(2)} (${ratePerSecond.toFixed(4)} * ${diffSeconds}s)`));
+    log("debug", colors.cyan(`Base profit for ${key} over ${diffSeconds}s: ${ratePerSecond.toFixed(4)} * ${diffSeconds} = ${profit.toFixed(4)}`));
+  });
+
+  // Apply profit_hourly_percent as a percentage of energy/energy_capacity
+  combinedEffects.profit_hourly_percent?.forEach(effect => {
+    const key = effect.param;
+    const hourlyIncreasePercent = effect.value || 0;
+    log("debug", colors.cyan(`Applying profit_hourly_percent for ${key}: ${hourlyIncreasePercent}%`));
+
+    if (key === "energy" || key === "hungry") {
+      const currentValue = userParameters[key] || 0;
+      const capacity = key === "energy" ? userParameters.energy_capacity : 100;
+      log("debug", colors.cyan(`${key} currentValue=${currentValue}, capacity=${capacity}`));
+
+      const baseRatio = currentValue / capacity;
+      log("debug", colors.cyan(`Base ratio for ${key}: ${currentValue} / ${capacity} = ${baseRatio.toFixed(4)}`));
+
+      const hourlyProfit = baseRatio * (hourlyIncreasePercent / 100) * capacity;
+      log("debug", colors.yellow(`Hourly profit for ${key}: ${baseRatio.toFixed(4)} * (${hourlyIncreasePercent} / 100) * ${capacity} = ${hourlyProfit.toFixed(4)} units/hour`));
+
+      const profitOverDuration = (hourlyProfit / 3600) * totalDurationSeconds;
+      log("debug", colors.yellow(`Profit over duration for ${key}: (${hourlyProfit.toFixed(4)} / 3600) * ${totalDurationSeconds}s = ${profitOverDuration.toFixed(4)}`));
+
+      const ratePerSecond = profitOverDuration / totalDurationSeconds;
+      log("debug", colors.cyan(`Effect rate per second for ${key}: ${profitOverDuration.toFixed(4)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
+
+      const profitForTick = ratePerSecond * diffSeconds;
+      log("debug", colors.cyan(`Profit for ${key} over ${diffSeconds}s: ${ratePerSecond.toFixed(4)} * ${diffSeconds} = ${profitForTick.toFixed(4)}`));
+
+      profits[key] = (profits[key] || 0) + profitForTick;
+    } else {
+      const baseValue = profits[key] || 0;
+      const hourlyProfit = (baseValue * hourlyIncreasePercent / 100);
+      log("debug", colors.yellow(`Hourly profit for ${key}: ${baseValue} * ${hourlyIncreasePercent} / 100 = ${hourlyProfit.toFixed(4)}`));
+
+      const profitOverDuration = (hourlyProfit / 3600) * totalDurationSeconds;
+      log("debug", colors.yellow(`Profit over duration for ${key}: (${hourlyProfit.toFixed(4)} / 3600) * ${totalDurationSeconds}s = ${profitOverDuration.toFixed(4)}`));
+
+      const ratePerSecond = profitOverDuration / totalDurationSeconds;
+      log("debug", colors.cyan(`Effect rate per second for ${key}: ${profitOverDuration.toFixed(4)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
+
+      const profit = ratePerSecond * diffSeconds;
+      profits[key] = (profits[key] || 0) + profit;
+      log("debug", colors.cyan(`Profit for ${key} over ${diffSeconds}s: ${ratePerSecond.toFixed(4)} * ${diffSeconds} = ${profit.toFixed(4)}`));
+    }
+
     log("info", `${colors.green(`Final process profit for ${key}`)}: ${profits[key].toFixed(2)} added`);
   });
 
