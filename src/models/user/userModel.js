@@ -42,7 +42,8 @@ const schema = new mongoose.Schema(
       award: { type: Number, default: null },
       event: { type: Number, default: null },
       neko: { type: Number, default: null },
-      flag: { type: Number, default: null }
+      flag: { type: Number, default: null },
+      star: { type: Number, default: null }
     },
     investment_levels: {
       game_center: { type: Number, default: 0 },

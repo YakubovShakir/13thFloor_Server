@@ -9,6 +9,7 @@ import { checkCanStopLearning } from '../skill/skillController.js'
 import buySkill from "../skill/functions/buySkill.js"
 import buyFood from "../food/functions/buyFood.js"
 import Work from "../../models/work/workModel.js"
+import moment from "moment-timezone"
 export const startProcess = async (req, res) => {
   try {
     // Проверяем тип процесса
@@ -147,6 +148,16 @@ export const checkCanStop = async (req, res) => {
             skillProcess
           )
           return res.status(status).json(data)
+        } catch(err) {
+          console.log(err)
+          return res.status(err.status).json(err.data)
+        }
+      case "food":
+        try {
+          if (moment().diff(moment(activeProcess.createdAt), 'seconds') >= (activeProcess.target_duration_in_seconds || activeProcess.base_duration_in_seconds)) {
+            await process.deleteOne({ _id: activeProcess._id })
+          }
+          return res.status(200).json({})
         } catch(err) {
           console.log(err)
           return res.status(err.status).json(err.data)
