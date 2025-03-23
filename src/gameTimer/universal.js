@@ -226,7 +226,7 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
       return false;
     });
 
-    const canContinue = hasSufficientResources && !profitCapsReached;
+    const canContinue = recalcValuesProcessTypeWhitelist.includes(process.type) ? (hasSufficientResources && !profitCapsReached) : true;
 
     if (canContinue) {
       await applyUserParameterUpdates(userParameters, finalCosts, finalProfits, processType);
