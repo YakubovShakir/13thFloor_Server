@@ -82,13 +82,19 @@ export const checkCanStopLearning = async (userId, skillProcess) => {
       if(doc) {
         user.constant_effects_levels[doc.type] = doc.level
         await user.save()
+        await upUserExperience(userId, doc.experience_reward || 0)
       }
 
     } else {
+      const doc = await Skill.findOne({ id: skillProcess.type_id })
+      
+      if(doc) {
+        await upUserExperience(userId, doc.experience_reward || 0)
+      }
+
       await new UserSkill({ skill_id: skillProcess.type_id, id: userId }).save()
     }
 
-    await upUserExperience(userId, doc.experience_reward)
     await gameProcess.deleteOne({ _id: skillProcess._id })
     return { status: 200, data: { status: "ok" } }
   }

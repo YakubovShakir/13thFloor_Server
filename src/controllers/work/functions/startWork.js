@@ -85,7 +85,8 @@ export const checkCanStopWork = async (userId) => {
   const elapsedSeconds = now.diff(processStartTime, "seconds");
   const secondsSinceLastUpdate = now.diff(lastUpdateTime, "seconds");
   const secondsLeft = Math.max(0, durationInSeconds - elapsedSeconds);
-
+  
+  console.log(processStartTime, elapsedSeconds, secondsLeft)
   // Check if user can still work (assuming canStartWorking exists)
   if (!canStartWorking(user)) {
     await gameProcess.deleteOne({ id: userId, type_id: work.work_id });
@@ -101,6 +102,7 @@ export const checkCanStopWork = async (userId) => {
   const energyCost = (work.energy_cost_per_minute / 60) * actualWorkedDuration;
 
   if (secondsLeft === 0) {
+    console.log(`[checkCanStopWork] ${userId} process finished`)
     await process.deleteOne({ id: userId, type_id: work.work_id });
 
     // Update user parameters
