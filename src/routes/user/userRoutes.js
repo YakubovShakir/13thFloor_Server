@@ -116,11 +116,11 @@ const itemsPoolRaw = [
   {
     id: 48,
     type: "clothes",
-    chance_premium: 15,
-    chance_daily: 20,
+    chance_premium: 10,
+    chance_daily: 15,
     prize_equivalent: {
       type: "coins",
-      amount: 100
+      amount: 1000
     }
     // prize_equivalent: {
     //   type: "boost",
@@ -150,8 +150,8 @@ const itemsPoolRaw = [
     image:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins2.webp",
     name: { ru: "250 Монет", en: "250 Coins" },
-    chance_premium: 3,
-    chance_daily: 5,
+    chance_premium: 8,
+    chance_daily: 9,
   },
   {
     id: 5,
@@ -171,7 +171,7 @@ const itemsPoolRaw = [
     chance_daily: 10,
     prize_equivalent: {
       type: "coins",
-      amount: 100
+      amount: 1000
     }
   },
   {
@@ -214,7 +214,7 @@ const itemsPoolRaw = [
     chance_daily: 20,
     prize_equivalent: {
       type: "coins",
-      amount: 100
+      amount: 3000
     }
   },
   {
@@ -236,8 +236,8 @@ const itemsPoolRaw = [
     image:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins2.webp",
     name: { ru: "900 Монет", en: "900 Coins" },
-    chance_premium: 15,
-    chance_daily: 10,
+    chance_premium: 35,
+    chance_daily: 25,
   },
   {
     id: 11,
@@ -258,8 +258,8 @@ const itemsPoolRaw = [
     image:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins1.webp",
     name: { ru: "100 Монет", en: "100 Coins" },
-    chance_premium: 2,
-    chance_daily: 8,
+    chance_premium: 8,
+    chance_daily: 12,
   },
   {
     id: 51,
@@ -268,7 +268,7 @@ const itemsPoolRaw = [
     chance_daily: 15,
     prize_equivalent: {
       type: "coins",
-      amount: 100
+      amount: 1000
     }
   },
   {
@@ -312,17 +312,17 @@ const itemsPoolRaw = [
     image:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp",
     name: { ru: "1000 Монет", en: "1000 Coins" },
-    chance_premium: 7,
-    chance_daily: 5,
+    chance_premium: 18,
+    chance_daily: 27,
   },
   {
     id: 8,
     type: "shelf",
-    chance_premium: 1,
-    chance_daily: 3,
+    chance_premium: 2,
+    chance_daily: 1,
     prize_equivalent: {
       type: "coins",
-      amount: 100
+      amount: 10000
     }
   },
 ]
