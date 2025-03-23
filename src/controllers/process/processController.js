@@ -97,12 +97,14 @@ export const getUserProcesses = async (req, res) => {
 
 export const checkCanStop = async (req, res) => {
   const userId = parseInt(req.params.id)
-  const { sub_type: subType = null, type: processType } = req.body
+  const { sub_type: subType = null, type: processType, id } = req.body
 
-  const activeProcess = await process.findOne({ id: userId, type: processType })
+  let activeProcess = id ? await process.findOne({ id: userId, type: processType, type_id: id }) : await process.findOne({ id: userId, type: processType })
+  
   if(!activeProcess) {
     return res.status(404).json({})
   }
+  
   switch (activeProcess?.type) {
     case "work":
       try {
