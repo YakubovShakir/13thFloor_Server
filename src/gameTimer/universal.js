@@ -215,11 +215,11 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
 
     // Check profit caps as termination conditions
     const profitCapsReached = Object.keys(finalProfits).some(key => {
-      if (key === "mood" && userParameters[key] >= 100) {
+      if (key === "mood" && userParameters[key] >= 100 && process.type === 'training') {
         log("info", colors.yellow(`Training stopped: ${key} reached cap (100)`));
         return true;
       }
-      if (key === "energy" && userParameters[key] >= userParameters.energy_capacity) {
+      if (key === "energy" && userParameters[key] >= userParameters.energy_capacity && process.type === 'sleep') {
         log("info", colors.yellow(`Sleep stopped: ${key} reached cap (${userParameters.energy_capacity})`));
         return true;
       }
