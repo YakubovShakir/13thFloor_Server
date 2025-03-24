@@ -475,8 +475,10 @@ const skillProcessConfig = {
     const skillId = process.type_id;
     const skill = process.sub_type === 'constant_effects' ? await ConstantEffects.findOne({ id: skillId }) : await Skill.find({ skill_id: skillId })
     
+    console.log(skill)
+
     if (process.sub_type === "constant_effects") {
-      userParameters.constant_effects_levels[baseParameters.type] = baseParameters.level;
+      userParameters.constant_effects_levels[skill.type] = skill.level;
       await upUserExperience(userId, skill.experience_reward);
       await userParameters.save();
     } else {

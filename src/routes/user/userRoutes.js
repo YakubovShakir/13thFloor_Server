@@ -1431,4 +1431,113 @@ router.post("/sleep/collect-coin/:userId", limiter.wrap(async (req, res) => {
   }
 }));
 
+// GET endpoint to calculate TRX earnings from referrals
+router.get('/:userId/referral-earnings/', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Convert userId to number since it's stored as Number in the schema
+    const numericUserId = Number(userId);
+    
+    if (isNaN(numericUserId)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Invalid user ID format' 
+      });
+    }
+
+    // Aggregation pipeline
+    const earningsData = await Referral.aggregate([
+      // Stage 1: Match referrals where the user is the referrer
+      {
+        $match: {
+          refer_id: numericUserId
+        }
+      },
+      
+      // Stage 2: Lookup transactions for each referred user
+      {
+        $lookup: {
+          from: 'stars_transactions', // Must match the collection name in MongoDB
+          localField: 'referral_id',
+          foreignField: 'user_id',
+          as: 'transactions'
+        }
+      },
+      
+      // Stage 3: Unwind transactions array to process each transaction
+      {
+        $unwind: {
+          path: '$transactions',
+          preserveNullAndEmptyArrays: true
+        }
+      },
+      
+      // Stage 4: Filter for completed XTR transactions only
+      {
+        $match: {
+          'transactions.currency': 'XTR',
+          'transactions.status': 'complete'
+        }
+      },
+      
+      // Stage 5: Group and calculate totals
+      {
+        $group: {
+          _id: '$refer_id',
+          totalEarnings: {
+            $sum: {
+              $convert: {
+                input: '$transactions.amount',
+                to: 'decimal',
+                onError: 0,
+                onNull: 0
+              }
+            }
+          },
+          transactionCount: { $sum: 1 },
+          referredUsers: { $addToSet: '$referral_id' }
+        }
+      },
+      
+      // Stage 6: Project the final shape of the data
+      {
+        $project: {
+          _id: 0,
+          referrerId: '$_id',
+          totalEarnings: 1,
+          transactionCount: 1,
+          referredUserCount: { $size: '$referredUsers' }
+        }
+      }
+    ]);
+
+    // If no earnings data found, return zero values
+    const result = earningsData[0] || {
+      referrerId: numericUserId,
+      totalEarnings: 0,
+      transactionCount: 0,
+      referredUserCount: 0
+    };
+
+    // Format the response
+    res.status(200).json({
+      success: true,
+      data: {
+        ...result,
+        totalEarnings: result.totalEarnings.toString(), // Convert Decimal128 to string for JSON
+        lastUpdated: new Date()
+      }
+    });
+
+  } catch (error) {
+    console.error('Error calculating referral earnings:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+      error: error.message
+    });
+  }
+});
+
 export default router
