@@ -51,6 +51,14 @@ import crypto from 'crypto'
 import { canApplyConstantEffects } from "../../utils/parametersDepMath.js"
 import UserParameters from "../../models/user/userParametersModel.js"
 import { getNekoBoostMultiplier } from "../../gameTimer/universal.js"
+import { Bot } from "grammy"
+
+const TELEGRAM_BOT_TOKEN = "7775483956:AAHc14xqGCeNQ7DVsqABf0qAa8gdqwMWE6w";
+const bot = new Bot(TELEGRAM_BOT_TOKEN);
+
+// Ensure the bot does not start polling (to avoid conflicts with getUpdates)
+bot.stop(); // Explicitly stop any polling (just in case)
+
 
 const router = express.Router()
 router.get("/user/:id", getUser)
@@ -1105,16 +1113,7 @@ export const interactWithNeko = async (userId, targetUserId) => {
       });
       await userEffect.save();
       await log("info", "Effect applied to owner", { userId: targetUserId, effectType: activeEffectType });
-    }
-
-    // Safeguard: Ensure no effect is applied to the clicker (userId)
-    const deletedEffects = await ActiveEffectsModel.deleteMany({
-      user_id: userId,
-      type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
-      triggered_by: userId,
-    });
-    if (deletedEffects.deletedCount > 0) {
-      await log("warning", "Unexpected effects deleted for clicker", { userId, deletedCount: deletedEffects.deletedCount });
+      await sendNekoBoostMessage(targetUserId, boostPercentage);
     }
 
     // Add coins to the clicker (userId)
@@ -1132,8 +1131,8 @@ export const interactWithNeko = async (userId, targetUserId) => {
       coinReward,
       cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
     });
-
-    return { cooldownUntil: new Date(now.getTime() + COOLDOWN_MS) };
+    console.log(boostPercentage)
+    return { cooldownUntil: new Date(now.getTime() + COOLDOWN_MS), received_coins: coinReward, owners_boost: boostPercentage };
   } catch (error) {
     console.error(
       `Error interacting with neko for user ${userId} on target ${targetUserId}:`,
@@ -1451,6 +1450,53 @@ router.post("/sleep/collect-coin/:userId", limiter.wrap(async (req, res) => {
     return res.status(500).json({ error: true, message: "Internal server error" });
   }
 }));
+
+// Function to send a Telegram message to the owner about the neko boost
+export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
+  try {
+    // Use getChatMember to get the user's language
+    let userLanguage = "en"; // Default to English
+    try {
+      const chatMember = await bot.api.getChatMember(targetUserId, targetUserId);
+      const languageCode = chatMember?.user?.language_code || "en";
+      // Map language code to "en" or "ru"
+      userLanguage = languageCode.startsWith("ru") ? "ru" : "en";
+      await log("info", "Fetched user language via getChatMember", {
+        userId: targetUserId,
+        chatId: targetUserId,
+        languageCode,
+        mappedLanguage: userLanguage,
+      });
+    } catch (error) {
+      await log("warning", "Failed to fetch user language via getChatMember, defaulting to English", {
+        userId: targetUserId,
+        chatId: targetUserId,
+        error: error.message,
+      });
+    }
+
+    // Localize the message based on the user's language
+    let message;
+    if (userLanguage === "ru") {
+      message = `Вы только что получили ${boostPercentage}% бонус от неко! 🐾`;
+    } else {
+      message = `You've just received a ${boostPercentage}% neko boost! 🐾`;
+    }
+
+    // Send the message
+    await bot.api.sendMessage(targetUserId, message);
+    await log("info", "Telegram message sent to owner", {
+      userId: targetUserId,
+      chatId: targetUserId,
+      message,
+    });
+  } catch (error) {
+    await log("error", "Failed to send Telegram message to owner", {
+      userId: targetUserId,
+      error: error.message,
+    });
+  }
+};
 
 // GET endpoint to calculate TRX earnings from referrals
 router.get('/:userId/referral-earnings/', async (req, res) => {
