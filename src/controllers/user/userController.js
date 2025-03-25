@@ -1350,8 +1350,7 @@ export const getLeaderboard = async (req, res) => {
       leaderboard,
       currentUser,
     };
-
-    console.log(`Leaderboard fetched: page=${page}, limit=${limit}, results=${leaderboard.length}`, JSON.stringify(response, null, 2));
+    
     return res.status(200).json(response);
   } catch (err) {
     console.error("Error in getLeaderboard:", err);

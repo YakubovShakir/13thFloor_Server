@@ -80,7 +80,7 @@ const applyUserParameterUpdates = async (userParameters, periodCosts, periodProf
 
 export const getNekoBoostMultiplier = async (userId) => {
   const boost = await ActiveEffectsModel.findOne({
-    $or: [{ user_id: userId }, { triggered_by: userId }],
+    user_id: userId,
     type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
     valid_until: { $gt: new Date() },
   });

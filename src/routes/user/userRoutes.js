@@ -919,7 +919,14 @@ router.get("/:id/effects/current", async (req, res) => {
     // Neko Boost Percentage
     const nekoBoostMultiplier = await getNekoBoostMultiplier(userId);
     nekoBoostPercentage = (nekoBoostMultiplier - 1) * 100;
-    console.log(`Neko Boost Multiplier: ${nekoBoostMultiplier}, Percentage: ${nekoBoostPercentage}%`);
+    console.log(`Neko Boost Multiplier for user ${userId}: ${nekoBoostMultiplier}, Percentage: ${nekoBoostPercentage}%`);
+
+    // Debug: Check active effects for the user
+    const activeEffects = await ActiveEffectsModel.find({
+      user_id: userId,
+      valid_until: { $gt: new Date() },
+    });
+    console.log(`Active effects for user ${userId}:`, activeEffects);
 
     console.log('Final allEffects:', JSON.stringify(allEffects));
 
@@ -939,154 +946,140 @@ router.get("/time", (req, res) =>
 //!TODO move to different place
 router.get("/leaderboard", getLeaderboard)
 
-// Constants
-const COOLDOWN_HOURS = 24
-const COOLDOWN_MS = COOLDOWN_HOURS * 60 * 60 * 1000 // 24 hours in milliseconds
-const EFFECT_DURATION_MS = 60 * 60 * 1000 // 1 hour in milliseconds
+export const COOLDOWN_MS = 3600000; // 1 hour in milliseconds
+export const EFFECT_DURATION_MS = 3600000; // 24 hours in milliseconds
 
-// Helper function to check if cooldown has expired
-const isCooldownExpired = (lastActionTimestamp) => {
-  const now = new Date()
-  return now - lastActionTimestamp >= COOLDOWN_MS
-}
+// Helper to check if cooldown has expired
+export const isCooldownExpired = (timestamp) => {
+  const now = new Date();
+  const cooldownEnd = new Date(timestamp.getTime() + COOLDOWN_MS);
+  return now >= cooldownEnd;
+};
 
-// Helper function to get boost percentage from effect type
-//! add checks!!!!!!!
+// Helper to get boost type based on neko ID
 export const getActiveEffectTypeByNekoId = (id) => {
+  if (!id) return null;
   if (id === 8) {
-    return ActiveEffectTypes.BasicNekoBoost
+    return ActiveEffectTypes.BasicNekoBoost;
   } else if (id > 8) {
-    return ActiveEffectTypes.NftNekoBoost
+    return ActiveEffectTypes.NftNekoBoost;
   }
+  return null;
+};
 
-  return null
-}
+// Helper to get boost percentage for owner
 export const getBoostPercentageFromType = (type) => {
   switch (type) {
     case ActiveEffectTypes.BasicNekoBoost:
-      return 5
+      return 5;
     case ActiveEffectTypes.NftNekoBoost:
-      return 10
+      return 10;
     default:
-      return 0
+      return 0;
   }
-}
+};
 
-// Service functions
+// Helper to get coin reward for clicker based on neko ID
+export const getCoinRewardByNekoId = (nekoId) => {
+  if (!nekoId) return 0;
+  if (nekoId === 8) {
+    return 50; // Basic neko gives 50 coins
+  } else if (nekoId > 8) {
+    return 100; // NFT neko gives 100 coins
+  }
+  return 0;
+};
 
-// Check user's clicking cooldown (Home page)
+// Check user's neko state (for Home page)
 export const getUserNekoState = async (userId) => {
   try {
+    // Check the user's own neko cooldown (userId is the owner of the neko)
     const lastAction = await ActionLogModel.findOne(
-      { triggered_by: userId, action_type: ActionTypes.NekoInteract },
+      { user_id: userId, action_type: ActionTypes.NekoInteract },
       null,
       { sort: { action_timestamp: -1 } }
-    )
+    );
     const canClick =
-      !lastAction || isCooldownExpired(lastAction.action_timestamp)
+      !lastAction || isCooldownExpired(lastAction.action_timestamp);
     const cooldownUntil =
       lastAction && !canClick
         ? new Date(lastAction.action_timestamp.getTime() + COOLDOWN_MS)
-        : null
+        : null;
 
     return {
       canClick,
       cooldownUntil,
-      incomeBoostPercentage: lastAction
-        ? lastAction?.metadata.activeEffectType ===
-          ActiveEffectTypes.BasicNekoBoost
-          ? 5
-          : 10
-        : 0,
-    }
+    };
   } catch (error) {
-    console.error(`Error fetching neko state for user ${userId}:`, error)
-    throw error
+    console.error(`Error fetching neko state for user ${userId}:`, error);
+    throw error;
   }
-}
+};
 
 // Check interaction state (ForeignHome page)
 export const getNekoInteractionState = async (userId, targetUserId) => {
   try {
-    // Check user's clicking cooldown
-    const lastUserAction = await ActionLogModel.findOne(
-      { triggered_by: userId, action_type: ActionTypes.NekoInteract },
-      null,
-      { sort: { action_timestamp: -1 } }
-    )
-    const userCanClick =
-      !lastUserAction || isCooldownExpired(lastUserAction.action_timestamp)
-    const userCooldownUntil =
-      lastUserAction && !userCanClick
-        ? new Date(lastUserAction.action_timestamp.getTime() + COOLDOWN_MS)
-        : null
-
-    if (!userCanClick) {
-      return {
-        canClick: false,
-        cooldownUntil: userCooldownUntil,
-        whoseCooldown: "user",
-      }
-    }
-
     // Check target user's neko cooldown
     const lastTargetAction = await ActionLogModel.findOne(
       { user_id: targetUserId, action_type: ActionTypes.NekoInteract },
       null,
       { sort: { action_timestamp: -1 } }
-    )
+    );
     const targetCanBeClicked =
-      !lastTargetAction || isCooldownExpired(lastTargetAction.action_timestamp)
+      !lastTargetAction || isCooldownExpired(lastTargetAction.action_timestamp);
     const targetCooldownUntil =
       lastTargetAction && !targetCanBeClicked
         ? new Date(lastTargetAction.action_timestamp.getTime() + COOLDOWN_MS)
-        : null
+        : null;
 
     return {
       canClick: targetCanBeClicked,
       cooldownUntil: targetCooldownUntil,
       whoseCooldown: targetCanBeClicked ? null : "target",
-    }
+    };
   } catch (error) {
     console.error(
       `Error fetching interaction state for user ${userId} on target ${targetUserId}:`,
       error
-    )
-    throw error
+    );
+    throw error;
   }
-}
+};
 
+// Interact with a neko
 export const interactWithNeko = async (userId, targetUserId) => {
   try {
     if (userId === targetUserId || !targetUserId) {
-      throw new Error("Cannot interact with yourself or nobody")
+      throw new Error("Cannot interact with yourself or nobody");
     }
-    // Check both cooldowns
-    const userState = await getUserNekoState(userId)
-    const interactionState = await getNekoInteractionState(userId, targetUserId)
-    if (!userState.canClick) {
-      throw new Error("You are still on cooldown from clicking a neko")
-    }
+
+    // Check neko cooldown (per target user)
+    const interactionState = await getNekoInteractionState(userId, targetUserId);
     if (!interactionState.canClick) {
       throw new Error(
         "This user's neko is still on cooldown from being clicked"
-      )
+      );
     }
 
     // Fetch the target user's neko
     const targetUser = await User.findOne(
       { id: targetUserId },
       { "shelf.neko": 1 }
-    )
+    );
     if (!targetUser) {
-      throw new Error("Target user not found")
+      throw new Error("Target user not found");
     }
-    const nekoId = targetUser?.shelf?.neko || null
-    const activeEffectType = getActiveEffectTypeByNekoId(nekoId)
-    const boostPercentage = getBoostPercentageFromType(activeEffectType)
+    const nekoId = targetUser?.shelf?.neko || null;
+    if (!nekoId) {
+      throw new Error("Target user has no neko");
+    }
+
+    const activeEffectType = getActiveEffectTypeByNekoId(nekoId);
+    const boostPercentage = getBoostPercentageFromType(activeEffectType);
+    const coinReward = getCoinRewardByNekoId(nekoId);
 
     // Log the interaction
-    const now = new Date()
+    const now = new Date();
     const newAction = new ActionLogModel({
       user_id: targetUserId, // Target whose neko was clicked
       action_type: ActionTypes.NekoInteract,
@@ -1095,20 +1088,40 @@ export const interactWithNeko = async (userId, targetUserId) => {
         nekoId,
         boostPercentage,
         activeEffectType,
+        coinReward,
         clickedBy: userId,
       },
       triggered_by: userId,
-    })
-    await newAction.save()
+    });
+    await newAction.save();
 
-    // Create active effect for users the clicking user
-    const userEffect = new ActiveEffectsModel({
-      user_id: targetUserId,
-      type: activeEffectType,
-      valid_until: new Date(now.getTime() + EFFECT_DURATION_MS),
+    // Apply boost to the owner (targetUserId)
+    if (activeEffectType && boostPercentage > 0) {
+      const userEffect = new ActiveEffectsModel({
+        user_id: targetUserId, // Only the owner gets the effect
+        type: activeEffectType,
+        valid_until: new Date(now.getTime() + EFFECT_DURATION_MS),
+        triggered_by: userId,
+      });
+      await userEffect.save();
+      await log("info", "Effect applied to owner", { userId: targetUserId, effectType: activeEffectType });
+    }
+
+    // Safeguard: Ensure no effect is applied to the clicker (userId)
+    const deletedEffects = await ActiveEffectsModel.deleteMany({
+      user_id: userId,
+      type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
       triggered_by: userId,
-    })
-    await userEffect.save()
+    });
+    if (deletedEffects.deletedCount > 0) {
+      await log("warning", "Unexpected effects deleted for clicker", { userId, deletedCount: deletedEffects.deletedCount });
+    }
+
+    // Add coins to the clicker (userId)
+    if (coinReward > 0) {
+      await upUserBalance(userId, coinReward);
+      await log("info", "Coins added to clicker", { userId, coinReward });
+    }
 
     await log("info", "Neko interacted", {
       userId,
@@ -1116,18 +1129,19 @@ export const interactWithNeko = async (userId, targetUserId) => {
       nekoId,
       boostPercentage,
       boostType: activeEffectType,
+      coinReward,
       cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
-    })
+    });
 
-    return { cooldownUntil: new Date(now.getTime() + COOLDOWN_MS) }
+    return { cooldownUntil: new Date(now.getTime() + COOLDOWN_MS) };
   } catch (error) {
     console.error(
       `Error interacting with neko for user ${userId} on target ${targetUserId}:`,
       error
-    )
-    throw error
+    );
+    throw error;
   }
-}
+};
 
 // Generic function to log any action
 export const logAction = async (userId, actionType, metadata = {}) => {
@@ -1137,69 +1151,76 @@ export const logAction = async (userId, actionType, metadata = {}) => {
       action_type: actionType,
       action_timestamp: new Date(),
       metadata,
-    })
-    await action.save()
-    return action
+      triggered_by: userId,
+    });
+    await action.save();
+    return action;
   } catch (error) {
     console.error(
       `Error logging action ${actionType} for user ${userId}:`,
       error
-    )
-    throw error
+    );
+    throw error;
   }
-}
+};
 
-// Route for Home page: Get user's clicking cooldown
+// Route for Home page: Get user's clicking state
 router.get("/neko/user-state/:userId", async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId)
-    const state = await getUserNekoState(userId)
-    res.json(state)
+    const userId = parseInt(req.params.userId);
+    if (isNaN(userId)) {
+      return res.status(400).json({ error: "Invalid userId" });
+    }
+    const state = await getUserNekoState(userId);
+    res.json(state);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch user neko state" })
+    res.status(500).json({ error: "Failed to fetch user neko state" });
   }
-})
+});
 
 // Route for ForeignHome page: Get interaction state
 router.post("/neko/interaction-state", async (req, res) => {
   try {
-    const { userId, targetUserId } = req.body
+    const { userId, targetUserId } = req.body;
     if (!userId || !targetUserId) {
       return res
         .status(400)
-        .json({ error: "Both userId and targetUserId are required" })
+        .json({ error: "Both userId and targetUserId are required" });
     }
-    const parsedUserId = parseInt(userId)
-    const parsedTargetUserId = parseInt(targetUserId)
-    const state = await getNekoInteractionState(
-      parsedUserId,
-      parsedTargetUserId
-    )
-    res.json(state)
+    const parsedUserId = parseInt(userId);
+    const parsedTargetUserId = parseInt(targetUserId);
+    if (isNaN(parsedUserId) || isNaN(parsedTargetUserId)) {
+      return res.status(400).json({ error: "Invalid userId or targetUserId" });
+    }
+    const state = await getNekoInteractionState(parsedUserId, parsedTargetUserId);
+    res.json(state);
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch neko interaction state" })
+    res.status(500).json({ error: "Failed to fetch neko interaction state" });
   }
-})
+});
 
 // Route to interact with a target user's neko
 router.post("/neko/interact", async (req, res) => {
   try {
-    const { userId, targetUserId } = req.body
+    const { userId, targetUserId } = req.body;
     if (!userId || !targetUserId) {
       return res
         .status(400)
-        .json({ error: "Both userId and targetUserId are required" })
+        .json({ error: "Both userId and targetUserId are required" });
     }
-    const parsedUserId = parseInt(userId)
-    const parsedTargetUserId = parseInt(targetUserId)
-    const result = await interactWithNeko(parsedUserId, parsedTargetUserId)
-    res.json(result)
+    const parsedUserId = parseInt(userId);
+    const parsedTargetUserId = parseInt(targetUserId);
+    if (isNaN(parsedUserId) || isNaN(parsedTargetUserId)) {
+      return res.status(400).json({ error: "Invalid userId or targetUserId" });
+    }
+    const result = await interactWithNeko(parsedUserId, parsedTargetUserId);
+    res.json(result);
   } catch (error) {
     res
       .status(400)
-      .json({ error: error.message || "Failed to interact with neko" })
+      .json({ error: error.message || "Failed to interact with neko" });
   }
-})
+});
 
 // Get skill details by skill_id
 router.get("/skills/:skillId", async (req, res) => {
