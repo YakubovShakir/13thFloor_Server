@@ -1478,9 +1478,9 @@ export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
     // Localize the message based on the user's language
     let message;
     if (userLanguage === "ru") {
-      message = `Вы только что получили ${boostPercentage}% бонус от неко! 🐾`;
+      message = `Вы только что получили ${boostPercentage}% бонус к доходу от неко! 🐾`;
     } else {
-      message = `You've just received a ${boostPercentage}% neko boost! 🐾`;
+      message = `You've just received a ${boostPercentage}% income boost from neko! 🐾`;
     }
 
     // Send the message
