@@ -8,6 +8,49 @@ export const ShelfItemTypes = {
   Neko: "neko",
 }
 
+export const NEKO_RARITIES = {
+  //! BASE - FOR REGULAR NEKO
+  BASE: 'Base',
+  //!
+  COMMON: 'Common',
+  UNCOMMON: 'Uncommon',
+  RARE: 'Rare',
+  LEGENDARY: 'Legendary',
+  SPECIAL: 'Special',
+}
+
+export const nekoRarityToRespectMap = {
+  [NEKO_RARITIES.BASE]: 20,
+  [NEKO_RARITIES.COMMON]: 100,
+  [NEKO_RARITIES.UNCOMMON]: 200,
+  [NEKO_RARITIES.RARE]: 300,
+  [NEKO_RARITIES.LEGENDARY]: 400,
+  [NEKO_RARITIES.SPECIAL]: 500,
+}
+
+export const levelToNekoCoinsClaimAmountMap = {
+  '1': 900,
+  '2': 1200,
+  '3': 1500,
+  '4': 1800,
+  '5': 1920,
+  '6': 2280,
+  '7': 2520,
+  '8': 2760,
+  '9': 3300,
+  '10': 3600,
+  '11': 4080,
+  '12': 4500,
+  '13': 5100,
+  '14': 5700,
+  '15': 7200,
+  '16': 8400,
+  '17': 9600,
+  '18': 10800,
+  '19': 12000,
+  '20': 15000
+}
+
 const ShelfItem = new mongoose.Schema({
   id: { type: Number, required: true, unique: true },
   name: {
@@ -28,6 +71,7 @@ const ShelfItem = new mongoose.Schema({
     enum: Object.values(ShelfItemTypes),
     required: true,
   },
+  rarity: { type: String, enum: Object.values(NEKO_RARITIES) },
   shelf_link: { type: String, required: true },
   //! Using mixed type, since structure is TBD.
   effects: {

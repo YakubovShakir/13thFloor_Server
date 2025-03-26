@@ -43,7 +43,7 @@ import {
   ActionTypes,
 } from "../../models/effects/actionLogModel.js"
 import moment from "moment-timezone"
-import ShelfItemModel from "../../models/shelfItem/shelfItemModel.js"
+import ShelfItemModel, { levelToNekoCoinsClaimAmountMap, nekoRarityToRespectMap } from "../../models/shelfItem/shelfItemModel.js"
 import UserClothing from "../../models/user/userClothingModel.js"
 import SkillModel from '../../models/skill/skillModel.js'
 import Bottleneck from "bottleneck"
@@ -988,15 +988,13 @@ export const getBoostPercentageFromType = (type) => {
 };
 
 // Helper to get coin reward for clicker based on neko ID
-export const getCoinRewardByNekoId = (nekoId) => {
-  if (!nekoId) return 0;
-  if (nekoId === 8) {
-    return 50; // Basic neko gives 50 coins
-  } else if (nekoId > 8) {
-    return 100; // NFT neko gives 100 coins
-  }
-  return 0;
+export const getCoinRewardByUserLevel = (level) => {
+  return levelToNekoCoinsClaimAmountMap[level] || 0;
 };
+
+export const getRespectRewardByNekoRarity = (rarity) => {
+  return nekoRarityToRespectMap[rarity] || 0
+}
 
 // Check user's neko state (for Home page)
 export const getUserNekoState = async (userId) => {
@@ -1074,6 +1072,13 @@ export const interactWithNeko = async (userId, targetUserId) => {
       { id: targetUserId },
       { "shelf.neko": 1 }
     );
+    const targetUserParams = await UserParameters.findOne({
+      id: targetUserId
+    }, { respect: 1 })
+    const user = await UserParameters.findOne({ 
+      id: userId
+    }, { level: 1, respect: 1 })
+
     if (!targetUser) {
       throw new Error("Target user not found");
     }
@@ -1082,10 +1087,14 @@ export const interactWithNeko = async (userId, targetUserId) => {
       throw new Error("Target user has no neko");
     }
 
+    const neko = await ShelfItemModel.findOne({ id: nekoId })
+    
     const activeEffectType = getActiveEffectTypeByNekoId(nekoId);
     const boostPercentage = getBoostPercentageFromType(activeEffectType);
-    const coinReward = getCoinRewardByNekoId(nekoId);
-
+    
+    const coinReward = getCoinRewardByUserLevel(user.level);
+    const respectReward = getRespectRewardByNekoRarity(neko.rarity)
+    console.log(neko, neko.rarity, respectReward)
     // Log the interaction
     const now = new Date();
     const newAction = new ActionLogModel({
@@ -1111,9 +1120,14 @@ export const interactWithNeko = async (userId, targetUserId) => {
         valid_until: new Date(now.getTime() + EFFECT_DURATION_MS),
         triggered_by: userId,
       });
+
       await userEffect.save();
       await log("info", "Effect applied to owner", { userId: targetUserId, effectType: activeEffectType });
       await sendNekoBoostMessage(targetUserId, boostPercentage);
+      
+      targetUserParams.respect += respectReward;
+      await targetUserParams.save();
+      await log("info", `Added ${respectReward} respect to user ${targetUserId}`)
     }
 
     // Add coins to the clicker (userId)
