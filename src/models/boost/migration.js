@@ -2,7 +2,7 @@ export default [
   {
     boost_id: 1,
     name: { ru: "Банка энергетика", en: "Energy Drink" },
-    stars_price: 1,
+    stars_price: 25,
     description: { ru: "Полностью восстанавливает энергию", en: "Fully restores energy" },
     duration: null,
     type: "energy-cap",
@@ -11,7 +11,7 @@ export default [
   {
     boost_id: 2,
     name: { ru: "Тонизирующий напиток", en: "Tonic Drink" },
-    stars_price: 1,
+    stars_price: 15,
     description: { ru: "В течении 3х часов постепенно восстанавливает энергию", en: "Gradually restores energy over 3 hours" },
     duration: 180,
     type: "tonic-drink",
@@ -20,7 +20,7 @@ export default [
   {
     boost_id: 3,
     name: { ru: "Персональная тренировка", en: "Personal Training" },
-    stars_price: 1,
+    stars_price: 15,
     description: {
       ru: "Следующая тренировка тратит в половину меньше энергии и восстанавливает вдвое больше счастья после окончания тренировки",
       en: "The next workout consumes half the energy and restores twice as much happiness after the workout is completed",
@@ -32,7 +32,7 @@ export default [
   {
     boost_id: 4,
     name: { ru: "Расслабляющий массаж", en: "Relaxing Massage" },
-    stars_price: 1,
+    stars_price: 15,
     description: {
       ru: "Расслабляющий массаж делает ваc абсолютно счастливым, на все 100%",
       en: "A relaxing massage makes you absolutely happy, 100%",
@@ -68,7 +68,7 @@ export default [
   {
     boost_id: 7,
     name: { ru: "Ускорение обучения 25%", en: "Learning Speed Boost 25%" },
-    stars_price: 1,
+    stars_price: 60,
     description: {
       ru: "Ускоряет текущее обучение. Возможно применить только к одному текущему обучению",
       en: "Accelerates current learning. Can only be applied to one current learning process",
@@ -80,7 +80,7 @@ export default [
   {
     boost_id: 8,
     name: { ru: "Ускорение обучения 50%", en: "Learning Speed Boost 50%" },
-    stars_price: 1,
+    stars_price: 100,
     description: {
       ru: "Ускоряет текущее обучение. Возможно применить только к одному текущему обучению",
       en: "Accelerates current learning. Can only be applied to one current learning process",
