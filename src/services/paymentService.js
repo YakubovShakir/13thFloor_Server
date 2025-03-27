@@ -1,4 +1,4 @@
-import User from "../models/user/userModel"
+import StarsTransactions from "../models/tx/starsTransactionModel.mjs";
 
 export const getUserStarsSpent = async (userId) => {
     if (!userId) {

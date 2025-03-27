@@ -12,5 +12,17 @@ services:
       - ./restore-folder:/data/restore
     ports:
       - 27017:27017
+
+  redis:
+    image: redis:7  # Using Redis 7, but you can adjust the version
+    volumes:
+      - redis-data:/data  # Persistent storage for Redis
+    ports:
+      - 6379:6379  # Default Redis port
+    command: redis-server --requirepass redis_password  # Optional: Add a password
+    networks:
+      - default  # Explicitly attach to the default network
+
 volumes:
   db-floor:
+  redis-data:

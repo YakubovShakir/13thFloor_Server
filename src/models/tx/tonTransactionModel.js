@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
 const schema = new mongoose.Schema(
   {
@@ -7,38 +7,43 @@ const schema = new mongoose.Schema(
       required: true,
     },
     currency: {
-        type: String,
-        required: true,
-        enum: ["TON"]
+      type: String,
+      required: true,
+      enum: ["TON"],
     },
     amount: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     link: {
-      type: String
+      type: String,
     },
     product_type: {
-        type: String,
-        enum: ["clothes", "shelf", "boost", "autoclaim", "spin"],
-        required: true
+      type: String,
+      enum: ["clothes", "shelf", "boost", "autoclaim", "spin"],
+      required: true,
     },
     status: {
-        type: String,
-        enum: ["link_created", "errored", "complete", "refunded"],
-        default: "link_created"
+      type: String,
+      enum: ["link_created", "errored", "complete", "refunded"],
+      default: "link_created",
     },
     product_id: {
-        type: String,
-        required: true
+      type: String,
+      required: true,
     },
     tx_hash: {
-      type: String, default: null
+      type: String,
+      default: null,
+    },
+    memo: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }
-)
+);
 
-const TONTransactions = mongoose.model("ton_transaction", schema)
+const TONTransactions = mongoose.model("ton_transaction", schema);
 
-export default TONTransactions
+export default TONTransactions;
