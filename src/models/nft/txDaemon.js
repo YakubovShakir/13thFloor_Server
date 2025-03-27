@@ -34,13 +34,13 @@ const initTonClient = async () => {
   return client;
 };
 
-// Server Wallet Configuration (owns the NFTs initially)
+// Server Wallet Configuration
 const SERVER_WALLET_SEED = Buffer.from(process.env.SERVER_WALLET_SEED, "hex");
 const keyPair = keyPairFromSeed(SERVER_WALLET_SEED);
 const serverWallet = WalletContractV4.create({ workchain: 0, publicKey: keyPair.publicKey });
 const RECEIVING_WALLET_ADDRESS = serverWallet.address.toString();
 
-// Supply Endpoint
+// Supply Endpoint (No transaction needed; read-only)
 app.get("/api/nft/supply/:itemId", async (req, res) => {
   const { itemId } = req.params;
 
@@ -53,7 +53,7 @@ app.get("/api/nft/supply/:itemId", async (req, res) => {
   }
 });
 
-// Transaction Details Endpoint
+// Transaction Details Endpoint (With MongoDB Transaction)
 app.get("/api/nft/transaction-details", async (req, res) => {
   const { userId, productId } = req.query;
 
@@ -61,18 +61,25 @@ app.get("/api/nft/transaction-details", async (req, res) => {
     return res.status(400).json({ error: "userId and productId are required" });
   }
 
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const nft = await NFTItems.findOneAndUpdate(
       { itemId: Number(productId), status: "available" },
       { status: "locked", memo: uuidv4(), lockedAt: new Date() },
-      { new: true }
+      { new: true, session }
     );
 
     if (!nft) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(404).json({ error: "No available NFTs for this item" });
     }
 
     if (!nft.price) {
+      await session.abortTransaction();
+      session.endSession();
       return res.status(400).json({ error: "Price not defined for this NFT" });
     }
 
@@ -87,7 +94,10 @@ app.get("/api/nft/transaction-details", async (req, res) => {
       memo: nft.memo,
       status: "awaiting_payment",
     });
-    await transaction.save();
+    await transaction.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
 
     res.json({
       address: RECEIVING_WALLET_ADDRESS,
@@ -96,12 +106,13 @@ app.get("/api/nft/transaction-details", async (req, res) => {
     });
   } catch (error) {
     console.error("Error generating transaction details:", error);
-    await NFTItems.updateOne({ memo: transaction?.memo }, { status: "available", memo: null, lockedAt: null });
+    await session.abortTransaction();
+    session.endSession();
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-// Transaction Verification and Transfer
+// Transaction Verification and Transfer (With MongoDB Transaction)
 async function verifyAndTransferTransactions() {
   const client = await initTonClient();
   const walletContract = client.open(serverWallet);
@@ -129,93 +140,130 @@ async function verifyAndTransferTransactions() {
         );
 
         if (matchingTx) {
-          await TONTransactions.updateOne(
-            { _id: tx._id },
-            { status: "payment_received", tx_hash: matchingTx.transaction_id.hash }
-          );
-          console.log(`Payment received for memo ${tx.memo}`);
+          const session = await mongoose.startSession();
+          session.startTransaction();
+
+          try {
+            await TONTransactions.updateOne(
+              { _id: tx._id },
+              { status: "payment_received", tx_hash: matchingTx.transaction_id.hash },
+              { session }
+            );
+            await session.commitTransaction();
+            session.endSession();
+            console.log(`Payment received for memo ${tx.memo}`);
+          } catch (error) {
+            await session.abortTransaction();
+            session.endSession();
+            console.error(`Failed to update payment status for memo ${tx.memo}:`, error);
+          }
         }
       }
 
       if (tx.status === "payment_received") {
-        const nft = await NFTItems.findOne({ memo: tx.memo, status: "locked" });
-        if (!nft) {
+        const session = await mongoose.startSession();
+        session.startTransaction();
+
+        try {
+          const nft = await NFTItems.findOne({ memo: tx.memo, status: "locked" }, { session });
+          if (!nft) {
+            await TONTransactions.updateOne(
+              { _id: tx._id },
+              { status: "failed_transfer", error_message: "No locked NFT found" },
+              { session }
+            );
+            await session.commitTransaction();
+            session.endSession();
+            console.error(`No locked NFT found for memo ${tx.memo}`);
+            continue;
+          }
+
+          await TONTransactions.updateOne({ _id: tx._id }, { status: "transferring" }, { session });
+
+          const buyerAddress = (await axios.get(`${TONCENTER_API_URL}/getTransactions`, {
+            params: { address: RECEIVING_WALLET_ADDRESS, hash: tx.tx_hash, api_key: TONCENTER_API_KEY }
+          })).data.result[0].in_msg.source;
+
+          const nftContract = client.open(NFTItem.createFromAddress(Address.parse(nft.address)));
+
+          const seqno = await walletContract.getSeqno();
+          await walletContract.sendTransfer({
+            seqno,
+            secretKey: keyPair.secretKey,
+            messages: [
+              nftContract.createTransfer({
+                newOwner: Address.parse(buyerAddress),
+                responseDestination: Address.parse(RECEIVING_WALLET_ADDRESS),
+                forwardTonAmount: toNano("0.01"),
+              }),
+            ],
+          });
+
+          await NFTItems.updateOne(
+            { _id: nft._id },
+            { status: "sold", owner: buyerAddress, memo: null },
+            { session }
+          );
           await TONTransactions.updateOne(
             { _id: tx._id },
-            { status: "failed_transfer", error_message: "No locked NFT found" }
+            { status: "complete", transfer_tx_hash: "unknown" },
+            { session }
           );
-          console.error(`No locked NFT found for memo ${tx.memo}`);
-          continue;
+
+          await session.commitTransaction();
+          session.endSession();
+          console.log(`NFT ${nft.address} transferred to ${buyerAddress} for memo ${tx.memo}`);
+        } catch (error) {
+          await TONTransactions.updateOne(
+            { _id: tx._id },
+            { status: "failed_transfer", error_message: error.message },
+            { session }
+          );
+          await session.commitTransaction();
+          session.endSession();
+          console.error(`Transfer failed for memo ${tx.memo}:`, error);
         }
-
-        await TONTransactions.updateOne({ _id: tx._id }, { status: "transferring" });
-
-        const buyerAddress = (await axios.get(`${TONCENTER_API_URL}/getTransactions`, {
-          params: { address: RECEIVING_WALLET_ADDRESS, hash: tx.tx_hash, api_key: TONCENTER_API_KEY }
-        })).data.result[0].in_msg.source;
-
-        // Open the NFTItem contract
-        const nftContract = client.open(NFTItem.createFromAddress(Address.parse(nft.address)));
-
-        // Transfer NFT using NFTItem.transfer
-        const seqno = await walletContract.getSeqno();
-        await walletContract.sendTransfer({
-          seqno,
-          secretKey: keyPair.secretKey,
-          messages: [
-            nftContract.createTransfer({
-              newOwner: Address.parse(buyerAddress),
-              responseDestination: Address.parse(RECEIVING_WALLET_ADDRESS),
-              forwardTonAmount: toNano("0.01"), // Optional notification amount
-            }),
-          ],
-        });
-
-        await NFTItems.updateOne(
-          { _id: nft._id },
-          { status: "sold", owner: buyerAddress, memo: null }
-        );
-        await TONTransactions.updateOne(
-          { _id: tx._id },
-          { status: "complete", transfer_tx_hash: "unknown" } // TON client doesn't return tx hash directly here
-        );
-        console.log(`NFT ${nft.address} transferred to ${buyerAddress} for memo ${tx.memo}`);
       }
     }
   } catch (error) {
     console.error("Error verifying transactions:", error);
-    if (tx) {
-      await TONTransactions.updateOne(
-        { _id: tx._id },
-        { status: "failed_transfer", error_message: error.message }
-      );
-    }
   }
 }
 
-// Unlock Expired Locks
+// Unlock Expired Locks (With MongoDB Transaction)
 async function unlockExpiredLocks() {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
     const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const expiredLocks = await NFTItems.find({
       status: "locked",
       lockedAt: { $lt: twentyFourHoursAgo },
-    });
+    }, { session });
 
     if (expiredLocks.length > 0) {
       const expiredMemos = expiredLocks.map(nft => nft.memo);
       await NFTItems.updateMany(
         { _id: { $in: expiredLocks.map(nft => nft._id) } },
-        { status: "available", memo: null, lockedAt: null }
+        { status: "available", memo: null, lockedAt: null },
+        { session }
       );
       await TONTransactions.updateMany(
         { memo: { $in: expiredMemos }, status: { $in: ["awaiting_payment", "payment_received"] } },
-        { status: "expired" }
+        { status: "expired" },
+        { session }
       );
+      await session.commitTransaction();
       console.log(`Unlocked ${expiredLocks.length} expired NFT locks and marked transactions as expired`);
+    } else {
+      await session.abortTransaction();
     }
   } catch (error) {
+    await session.abortTransaction();
     console.error("Error unlocking expired locks:", error);
+  } finally {
+    session.endSession();
   }
 }
 
