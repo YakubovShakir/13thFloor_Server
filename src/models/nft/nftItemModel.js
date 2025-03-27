@@ -1,4 +1,5 @@
-// NFTItems Schema
+import mongoose from "mongoose";
+
 const nftItemSchema = new mongoose.Schema({
   itemId: { type: Number, required: true },
   index: { type: Number, required: true },

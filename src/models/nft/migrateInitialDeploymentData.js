@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { ShelfItems } from "./shelfItems.js"
+import ShelfItems from "./shelfItems.js"
 import NFTItems from "./nftItemModel.js"
 
 const deploymentInfo = {

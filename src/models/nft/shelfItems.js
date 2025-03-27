@@ -1,3 +1,31 @@
+export const ShelfItemTypes = {
+  Flower: "flower",
+  Event: "event",
+  Award: "award",
+  Flag: "flag",
+  Neko: "neko",
+}
+
+export const NEKO_RARITIES = {
+  //! BASE - FOR REGULAR NEKO
+  BASE: 'Base',
+  //!
+  COMMON: 'Common',
+  UNCOMMON: 'Uncommon',
+  RARE: 'Rare',
+  LEGENDARY: 'Legendary',
+  SPECIAL: 'Special',
+}
+
+export const nekoRarityToRespectMap = {
+  [NEKO_RARITIES.BASE]: 20,
+  [NEKO_RARITIES.COMMON]: 100,
+  [NEKO_RARITIES.UNCOMMON]: 200,
+  [NEKO_RARITIES.RARE]: 300,
+  [NEKO_RARITIES.LEGENDARY]: 400,
+  [NEKO_RARITIES.SPECIAL]: 500,
+}
+
 export default [
   {
     id: 9,
