@@ -12,16 +12,24 @@ services:
       - ./restore-folder:/data/restore
     ports:
       - 27017:27017
-
-  redis:
-    image: redis:7  # Using Redis 7, but you can adjust the version
-    volumes:
-      - redis-data:/data  # Persistent storage for Redis
-    ports:
-      - 6379:6379  # Default Redis port
-    command: redis-server --requirepass redis_password  # Optional: Add a password
+    command: mongod --replSet rs0 --bind_ip_all
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.runCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
-      - default  # Explicitly attach to the default network
+      - default
+
+  # redis:
+  #   image: redis:7
+  #   volumes:
+  #     - redis-data:/data
+  #   ports:
+  #     - 6379:6379
+  #   command: redis-server --requirepass redis_password
+  #   networks:
+  #     - default
 
 volumes:
   db-floor:
