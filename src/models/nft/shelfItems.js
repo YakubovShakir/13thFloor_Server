@@ -47,17 +47,17 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 1500,
     rarity: NEKO_RARITIES.COMMON,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 10,
     name: {
-      ru: "Meowmen",
-      en: "Meowmen",
+      ru: "Meowramen",
+      en: "Meowramen",
     },
     description: {
-      ru: "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      en: "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      ru: "Meowramen - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Meowramen - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
     cost: {
       coins: 0,
@@ -69,7 +69,7 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 1500,
     rarity: NEKO_RARITIES.COMMON,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 11,
@@ -91,7 +91,7 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 1500,
     rarity: NEKO_RARITIES.COMMON,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 12,
@@ -113,7 +113,7 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 5000,
     rarity: NEKO_RARITIES.RARE,
-    ton_price: 1,
+    ton_price: 20,
   },
   {
     id: 13,
@@ -135,7 +135,7 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 1500,
     rarity: NEKO_RARITIES.COMMON,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 14,
@@ -157,7 +157,7 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 2500,
     rarity: NEKO_RARITIES.UNCOMMON,
-    ton_price: 1,
+    ton_price: 15,
   },
   {
     id: 15,
@@ -179,7 +179,7 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 2500,
     rarity: NEKO_RARITIES.COMMON,
-    ton_price: 1,
+    ton_price: 15,
   },
   {
     id: 16,
@@ -201,7 +201,7 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 1500,
     rarity: NEKO_RARITIES.COMMON,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 17,
@@ -223,7 +223,7 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 1500,
     rarity: NEKO_RARITIES.COMMON,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 18,
@@ -245,7 +245,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 19,
@@ -267,7 +267,7 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 2500,
     rarity: NEKO_RARITIES.UNCOMMON,
-    ton_price: 1,
+    ton_price: 15,
   },
   {
     id: 20,
@@ -289,7 +289,7 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 5000,
     rarity: NEKO_RARITIES.RARE,
-    ton_price: 1,
+    ton_price: 20,
   },
   {
     id: 21,
@@ -311,7 +311,7 @@ export default [
     type: ShelfItemTypes.Neko,
     respect: 1500,
     rarity: NEKO_RARITIES.COMMON,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 22,
@@ -333,7 +333,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.UNCOMMON,
     respect: 2500,
-    ton_price: 1,
+    ton_price: 15,
   },
   {
     id: 23,
@@ -355,7 +355,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 24,
@@ -377,7 +377,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.LEGENDARY,
     respect: 10000,
-    ton_price: 1,
+    ton_price: 30,
   },
   {
     id: 25,
@@ -399,7 +399,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.RARE,
     respect: 5000,
-    ton_price: 1,
+    ton_price: 20,
   },
   {
     id: 26,
@@ -421,7 +421,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.UNCOMMON,
     respect: 2500,
-    ton_price: 1,
+    ton_price: 15,
   },
   {
     id: 27,
@@ -443,7 +443,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.RARE,
     respect: 5000,
-    ton_price: 1,
+    ton_price: 20,
   },
   {
     id: 28,
@@ -465,7 +465,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 29,
@@ -487,7 +487,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 30,
@@ -509,7 +509,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.UNCOMMON,
     respect: 2500,
-    ton_price: 1,
+    ton_price: 15,
   },
   {
     id: 31,
@@ -531,7 +531,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 32,
@@ -553,7 +553,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 33,
@@ -575,7 +575,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.UNCOMMON,
     respect: 2500,
-    ton_price: 1,
+    ton_price: 15,
   },
   {
     id: 34,
@@ -597,7 +597,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.RARE,
     respect: 5000,
-    ton_price: 1,
+    ton_price: 20,
   },
   {
     id: 35,
@@ -619,7 +619,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
-    ton_price: 1,
+    ton_price: 10,
   },
   {
     id: 36,
@@ -641,7 +641,7 @@ export default [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.RARE,
     respect: 5000,
-    ton_price: 1,
+    ton_price: 20,
   },
   {
     id: 37,

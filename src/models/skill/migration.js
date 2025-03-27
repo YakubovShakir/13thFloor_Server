@@ -64,14 +64,14 @@ export default [
     skill_id: 4,
     
     name: {
-      ru: "Базовый курс Этикета",
-      en: "Basic Etiquette Course"
+      ru: "Курс Этикета",
+      en: "Etiquette Course"
     },
     coins_price: 300,
     experience_reward: 0,
     description: 
     {
-      ru: "Освойте основы этикета",
+      ru: "Освойте базовый курс этикета",
       en: "Master the basics of etiquette"
     },
     
