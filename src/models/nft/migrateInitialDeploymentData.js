@@ -11500,94 +11500,85 @@ const deploymentInfo = {
   ],
 }
 
-// Mapping of English names to metadataFile for NFT items (based on IDs 9-38)
 const nameToMetadataMap = {
-  Pancat: "0.json",
-  Meowmen: "1.json",
-  Lazyfield: "2.json",
-  Catpool: "4.json",
-  Meowki: "5.json",
-  Laserneko: "6.json",
-  Saberra: "7.json",
-  Bunnymeow: "8.json",
-  Goldpaw: "9.json",
-  Rockneko: "10.json",
-  Meowstronaut: "11.json",
-  Nightpaw: "12.json",
-  Nephritus: "13.json",
-  Assassipaw: "14.json",
-  Meowroe: "15.json",
-  Magmocat: "16.json",
-  Mandalpurr: "17.json",
-  Starglem: "19.json",
-  Xpaw: "20.json",
-  "Yaku-cat": "21.json",
-  Steelwhisker: "22.json",
-  Guitarcat: "23.json",
-  Roastie: "24.json",
-  Bonefish: "25.json",
-  Parisianpaw: "26.json",
-  Catarachnid: "27.json",
-  Coffeecat: "28.json",
-  Venocat: "29.json",
-  Meowhale: "30.json",
-  "Purrfect Launch": "31.json",
-}
-
-async function populateDB() {
-  try {
-    await mongoose.connect("mongodb://localhost:27017/Floor", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    })
-    console.log("Connected to MongoDB")
-
-    await NFTItems.deleteMany({})
-    console.log("Cleared existing NFTItems")
-
-    const nftItemsToInsert = []
-    const nftShelfItems = ShelfItems.filter(
-      (item) => item.id >= 9 && item.id <= 38
-    )
-
-    for (const item of nftShelfItems) {
-      const metadataFile = nameToMetadataMap[item.name.en]
-      const deploymentItem = deploymentInfo.nftItems.find(
-        (nft) => nft.metadataFile === metadataFile
-      )
-
-      if (!deploymentItem) {
-        console.warn(
-          `No deployment data found for ${item.name.en} (ID: ${item.id})`
-        )
-        continue
+    "Pancat": "0.json",
+    "Meowmen": "1.json",
+    "Lazyfield": "2.json",
+    "Catpool": "4.json",
+    "Meowki": "5.json",
+    "Laserneko": "6.json",
+    "Saberra": "7.json",
+    "Bunnymeow": "8.json",
+    "Goldpaw": "9.json",
+    "Rockneko": "10.json",
+    "Meowstronaut": "11.json",
+    "Nightpaw": "12.json",
+    "Nephritus": "13.json",
+    "Assassipaw": "14.json",
+    "Meowroe": "15.json",
+    "Magmocat": "16.json",
+    "Mandalpurr": "17.json",
+    "Starglem": "19.json",
+    "Xpaw": "20.json",
+    "Yaku-cat": "21.json",
+    "Steelwhisker": "22.json",
+    "Guitarcat": "23.json",
+    "Roastie": "24.json",
+    "Bonefish": "25.json",
+    "Parisianpaw": "26.json",
+    "Catarachnid": "27.json",
+    "Coffeecat": "28.json",
+    "Venocat": "29.json",
+    "Meowhale": "30.json",
+    "Purrfect Launch": "31.json"
+  };
+  
+  async function populateDB() {
+    try {
+      await mongoose.connect("mongodb://localhost:27017/your_database_name", {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+      console.log("Connected to MongoDB");
+  
+      await NFTItems.deleteMany({});
+      console.log("Cleared existing NFTItems");
+  
+      const nftItemsToInsert = [];
+      const nftShelfItems = ShelfItems.filter(item => item.id >= 9 && item.id <= 38);
+  
+      for (const item of nftShelfItems) {
+        const metadataFile = nameToMetadataMap[item.name.en];
+        const deploymentItem = deploymentInfo.nftItems.find(nft => nft.metadataFile === metadataFile);
+  
+        if (!deploymentItem) {
+          console.warn(`No deployment data found for ${item.name.en} (ID: ${item.id})`);
+          continue;
+        }
+  
+        const price = item.cost.ton_price || 1.0; // Default to 1 TON if not specified
+        deploymentItem.copies.forEach(copy => {
+          nftItemsToInsert.push({
+            itemId: item.id,
+            index: copy.index,
+            address: copy.address,
+            status: "available",
+            memo: null,
+            lockedAt: null,
+            owner: null,
+            price,
+          });
+        });
       }
-
-      deploymentItem.copies.forEach((copy) => {
-        nftItemsToInsert.push({
-          itemId: item.id,
-          index: copy.index,
-          address: copy.address,
-          status: "available",
-          memo: null,
-          lockedAt: null,
-          owner: null,
-        })
-      })
+  
+      await NFTItems.insertMany(nftItemsToInsert);
+      console.log("Database populated successfully with", nftItemsToInsert.length, "atomic NFTs");
+    } catch (error) {
+      console.error("Error populating database:", error);
+    } finally {
+      await mongoose.connection.close();
+      console.log("MongoDB connection closed");
     }
-
-    await NFTItems.insertMany(nftItemsToInsert)
-    console.log(
-      "Database populated successfully with",
-      nftItemsToInsert.length,
-      "atomic NFTs"
-    )
-  } catch (error) {
-    console.error("Error populating database:", error)
-  } finally {
-    await mongoose.connection.close()
-    console.log("MongoDB connection closed")
   }
-}
-
-populateDB()
+  
+  populateDB();
