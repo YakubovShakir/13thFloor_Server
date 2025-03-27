@@ -761,47 +761,5 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.RARE,
     respect: 5000,
-  },
-  {
-    id: 37,
-    name: {
-      ru: "Meowhale",
-      en: "Meowhale",
-    },
-    description: {
-      ru: "Meowhale - A special Maneki-neko from the 13th Floor Collection for holders of 1 million $13FUTY | Season 1",
-      en: "Meowhale - A special Maneki-neko from the 13th Floor Collection for holders of 1 million $13FUTY | Season 1",
-    },
-    cost: {
-      coins: 0,
-      stars: 0,
-    },
-    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/30.gif",
-    shelf_link:
-      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/30.gif",
-    type: ShelfItemTypes.Neko,
-    rarity: NEKO_RARITIES.SPECIAL,
-    respect: 7500,
-  },
-  {
-    id: 38,
-    name: {
-      ru: "Purrfect Launch",
-      en: "Purrfect Launch",
-    },
-    description: {
-      ru: "Purrfect Launch - A special Maneki-neko from the 13th Floor Collection for holders of 10 million $13FUTY | Season 1",
-      en: "Purrfect Launch - A special Maneki-neko from the 13th Floor Collection for holders of 10 million $13FUTY | Season 1",
-    },
-    cost: {
-      coins: 0,
-      stars: 0,
-    },
-    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/31.gif",
-    shelf_link:
-      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/31.gif",
-    type: ShelfItemTypes.Neko,
-    rarity: NEKO_RARITIES.SPECIAL,
-    respect: 7500,
-  },
+  }
 ]
