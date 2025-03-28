@@ -326,8 +326,8 @@ const itemsPoolRaw = [
   {
     id: 8,
     type: "shelf",
-    chance_premium: 2,
-    chance_daily: 1,
+    chance_premium: 1,
+    chance_daily: 0,
     prize_equivalent: {
       type: "coins",
       amount: 10000
