@@ -126,7 +126,9 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
         energy: baseParameters.energy_cost_per_minute || 0,
       };
       profitConfig = {
-        coins: baseParameters.coins_in_hour ? baseParameters.coins_in_hour / 60 : 0, // Convert to per-minute
+        // Calculated when finishing
+        coins: 0
+        // coins: baseParameters.coins_in_hour ? baseParameters.coins_in_hour / 60 : 0, // Convert to per-minute
       };
     } else {
       costConfig = {};
@@ -274,7 +276,7 @@ const calculatePeriodCosts = (baseParameters, combinedEffects, durationSeconds, 
     log("debug", colors.magenta(`Rate per second for ${key}: ${adjustedValue.toFixed(4)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
 
     const cost = ratePerSecond * durationSeconds;
-    finalCosts[key] = Number(cost.toFixed(2));
+    finalCosts[key] = Number(cost.toFixed(10));
     log("debug", colors.magenta(`Cost for ${key} over ${durationSeconds}s: ${ratePerSecond.toFixed(4)} * ${durationSeconds} = ${cost.toFixed(4)}`));
     log("info", colors.blue(`Final process cost for ${key}: ${finalCosts[key]} subtracted`));
   });
@@ -330,39 +332,40 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
       log("debug", colors.white(`Base ratio for ${key}: ${currentValue} / ${capacity} = ${baseRatio.toFixed(4)}`));
 
       const hourlyProfit = baseRatio * (hourlyIncreasePercent / 100) * capacity;
-      log("debug", colors.yellow(`Hourly profit for ${key}: ${baseRatio.toFixed(4)} * (${hourlyIncreasePercent} / 100) * ${capacity} = ${hourlyProfit.toFixed(4)} units/hour`));
+      log("debug", colors.yellow(`Hourly profit for ${key}: ${baseRatio.toFixed(5)} * (${hourlyIncreasePercent} / 100) * ${capacity} = ${hourlyProfit.toFixed(4)} units/hour`));
 
       const profitOverDuration = (hourlyProfit / 3600) * totalDurationSeconds;
-      log("debug", colors.yellow(`Profit over duration for ${key}: (${hourlyProfit.toFixed(4)} / 3600) * ${totalDurationSeconds}s = ${profitOverDuration.toFixed(4)}`));
+      log("debug", colors.yellow(`Profit over duration for ${key}: (${hourlyProfit.toFixed(5)} / 3600) * ${totalDurationSeconds}s = ${profitOverDuration.toFixed(4)}`));
 
       const ratePerSecond = profitOverDuration / totalDurationSeconds;
-      log("debug", colors.magenta(`Effect rate per second for ${key}: ${profitOverDuration.toFixed(4)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
+      log("debug", colors.magenta(`Effect rate per second for ${key}: ${profitOverDuration.toFixed(5)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
 
       const profitForTick = ratePerSecond * diffSeconds;
-      log("debug", colors.magenta(`Profit for ${key} over ${diffSeconds}s: ${ratePerSecond.toFixed(4)} * ${diffSeconds} = ${profitForTick.toFixed(4)}`));
+      log("debug", colors.magenta(`Profit for ${key} over ${diffSeconds}s: ${ratePerSecond.toFixed(5)} * ${diffSeconds} = ${profitForTick.toFixed(4)}`));
 
       const uncappedProfit = (profits[key] || 0) + profitForTick;
       const newTotal = currentValue + uncappedProfit;
       const cappedProfit = Math.min(uncappedProfit, Math.max(0, capacity - currentValue));
-      profits[key] = isNaN(cappedProfit) ? 0 : Number(cappedProfit.toFixed(2));
-      log("debug", colors.yellow(`Capping ${key}: current=${currentValue}, uncapped new total=${newTotal.toFixed(4)}, capacity=${capacity}, capped profit=${profits[key].toFixed(4)}`));
+      profits[key] = isNaN(cappedProfit) ? 0 : Number(cappedProfit.toFixed(5));
+      log("debug", colors.yellow(`Capping ${key}: current=${currentValue}, uncapped new total=${newTotal.toFixed(5)}, capacity=${capacity}, capped profit=${profits[key].toFixed(4)}`));
     } else {
-      const baseValue = Number(profits[key]) || 0;
-      const hourlyProfit = (baseValue * hourlyIncreasePercent) / 100;
-      log("debug", colors.yellow(`Hourly profit for ${key}: ${baseValue} * ${hourlyIncreasePercent} / 100 = ${hourlyProfit.toFixed(4)}`));
+      //!TODO recheck effects
+      // const baseValue = Number(profits[key]) || 0;
+      // const hourlyProfit = (baseValue * hourlyIncreasePercent) / 100;
+      // log("debug", colors.yellow(`Hourly profit for ${key}: ${baseValue} * ${hourlyIncreasePercent} / 100 = ${hourlyProfit.toFixed(4)}`));
 
-      const profitOverDuration = (hourlyProfit / 3600) * totalDurationSeconds;
-      log("debug", colors.yellow(`Profit over duration for ${key}: (${hourlyProfit.toFixed(4)} / 3600) * ${totalDurationSeconds}s = ${profitOverDuration.toFixed(4)}`));
+      // const profitOverDuration = (hourlyProfit / 3600) * totalDurationSeconds;
+      // log("debug", colors.yellow(`Profit over duration for ${key}: (${hourlyProfit.toFixed(5)} / 3600) * ${totalDurationSeconds}s = ${profitOverDuration.toFixed(4)}`));
 
-      const ratePerSecond = profitOverDuration / totalDurationSeconds;
-      log("debug", colors.magenta(`Effect rate per second for ${key}: ${profitOverDuration.toFixed(4)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
+      // const ratePerSecond = profitOverDuration / totalDurationSeconds;
+      // log("debug", colors.magenta(`Effect rate per second for ${key}: ${profitOverDuration.toFixed(5)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
 
-      const profit = ratePerSecond * diffSeconds;
-      profits[key] = isNaN(profit) ? baseValue : Number(((profits[key] || 0) + profit).toFixed(2));
-      log("debug", colors.magenta(`Profit for ${key} over ${diffSeconds}s: ${ratePerSecond.toFixed(4)} * ${diffSeconds} = ${profit.toFixed(4)}`));
+      // const profit = ratePerSecond * diffSeconds;
+      // profits[key] = isNaN(profit) ? baseValue : Number(((profits[key] || 0) + profit).toFixed(5));
+      // log("debug", colors.magenta(`Profit for ${key} over ${diffSeconds}s: ${ratePerSecond.toFixed(5)} * ${diffSeconds} = ${profit.toFixed(4)}`));
     }
 
-    log("info", colors.blue(`Final process profit for ${key}: ${profits[key].toFixed(2)} added`));
+    log("info", colors.blue(`Final process profit for ${key}: ${profits[key].toFixed(5)} added`));
   });
 
   return profits;
@@ -421,6 +424,7 @@ const workProcessConfig = {
     energy: { type: "per_minute", baseValueKey: "energy_cost_per_minute", baseDurationKey: "duration" },
   },
   baseDurationKey: "base_duration_in_seconds",
+  profitConfig: {},
   onProcessCompletion: async (process, userParameters, baseParameters) => {
     await log("verbose", colors.blue("Fetching neko multiplier for user..."), { processId: process._id, userId: process.id });
     const nekoBoostMultiplier = await getNekoBoostMultiplier(userParameters.id);
