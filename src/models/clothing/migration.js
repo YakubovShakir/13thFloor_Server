@@ -970,7 +970,7 @@ export default [
     type: "Top",
     effect: null,
     male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-m.png",
-    female_link: "/https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-f.png",
+    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-f.png",
     male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-m-icon.png",
     female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-f-icon.png",
     respect: 30,
