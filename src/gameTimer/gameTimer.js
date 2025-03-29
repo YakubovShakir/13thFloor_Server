@@ -68,7 +68,7 @@ connectDB()
 
     // Start memory usage logging every 5 minutes
     const memoryLogScheduler = cron.schedule(
-      "*/5 * * * * *",
+      "*/30 * * * * *",
       () => {
         logMemoryUsage();
       },

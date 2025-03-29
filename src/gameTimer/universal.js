@@ -196,7 +196,7 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
     log("debug", colors.white(`Timing: diffSeconds=${diffSeconds}s, processDurationSeconds=${processDurationSeconds}s`));
     log("debug", colors.cyan(`Starting cost/profit calc for ${processType} (processId: ${process._id}) over ${diffSeconds}s`));
 
-    const periodCosts = calculatePeriodCosts(baseParameters, combinedEffects, diffSeconds, costConfig, [], userParameters, totalDurationSeconds);
+    const periodCosts = calculatePeriodCosts(baseParameters, combinedEffects, diffSeconds, costConfig, [], userParameters, totalDurationSeconds, processType);
     const periodProfits = calculatePeriodProfits(baseParameters, combinedEffects, diffSeconds, profitConfig, [], userParameters, totalDurationSeconds);
 
     const finalCosts = { ...periodCosts };
@@ -256,7 +256,7 @@ const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) => {
   return Math.max(1, adjustedSeconds);
 };
 
-const calculatePeriodCosts = (baseParameters, combinedEffects, durationSeconds, costConfig, costBlackList, userParameters, totalDurationSeconds) => {
+const calculatePeriodCosts = (baseParameters, combinedEffects, durationSeconds, costConfig, costBlackList, userParameters, totalDurationSeconds, processType) => {
   const finalCosts = {};
   Object.entries(costConfig).forEach(([key, baseValue]) => {
     log("debug", colors.cyan(`Starting cost calc for ${key}: baseValue=${baseValue}`));
@@ -272,12 +272,21 @@ const calculatePeriodCosts = (baseParameters, combinedEffects, durationSeconds, 
       log("debug", colors.yellow(`No ${decreaseKey} effect found`));
     }
 
-    const ratePerSecond = adjustedValue / totalDurationSeconds;
-    log("debug", colors.magenta(`Rate per second for ${key}: ${adjustedValue.toFixed(4)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
+    let cost;
+    if (processType === "work") {
+      // For "work," baseValue is a per-minute rate
+      const minutesElapsed = durationSeconds / 60;
+      cost = adjustedValue * minutesElapsed;
+      log("debug", colors.magenta(`Cost for ${key} over ${durationSeconds}s: ${adjustedValue.toFixed(4)} * ${minutesElapsed.toFixed(4)}min = ${cost.toFixed(4)}`));
+    } else {
+      // For other processes (e.g., training, sleep), baseValue is a total over duration
+      const ratePerSecond = adjustedValue / totalDurationSeconds;
+      cost = ratePerSecond * durationSeconds;
+      log("debug", colors.magenta(`Rate per second for ${key}: ${adjustedValue.toFixed(4)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
+      log("debug", colors.magenta(`Cost for ${key} over ${durationSeconds}s: ${ratePerSecond.toFixed(4)} * ${durationSeconds} = ${cost.toFixed(4)}`));
+    }
 
-    const cost = ratePerSecond * durationSeconds;
     finalCosts[key] = Number(cost.toFixed(10));
-    log("debug", colors.magenta(`Cost for ${key} over ${durationSeconds}s: ${ratePerSecond.toFixed(4)} * ${durationSeconds} = ${cost.toFixed(4)}`));
     log("info", colors.blue(`Final process cost for ${key}: ${finalCosts[key]} subtracted`));
   });
   return finalCosts;
