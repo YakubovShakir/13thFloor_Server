@@ -11539,6 +11539,8 @@ const nameToMetadataMap = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
+
+      await mongoose.syncIndexes()
       console.log("Connected to MongoDB");
   
       await NFTItems.deleteMany({});
@@ -11566,7 +11568,7 @@ const nameToMetadataMap = {
             memo: null,
             lockedAt: null,
             owner: null,
-            price,
+            price: item.ton_price
           });
         });
       }

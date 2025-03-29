@@ -19,7 +19,7 @@ export const ShelfItems = [
     shelf_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/цветок-2-полка.png",
     type: ShelfItemTypes.Flower,
-    effects: null, 
+    effects: null,
     respect: 100,
   },
   {
@@ -43,12 +43,10 @@ export const ShelfItems = [
     respect: 1000,
     effects: {
       profit_hourly_percent: [
-       
-        { param: "energy", value: 10 },   
+        { param: "energy", value: 10 },
       ],
-    }
+    },
   },
-  
   {
     id: 3,
     name: {
@@ -70,10 +68,9 @@ export const ShelfItems = [
     respect: 2000,
     effects: {
       cant_fall_below_percent: [
-        { param: "mood", value: 15 },   
-       
+        { param: "mood", value: 15 },
       ],
-    }
+    },
   },
   // {
   //   id: 4,
@@ -133,9 +130,9 @@ export const ShelfItems = [
     respect: 10000,
     effects: {
       profit_hourly_percent: [
-        { param: "mood", value: 15 },   
+        { param: "mood", value: 15 },
       ],
-    }
+    },
   },
   // {
   //   id: 7,
@@ -172,7 +169,7 @@ export const ShelfItems = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/нфт-исходник2.gif",
     type: ShelfItemTypes.Neko,
     respect: 5000,
-    rarity: NEKO_RARITIES.BASE
+    rarity: NEKO_RARITIES.BASE,
   },
   {
     id: 9,
@@ -193,17 +190,18 @@ export const ShelfItems = [
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/0.gif",
     type: ShelfItemTypes.Neko,
     respect: 1500,
-    rarity: NEKO_RARITIES.COMMON
+    rarity: NEKO_RARITIES.COMMON,
+    tonPrice: 10,
   },
   {
     id: 10,
     name: {
-      ru: "Meowmen",
-      en: "Meowmen",
+      ru: "Meowramen", // Updated from "Meowmen" in second array to match first
+      en: "Meowramen",
     },
     description: {
-      ru: "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      en: "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      ru: "Meowramen - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Meowramen - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
     cost: {
       coins: 0,
@@ -214,7 +212,8 @@ export const ShelfItems = [
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/1.gif",
     type: ShelfItemTypes.Neko,
     respect: 1500,
-    rarity: NEKO_RARITIES.COMMON
+    rarity: NEKO_RARITIES.COMMON,
+    tonPrice: 10,
   },
   {
     id: 11,
@@ -235,7 +234,8 @@ export const ShelfItems = [
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/2.gif",
     type: ShelfItemTypes.Neko,
     respect: 1500,
-    rarity: NEKO_RARITIES.COMMON
+    rarity: NEKO_RARITIES.COMMON,
+    tonPrice: 10,
   },
   {
     id: 12,
@@ -256,7 +256,8 @@ export const ShelfItems = [
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/4.gif",
     type: ShelfItemTypes.Neko,
     respect: 5000,
-    rarity: NEKO_RARITIES.RARE
+    rarity: NEKO_RARITIES.RARE,
+    tonPrice: 20,
   },
   {
     id: 13,
@@ -277,7 +278,8 @@ export const ShelfItems = [
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/5.gif",
     type: ShelfItemTypes.Neko,
     respect: 1500,
-    rarity: NEKO_RARITIES.COMMON
+    rarity: NEKO_RARITIES.COMMON,
+    tonPrice: 10,
   },
   {
     id: 14,
@@ -298,7 +300,8 @@ export const ShelfItems = [
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/6.gif",
     type: ShelfItemTypes.Neko,
     respect: 2500,
-    rarity: NEKO_RARITIES.UNCOMMON
+    rarity: NEKO_RARITIES.UNCOMMON,
+    tonPrice: 15,
   },
   {
     id: 15,
@@ -319,7 +322,8 @@ export const ShelfItems = [
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/7.gif",
     type: ShelfItemTypes.Neko,
     respect: 2500,
-    rarity: NEKO_RARITIES.COMMON
+    rarity: NEKO_RARITIES.COMMON, // Note: First array says UNCOMMON, second says COMMON
+    tonPrice: 15,
   },
   {
     id: 16,
@@ -340,7 +344,8 @@ export const ShelfItems = [
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/8.gif",
     type: ShelfItemTypes.Neko,
     respect: 1500,
-    rarity: NEKO_RARITIES.COMMON
+    rarity: NEKO_RARITIES.COMMON,
+    tonPrice: 10,
   },
   {
     id: 17,
@@ -361,7 +366,8 @@ export const ShelfItems = [
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/9.gif",
     type: ShelfItemTypes.Neko,
     respect: 1500,
-    rarity: NEKO_RARITIES.COMMON
+    rarity: NEKO_RARITIES.COMMON,
+    tonPrice: 10,
   },
   {
     id: 18,
@@ -383,6 +389,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
+    tonPrice: 10,
   },
   {
     id: 19,
@@ -403,7 +410,8 @@ export const ShelfItems = [
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/11.gif",
     type: ShelfItemTypes.Neko,
     respect: 2500,
-    rarity: NEKO_RARITIES.UNCOMMON
+    rarity: NEKO_RARITIES.UNCOMMON,
+    tonPrice: 15,
   },
   {
     id: 20,
@@ -424,7 +432,8 @@ export const ShelfItems = [
       "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/12.gif",
     type: ShelfItemTypes.Neko,
     respect: 5000,
-    rarity: NEKO_RARITIES.RARE
+    rarity: NEKO_RARITIES.RARE,
+    tonPrice: 20,
   },
   {
     id: 21,
@@ -446,6 +455,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     respect: 1500,
     rarity: NEKO_RARITIES.COMMON,
+    tonPrice: 10,
   },
   {
     id: 22,
@@ -467,6 +477,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.UNCOMMON,
     respect: 2500,
+    tonPrice: 15,
   },
   {
     id: 23,
@@ -488,6 +499,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
+    tonPrice: 10,
   },
   {
     id: 24,
@@ -509,6 +521,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.LEGENDARY,
     respect: 10000,
+    tonPrice: 30,
   },
   {
     id: 25,
@@ -530,6 +543,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.RARE,
     respect: 5000,
+    tonPrice: 20,
   },
   {
     id: 26,
@@ -551,6 +565,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.UNCOMMON,
     respect: 2500,
+    tonPrice: 15,
   },
   {
     id: 27,
@@ -572,6 +587,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.RARE,
     respect: 5000,
+    tonPrice: 20,
   },
   {
     id: 28,
@@ -593,6 +609,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
+    tonPrice: 10,
   },
   {
     id: 29,
@@ -614,6 +631,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
+    tonPrice: 10,
   },
   {
     id: 30,
@@ -635,6 +653,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.UNCOMMON,
     respect: 2500,
+    tonPrice: 15,
   },
   {
     id: 31,
@@ -656,6 +675,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
+    tonPrice: 10,
   },
   {
     id: 32,
@@ -677,6 +697,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
+    tonPrice: 10,
   },
   {
     id: 33,
@@ -698,6 +719,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.UNCOMMON,
     respect: 2500,
+    tonPrice: 15,
   },
   {
     id: 34,
@@ -719,6 +741,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.RARE,
     respect: 5000,
+    tonPrice: 20,
   },
   {
     id: 35,
@@ -740,6 +763,7 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
+    tonPrice: 10,
   },
   {
     id: 36,
@@ -761,5 +785,52 @@ export const ShelfItems = [
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.RARE,
     respect: 5000,
-  }
-]
+    tonPrice: 20,
+  },
+  {
+    id: 37,
+    name: {
+      ru: "Meowhale",
+      en: "Meowhale",
+    },
+    description: {
+      ru: "Meowhale - A special Maneki-neko from the 13th Floor Collection for holders of 1 million $13FUTY | Season 1",
+      en: "Meowhale - A special Maneki-neko from the 13th Floor Collection for holders of 1 million $13FUTY | Season 1",
+    },
+    cost: {
+      coins: 0,
+      stars: 0,
+    },
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/30.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/30.gif",
+    type: ShelfItemTypes.Neko,
+    rarity: NEKO_RARITIES.SPECIAL,
+    respect: 7500,
+    tonPrice: 1,
+  },
+  {
+    id: 38,
+    name: {
+      ru: "Purrfect Launch",
+      en: "Purrfect Launch",
+    },
+    description: {
+      ru: "Purrfect Launch - A special Maneki-neko from the 13th Floor Collection for holders of 10 million $13FUTY | Season 1",
+      en: "Purrfect Launch - A special Maneki-neko from the 13th Floor Collection for holders of 10 million $13FUTY | Season 1",
+    },
+    cost: {
+      coins: 0,
+      stars: 0,
+    },
+    link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/31.gif",
+    shelf_link:
+      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/31.gif",
+    type: ShelfItemTypes.Neko,
+    rarity: NEKO_RARITIES.SPECIAL,
+    respect: 7500,
+    tonPrice: 1,
+  },
+];
+
+export default ShelfItems;

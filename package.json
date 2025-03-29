@@ -36,7 +36,8 @@
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
     "ton-crypto": "^3.2.0",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "uuidv4": "^6.2.13"
   },
   "type": "module"
 }

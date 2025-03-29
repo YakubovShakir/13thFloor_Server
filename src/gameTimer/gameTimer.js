@@ -15,6 +15,7 @@ import {
   BoostProccess,
   FoodProccess,
   NftScanProcess,
+  TxScanProcess
 } from "./universal.js";
 
 // Utility to format memory usage in MB
@@ -30,6 +31,7 @@ const gameTimer = {
   AutoclaimProccess,
   RefsRecalsProcess,
   NftScanProcess,
+  TxScanProcess,
   stopAll() {
     Object.values(this).forEach((scheduler) => {
       if (scheduler && typeof scheduler.stop === "function") {

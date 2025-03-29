@@ -43,22 +43,70 @@ import {
   ActionTypes,
 } from "../../models/effects/actionLogModel.js"
 import moment from "moment-timezone"
-import ShelfItemModel, { levelToNekoCoinsClaimAmountMap, nekoRarityToRespectMap } from "../../models/shelfItem/shelfItemModel.js"
+import ShelfItemModel, {
+  levelToNekoCoinsClaimAmountMap,
+  nekoRarityToRespectMap,
+} from "../../models/shelfItem/shelfItemModel.js"
 import UserClothing from "../../models/user/userClothingModel.js"
-import SkillModel from '../../models/skill/skillModel.js'
+import SkillModel from "../../models/skill/skillModel.js"
 import Bottleneck from "bottleneck"
-import crypto from 'crypto'
+import crypto from "crypto"
 import { canApplyConstantEffects } from "../../utils/parametersDepMath.js"
 import UserParameters from "../../models/user/userParametersModel.js"
 import { getNekoBoostMultiplier } from "../../gameTimer/universal.js"
 import { Bot } from "grammy"
+import TONTransactions from "../../models/tx/tonTransactionModel.js"
+import NFTItems from "../../models/nft/nftItemModel.js"
+import mongoose from "mongoose"
+import { v4 as uuidv4 } from "uuid"
+import { mnemonicToPrivateKey } from "ton-crypto";
+import { config } from "dotenv"
+config()
+import TON from "@ton/ton";
+const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON;
 
-const TELEGRAM_BOT_TOKEN = "7775483956:AAHc14xqGCeNQ7DVsqABf0qAa8gdqwMWE6w";
-const bot = new Bot(TELEGRAM_BOT_TOKEN);
+let walletContract, keyPair, tonClient
+
+const mnemonic = process.env.MNEMONICS.split(" ") // Expects space-separated mnemonic
+const testnet = process.env.TESTNET === "true"
+const wallet = await openWallet(mnemonic, testnet)
+walletContract = wallet.contract
+keyPair = wallet.keyPair
+tonClient = wallet.client
+
+const TELEGRAM_BOT_TOKEN = "7775483956:AAHc14xqGCeNQ7DVsqABf0qAa8gdqwMWE6w"
+const bot = new Bot(TELEGRAM_BOT_TOKEN)
+
+const RECEIVING_WALLET_ADDRESS = walletContract.address.toString()
+console.log("Server wallet address:", RECEIVING_WALLET_ADDRESS)
+
+// TON Center API Configuration
+const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY
+const TONCENTER_API_URL = "https://toncenter.com/api/v2"
+
+async function openWallet(mnemonic, testnet) {
+  const keyPair = await mnemonicToPrivateKey(mnemonic);
+
+  const toncenterBaseEndpoint = testnet
+    ? "https://testnet.toncenter.com"
+    : "https://toncenter.com";
+
+  const client = new TonClient({
+    endpoint: `${toncenterBaseEndpoint}/api/v2/jsonRPC`,
+    apiKey: process.env.TONCENTER_API_KEY,
+  });
+
+  const wallet = WalletContractV4.create({
+    workchain: 0,
+    publicKey: keyPair.publicKey,
+  });
+
+  const contract = client.open(wallet);
+  return { contract, keyPair, client };
+}
 
 // Ensure the bot does not start polling (to avoid conflicts with getUpdates)
-bot.stop(); // Explicitly stop any polling (just in case)
-
+bot.stop() // Explicitly stop any polling (just in case)
 
 const router = express.Router()
 router.get("/user/:id", getUser)
@@ -128,8 +176,8 @@ const itemsPoolRaw = [
     chance_daily: 15,
     prize_equivalent: {
       type: "coins",
-      amount: 1000
-    }
+      amount: 1000,
+    },
     // prize_equivalent: {
     //   type: "boost",
     //   amount: 100
@@ -179,8 +227,8 @@ const itemsPoolRaw = [
     chance_daily: 10,
     prize_equivalent: {
       type: "coins",
-      amount: 1000
-    }
+      amount: 1000,
+    },
   },
   {
     id: 6,
@@ -222,8 +270,8 @@ const itemsPoolRaw = [
     chance_daily: 20,
     prize_equivalent: {
       type: "coins",
-      amount: 3000
-    }
+      amount: 3000,
+    },
   },
   {
     id: 9,
@@ -276,8 +324,8 @@ const itemsPoolRaw = [
     chance_daily: 15,
     prize_equivalent: {
       type: "coins",
-      amount: 1000
-    }
+      amount: 1000,
+    },
   },
   {
     id: 13,
@@ -330,8 +378,8 @@ const itemsPoolRaw = [
     chance_daily: 0,
     prize_equivalent: {
       type: "coins",
-      amount: 10000
-    }
+      amount: 10000,
+    },
   },
 ]
 
@@ -379,13 +427,13 @@ router.get("/:id/gacha/items", async (req, res) => {
         break
       case "shelf":
         const shelfItem = await ShelfItemModel.findOne({ id: item.id })
-          fullItem = {
-            id: item.id,
-            type: item.type,
-            image: shelfItem.link,
-            name: shelfItem.name,
-          }
-          break
+        fullItem = {
+          id: item.id,
+          type: item.type,
+          image: shelfItem.link,
+          name: shelfItem.name,
+        }
+        break
       default:
         return res.status(400).send()
     }
@@ -422,128 +470,163 @@ router.get("/:id/gacha/attempts", async (req, res) => {
 
 router.get("/:id/gacha/spin", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id);
+    const userId = parseInt(req.params.id)
 
     const attempts = await UserSpins.find(
       { user_id: userId, is_used: false },
       { _id: 1, type: 1 },
       { sort: { createdAt: -1 }, limit: 1 }
-    );
+    )
 
     if (!attempts.length) {
-      return res.status(403).json({ error: "Not enough spins" });
+      return res.status(403).json({ error: "Not enough spins" })
     }
 
-    const attempt = attempts[0];
-    const spinType = attempt.type;
-    const chanceField = spinType === "daily" ? "chance_daily" : "chance_premium";
-    const totalWeight = itemsPoolRaw.reduce((sum, item) => sum + item[chanceField], 0);
+    const attempt = attempts[0]
+    const spinType = attempt.type
+    const chanceField = spinType === "daily" ? "chance_daily" : "chance_premium"
+    const totalWeight = itemsPoolRaw.reduce(
+      (sum, item) => sum + item[chanceField],
+      0
+    )
 
-    const randomValue = Math.random() * totalWeight;
-    let cumulativeWeight = 0;
-    let selectedItem;
+    const randomValue = Math.random() * totalWeight
+    let cumulativeWeight = 0
+    let selectedItem
 
     for (const item of itemsPoolRaw) {
-      cumulativeWeight += item[chanceField];
+      cumulativeWeight += item[chanceField]
       if (randomValue <= cumulativeWeight) {
-        selectedItem = item;
-        break;
+        selectedItem = item
+        break
       }
     }
 
-    if (!selectedItem) selectedItem = itemsPoolRaw[itemsPoolRaw.length - 1];
+    if (!selectedItem) selectedItem = itemsPoolRaw[itemsPoolRaw.length - 1]
 
-    const user = await User.findOne({ id: userId });
-    if (!user) return res.status(404).json({ error: "User not found" });
+    const user = await User.findOne({ id: userId })
+    if (!user) return res.status(404).json({ error: "User not found" })
 
-    let wonItem;
-    let burnedTo = null; // What the item was burned into, if applicable
+    let wonItem
+    let burnedTo = null // What the item was burned into, if applicable
 
     switch (selectedItem.type) {
       case "boost":
-        const boost = await Boost.findOne({ boost_id: selectedItem.id });
-        wonItem = { id: selectedItem.id, type: "boost", image: boost.link, name: boost.name };
-        await new UserBoost({ id: userId, boost_id: wonItem.id }).save();
-        break;
+        const boost = await Boost.findOne({ boost_id: selectedItem.id })
+        wonItem = {
+          id: selectedItem.id,
+          type: "boost",
+          image: boost.link,
+          name: boost.name,
+        }
+        await new UserBoost({ id: userId, boost_id: wonItem.id }).save()
+        break
       case "clothes":
-        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id });
+        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id })
         wonItem = {
           id: selectedItem.id,
           type: "clothes",
-          image: user.personage.gender === "male" ? clothes.male_icon : clothes.female_icon,
+          image:
+            user.personage.gender === "male"
+              ? clothes.male_icon
+              : clothes.female_icon,
           name: clothes.name,
-        };
-        const userInventoryClothes = await UserCurrentInventory.findOne({ user_id: userId });
-        const isDuplicateClothes = userInventoryClothes?.clothes.some(c => c.id === wonItem.id);
+        }
+        const userInventoryClothes = await UserCurrentInventory.findOne({
+          user_id: userId,
+        })
+        const isDuplicateClothes = userInventoryClothes?.clothes.some(
+          (c) => c.id === wonItem.id
+        )
         if (isDuplicateClothes && selectedItem.prize_equivalent) {
-          burnedTo = selectedItem.prize_equivalent;
+          burnedTo = selectedItem.prize_equivalent
           if (burnedTo.type === "coins") {
-            await upUserBalance(userId, burnedTo.amount);
-            burnedTo.image = "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp"; // Assuming a static coin image from Assets
+            await upUserBalance(userId, burnedTo.amount)
+            burnedTo.image =
+              "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp" // Assuming a static coin image from Assets
           } else if (burnedTo.type === "boost") {
-            const burnedBoost = await Boost.findOne({ boost_id: burnedTo.amount });
-            await new UserBoost({ id: userId, boost_id: burnedTo.amount }).save();
-            burnedTo.image = burnedBoost.link; // Actual boost image
-            burnedTo.name = burnedBoost.name; // Boost name for display
+            const burnedBoost = await Boost.findOne({
+              boost_id: burnedTo.amount,
+            })
+            await new UserBoost({
+              id: userId,
+              boost_id: burnedTo.amount,
+            }).save()
+            burnedTo.image = burnedBoost.link // Actual boost image
+            burnedTo.name = burnedBoost.name // Boost name for display
           }
         } else {
           await UserCurrentInventory.updateOne(
             { user_id: userId },
             { $addToSet: { clothes: { id: wonItem.id } } }
-          );
+          )
         }
-        break;
+        break
       case "coins":
         wonItem = {
           id: selectedItem.id,
           type: "coins",
-          image: selectedItem.image || "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp", // Use item-specific or default coin image
+          image:
+            selectedItem.image ||
+            "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp", // Use item-specific or default coin image
           name: selectedItem.name,
           amount: selectedItem.amount,
-        };
-        await upUserBalance(userId, wonItem.amount);
-        break;
+        }
+        await upUserBalance(userId, wonItem.amount)
+        break
       case "shelf":
-        const shelfItem = await ShelfItemModel.findOne({ id: selectedItem.id });
-        wonItem = { id: selectedItem.id, type: "shelf", image: shelfItem.link, name: shelfItem.name };
-        const userInventoryShelf = await UserCurrentInventory.findOne({ user_id: userId });
-        const isDuplicateShelf = userInventoryShelf?.shelf.some(s => s.id === wonItem.id);
+        const shelfItem = await ShelfItemModel.findOne({ id: selectedItem.id })
+        wonItem = {
+          id: selectedItem.id,
+          type: "shelf",
+          image: shelfItem.link,
+          name: shelfItem.name,
+        }
+        const userInventoryShelf = await UserCurrentInventory.findOne({
+          user_id: userId,
+        })
+        const isDuplicateShelf = userInventoryShelf?.shelf.some(
+          (s) => s.id === wonItem.id
+        )
         if (isDuplicateShelf && selectedItem.prize_equivalent) {
-          burnedTo = selectedItem.prize_equivalent;
+          burnedTo = selectedItem.prize_equivalent
           if (burnedTo.type === "coins") {
-            await upUserBalance(userId, burnedTo.amount);
-            burnedTo.image = "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp"; // Coin image
+            await upUserBalance(userId, burnedTo.amount)
+            burnedTo.image =
+              "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp" // Coin image
           } else if (burnedTo.type === "boost") {
-            const burnedBoost = await Boost.findOne({ boost_id: burnedTo.amount });
-            await new UserBoost({ id: userId, boost_id: burnedTo.amount }).save();
-            burnedTo.image = burnedBoost.link; // Actual boost image
-            burnedTo.name = burnedBoost.name; // Boost name
+            const burnedBoost = await Boost.findOne({
+              boost_id: burnedTo.amount,
+            })
+            await new UserBoost({
+              id: userId,
+              boost_id: burnedTo.amount,
+            }).save()
+            burnedTo.image = burnedBoost.link // Actual boost image
+            burnedTo.name = burnedBoost.name // Boost name
           }
         } else {
           await UserCurrentInventory.updateOne(
             { user_id: userId },
             { $addToSet: { shelf: { id: wonItem.id } } }
-          );
+          )
         }
-        break;
+        break
       default:
-        return res.status(400).json({ error: "Invalid item type" });
+        return res.status(400).json({ error: "Invalid item type" })
     }
 
-    await UserSpins.updateOne(
-      { _id: attempt._id },
-      { $set: { is_used: true } }
-    );
+    await UserSpins.updateOne({ _id: attempt._id }, { $set: { is_used: true } })
 
     res.status(200).json({
       wonItem, // Always return the won item for roulette display
       burnedTo, // Prize if burned, including image
-    });
+    })
   } catch (error) {
-    console.error("Error in gacha spin:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Error in gacha spin:", error)
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
 const dailyRewardsPool = [
   {
@@ -592,110 +675,113 @@ const dailyRewardsPool = [
 
 // Helper function to get the start of the day in the server's local timezone
 const getStartOfDay = () => {
-  const now = moment(); // Uses server's local timezone
-  return now.startOf("day"); // 00:00:00 in local timezone
-};
+  const now = moment() // Uses server's local timezone
+  return now.startOf("day") // 00:00:00 in local timezone
+}
 
 // Helper function to create a date that MongoDB will store as YYYY-MM-DD 00:00:00.000+00:00
 const createMongoDate = (momentDate) => {
-  const year = momentDate.year();
-  const month = momentDate.month();
-  const day = momentDate.date();
-  return new Date(Date.UTC(year, month, day, 0, 0, 0, 0));
-};
+  const year = momentDate.year()
+  const month = momentDate.month()
+  const day = momentDate.date()
+  return new Date(Date.UTC(year, month, day, 0, 0, 0, 0))
+}
 
 // Claim Reward Endpoint
 router.get("/:id/daily/claim", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id);
-    const todayMoment = getStartOfDay();
-    const today = todayMoment.toDate();
+    const userId = parseInt(req.params.id)
+    const todayMoment = getStartOfDay()
+    const today = todayMoment.toDate()
 
     const lastClaim = await UserCheckInsModel.findOne(
       { user_id: userId, is_claimed: true },
       { check_in_date: 1, streak: 1 },
       { sort: { check_in_date: -1 } }
-    );
+    )
 
     // Log for debugging
-    console.log("Today:", todayMoment.format("YYYY-MM-DD"));
-    console.log("Last claim:", lastClaim ? lastClaim.check_in_date : "None");
+    console.log("Today:", todayMoment.format("YYYY-MM-DD"))
+    console.log("Last claim:", lastClaim ? lastClaim.check_in_date : "None")
 
     if (lastClaim && moment(lastClaim.check_in_date).isSame(today, "day")) {
-      return res.status(403).json({ error: "Reward already claimed today" });
+      return res.status(403).json({ error: "Reward already claimed today" })
     }
 
-    let streak = 1;
+    let streak = 1
     if (lastClaim) {
-      const lastClaimMoment = moment(lastClaim.check_in_date).startOf("day");
-      const daysDiff = todayMoment.diff(lastClaimMoment, "days");
-      console.log("Days difference:", daysDiff);
+      const lastClaimMoment = moment(lastClaim.check_in_date).startOf("day")
+      const daysDiff = todayMoment.diff(lastClaimMoment, "days")
+      console.log("Days difference:", daysDiff)
 
       if (daysDiff === 1) {
-        streak = lastClaim.streak + 1;
+        streak = lastClaim.streak + 1
       } else if (daysDiff > 1) {
-        streak = 1; // Explicit reset on any gap
+        streak = 1 // Explicit reset on any gap
       }
     }
-    if (streak > 14) streak = 1;
+    if (streak > 14) streak = 1
 
-    const selectedItem = dailyRewardsPool.find((item) => item.day === streak);
+    const selectedItem = dailyRewardsPool.find((item) => item.day === streak)
     if (!selectedItem) {
-      return res.status(500).json({ error: "No reward defined for this day" });
+      return res.status(500).json({ error: "No reward defined for this day" })
     }
 
-    const user = await User.findOne({ id: userId });
+    const user = await User.findOne({ id: userId })
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "User not found" })
     }
 
-    let wonItem;
+    let wonItem
     switch (selectedItem.type) {
       case "coins":
-        wonItem = { ...selectedItem };
-        await upUserBalance(userId, wonItem.amount);
-        break;
+        wonItem = { ...selectedItem }
+        await upUserBalance(userId, wonItem.amount)
+        break
       case "boost":
-        const boost = await Boost.findOne({ boost_id: selectedItem.id });
+        const boost = await Boost.findOne({ boost_id: selectedItem.id })
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
           image: boost.link,
           name: boost.name,
-        };
-        await new UserBoost({ id: userId, boost_id: wonItem.id }).save();
-        break;
+        }
+        await new UserBoost({ id: userId, boost_id: wonItem.id }).save()
+        break
       case "clothes":
-        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id });
+        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id })
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
-          image: user.personage.gender === "male" ? clothes.male_icon : clothes.female_icon,
+          image:
+            user.personage.gender === "male"
+              ? clothes.male_icon
+              : clothes.female_icon,
           name: clothes.name,
-        };
+        }
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { clothes: { id: wonItem.id } } }
-        );
-        break;
+        )
+        break
       case "shelf":
-        const item = await ShelfItemModel.findOne({ id: selectedItem.id });
+        const item = await ShelfItemModel.findOne({ id: selectedItem.id })
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
           image: item.link,
           name: item.name,
-        };
+        }
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { shelf: { id: wonItem.id } } }
-        );
-        break;
+        )
+        break
       default:
-        return res.status(400).json({ error: "Invalid item type" });
+        return res.status(400).json({ error: "Invalid item type" })
     }
 
-    const mongoDate = createMongoDate(todayMoment);
+    const mongoDate = createMongoDate(todayMoment)
 
     const claim = new UserCheckInsModel({
       user_id: userId,
@@ -703,123 +789,137 @@ router.get("/:id/daily/claim", async (req, res) => {
       streak,
       is_claimed: true,
       last_check_in: lastClaim ? lastClaim.check_in_date : null,
-    });
-    await claim.save();
+    })
+    await claim.save()
 
-    console.log("Claim recorded - Streak:", streak);
-    res.status(200).json({ wonItem, streak });
+    console.log("Claim recorded - Streak:", streak)
+    res.status(200).json({ wonItem, streak })
   } catch (error) {
-    await log("error", "error in claiming daily reward", error);
-    res.status(500).json({ error: "Internal server error" });
+    await log("error", "error in claiming daily reward", error)
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
 // Status Endpoint
 router.get("/:id/daily/status", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id);
-    const todayMoment = getStartOfDay();
-    const today = todayMoment.toDate();
+    const userId = parseInt(req.params.id)
+    const todayMoment = getStartOfDay()
+    const today = todayMoment.toDate()
 
     const lastClaim = await UserCheckInsModel.findOne(
       { user_id: userId, is_claimed: true },
       { check_in_date: 1, streak: 1 },
       { sort: { check_in_date: -1 } }
-    );
+    )
 
-    const user = await User.findOne({ id: userId });
+    const user = await User.findOne({ id: userId })
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ error: "User not found" })
     }
 
     const resolvedRewards = await Promise.all(
       dailyRewardsPool.map(async (item) => {
         switch (item.type) {
           case "boost":
-            const boost = await Boost.findOne({ boost_id: item.id });
+            const boost = await Boost.findOne({ boost_id: item.id })
             return {
               ...item,
               image: boost?.link || "default.png",
               name: boost?.name || item.name,
-            };
+            }
           case "clothes":
-            const clothes = await Clothing.findOne({ clothing_id: item.id });
+            const clothes = await Clothing.findOne({ clothing_id: item.id })
             return {
               ...item,
-              image: user.personage.gender === "male" ? clothes?.male_icon : clothes?.female_icon || "default.png",
+              image:
+                user.personage.gender === "male"
+                  ? clothes?.male_icon
+                  : clothes?.female_icon || "default.png",
               name: clothes?.name || item.name,
-            };
+            }
           case "coins":
-            return { ...item };
+            return { ...item }
           default:
-            return null;
+            return null
         }
       })
-    ).then((results) => results.filter(Boolean));
+    ).then((results) => results.filter(Boolean))
 
-    let streak = 0;
-    let canClaim = false;
-    let nextRewardDay = 1;
-    let isStreakBroken = false;
+    let streak = 0
+    let canClaim = false
+    let nextRewardDay = 1
+    let isStreakBroken = false
 
     if (lastClaim) {
-      const lastClaimMoment = moment(lastClaim.check_in_date).startOf("day");
-      const daysDiff = todayMoment.diff(lastClaimMoment, "days");
+      const lastClaimMoment = moment(lastClaim.check_in_date).startOf("day")
+      const daysDiff = todayMoment.diff(lastClaimMoment, "days")
 
-      console.log("Status - Today:", todayMoment.format("YYYY-MM-DD"));
-      console.log("Status - Last claim:", lastClaimMoment.format("YYYY-MM-DD"));
-      console.log("Status - Days difference:", daysDiff);
+      console.log("Status - Today:", todayMoment.format("YYYY-MM-DD"))
+      console.log("Status - Last claim:", lastClaimMoment.format("YYYY-MM-DD"))
+      console.log("Status - Days difference:", daysDiff)
 
       if (daysDiff === 0) {
-        streak = lastClaim.streak;
-        canClaim = false;
-        nextRewardDay = streak + 1;
+        streak = lastClaim.streak
+        canClaim = false
+        nextRewardDay = streak + 1
       } else if (daysDiff === 1) {
-        streak = lastClaim.streak;
-        canClaim = true;
-        nextRewardDay = streak + 1;
+        streak = lastClaim.streak
+        canClaim = true
+        nextRewardDay = streak + 1
       } else if (daysDiff > 1) {
-        streak = 0;
-        canClaim = true;
-        nextRewardDay = 1;
-        isStreakBroken = true;
+        streak = 0
+        canClaim = true
+        nextRewardDay = 1
+        isStreakBroken = true
       }
     } else {
-      streak = 0;
-      canClaim = true;
-      nextRewardDay = 1;
+      streak = 0
+      canClaim = true
+      nextRewardDay = 1
     }
 
-    if (nextRewardDay > 14) nextRewardDay = 1;
+    if (nextRewardDay > 14) nextRewardDay = 1
 
-    const nextReward = resolvedRewards.find((item) => item.day === nextRewardDay) || resolvedRewards[0];
+    const nextReward =
+      resolvedRewards.find((item) => item.day === nextRewardDay) ||
+      resolvedRewards[0]
 
-    console.log("Status - Streak:", streak, "Can claim:", canClaim, "Next day:", nextRewardDay, "Broken:", isStreakBroken);
+    console.log(
+      "Status - Streak:",
+      streak,
+      "Can claim:",
+      canClaim,
+      "Next day:",
+      nextRewardDay,
+      "Broken:",
+      isStreakBroken
+    )
 
     res.status(200).json({
       streak,
       canClaim,
       nextReward,
       rewards: resolvedRewards,
-      isStreakBroken // Added to make it explicit
-    });
+      isStreakBroken, // Added to make it explicit
+    })
   } catch (error) {
-    await log("error", "error in fetching daily status", error);
-    res.status(500).json({ error: "Internal server error" });
+    await log("error", "error in fetching daily status", error)
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
 router.get("/:id/effects/current", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id);
-    console.log(`Fetching effects for userId: ${userId}`);
+    const userId = parseInt(req.params.id)
+    console.log(`Fetching effects for userId: ${userId}`)
 
-    const userParameters = await UserParameters.findOne({ id: userId });
+    const userParameters = await UserParameters.findOne({ id: userId })
     if (!userParameters) {
-      return res.status(404).json({ error: "User parameters not found" });
+      return res.status(404).json({ error: "User parameters not found" })
     }
 
-    const effectSources = { shelf: [], clothing: [], boosts: [] };
+    const effectSources = { shelf: [], clothing: [], boosts: [] }
     const allEffects = {
       cant_fall_below_percent: [],
       profit_hourly_percent: [],
@@ -833,30 +933,35 @@ router.get("/:id/effects/current", async (req, res) => {
       reward_increase: null,
       energy_cost_decrease: null,
       hunger_cost_decrease: null,
-    };
-    let nekoBoostPercentage = 0;
+    }
+    let nekoBoostPercentage = 0
 
     // Fetch effects only if canApplyConstantEffects is true
     if (canApplyConstantEffects(userParameters)) {
       // Shelf items
-      const user = await User.findOne({ id: userId });
+      const user = await User.findOne({ id: userId })
       if (!user) {
-        return res.status(404).json({ error: "User not found" });
+        return res.status(404).json({ error: "User not found" })
       }
-      const shelfItems = Object.values(user.shelf).filter(Boolean);
+      const shelfItems = Object.values(user.shelf).filter(Boolean)
       if (shelfItems.length > 0) {
-        const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } });
-        console.log(`Found ${shelf.length} shelf items for user ${userId}`);
+        const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } })
+        console.log(`Found ${shelf.length} shelf items for user ${userId}`)
         shelf.forEach((item, index) => {
           if (item.effects) {
-            console.log(`Shelf item ${index} effects: ${JSON.stringify(item.effects)}`);
-            effectSources.shelf.push(item.effects);
+            console.log(
+              `Shelf item ${index} effects: ${JSON.stringify(item.effects)}`
+            )
+            effectSources.shelf.push(item.effects)
           }
-        });
+        })
       }
 
       // Worn clothing
-      const userClothing = await UserClothing.findOne({ user_id: userId }, { _id: 0, user_id: 0 });
+      const userClothing = await UserClothing.findOne(
+        { user_id: userId },
+        { _id: 0, user_id: 0 }
+      )
       if (userClothing) {
         const clothesItems = [
           userClothing.hat,
@@ -864,88 +969,115 @@ router.get("/:id/effects/current", async (req, res) => {
           userClothing.pants,
           userClothing.shoes,
           userClothing.accessories,
-        ].filter(item => item !== null && item !== undefined);
+        ].filter((item) => item !== null && item !== undefined)
         if (clothesItems.length > 0) {
-          const clothing = await Clothing.find({ clothing_id: { $in: clothesItems } });
-          console.log(`Found ${clothing.length} clothing items for user ${userId}`);
+          const clothing = await Clothing.find({
+            clothing_id: { $in: clothesItems },
+          })
+          console.log(
+            `Found ${clothing.length} clothing items for user ${userId}`
+          )
           clothing.forEach((item, index) => {
             if (item.effects) {
-              console.log(`Clothing item ${index} effects: ${JSON.stringify(item.effects)}`);
-              effectSources.clothing.push(item.effects);
+              console.log(
+                `Clothing item ${index} effects: ${JSON.stringify(
+                  item.effects
+                )}`
+              )
+              effectSources.clothing.push(item.effects)
             }
-          });
+          })
         }
       }
 
       // Active boosts
-      const activeBoostProcesses = await gameProcess.find({ id: userId, type: "boost" });
+      const activeBoostProcesses = await gameProcess.find({
+        id: userId,
+        type: "boost",
+      })
       if (activeBoostProcesses.length) {
-        const boostIds = activeBoostProcesses.map(p => p.type_id);
-        const boosts = await Boost.find({ boost_id: { $in: boostIds } });
-        console.log(`Found ${boosts.length} active boosts for user ${userId}`);
+        const boostIds = activeBoostProcesses.map((p) => p.type_id)
+        const boosts = await Boost.find({ boost_id: { $in: boostIds } })
+        console.log(`Found ${boosts.length} active boosts for user ${userId}`)
         boosts.forEach((boost, index) => {
           if (boost.effects) {
-            console.log(`Boost ${index} effects: ${JSON.stringify(boost.effects)}`);
-            effectSources.boosts.push(boost.effects);
+            console.log(
+              `Boost ${index} effects: ${JSON.stringify(boost.effects)}`
+            )
+            effectSources.boosts.push(boost.effects)
           }
-        });
+        })
       }
 
       // Combine effects
       const combineEffects = (effects, target) => {
-        effects.forEach(effectObj => {
-          if (!effectObj || typeof effectObj !== 'object') return;
+        effects.forEach((effectObj) => {
+          if (!effectObj || typeof effectObj !== "object") return
 
           Object.entries(effectObj).forEach(([category, value]) => {
             // Handle array effects
             if (target[category] && Array.isArray(target[category])) {
               if (Array.isArray(value)) {
-                value.forEach(effect => {
-                  if (effect && typeof effect === 'object' && 'param' in effect && 'value' in effect) {
-                    console.log(`Adding effect: ${category} - ${effect.param}: ${effect.value}`);
-                    target[category].push({ param: effect.param, value: effect.value });
+                value.forEach((effect) => {
+                  if (
+                    effect &&
+                    typeof effect === "object" &&
+                    "param" in effect &&
+                    "value" in effect
+                  ) {
+                    console.log(
+                      `Adding effect: ${category} - ${effect.param}: ${effect.value}`
+                    )
+                    target[category].push({
+                      param: effect.param,
+                      value: effect.value,
+                    })
                   }
-                });
+                })
               }
             }
             // Handle scalar effects
             else if (target[category] !== undefined && !Array.isArray(value)) {
-              console.log(`Setting scalar effect: ${category} - ${value}`);
-              target[category] = value;
+              console.log(`Setting scalar effect: ${category} - ${value}`)
+              target[category] = value
             }
-          });
-        });
-      };
+          })
+        })
+      }
 
-      combineEffects(effectSources.shelf, allEffects);
-      combineEffects(effectSources.clothing, allEffects);
-      combineEffects(effectSources.boosts, allEffects);
+      combineEffects(effectSources.shelf, allEffects)
+      combineEffects(effectSources.clothing, allEffects)
+      combineEffects(effectSources.boosts, allEffects)
     } else {
-      console.log(`Effects not applied for user ${userId}: canApplyConstantEffects returned false`);
+      console.log(
+        `Effects not applied for user ${userId}: canApplyConstantEffects returned false`
+      )
     }
 
     // Neko Boost Percentage
-    const nekoBoostMultiplier = await getNekoBoostMultiplier(userId);
-    nekoBoostPercentage = (nekoBoostMultiplier - 1) * 100;
-    console.log(`Neko Boost Multiplier for user ${userId}: ${nekoBoostMultiplier}, Percentage: ${nekoBoostPercentage}%`);
+    const nekoBoostMultiplier = await getNekoBoostMultiplier(userId)
+    nekoBoostPercentage = (nekoBoostMultiplier - 1) * 100
+    console.log(
+      `Neko Boost Multiplier for user ${userId}: ${nekoBoostMultiplier}, Percentage: ${nekoBoostPercentage}%`
+    )
 
     // Debug: Check active effects for the user
     const activeEffects = await ActiveEffectsModel.find({
       user_id: userId,
       valid_until: { $gt: new Date() },
-    });
-    console.log(`Active effects for user ${userId}:`, activeEffects);
+    })
+    console.log(`Active effects for user ${userId}:`, activeEffects)
 
-    console.log('Final allEffects:', JSON.stringify(allEffects));
+    console.log("Final allEffects:", JSON.stringify(allEffects))
 
     res.status(200).json({
       effects: { ...allEffects, neko_boost_percentage: nekoBoostPercentage },
-    });
+    })
   } catch (error) {
-    console.error("Error fetching current effects:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Error fetching current effects:", error)
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
 router.get("/time", (req, res) =>
   res.status(200).json({ server_time: new Date() })
@@ -954,43 +1086,43 @@ router.get("/time", (req, res) =>
 //!TODO move to different place
 router.get("/leaderboard", getLeaderboard)
 
-export const COOLDOWN_MS = 3600000; // 1 hour in milliseconds
-export const EFFECT_DURATION_MS = 3600000; // 24 hours in milliseconds
+export const COOLDOWN_MS = 3600000 // 1 hour in milliseconds
+export const EFFECT_DURATION_MS = 3600000 // 24 hours in milliseconds
 
 // Helper to check if cooldown has expired
 export const isCooldownExpired = (timestamp) => {
-  const now = new Date();
-  const cooldownEnd = new Date(timestamp.getTime() + COOLDOWN_MS);
-  return now >= cooldownEnd;
-};
+  const now = new Date()
+  const cooldownEnd = new Date(timestamp.getTime() + COOLDOWN_MS)
+  return now >= cooldownEnd
+}
 
 // Helper to get boost type based on neko ID
 export const getActiveEffectTypeByNekoId = (id) => {
-  if (!id) return null;
+  if (!id) return null
   if (id === 8) {
-    return ActiveEffectTypes.BasicNekoBoost;
+    return ActiveEffectTypes.BasicNekoBoost
   } else if (id > 8) {
-    return ActiveEffectTypes.NftNekoBoost;
+    return ActiveEffectTypes.NftNekoBoost
   }
-  return null;
-};
+  return null
+}
 
 // Helper to get boost percentage for owner
 export const getBoostPercentageFromType = (type) => {
   switch (type) {
     case ActiveEffectTypes.BasicNekoBoost:
-      return 5;
+      return 5
     case ActiveEffectTypes.NftNekoBoost:
-      return 10;
+      return 10
     default:
-      return 0;
+      return 0
   }
-};
+}
 
 // Helper to get coin reward for clicker based on neko ID
 export const getCoinRewardByUserLevel = (level) => {
-  return levelToNekoCoinsClaimAmountMap[level] || 0;
-};
+  return levelToNekoCoinsClaimAmountMap[level] || 0
+}
 
 export const getRespectRewardByNekoRarity = (rarity) => {
   return nekoRarityToRespectMap[rarity] || 0
@@ -1004,23 +1136,23 @@ export const getUserNekoState = async (userId) => {
       { user_id: userId, action_type: ActionTypes.NekoInteract },
       null,
       { sort: { action_timestamp: -1 } }
-    );
+    )
     const canClick =
-      !lastAction || isCooldownExpired(lastAction.action_timestamp);
+      !lastAction || isCooldownExpired(lastAction.action_timestamp)
     const cooldownUntil =
       lastAction && !canClick
         ? new Date(lastAction.action_timestamp.getTime() + COOLDOWN_MS)
-        : null;
+        : null
 
     return {
       canClick,
       cooldownUntil,
-    };
+    }
   } catch (error) {
-    console.error(`Error fetching neko state for user ${userId}:`, error);
-    throw error;
+    console.error(`Error fetching neko state for user ${userId}:`, error)
+    throw error
   }
-};
+}
 
 // Check interaction state (ForeignHome page)
 export const getNekoInteractionState = async (userId, targetUserId) => {
@@ -1030,73 +1162,79 @@ export const getNekoInteractionState = async (userId, targetUserId) => {
       { user_id: targetUserId, action_type: ActionTypes.NekoInteract },
       null,
       { sort: { action_timestamp: -1 } }
-    );
+    )
     const targetCanBeClicked =
-      !lastTargetAction || isCooldownExpired(lastTargetAction.action_timestamp);
+      !lastTargetAction || isCooldownExpired(lastTargetAction.action_timestamp)
     const targetCooldownUntil =
       lastTargetAction && !targetCanBeClicked
         ? new Date(lastTargetAction.action_timestamp.getTime() + COOLDOWN_MS)
-        : null;
+        : null
 
     return {
       canClick: targetCanBeClicked,
       cooldownUntil: targetCooldownUntil,
       whoseCooldown: targetCanBeClicked ? null : "target",
-    };
+    }
   } catch (error) {
     console.error(
       `Error fetching interaction state for user ${userId} on target ${targetUserId}:`,
       error
-    );
-    throw error;
+    )
+    throw error
   }
-};
+}
 
 // Interact with a neko
 export const interactWithNeko = async (userId, targetUserId) => {
   try {
     if (userId === targetUserId || !targetUserId) {
-      throw new Error("Cannot interact with yourself or nobody");
+      throw new Error("Cannot interact with yourself or nobody")
     }
 
     // Check neko cooldown (per target user)
-    const interactionState = await getNekoInteractionState(userId, targetUserId);
+    const interactionState = await getNekoInteractionState(userId, targetUserId)
     if (!interactionState.canClick) {
       throw new Error(
         "This user's neko is still on cooldown from being clicked"
-      );
+      )
     }
 
     // Fetch the target user's neko
     const targetUser = await User.findOne(
       { id: targetUserId },
       { "shelf.neko": 1 }
-    );
-    const targetUserParams = await UserParameters.findOne({
-      id: targetUserId
-    }, { respect: 1 })
-    const user = await UserParameters.findOne({ 
-      id: userId
-    }, { level: 1, respect: 1 })
+    )
+    const targetUserParams = await UserParameters.findOne(
+      {
+        id: targetUserId,
+      },
+      { respect: 1 }
+    )
+    const user = await UserParameters.findOne(
+      {
+        id: userId,
+      },
+      { level: 1, respect: 1 }
+    )
 
     if (!targetUser) {
-      throw new Error("Target user not found");
+      throw new Error("Target user not found")
     }
-    const nekoId = targetUser?.shelf?.neko || null;
+    const nekoId = targetUser?.shelf?.neko || null
     if (!nekoId) {
-      throw new Error("Target user has no neko");
+      throw new Error("Target user has no neko")
     }
 
     const neko = await ShelfItemModel.findOne({ id: nekoId })
-    
-    const activeEffectType = getActiveEffectTypeByNekoId(nekoId);
-    const boostPercentage = getBoostPercentageFromType(activeEffectType);
-    
-    const coinReward = getCoinRewardByUserLevel(user.level);
+
+    const activeEffectType = getActiveEffectTypeByNekoId(nekoId)
+    const boostPercentage = getBoostPercentageFromType(activeEffectType)
+
+    const coinReward = getCoinRewardByUserLevel(user.level)
     const respectReward = getRespectRewardByNekoRarity(neko.rarity)
     console.log(neko, neko.rarity, respectReward)
     // Log the interaction
-    const now = new Date();
+    const now = new Date()
     const newAction = new ActionLogModel({
       user_id: targetUserId, // Target whose neko was clicked
       action_type: ActionTypes.NekoInteract,
@@ -1109,8 +1247,8 @@ export const interactWithNeko = async (userId, targetUserId) => {
         clickedBy: userId,
       },
       triggered_by: userId,
-    });
-    await newAction.save();
+    })
+    await newAction.save()
 
     // Apply boost to the owner (targetUserId)
     if (activeEffectType && boostPercentage > 0) {
@@ -1119,21 +1257,27 @@ export const interactWithNeko = async (userId, targetUserId) => {
         type: activeEffectType,
         valid_until: new Date(now.getTime() + EFFECT_DURATION_MS),
         triggered_by: userId,
-      });
+      })
 
-      await userEffect.save();
-      await log("info", "Effect applied to owner", { userId: targetUserId, effectType: activeEffectType });
-      await sendNekoBoostMessage(targetUserId, boostPercentage);
-      
-      targetUserParams.respect += respectReward;
-      await targetUserParams.save();
-      await log("info", `Added ${respectReward} respect to user ${targetUserId}`)
+      await userEffect.save()
+      await log("info", "Effect applied to owner", {
+        userId: targetUserId,
+        effectType: activeEffectType,
+      })
+      await sendNekoBoostMessage(targetUserId, boostPercentage)
+
+      targetUserParams.respect += respectReward
+      await targetUserParams.save()
+      await log(
+        "info",
+        `Added ${respectReward} respect to user ${targetUserId}`
+      )
     }
 
     // Add coins to the clicker (userId)
     if (coinReward > 0) {
-      await upUserBalance(userId, coinReward);
-      await log("info", "Coins added to clicker", { userId, coinReward });
+      await upUserBalance(userId, coinReward)
+      await log("info", "Coins added to clicker", { userId, coinReward })
     }
 
     await log("info", "Neko interacted", {
@@ -1144,17 +1288,21 @@ export const interactWithNeko = async (userId, targetUserId) => {
       boostType: activeEffectType,
       coinReward,
       cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
-    });
+    })
     console.log(boostPercentage)
-    return { cooldownUntil: new Date(now.getTime() + COOLDOWN_MS), received_coins: coinReward, owners_boost: boostPercentage };
+    return {
+      cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
+      received_coins: coinReward,
+      owners_boost: boostPercentage,
+    }
   } catch (error) {
     console.error(
       `Error interacting with neko for user ${userId} on target ${targetUserId}:`,
       error
-    );
-    throw error;
+    )
+    throw error
   }
-};
+}
 
 // Generic function to log any action
 export const logAction = async (userId, actionType, metadata = {}) => {
@@ -1165,86 +1313,89 @@ export const logAction = async (userId, actionType, metadata = {}) => {
       action_timestamp: new Date(),
       metadata,
       triggered_by: userId,
-    });
-    await action.save();
-    return action;
+    })
+    await action.save()
+    return action
   } catch (error) {
     console.error(
       `Error logging action ${actionType} for user ${userId}:`,
       error
-    );
-    throw error;
+    )
+    throw error
   }
-};
+}
 
 // Route for Home page: Get user's clicking state
 router.get("/neko/user-state/:userId", async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId);
+    const userId = parseInt(req.params.userId)
     if (isNaN(userId)) {
-      return res.status(400).json({ error: "Invalid userId" });
+      return res.status(400).json({ error: "Invalid userId" })
     }
-    const state = await getUserNekoState(userId);
-    res.json(state);
+    const state = await getUserNekoState(userId)
+    res.json(state)
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch user neko state" });
+    res.status(500).json({ error: "Failed to fetch user neko state" })
   }
-});
+})
 
 // Route for ForeignHome page: Get interaction state
 router.post("/neko/interaction-state", async (req, res) => {
   try {
-    const { userId, targetUserId } = req.body;
+    const { userId, targetUserId } = req.body
     if (!userId || !targetUserId) {
       return res
         .status(400)
-        .json({ error: "Both userId and targetUserId are required" });
+        .json({ error: "Both userId and targetUserId are required" })
     }
-    const parsedUserId = parseInt(userId);
-    const parsedTargetUserId = parseInt(targetUserId);
+    const parsedUserId = parseInt(userId)
+    const parsedTargetUserId = parseInt(targetUserId)
     if (isNaN(parsedUserId) || isNaN(parsedTargetUserId)) {
-      return res.status(400).json({ error: "Invalid userId or targetUserId" });
+      return res.status(400).json({ error: "Invalid userId or targetUserId" })
     }
-    const state = await getNekoInteractionState(parsedUserId, parsedTargetUserId);
-    res.json(state);
+    const state = await getNekoInteractionState(
+      parsedUserId,
+      parsedTargetUserId
+    )
+    res.json(state)
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch neko interaction state" });
+    res.status(500).json({ error: "Failed to fetch neko interaction state" })
   }
-});
+})
 
 // Route to interact with a target user's neko
 router.post("/neko/interact", async (req, res) => {
   try {
-    const { userId, targetUserId } = req.body;
+    const { userId, targetUserId } = req.body
     if (!userId || !targetUserId) {
       return res
         .status(400)
-        .json({ error: "Both userId and targetUserId are required" });
+        .json({ error: "Both userId and targetUserId are required" })
     }
-    const parsedUserId = parseInt(userId);
-    const parsedTargetUserId = parseInt(targetUserId);
+    const parsedUserId = parseInt(userId)
+    const parsedTargetUserId = parseInt(targetUserId)
     if (isNaN(parsedUserId) || isNaN(parsedTargetUserId)) {
-      return res.status(400).json({ error: "Invalid userId or targetUserId" });
+      return res.status(400).json({ error: "Invalid userId or targetUserId" })
     }
-    const result = await interactWithNeko(parsedUserId, parsedTargetUserId);
-    res.json(result);
+    const result = await interactWithNeko(parsedUserId, parsedTargetUserId)
+    res.json(result)
   } catch (error) {
     res
       .status(400)
-      .json({ error: error.message || "Failed to interact with neko" });
+      .json({ error: error.message || "Failed to interact with neko" })
   }
-});
+})
 
 // Get skill details by skill_id
 router.get("/skills/:skillId", async (req, res) => {
   try {
-    const skillId = parseInt(req.params.skillId);
+    const skillId = parseInt(req.params.skillId)
 
     // Fetch the skill from the database
-    const skill = await SkillModel.findOne({ skill_id: skillId });
+    const skill = await SkillModel.findOne({ skill_id: skillId })
 
     if (!skill) {
-      return res.status(404).json({ error: true, message: "Skill not found" });
+      return res.status(404).json({ error: true, message: "Skill not found" })
     }
 
     // Construct the response
@@ -1256,27 +1407,30 @@ router.get("/skills/:skillId", async (req, res) => {
       coins_price: skill.coins_price || 0, // Optional, for context
       duration: skill.duration || 0, // Optional, in minutes
       required_level: skill.requiredLevel || 0, // Optional, if applicable
-    };
+    }
 
-    return res.status(200).json(response);
+    return res.status(200).json(response)
   } catch (err) {
-    console.error("Error fetching skill details:", err);
-    return res.status(500).json({ error: true, message: "Internal server error" });
+    console.error("Error fetching skill details:", err)
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal server error" })
   }
-});
+})
 
-const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 1 });
+const limiter = new Bottleneck({ minTime: 100, maxConcurrent: 1 })
 
-const COIN_SPEED = -50;
-const COIN_EXPIRATION = 10;
-const SPAWN_INTERVAL = 2; // Spawn every 30s
-const MAX_COINS = 10000;
+const COIN_SPEED = -50
+const COIN_EXPIRATION = 10
+const SPAWN_INTERVAL = 2 // Spawn every 30s
+const MAX_COINS = 10000
 
 const spawnCoin = (process) => {
-  const coinId = crypto.randomBytes(8).toString("hex");
-  const token = crypto.createHmac("sha256", process._id.toString())
+  const coinId = crypto.randomBytes(8).toString("hex")
+  const token = crypto
+    .createHmac("sha256", process._id.toString())
     .update(coinId + moment().tz("Europe/Moscow").toISOString())
-    .digest("hex");
+    .digest("hex")
   return {
     id: coinId,
     spawnTime: moment().tz("Europe/Moscow").toDate(),
@@ -1284,247 +1438,350 @@ const spawnCoin = (process) => {
     y: Math.floor(Math.random() * 80) + 20, // 20-100
     collectionToken: token,
     collected: false,
-  };
-};
+  }
+}
 
 // Start sleep process
 router.post("/sleep/start/:userId", async (req, res) => {
-  const userId = parseInt(req.params.userId);
+  const userId = parseInt(req.params.userId)
   try {
-    const userParams = await UserParameters.findOne({ id: userId });
+    const userParams = await UserParameters.findOne({ id: userId })
     if (!userParams || userParams.energy >= userParams.energy_capacity) {
-      return res.status(400).json({ error: true, message: "Cannot start sleep" });
+      return res
+        .status(400)
+        .json({ error: true, message: "Cannot start sleep" })
     }
 
-    const levelParams = await LevelsParameters.findOne({ level: userParams.level });
+    const levelParams = await LevelsParameters.findOne({
+      level: userParams.level,
+    })
     if (!levelParams) {
-      return res.status(500).json({ error: true, message: "Level parameters not found" });
+      return res
+        .status(500)
+        .json({ error: true, message: "Level parameters not found" })
     }
 
-    const existingProcess = await gameProcess.findOne({ id: userId, type: "sleep", active: true });
+    const existingProcess = await gameProcess.findOne({
+      id: userId,
+      type: "sleep",
+      active: true,
+    })
     if (existingProcess) {
-      return res.status(400).json({ error: true, message: "Sleep process already active" });
+      return res
+        .status(400)
+        .json({ error: true, message: "Sleep process already active" })
     }
 
-    const sleepDuration = levelParams.sleep_duration * 60;
+    const sleepDuration = levelParams.sleep_duration * 60
     const process = new gameProcess({
       id: userId,
       type: "sleep",
       type_id: userParams.level,
       base_duration_in_seconds: sleepDuration,
       target_duration_in_seconds: sleepDuration,
-      sleep_game: { coins: [spawnCoin()], playerJumps: [], lastSpawnTime: moment().tz("Europe/Moscow").toDate() },
-    });
-    await process.save();
+      sleep_game: {
+        coins: [spawnCoin()],
+        playerJumps: [],
+        lastSpawnTime: moment().tz("Europe/Moscow").toDate(),
+      },
+    })
+    await process.save()
 
-    await log("info", "Sleep process started with initial coin", { userId, processId: process._id });
-    return res.status(201).json({ success: true, processId: process._id });
-  } catch (err) {
-    await log("error", "Error starting sleep", { userId, error: err.message });
-    return res.status(500).json({ error: true, message: "Internal server error" });
-  }
-});
-
-// Get sleep state (Auto-spawn coins)
-router.get("/sleep/state/:userId", limiter.wrap(async (req, res) => {
-  const userId = parseInt(req.params.userId);
-  try {
-    const process = await gameProcess.findOne({ id: userId, type: "sleep", active: true });
-    if (!process) {
-      return res.status(404).json({ error: true, message: "No active sleep process" });
-    }
-
-    const now = moment().tz("Europe/Moscow");
-    const elapsedSeconds = now.diff(moment(process.createdAt), "seconds");
-    const remainingSeconds = process.target_duration_in_seconds - elapsedSeconds;
-
-    const activeCoins = process.sleep_game.coins.filter(c => !c.collected && now.diff(moment(c.spawnTime), "seconds") <= COIN_EXPIRATION);
-    const timeSinceLastSpawn = now.diff(moment(process.sleep_game.lastSpawnTime), "seconds");
-    if (activeCoins.length < MAX_COINS && timeSinceLastSpawn >= SPAWN_INTERVAL) {
-      const newCoin = spawnCoin(process);
-      process.sleep_game.coins.push(newCoin);
-      process.sleep_game.lastSpawnTime = now.toDate();
-      await log("verbose", "Coin spawned in state", { userId, coinId: newCoin.id });
-      await process.save();
-    }
-
-    res.status(200).json({
-      success: true,
-      coins: process.sleep_game.coins,
-      remainingSeconds: Math.max(0, remainingSeconds),
-      playerJumps: process.sleep_game.playerJumps,
-      serverTime: now.toISOString(),
-    });
-  } catch (err) {
-    await log("error", "Error fetching sleep game state", { userId, error: err.message });
-    return res.status(500).json({ error: true, message: "Internal server error" });
-  }
-}));
-
-// Record jump (No spawning here)
-router.post("/sleep/jump/:userId", limiter.wrap(async (req, res) => {
-  const userId = parseInt(req.params.userId);
-  const { y, time } = req.body;
-
-  try {
-    const process = await gameProcess.findOne({ id: userId, type: "sleep", active: true });
-    if (!process) {
-      return res.status(404).json({ error: true, message: "No active sleep process" });
-    }
-
-    const now = moment().tz("Europe/Moscow");
-    process.sleep_game.playerJumps.push({ time: new Date(time), y });
-    await process.save();
-    await log("verbose", "Player jump recorded", { userId, y, time });
-    return res.status(200).json({ success: true });
-  } catch (err) {
-    await log("error", "Error recording jump", { userId, error: err.message });
-    return res.status(500).json({ error: true, message: "Internal server error" });
-  }
-}));
-
-// Collect coin
-router.post("/sleep/collect-coin/:userId", limiter.wrap(async (req, res) => {
-  const userId = parseInt(req.params.userId);
-  const { coinId, collectionToken, playerX, playerY, jumpTime, clientCoinX, collectionTime } = req.body;
-
-  try {
-    const process = await gameProcess.findOne({ id: userId, type: "sleep", active: true });
-    if (!process) {
-      return res.status(404).json({ error: true, message: "No active sleep process" });
-    }
-
-    const now = moment(collectionTime).tz("Europe/Moscow");
-    const elapsedSeconds = now.diff(moment(process.createdAt), "seconds");
-    const remainingSeconds = process.target_duration_in_seconds - elapsedSeconds;
-    if (remainingSeconds <= 0) {
-      return res.status(400).json({ error: true, message: "Sleep process completed" });
-    }
-
-    const coin = process.sleep_game.coins.find((c) => c.id === coinId && !c.collected);
-    if (!coin || coin.collectionToken !== collectionToken) {
-      return res.status(400).json({ error: true, message: "Invalid coin or token" });
-    }
-
-    const coinAge = now.diff(moment(coin.spawnTime), "milliseconds") / 1000;
-    const serverCoinX = coin.x + COIN_SPEED * coinAge;
-    const bufferX = 20;
-    const bufferY = 20;
-    const tolerance = 50;
-
-    if (
-      coinAge > COIN_EXPIRATION ||
-      Math.abs(clientCoinX - serverCoinX) > tolerance ||
-      playerX + tolerance < clientCoinX - bufferX || // Fixed: player must reach coin
-      playerX > clientCoinX + bufferX ||
-      playerY + 40 < coin.y - bufferY ||
-      playerY > coin.y + 20 + bufferY
-    ) {
-      await log("debug", "Coin collision check failed", {
-        userId,
-        coinId,
-        coinAge,
-        serverCoinX,
-        clientCoinX,
-        coinY: coin.y,
-        playerX,
-        playerY,
-        bufferX,
-        bufferY,
-        tolerance,
-      });
-      return res.status(400).json({ error: true, message: "Coin out of reach" });
-    }
-
-    const jump = process.sleep_game.playerJumps.find((j) =>
-      moment(j.time).isSame(moment(jumpTime), "second")
-    );
-    if (!jump) {
-      return res.status(400).json({ error: true, message: "No matching jump recorded" });
-    }
-
-    coin.collected = true;
-    process.target_duration_in_seconds = Math.max(10, process.target_duration_in_seconds - 10);
-    process.updatedAt = now.toDate();
-    await process.save();
-
-    await log("info", "Sleep coin collected", {
+    await log("info", "Sleep process started with initial coin", {
       userId,
       processId: process._id,
-      coinId,
-      newDuration: process.target_duration_in_seconds,
-    });
-
-    return res.status(200).json({
-      success: true,
-      remainingSeconds: Math.max(0, process.target_duration_in_seconds - elapsedSeconds),
-    });
+    })
+    return res.status(201).json({ success: true, processId: process._id })
   } catch (err) {
-    await log("error", "Error collecting sleep coin", { userId, error: err.message });
-    return res.status(500).json({ error: true, message: "Internal server error" });
+    await log("error", "Error starting sleep", { userId, error: err.message })
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal server error" })
   }
-}));
+})
+
+// Get sleep state (Auto-spawn coins)
+router.get(
+  "/sleep/state/:userId",
+  limiter.wrap(async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    try {
+      const process = await gameProcess.findOne({
+        id: userId,
+        type: "sleep",
+        active: true,
+      })
+      if (!process) {
+        return res
+          .status(404)
+          .json({ error: true, message: "No active sleep process" })
+      }
+
+      const now = moment().tz("Europe/Moscow")
+      const elapsedSeconds = now.diff(moment(process.createdAt), "seconds")
+      const remainingSeconds =
+        process.target_duration_in_seconds - elapsedSeconds
+
+      const activeCoins = process.sleep_game.coins.filter(
+        (c) =>
+          !c.collected &&
+          now.diff(moment(c.spawnTime), "seconds") <= COIN_EXPIRATION
+      )
+      const timeSinceLastSpawn = now.diff(
+        moment(process.sleep_game.lastSpawnTime),
+        "seconds"
+      )
+      if (
+        activeCoins.length < MAX_COINS &&
+        timeSinceLastSpawn >= SPAWN_INTERVAL
+      ) {
+        const newCoin = spawnCoin(process)
+        process.sleep_game.coins.push(newCoin)
+        process.sleep_game.lastSpawnTime = now.toDate()
+        await log("verbose", "Coin spawned in state", {
+          userId,
+          coinId: newCoin.id,
+        })
+        await process.save()
+      }
+
+      res.status(200).json({
+        success: true,
+        coins: process.sleep_game.coins,
+        remainingSeconds: Math.max(0, remainingSeconds),
+        playerJumps: process.sleep_game.playerJumps,
+        serverTime: now.toISOString(),
+      })
+    } catch (err) {
+      await log("error", "Error fetching sleep game state", {
+        userId,
+        error: err.message,
+      })
+      return res
+        .status(500)
+        .json({ error: true, message: "Internal server error" })
+    }
+  })
+)
+
+// Record jump (No spawning here)
+router.post(
+  "/sleep/jump/:userId",
+  limiter.wrap(async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    const { y, time } = req.body
+
+    try {
+      const process = await gameProcess.findOne({
+        id: userId,
+        type: "sleep",
+        active: true,
+      })
+      if (!process) {
+        return res
+          .status(404)
+          .json({ error: true, message: "No active sleep process" })
+      }
+
+      const now = moment().tz("Europe/Moscow")
+      process.sleep_game.playerJumps.push({ time: new Date(time), y })
+      await process.save()
+      await log("verbose", "Player jump recorded", { userId, y, time })
+      return res.status(200).json({ success: true })
+    } catch (err) {
+      await log("error", "Error recording jump", { userId, error: err.message })
+      return res
+        .status(500)
+        .json({ error: true, message: "Internal server error" })
+    }
+  })
+)
+
+// Collect coin
+router.post(
+  "/sleep/collect-coin/:userId",
+  limiter.wrap(async (req, res) => {
+    const userId = parseInt(req.params.userId)
+    const {
+      coinId,
+      collectionToken,
+      playerX,
+      playerY,
+      jumpTime,
+      clientCoinX,
+      collectionTime,
+    } = req.body
+
+    try {
+      const process = await gameProcess.findOne({
+        id: userId,
+        type: "sleep",
+        active: true,
+      })
+      if (!process) {
+        return res
+          .status(404)
+          .json({ error: true, message: "No active sleep process" })
+      }
+
+      const now = moment(collectionTime).tz("Europe/Moscow")
+      const elapsedSeconds = now.diff(moment(process.createdAt), "seconds")
+      const remainingSeconds =
+        process.target_duration_in_seconds - elapsedSeconds
+      if (remainingSeconds <= 0) {
+        return res
+          .status(400)
+          .json({ error: true, message: "Sleep process completed" })
+      }
+
+      const coin = process.sleep_game.coins.find(
+        (c) => c.id === coinId && !c.collected
+      )
+      if (!coin || coin.collectionToken !== collectionToken) {
+        return res
+          .status(400)
+          .json({ error: true, message: "Invalid coin or token" })
+      }
+
+      const coinAge = now.diff(moment(coin.spawnTime), "milliseconds") / 1000
+      const serverCoinX = coin.x + COIN_SPEED * coinAge
+      const bufferX = 20
+      const bufferY = 20
+      const tolerance = 50
+
+      if (
+        coinAge > COIN_EXPIRATION ||
+        Math.abs(clientCoinX - serverCoinX) > tolerance ||
+        playerX + tolerance < clientCoinX - bufferX || // Fixed: player must reach coin
+        playerX > clientCoinX + bufferX ||
+        playerY + 40 < coin.y - bufferY ||
+        playerY > coin.y + 20 + bufferY
+      ) {
+        await log("debug", "Coin collision check failed", {
+          userId,
+          coinId,
+          coinAge,
+          serverCoinX,
+          clientCoinX,
+          coinY: coin.y,
+          playerX,
+          playerY,
+          bufferX,
+          bufferY,
+          tolerance,
+        })
+        return res
+          .status(400)
+          .json({ error: true, message: "Coin out of reach" })
+      }
+
+      const jump = process.sleep_game.playerJumps.find((j) =>
+        moment(j.time).isSame(moment(jumpTime), "second")
+      )
+      if (!jump) {
+        return res
+          .status(400)
+          .json({ error: true, message: "No matching jump recorded" })
+      }
+
+      coin.collected = true
+      process.target_duration_in_seconds = Math.max(
+        10,
+        process.target_duration_in_seconds - 10
+      )
+      process.updatedAt = now.toDate()
+      await process.save()
+
+      await log("info", "Sleep coin collected", {
+        userId,
+        processId: process._id,
+        coinId,
+        newDuration: process.target_duration_in_seconds,
+      })
+
+      return res.status(200).json({
+        success: true,
+        remainingSeconds: Math.max(
+          0,
+          process.target_duration_in_seconds - elapsedSeconds
+        ),
+      })
+    } catch (err) {
+      await log("error", "Error collecting sleep coin", {
+        userId,
+        error: err.message,
+      })
+      return res
+        .status(500)
+        .json({ error: true, message: "Internal server error" })
+    }
+  })
+)
 
 // Function to send a Telegram message to the owner about the neko boost
 export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
   try {
     // Use getChatMember to get the user's language
-    let userLanguage = "en"; // Default to English
+    let userLanguage = "en" // Default to English
     try {
-      const chatMember = await bot.api.getChatMember(targetUserId, targetUserId);
-      const languageCode = chatMember?.user?.language_code || "en";
+      const chatMember = await bot.api.getChatMember(targetUserId, targetUserId)
+      const languageCode = chatMember?.user?.language_code || "en"
       // Map language code to "en" or "ru"
-      userLanguage = languageCode.startsWith("ru") ? "ru" : "en";
+      userLanguage = languageCode.startsWith("ru") ? "ru" : "en"
       await log("info", "Fetched user language via getChatMember", {
         userId: targetUserId,
         chatId: targetUserId,
         languageCode,
         mappedLanguage: userLanguage,
-      });
+      })
     } catch (error) {
-      await log("warning", "Failed to fetch user language via getChatMember, defaulting to English", {
-        userId: targetUserId,
-        chatId: targetUserId,
-        error: error.message,
-      });
+      await log(
+        "warning",
+        "Failed to fetch user language via getChatMember, defaulting to English",
+        {
+          userId: targetUserId,
+          chatId: targetUserId,
+          error: error.message,
+        }
+      )
     }
 
     // Localize the message based on the user's language
-    let message;
+    let message
     if (userLanguage === "ru") {
-      message = `Вы только что получили ${boostPercentage}% бонус к доходу от неко! 🐾`;
+      message = `Вы только что получили ${boostPercentage}% бонус к доходу от неко! 🐾`
     } else {
-      message = `You've just received a ${boostPercentage}% income boost from neko! 🐾`;
+      message = `You've just received a ${boostPercentage}% income boost from neko! 🐾`
     }
 
     // Send the message
-    await bot.api.sendMessage(targetUserId, message);
+    await bot.api.sendMessage(targetUserId, message)
     await log("info", "Telegram message sent to owner", {
       userId: targetUserId,
       chatId: targetUserId,
       message,
-    });
+    })
   } catch (error) {
     await log("error", "Failed to send Telegram message to owner", {
       userId: targetUserId,
       error: error.message,
-    });
+    })
   }
-};
+}
 
 // GET endpoint to calculate TRX earnings from referrals
-router.get('/:userId/referral-earnings/', async (req, res) => {
+router.get("/:userId/referral-earnings/", async (req, res) => {
   try {
-    const { userId } = req.params;
-    
+    const { userId } = req.params
+
     // Convert userId to number since it's stored as Number in the schema
-    const numericUserId = Number(userId);
-    
+    const numericUserId = Number(userId)
+
     if (isNaN(numericUserId)) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Invalid user ID format' 
-      });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid user ID format",
+      })
     }
 
     // Aggregation pipeline
@@ -1532,74 +1789,74 @@ router.get('/:userId/referral-earnings/', async (req, res) => {
       // Stage 1: Match referrals where the user is the referrer
       {
         $match: {
-          refer_id: numericUserId
-        }
+          refer_id: numericUserId,
+        },
       },
-      
+
       // Stage 2: Lookup transactions for each referred user
       {
         $lookup: {
-          from: 'stars_transactions', // Must match the collection name in MongoDB
-          localField: 'referral_id',
-          foreignField: 'user_id',
-          as: 'transactions'
-        }
+          from: "stars_transactions", // Must match the collection name in MongoDB
+          localField: "referral_id",
+          foreignField: "user_id",
+          as: "transactions",
+        },
       },
-      
+
       // Stage 3: Unwind transactions array to process each transaction
       {
         $unwind: {
-          path: '$transactions',
-          preserveNullAndEmptyArrays: true
-        }
+          path: "$transactions",
+          preserveNullAndEmptyArrays: true,
+        },
       },
-      
+
       // Stage 4: Filter for completed XTR transactions only
       {
         $match: {
-          'transactions.currency': 'XTR',
-          'transactions.status': 'complete'
-        }
+          "transactions.currency": "XTR",
+          "transactions.status": "complete",
+        },
       },
-      
+
       // Stage 5: Group and calculate totals
       {
         $group: {
-          _id: '$refer_id',
+          _id: "$refer_id",
           totalEarnings: {
             $sum: {
               $convert: {
-                input: '$transactions.amount',
-                to: 'decimal',
+                input: "$transactions.amount",
+                to: "decimal",
                 onError: 0,
-                onNull: 0
-              }
-            }
+                onNull: 0,
+              },
+            },
           },
           transactionCount: { $sum: 1 },
-          referredUsers: { $addToSet: '$referral_id' }
-        }
+          referredUsers: { $addToSet: "$referral_id" },
+        },
       },
-      
+
       // Stage 6: Project the final shape of the data
       {
         $project: {
           _id: 0,
-          referrerId: '$_id',
+          referrerId: "$_id",
           totalEarnings: 1,
           transactionCount: 1,
-          referredUserCount: { $size: '$referredUsers' }
-        }
-      }
-    ]);
+          referredUserCount: { $size: "$referredUsers" },
+        },
+      },
+    ])
 
     // If no earnings data found, return zero values
     const result = earningsData[0] || {
       referrerId: numericUserId,
       totalEarnings: 0,
       transactionCount: 0,
-      referredUserCount: 0
-    };
+      referredUserCount: 0,
+    }
 
     // Format the response
     res.status(200).json({
@@ -1607,18 +1864,90 @@ router.get('/:userId/referral-earnings/', async (req, res) => {
       data: {
         ...result,
         totalEarnings: result.totalEarnings.toString(), // Convert Decimal128 to string for JSON
-        lastUpdated: new Date()
-      }
-    });
-
+        lastUpdated: new Date(),
+      },
+    })
   } catch (error) {
-    console.error('Error calculating referral earnings:', error);
+    console.error("Error calculating referral earnings:", error)
     res.status(500).json({
       success: false,
-      message: 'Internal server error',
-      error: error.message
-    });
+      message: "Internal server error",
+      error: error.message,
+    })
   }
-});
+})
+
+// Supply Endpoint
+router.get("/nft/supply/:itemId", async (req, res) => {
+  const { itemId } = req.params
+
+  try {
+    const availableSupply = await NFTItems.countDocuments({
+      itemId: Number(itemId),
+      status: "available",
+    })
+    res.json({ availableSupply })
+  } catch (error) {
+    console.error("Error fetching supply:", error)
+    res.status(500).json({ error: "Internal server error" })
+  }
+})
+
+// Transaction Details Endpoint
+router.get("/nft/transaction-details", async (req, res) => {
+  const { userId, productId } = req.query
+
+  if (!userId || !productId) {
+    return res.status(400).json({ error: "userId and productId are required" })
+  }
+
+  const session = await mongoose.startSession()
+  try {
+    session.startTransaction()
+
+    const nft = await NFTItems.findOneAndUpdate(
+      { itemId: Number(productId), status: "available" },
+      { status: "locked", memo: uuidv4(), lockedAt: new Date() },
+      { new: true, session }
+    )
+
+    if (!nft) {
+      await session.abortTransaction()
+      return res.status(404).json({ error: "No available NFTs for this item" })
+    }
+
+    if (!nft.price) {
+      await session.abortTransaction()
+      return res.status(400).json({ error: "Price not defined for this NFT" })
+    }
+
+    const amount = (nft.price * 1e9).toString()
+
+    const transaction = new TONTransactions({
+      user_id: Number(userId),
+      currency: "TON",
+      amount,
+      product_type: "shelf",
+      product_id: productId,
+      memo: nft.memo,
+      status: "awaiting_payment",
+    })
+    await transaction.save({ session })
+
+    await session.commitTransaction()
+
+    res.json({
+      address: RECEIVING_WALLET_ADDRESS,
+      amount,
+      memo: nft.memo,
+    })
+  } catch (error) {
+    console.error("Error generating transaction details:", error)
+    await session.abortTransaction()
+    res.status(500).json({ error: "Internal server error" })
+  } finally {
+    session.endSession()
+  }
+})
 
 export default router

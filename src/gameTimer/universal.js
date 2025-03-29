@@ -36,6 +36,9 @@ import UserClothing from "../models/user/userClothingModel.js";
 import Clothing from "../models/clothing/clothingModel.js";
 import Skill from "../models/skill/skillModel.js";
 
+const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY;
+const TONCENTER_API_URL = "https://toncenter.com/api/v2";
+
 const limiter = new Bottleneck({
   minTime: 1000, // 1 request per second
   maxConcurrent: 1,
@@ -745,6 +748,30 @@ const nftScanConfig = {
   getTypeSpecificParams: () => ({}),
 };
 
+const txScanConfig = {
+  processType: "TX_SCANNER",
+  cronSchedule: "*/10 * * * * *",
+  durationFunction: async () => {
+    try {
+      const mnemonic = process.env.MNEMONICS.split(" "); // Expects space-separated mnemonic
+      const testnet = process.env.TESTNET === "true";
+      const wallet = await openWallet(mnemonic, testnet);
+      walletContract = wallet.contract;
+      keyPair = wallet.keyPair;
+      tonClient = wallet.client;
+  
+      const RECEIVING_WALLET_ADDRESS = walletContract.address.toString();
+      console.log("Server wallet address:", RECEIVING_WALLET_ADDRESS);
+  
+      verifyAndTransferTransactions();
+      unlockExpiredLocks();
+    } catch (error) {
+      console.error("Failed to initialize server wallet:", error);
+      process.exit(1);
+    }
+  }
+}
+
 // Export Schedulers
 export const WorkProcess = genericProcessScheduler("work", workProcessConfig);
 export const TrainingProccess = genericProcessScheduler("training", trainingProcessConfig);
@@ -755,3 +782,4 @@ export const BoostProccess = genericProcessScheduler("boost", boostProcessConfig
 export const AutoclaimProccess = genericProcessScheduler("autoclaim", autoclaimProcessConfig);
 export const RefsRecalsProcess = genericProcessScheduler("investment_level_checks", investmentLevelsProcessConfig);
 export const NftScanProcess = genericProcessScheduler("nft_scan", nftScanConfig);
+export const TxScanProcess = genericProcessScheduler("tx_scan", txScanConfig);

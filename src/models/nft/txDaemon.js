@@ -1,4 +1,3 @@
-import { mnemonicToPrivateKey } from "ton-crypto";
 import express from "express";
 import mongoose from "mongoose";
 import { v4 as uuidv4 } from "uuid";
@@ -81,48 +80,15 @@ async function initializeMongoDB() {
 }
 
 // Open Wallet Function
-async function openWallet(mnemonic, testnet) {
-  const keyPair = await mnemonicToPrivateKey(mnemonic);
 
-  const toncenterBaseEndpoint = testnet
-    ? "https://testnet.toncenter.com"
-    : "https://toncenter.com";
-
-  const client = new TonClient({
-    endpoint: `${toncenterBaseEndpoint}/api/v2/jsonRPC`,
-    apiKey: process.env.TONCENTER_API_KEY,
-  });
-
-  const wallet = WalletContractV4.create({
-    workchain: 0,
-    publicKey: keyPair.publicKey,
-  });
-
-  const contract = client.open(wallet);
-  return { contract, keyPair, client };
-}
 
 // Server Wallet Initialization and Server Startup
 (async () => {
   // Initialize MongoDB with replica set before proceeding
   await initializeMongoDB();
 
-  let walletContract, keyPair, tonClient;
 
-  try {
-    const mnemonic = process.env.MNEMONICS.split(" "); // Expects space-separated mnemonic
-    const testnet = process.env.TESTNET === "true";
-    const wallet = await openWallet(mnemonic, testnet);
-    walletContract = wallet.contract;
-    keyPair = wallet.keyPair;
-    tonClient = wallet.client;
 
-    const RECEIVING_WALLET_ADDRESS = walletContract.address.toString();
-    console.log("Server wallet address:", RECEIVING_WALLET_ADDRESS);
-
-    // TON Center API Configuration
-    const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY;
-    const TONCENTER_API_URL = "https://toncenter.com/api/v2";
 
     // Supply Endpoint
     app.get("/api/nft/supply/:itemId", async (req, res) => {

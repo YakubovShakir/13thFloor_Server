@@ -5,9 +5,10 @@ const nftItemSchema = new mongoose.Schema({
   index: { type: Number, required: true },
   address: { type: String, required: true, unique: true },
   status: { type: String, enum: ["available", "locked", "sold"], default: "available" },
-  memo: { type: String, default: null, unique: true, sparse: true },
+  memo: { type: String, default: null, sparse: true }, // Removed unique: true
   lockedAt: { type: Date, default: null },
-  owner: { type: String, default: null },
+  owner: { type: String, default: null }, // Removed unique: true
+  price: { type: Number, default: null }
 }, {
   indexes: [
     { key: { itemId: 1, index: 1 }, unique: true }
