@@ -5,7 +5,7 @@ config()
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
+    await mongoose.connect(process.env.MONGO_URI || "mongodb://databaseTest:27017/Floor?replicaSet=rs0", {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
