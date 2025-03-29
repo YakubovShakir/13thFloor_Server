@@ -17,7 +17,7 @@ import Tasks from "../../models/tasks/taskModel.js"
 import CompletedTasks from "../../models/tasks/completedTask.js"
 import { Bot } from "grammy"
 import Work from "../../models/work/workModel.js"
-import fs from 'fs/promises'
+import fs from "fs/promises"
 
 import { upUserExperience } from "../../utils/userParameters/upUserBalance.js"
 import { recalcValuesByParameters } from "../../utils/parametersDepMath.js"
@@ -25,27 +25,32 @@ import UserSkill from "../../models/user/userSkillModel.js"
 import { UserSpins } from "../../models/user/userSpinsModel.js"
 
 export function calculateGamecenterLevel(refsCount) {
-  const levels = Object.keys(gamecenterLevelMap).map(Number).sort((a, b) => a - b); // Ensure sorted order
-  let low = 0;
-  let high = levels.length - 1;
+  const levels = Object.keys(gamecenterLevelMap)
+    .map(Number)
+    .sort((a, b) => a - b) // Ensure sorted order
+  let low = 0
+  let high = levels.length - 1
 
-  if (refsCount < levels[0]) return 0; // Below first threshold
+  if (refsCount < levels[0]) return 0 // Below first threshold
 
   while (low <= high) {
-    const mid = Math.floor((low + high) / 2);
-    const threshold = levels[mid];
+    const mid = Math.floor((low + high) / 2)
+    const threshold = levels[mid]
 
     if (refsCount < threshold) {
-      high = mid - 1;
-    } else if (refsCount >= threshold && (mid === levels.length - 1 || refsCount < levels[mid + 1])) {
-      return gamecenterLevelMap[threshold]; // Found the correct level
+      high = mid - 1
+    } else if (
+      refsCount >= threshold &&
+      (mid === levels.length - 1 || refsCount < levels[mid + 1])
+    ) {
+      return gamecenterLevelMap[threshold] // Found the correct level
     } else {
-      low = mid + 1;
+      low = mid + 1
     }
   }
 
   // If we exit the loop, return the highest level (shouldn't happen with proper map)
-  return gamecenterLevelMap[levels[levels.length - 1]];
+  return gamecenterLevelMap[levels[levels.length - 1]]
 }
 
 export const gamecenterLevelMap = {
@@ -87,41 +92,41 @@ export const gamecenterLevelMap = {
 }
 
 const gameCenterLevelRequirements = {
-  '1': 1,
-  '2': 5,
-  '3': 10,
-  '4': 25,
-  '5': 40,
-  '6': 60,
-  '7': 90,
-  '8': 200,
-  '9': 300,
-  '10': 450,
-  '11': 500,
-  '12': 750,
-  '13': 1000,
-  '14': 1500,
-  '15': 2250,
-  '16': 2500,
-  '17': 3750,
-  '18': 5500,
-  '19': 8250,
-  '20': 10000,
-  '21': 15000,
-  '22': 22500,
-  '23': 33750,
-  '24': 50000,
-  '25': 75000,
-  '26': 112500,
-  '27': 168750,
-  '28': 253130,
-  '29': 379700,
-  '30': 569550,
-  '31': 854330,
-  '32': 1281500,
-  '33': 1922250,
-  '34': 2883380,
-  '35': 4325070
+  1: 1,
+  2: 5,
+  3: 10,
+  4: 25,
+  5: 40,
+  6: 60,
+  7: 90,
+  8: 200,
+  9: 300,
+  10: 450,
+  11: 500,
+  12: 750,
+  13: 1000,
+  14: 1500,
+  15: 2250,
+  16: 2500,
+  17: 3750,
+  18: 5500,
+  19: 8250,
+  20: 10000,
+  21: 15000,
+  22: 22500,
+  23: 33750,
+  24: 50000,
+  25: 75000,
+  26: 112500,
+  27: 168750,
+  28: 253130,
+  29: 379700,
+  30: 569550,
+  31: 854330,
+  32: 1281500,
+  33: 1922250,
+  34: 2883380,
+  35: 4325070,
 }
 
 export const prebuildInitialInventory = async (user_id) => {
@@ -192,7 +197,7 @@ export const createUserPersonage = async (req, res) => {
 
     const refs = await Referal.countDocuments({ refer_id: userId })
     const gameCenterLevel = refs > 0 ? calculateGamecenterLevel(refs) : 0
-    
+
     await User.updateOne(
       {
         id: userId,
@@ -269,7 +274,7 @@ export const createUserPersonage = async (req, res) => {
     userParam.respect += sumRespect
     await userParam.save()
 
-    await (new UserSpins({ user_id: userId, type: 'daily', is_ })).save()
+    await new UserSpins({ user_id: userId, type: "daily", is_ }).save()
 
     return res.status(200).json({})
   } catch (e) {
@@ -316,11 +321,11 @@ export const getInventoryItems = async (req, res) => {
     clothes = await Promise.all(
       clothes.map((c) => Clothing.findOne({ clothing_id: c.id }))
     )
-    clothes = clothes.filter(item => item != null)
+    clothes = clothes.filter((item) => item != null)
     shelf = await Promise.all(
       shelf.map((c) => ShelfItemModel.findOne({ id: c.id }))
     )
-    shelf = shelf.filter(item => item != null)
+    shelf = shelf.filter((item) => item != null)
     const currentlyUsedClothes = await UserClothing.findOne({ user_id: userId })
     const currentlyUsedShelf = (await User.findOne({ id: userId })).shelf
 
@@ -428,6 +433,9 @@ export const handleClothesUnequip = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
     const { clothing_id, type, productType } = req.body
+
+    console.log(clothing_id, type, productType)
+
     // const userParams =
     if (productType === "clothes") {
       if (type !== "Accessory") return res.status(200).json({})
@@ -435,8 +443,6 @@ export const handleClothesUnequip = async (req, res) => {
       const doesUserHaveIt = (
         await UserCurrentInventory.findOne({ user_id: userId })
       ).clothes.find((c) => c.id == clothing_id)
-      console.log(isClothingReal)
-      console.log(doesUserHaveIt)
 
       if (isClothingReal && doesUserHaveIt) {
         await UserClothing.updateOne(
@@ -450,11 +456,20 @@ export const handleClothesUnequip = async (req, res) => {
       const doesUserHaveIt = (
         await UserCurrentInventory.findOne({ user_id: userId })
       ).shelf.find((c) => c.id === clothing_id)
+      console.log(doesUserHaveIt)
 
       if (doesUserHaveIt) {
+        const shelfItem = await ShelfItems.findOne({ id: clothing_id })
+        const userParam = await UserParameters.findOne({ id: userId })
+        
+        userParam.respect -= shelfItem?.respect ? shelfItem?.respect : 0
+        
+        console.log('Shelf item', shelfItem.respect)
+
         const currentUser = await User.findOne({ id: userId })
         const currentShelf = { ...currentUser.shelf, [type]: null }
-
+        
+        await userParam.save()
         await User.updateOne({ id: userId }, { $set: { shelf: currentShelf } })
       }
     }
@@ -491,13 +506,17 @@ export const handleClothesEquip = async (req, res) => {
             )
           : null
         const currentClothingRespect = currentClothing?.respect || 0
-        console.log(currentClothingRespect)
         userParams.respect =
           userParams.respect - currentClothingRespect + isClothingReal.respect
         await userParams.save()
         await UserClothing.updateOne(
           { user_id: userId },
-          { $set: { [type === 'Accessory' ? 'accessories' : type.toLowerCase()]: parseInt(clothing_id) } }
+          {
+            $set: {
+              [type === "Accessory" ? "accessories" : type.toLowerCase()]:
+                parseInt(clothing_id),
+            },
+          }
         )
       }
     }
@@ -511,7 +530,6 @@ export const handleClothesEquip = async (req, res) => {
 
       if (doesUserHaveIt) {
         const shelfItem = await ShelfItems.findOne({ id: clothing_id })
-        console.log(shelfItem)
         const userParam = await UserParameters.findOne({ id: userId })
         userParam.respect +=
           shelfItem && shelfItem.respect ? shelfItem.respect : 0
@@ -593,80 +611,84 @@ export const handleShelfUnequip = async (req, res) => {
 
 export const buyItemsForCoins = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id);
-    const { productType, id } = req.body;
+    const userId = parseInt(req.params.id)
+    const { productType, id } = req.body
 
-    const user = await UserParameters.findOne({ id: userId });
+    const user = await UserParameters.findOne({ id: userId })
     const userCurrentInventory = await UserCurrentInventory.findOne({
       user_id: userId,
-    });
-    let product;
+    })
+    let product
 
     if (productType === "clothes") {
       if (userCurrentInventory.clothes.find((item) => item.id === id))
-        return res.status(401).json({ ok: false });
-      product = await Clothing.findOne({ clothing_id: id });
-      if (product && user.coins >= product.price && user.level >= product.requiredLevel) {
+        return res.status(401).json({ ok: false })
+      product = await Clothing.findOne({ clothing_id: id })
+      if (
+        product &&
+        user.coins >= product.price &&
+        user.level >= product.requiredLevel
+      ) {
         await UserParameters.updateOne(
           { id: userId },
           { $inc: { coins: -product.price } }
-        );
+        )
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { clothes: { id: product.clothing_id } } }
-        );
+        )
       } else {
-        return res.status(401).json({ ok: false, reason: "Not enough funds" });
+        return res.status(401).json({ ok: false, reason: "Not enough funds" })
       }
     }
 
     if (productType === "shelf") {
       if (userCurrentInventory.shelf.find((item) => item.id === id))
-        return res.status(401).json({ ok: false });
+        return res.status(401).json({ ok: false })
 
-      product = await ShelfItemModel.findOne({ id: id });
+      product = await ShelfItemModel.findOne({ id: id })
       if (product) {
-        const { coins, stars } = product.cost;
+        const { coins, stars } = product.cost
 
         // Block purchase for IDs 9-38
         if (id >= 9 && id <= 38) {
-          return res.status(403).json({ 
-            ok: false, 
-            reason: "This item can only be obtained via NFT" 
-          });
+          return res.status(403).json({
+            ok: false,
+            reason: "This item can only be obtained via NFT",
+          })
         }
 
         if (stars > 0) {
-          return res.status(500).json({ ok: false });
+          return res.status(500).json({ ok: false })
         }
         if (user.coins >= coins) {
           await UserParameters.updateOne(
             { id: userId },
             { $inc: { coins: -coins } }
-          );
+          )
           await UserCurrentInventory.updateOne(
             { user_id: userId },
             { $addToSet: { shelf: { id: product.id } } }
-          );
+          )
         } else {
-          console.log('not enough coins');
-          return res.status(401).json({ ok: false, reason: "Not enough funds" });
+          console.log("not enough coins")
+          return res.status(401).json({ ok: false, reason: "Not enough funds" })
         }
       } else {
-        return res.status(500).json({ ok: false });
+        return res.status(500).json({ ok: false })
       }
     }
 
-    return res.status(200).json({ ok: true });
+    return res.status(200).json({ ok: true })
   } catch (err) {
-    console.log("Error in buying for coins", err);
-    return res.status(500).json({ error: true });
+    console.log("Error in buying for coins", err)
+    return res.status(500).json({ error: true })
   }
-};
+}
 
 export const requestStarsPaymentLink = async (req, res) => {
   try {
-    const { productType, id, lang = 'en', userId } = req.body
+    const { productType, id, lang = "en", userId } = req.body
 
     let product, name, description, amount, title
 
@@ -695,30 +717,30 @@ export const requestStarsPaymentLink = async (req, res) => {
     }
 
     //! TODO: change spin amount
-    if(productType === 'spin') {
+    if (productType === "spin") {
       name = {
         ru: "Спин",
-        en: 'Spin'
+        en: "Spin",
       }[lang]
       description = {
         ru: "Попытка для игры в колесо!",
-        en: 'An attempt to play the wheel!'
+        en: "An attempt to play the wheel!",
       }[lang]
       title = name
       amount = 1
     }
 
     if (productType === "autoclaim") {
-        name = {
-          ru: "Автоклейм",
-          en: 'Autoclaim'
-        }[lang]
-        description = {
-          ru: "Автоматический сбор дохода от вашего бизнеса!",
-          en: "Autoclaim of your businesses`s revenue"
-        }[lang]
-        title = name
-        amount = 1
+      name = {
+        ru: "Автоклейм",
+        en: "Autoclaim",
+      }[lang]
+      description = {
+        ru: "Автоматический сбор дохода от вашего бизнеса!",
+        en: "Autoclaim of your businesses`s revenue",
+      }[lang]
+      title = name
+      amount = 1
     }
 
     const invoiceLink = await _fetch(`${process.env.BOT_ADDR}payment-create`, {
@@ -733,7 +755,7 @@ export const requestStarsPaymentLink = async (req, res) => {
         amount,
         productName: name,
         description,
-        userId
+        userId,
       }),
     })
       .then((res) => res.json())
@@ -748,72 +770,87 @@ export const requestStarsPaymentLink = async (req, res) => {
 
 export const getUserInvestments = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id);
+    const userId = parseInt(req.params.id)
     const user = await User.findOne(
       { id: userId },
       { investment_levels: 1, has_autoclaim: 1 }
-    );
-    const userParams = await UserParameters.findOne({ id: userId }, { level: 1 });
-    const userSkills = await UserSkill.find({ user_id: userId }); // Fetch user's learned skills
+    )
+    const userParams = await UserParameters.findOne(
+      { id: userId },
+      { level: 1 }
+    )
+    const userSkills = await UserSkill.find({ user_id: userId }) // Fetch user's learned skills
 
     // Current investments by user level
     const currentGameCenter = await Investments.findOne({
       type: InvestmentTypes.GameCenter,
       level: user.investment_levels[InvestmentTypes.GameCenter],
-    });
+    })
     const currentCoffeeShop = await Investments.findOne({
       type: InvestmentTypes.CoffeeShop,
       level: user.investment_levels[InvestmentTypes.CoffeeShop],
-    });
+    })
     const currentZooShop = await Investments.findOne({
       type: InvestmentTypes.ZooShop,
       level: user.investment_levels[InvestmentTypes.ZooShop],
-    });
+    })
 
     // Next levels
     const nextLevelGameCenter = await Investments.findOne({
       type: InvestmentTypes.GameCenter,
       level: user.investment_levels[InvestmentTypes.GameCenter] + 1,
-    });
+    })
     const nextLevelCoffeeShop = await Investments.findOne({
       type: InvestmentTypes.CoffeeShop,
       level: user.investment_levels[InvestmentTypes.CoffeeShop] + 1,
-    });
+    })
     const nextLevelZooShop = await Investments.findOne({
       type: InvestmentTypes.ZooShop,
       level: user.investment_levels[InvestmentTypes.ZooShop] + 1,
-    });
+    })
 
     // Active investments
     const activeGameCenter = currentGameCenter
       ? (
           await UserLaunchedInvestments.find(
-            { investment_type: InvestmentTypes.GameCenter, user_id: userId, claimed: false },
+            {
+              investment_type: InvestmentTypes.GameCenter,
+              user_id: userId,
+              claimed: false,
+            },
             null,
             { sort: { createdAt: -1 } }
           )
         )[0]
-      : null;
+      : null
     const activeCoffeeShop = currentCoffeeShop
       ? (
           await UserLaunchedInvestments.find(
-            { investment_type: InvestmentTypes.CoffeeShop, user_id: userId, claimed: false },
+            {
+              investment_type: InvestmentTypes.CoffeeShop,
+              user_id: userId,
+              claimed: false,
+            },
             null,
             { sort: { createdAt: -1 } }
           )
         )[0]
-      : null;
+      : null
     const activeZooShop = currentZooShop
       ? (
           await UserLaunchedInvestments.find(
-            { investment_type: InvestmentTypes.ZooShop, user_id: userId, claimed: false },
+            {
+              investment_type: InvestmentTypes.ZooShop,
+              user_id: userId,
+              claimed: false,
+            },
             null,
             { sort: { createdAt: -1 } }
           )
         )[0]
-      : null;
+      : null
 
-    const learnedSkillIds = userSkills.map(skill => skill.skill_id);
+    const learnedSkillIds = userSkills.map((skill) => skill.skill_id)
 
     const response = {
       tz: moment.tz.guess(),
@@ -834,8 +871,10 @@ export const getUserInvestments = async (req, res) => {
             }
           : false,
         friends: await Referal.countDocuments({ refer_id: userId }),
-        this_level_friends_required: gameCenterLevelRequirements[currentGameCenter?.level || 0] || 0,
-        next_level_friends_required: gameCenterLevelRequirements[(nextLevelGameCenter?.level || 0)] || 0,
+        this_level_friends_required:
+          gameCenterLevelRequirements[currentGameCenter?.level || 0] || 0,
+        next_level_friends_required:
+          gameCenterLevelRequirements[nextLevelGameCenter?.level || 0] || 0,
       },
       coffee_shop: {
         type: InvestmentTypes.CoffeeShop,
@@ -881,83 +920,92 @@ export const getUserInvestments = async (req, res) => {
       },
       user_level: userParams.level,
       user_skills: learnedSkillIds,
-    };
+    }
 
-    return res.status(200).json(response);
+    return res.status(200).json(response)
   } catch (err) {
-    console.log("Error in get investment", err);
-    return res.status(500).json({ error: true });
+    console.log("Error in get investment", err)
+    return res.status(500).json({ error: true })
   }
-};
+}
 
 export const buyInvestmentLevel = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id);
-    const { investment_type } = req.body;
+    const userId = parseInt(req.params.id)
+    const { investment_type } = req.body
 
     if (!Object.values(InvestmentTypes).includes(investment_type)) {
-      return res.status(400).json({ error: true });
+      return res.status(400).json({ error: true })
     }
 
-    const user = await User.findOne({ id: userId }, { investment_levels: 1 });
-    const userParams = await UserParameters.findOne({ id: userId });
-    const userSkills = await UserSkill.find({ user_id: userId });
-    const userInvestmentLevel = user.investment_levels[investment_type];
+    const user = await User.findOne({ id: userId }, { investment_levels: 1 })
+    const userParams = await UserParameters.findOne({ id: userId })
+    const userSkills = await UserSkill.find({ user_id: userId })
+    const userInvestmentLevel = user.investment_levels[investment_type]
 
     const currentInvestment = await Investments.findOne(
       { type: investment_type, level: userInvestmentLevel },
       { respect: 1 }
-    );
+    )
     const nextLevelInvestment = await Investments.findOne({
       type: investment_type,
       level: userInvestmentLevel + 1,
-    });
+    })
 
     if (!nextLevelInvestment) {
-      console.log("Error in buyInvestmentLevel - nowhere to upgrade");
-      return res.status(404).json({ error: true });
+      console.log("Error in buyInvestmentLevel - nowhere to upgrade")
+      return res.status(404).json({ error: true })
     }
 
     // Check requirements (skip for Game Center)
     if (investment_type !== InvestmentTypes.GameCenter) {
       const hasRequiredSkill = nextLevelInvestment.skill_id_required
-        ? userSkills.some(skill => skill.skill_id === nextLevelInvestment.skill_id_required)
-        : true;
-      const meetsLevelRequirement = userParams.level >= (nextLevelInvestment.level_required || 0);
+        ? userSkills.some(
+            (skill) => skill.skill_id === nextLevelInvestment.skill_id_required
+          )
+        : true
+      const meetsLevelRequirement =
+        userParams.level >= (nextLevelInvestment.level_required || 0)
 
       if (!hasRequiredSkill) {
-        return res.status(403).json({ error: true, message: "Required skill not learned" });
+        return res
+          .status(403)
+          .json({ error: true, message: "Required skill not learned" })
       }
       if (!meetsLevelRequirement) {
-        return res.status(403).json({ error: true, message: "Level requirement not met" });
+        return res
+          .status(403)
+          .json({ error: true, message: "Level requirement not met" })
       }
     }
 
     if (userParams.coins >= nextLevelInvestment.price) {
       if (investment_type !== InvestmentTypes.GameCenter) {
-        user.investment_levels[investment_type] += 1;
+        user.investment_levels[investment_type] += 1
         userParams.respect =
           userParams.respect -
           (currentInvestment?.respect || 0) +
-          nextLevelInvestment.respect;
-        userParams.coins = userParams.coins - nextLevelInvestment.price;
-        await upUserExperience(userId, nextLevelInvestment.experience_reward);
-        await user.save();
-        await userParams.save();
+          nextLevelInvestment.respect
+        userParams.coins = userParams.coins - nextLevelInvestment.price
+        await upUserExperience(userId, nextLevelInvestment.experience_reward)
+        await user.save()
+        await userParams.save()
 
-        return res.status(200).json({ ok: true });
+        return res.status(200).json({ ok: true })
       }
 
       // Cannot buy Game Center directly (requires friends)
-      return res.status(400).json({ error: true });
+      return res.status(400).json({ error: true })
     }
 
-    return res.status(403).json({ error: true, message: "Insufficient balance" });
+    return res
+      .status(403)
+      .json({ error: true, message: "Insufficient balance" })
   } catch (err) {
-    console.log("Error in investment upgrade", err);
-    return res.status(500).json({ error: true });
+    console.log("Error in investment upgrade", err)
+    return res.status(500).json({ error: true })
   }
-};
+}
 
 export const startInvestment = async (req, res) => {
   try {
@@ -971,34 +1019,32 @@ export const startInvestment = async (req, res) => {
     const user = await User.findOne({ id: userId }, { investment_levels: 1 })
     const userInvestmentLevel = user.investment_levels[investment_type]
 
-    const currentInvestment = await Investments.findOne(
-      { type: investment_type, level: userInvestmentLevel },
-    )
-    
-    if(!currentInvestment) {
+    const currentInvestment = await Investments.findOne({
+      type: investment_type,
+      level: userInvestmentLevel,
+    })
+
+    if (!currentInvestment) {
       return res.status(400).json({ error: true })
     }
 
-    const isThereARunningInvestment = await UserLaunchedInvestments.findOne(
-      {
-        user_id: userId,
-        investment_id: currentInvestment.id,
-        claimed: false,
-      }
-    )
+    const isThereARunningInvestment = await UserLaunchedInvestments.findOne({
+      user_id: userId,
+      investment_id: currentInvestment.id,
+      claimed: false,
+    })
 
     if (!isThereARunningInvestment) {
-        await new UserLaunchedInvestments({
-          user_id: userId,
-          investment_id: currentInvestment.id,
-          to_claim: currentInvestment.coins_per_hour,
-          investment_type: investment_type
-        }).save()
+      await new UserLaunchedInvestments({
+        user_id: userId,
+        investment_id: currentInvestment.id,
+        to_claim: currentInvestment.coins_per_hour,
+        investment_type: investment_type,
+      }).save()
 
-        return res.status(200).json({ ok: true })
+      return res.status(200).json({ ok: true })
     }
 
-    
     return res.status(403).json({ ok: true })
   } catch (err) {
     console.log("Error in investment kick-start", err)
@@ -1047,10 +1093,12 @@ export const claimInvestment = async (req, res) => {
       user_id: userId,
       investment_id: investment.id,
       to_claim: investment.coins_per_hour,
-      investment_type
+      investment_type,
     }).save()
 
-    await recalcValuesByParameters(userParams, { coinsReward: investmentToClaim.to_claim })
+    await recalcValuesByParameters(userParams, {
+      coinsReward: investmentToClaim.to_claim,
+    })
     // await upUserExperience(userId, investment.experience_reward)
 
     investmentToClaim.claimed = true
@@ -1094,96 +1142,107 @@ export const getUserTasks = async (req, res) => {
 export const saveProfileData = async (req, res) => {
   try {
     const userId = parseInt(req.params.id)
-    const { photo_url = null, first_name = null, last_name = null, username = null} = req.body
+    const {
+      photo_url = null,
+      first_name = null,
+      last_name = null,
+      username = null,
+    } = req.body
 
     const setBlock = {}
 
-    if(photo_url) setBlock.photo_url = photo_url
-    if(first_name) setBlock.first_name = first_name
-    if(last_name) setBlock.last_name = last_name
-    if(username) setBlock.username = username
+    if (photo_url) setBlock.photo_url = photo_url
+    if (first_name) setBlock.first_name = first_name
+    if (last_name) setBlock.last_name = last_name
+    if (username) setBlock.username = username
 
-    if(JSON.stringify(setBlock) !== JSON.stringify({})) {
+    if (JSON.stringify(setBlock) !== JSON.stringify({})) {
       await User.updateOne({ id: userId }, { $set: setBlock })
     }
 
-    return res.status(200).json({ })
-  } catch(err) {
+    return res.status(200).json({})
+  } catch (err) {
     console.log("Error in saveProfileData", err)
-    return res.status(500).json({ })
+    return res.status(500).json({})
   }
 }
 
 const bot = new Bot("7866433891:AAHAh-4Lc0Dvr80URgOQMJrIKB_1bfxc0KM")
 
-// stats forming step 1 
+// stats forming step 1
 export const collectRefStatsFromDb = async () => {
   return Referal.aggregate([
     {
       $group: {
         _id: "$refer_id",
         referral_count: {
-          $sum: 1
-        }
-      }
+          $sum: 1,
+        },
+      },
     },
     {
       $lookup: {
         from: "users",
         localField: "_id",
         foreignField: "id",
-        as: "user_info"
-      }
+        as: "user_info",
+      },
     },
     {
-      $unwind: "$user_info"
+      $unwind: "$user_info",
     },
     {
       $project: {
         referer_id: "$_id",
         referral_count: 1,
-        username: "$user_info.username"
-      }
+        username: "$user_info.username",
+      },
     },
     {
       $match: {
         referral_count: {
-          $gte: 5
-        }
-      }
-    }
+          $gte: 5,
+        },
+      },
+    },
   ])
 }
 
 // stats forming step 2
-export const addUserSubscriptionStatus = async (refsAggregationResult, channelId) => {
-  const results = [];
-  const chunkSize = 15;
+export const addUserSubscriptionStatus = async (
+  refsAggregationResult,
+  channelId
+) => {
+  const results = []
+  const chunkSize = 15
 
   const processChunk = async (chunk) => {
     const chunkResults = await Promise.all(
       chunk.map(async (userStat) => {
-        const result = { ...userStat, subscribed: false };
+        const result = { ...userStat, subscribed: false }
         try {
-          await bot.api.getChatMember(channelId, result.referer_id);
-          result.subscribed = true;
+          await bot.api.getChatMember(channelId, result.referer_id)
+          result.subscribed = true
         } catch (err) {
           // not subscribed
         }
-        return result;
+        return result
       })
-    );
-    return chunkResults;
-  };
-
-  for (let i = 0; i < refsAggregationResult.length; i += chunkSize) {
-    const chunk = refsAggregationResult.slice(i, i + chunkSize);
-    const chunkResults = await processChunk(chunk);
-    results.push(...chunkResults);
+    )
+    return chunkResults
   }
 
-  await fs.writeFile('./refs-weekly-stats.json', JSON.stringify(results, null, 2));
-};
+  for (let i = 0; i < refsAggregationResult.length; i += chunkSize) {
+    const chunk = refsAggregationResult.slice(i, i + chunkSize)
+    const chunkResults = await processChunk(chunk)
+    results.push(...chunkResults)
+  }
+
+  await fs.writeFile(
+    "./refs-weekly-stats.json",
+    JSON.stringify(results, null, 2)
+  )
+}
 
 export const claimUserTask = async (req, res) => {
   try {
@@ -1212,7 +1271,8 @@ export const claimUserTask = async (req, res) => {
 
       await new CompletedTasks({ user_id: userId, task_id: task.id }).save()
       const work = await Work.findOne({ id: userParam.work_id })
-      const coinsReward = task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
+      const coinsReward =
+        task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
 
       await recalcValuesByParameters(userParam, { coinsReward })
       await upUserExperience(userId, task.experience_reward)
@@ -1233,21 +1293,21 @@ export const handleTonWalletConnect = async (req, res) => {
   const { tonWalletAddress } = req.body
   const userId = parseInt(req.params.userId)
 
-  if(!userId || !tonWalletAddress || tonWalletAddress === '') {
+  if (!userId || !tonWalletAddress || tonWalletAddress === "") {
     return res.status(400).json({ error: true })
   }
 
   try {
     const userWithWallet = await User.findOne({ tonWalletAddress })
-    
-    if(userWithWallet) {
+
+    if (userWithWallet) {
       return res.status(403).json({ error: true })
     }
 
     await User.updateOne({ id: userId }, { $set: { tonWalletAddress } })
 
     return res.status(200).json({ error: false })
-  } catch(err) {
+  } catch (err) {
     return res.status(500).json({ error: true })
   }
 }
@@ -1255,13 +1315,13 @@ export const handleTonWalletConnect = async (req, res) => {
 export const handleTonWalletDisconnect = async (req, res) => {
   const userId = parseInt(req.params.userId)
 
-  if(!userId) {
+  if (!userId) {
     return res.status(400).json({ error: true })
   }
 
   try {
     await User.updateOne({ id: userId }, { $set: { tonWalletAddress: null } })
-  } catch(err) {
+  } catch (err) {
     return res.status(500).json({ error: true })
   }
 
@@ -1270,10 +1330,10 @@ export const handleTonWalletDisconnect = async (req, res) => {
 
 export const getLeaderboard = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    const skip = (page - 1) * limit;
-    const userId = req.query.userId ? parseInt(req.query.userId) : null; // Ensure userId is parsed
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 20
+    const skip = (page - 1) * limit
+    const userId = req.query.userId ? parseInt(req.query.userId) : null // Ensure userId is parsed
 
     const leaderboardPipeline = [
       {
@@ -1317,12 +1377,15 @@ export const getLeaderboard = async (req, res) => {
           includeArrayIndex: "rank",
         },
       },
-    ];
+    ]
 
-    const fullList = await UserParameters.aggregate([...leaderboardPipeline]);
+    const fullList = await UserParameters.aggregate([...leaderboardPipeline])
     const rankedUsers = fullList.map((doc) => ({
       user_id: doc.allUsers.user_info.id,
-      name: doc.allUsers.user_info.personage.name || doc.allUsers.user_info.username || "Unknown",
+      name:
+        doc.allUsers.user_info.personage.name ||
+        doc.allUsers.user_info.username ||
+        "Unknown",
       gender: doc.allUsers.user_info.personage.gender || "unknown",
       username: doc.allUsers.user_info.username,
       first_name: doc.allUsers.user_info.first_name,
@@ -1331,7 +1394,7 @@ export const getLeaderboard = async (req, res) => {
       respect: doc.allUsers.respect,
       total_earned: doc.allUsers.total_earned,
       rank: doc.rank + 1,
-    }));
+    }))
 
     // Find current user's entry
     const currentUser = rankedUsers.find((user) => user.user_id === userId) || {
@@ -1345,19 +1408,19 @@ export const getLeaderboard = async (req, res) => {
       respect: 0,
       total_earned: 0,
       rank: "N/A",
-    };
+    }
 
     // Paginate the leaderboard
-    const leaderboard = rankedUsers.slice(skip, skip + limit);
+    const leaderboard = rankedUsers.slice(skip, skip + limit)
 
     const response = {
       leaderboard,
       currentUser,
-    };
-    
-    return res.status(200).json(response);
+    }
+
+    return res.status(200).json(response)
   } catch (err) {
-    console.error("Error in getLeaderboard:", err);
-    res.status(500).json({ error: true });
+    console.error("Error in getLeaderboard:", err)
+    res.status(500).json({ error: true })
   }
-};
+}
