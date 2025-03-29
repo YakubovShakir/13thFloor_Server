@@ -22,6 +22,7 @@ import fs from 'fs/promises'
 import { upUserExperience } from "../../utils/userParameters/upUserBalance.js"
 import { recalcValuesByParameters } from "../../utils/parametersDepMath.js"
 import UserSkill from "../../models/user/userSkillModel.js"
+import { UserSpins } from "../../models/user/userSpinsModel.js"
 
 export function calculateGamecenterLevel(refsCount) {
   const levels = Object.keys(gamecenterLevelMap).map(Number).sort((a, b) => a - b); // Ensure sorted order
@@ -267,6 +268,9 @@ export const createUserPersonage = async (req, res) => {
     }, 0)
     userParam.respect += sumRespect
     await userParam.save()
+
+    await (new UserSpins({ user_id: userId, type: 'daily', is_ })).save()
+
     return res.status(200).json({})
   } catch (e) {
     console.log("Error creating personage for user", e)
