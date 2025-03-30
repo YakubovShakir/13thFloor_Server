@@ -35,6 +35,8 @@
     "redis": "^4.7.0",
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
+    "ton": "^13.9.0",
+    "ton-core": "^0.53.0",
     "ton-crypto": "^3.2.0",
     "uuid": "^11.1.0",
     "uuidv4": "^6.2.13"

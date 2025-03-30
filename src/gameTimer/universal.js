@@ -21,20 +21,25 @@ import Investments from "../models/investments/investmentModel.js";
 import { InvestmentTypes } from "../models/investments/userLaunchedInvestments.js";
 import UserLaunchedInvestments from "../models/investments/userLaunchedInvestments.js";
 import Bottleneck from "bottleneck";
-import { Address } from "@ton/ton";
+import { Address, beginCell, internal, SendMode, toNano, TonClient, WalletContractV4 } from "@ton/ton";
 import nftMap from "./nft_mapping.json" with { type: "json" };
 import axios from "axios";
 import { ActiveEffectTypes, ActiveEffectsModel } from "../models/effects/activeEffectsModel.js";
 import { log } from "../utils/log.js";
 import Referal from "../models/referral/referralModel.js";
 import { calculateGamecenterLevel } from "../controllers/user/userController.js";
-import { ActionTypes, ActionLogModel } from "../models/effects/actionLogModel.js";
+import mongoose from "mongoose";
 import UserCurrentInventory from "../models/user/userInventoryModel.js";
 import { getBoostPercentageFromType } from "../routes/user/userRoutes.js";
 import ShelfItemModel from "../models/shelfItem/shelfItemModel.js";
 import UserClothing from "../models/user/userClothingModel.js";
 import Clothing from "../models/clothing/clothingModel.js";
 import Skill from "../models/skill/skillModel.js";
+import { mnemonicToPrivateKey } from '@ton/crypto'
+import TONTransactions from "../models/tx/tonTransactionModel.js";
+import NFTItems from "../models/nft/nftItemModel.js";
+import NftItem from "./contracts/NftItem.js";
+import NftCollection from "./contracts/NftCollection.js";
 
 const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY;
 const TONCENTER_API_URL = "https://toncenter.com/api/v2";
@@ -45,6 +50,16 @@ const limiter = new Bottleneck({
 });
 
 const TONAPI_KEY = process.env.TONAPI_KEY || "";
+
+//! TON WALLET INIT, MOVE ===================
+const mnemonic = process.env.MNEMONICS.split(" "); // Expects space-separated mnemonic
+const testnet = process.env.TESTNET === "true";
+const wallet = await openWallet(mnemonic, testnet);
+const walletContract = wallet.contract;
+const keyPair = wallet.keyPair;
+const tonClient = wallet.client;
+const RECEIVING_WALLET_ADDRESS = walletContract.address.toString();
+//! =========================================
 
 // Helper Functions
 function normalizeAddress(rawAddress) {
@@ -422,6 +437,23 @@ const genericProcessScheduler = (processType, processConfig) => {
   return scheduler;
 };
 
+const processIndependentScheduler = (processType, processConfig) => {
+  const { cronSchedule, durationFunction } = processConfig;
+
+  const scheduler = cron.schedule(cronSchedule, async () => {
+    try {
+      await durationFunction();
+
+      await log("verbose", `${processType} process scheduler finished iteration`);
+    } catch (e) {
+      await log("error", `Error in ${processType} Process:`, { error: e.message, stack: e.stack });
+    }
+  }, { scheduled: false });
+
+  scheduler.name = processType; // For identification in stopAll
+  return scheduler;
+}
+
 // Process Configurations
 const workProcessConfig = {
   processType: "work",
@@ -748,19 +780,206 @@ const nftScanConfig = {
   getTypeSpecificParams: () => ({}),
 };
 
+// Open Wallet Function
+async function openWallet(mnemonic, testnet) {
+  const keyPair = await mnemonicToPrivateKey(mnemonic);
+
+  const toncenterBaseEndpoint = testnet
+    ? "https://testnet.toncenter.com"
+    : "https://toncenter.com";
+
+  const client = new TonClient({
+    endpoint: `${toncenterBaseEndpoint}/api/v2/jsonRPC`,
+    apiKey: process.env.TONCENTER_API_KEY,
+  });
+
+  const wallet = WalletContractV4.create({
+    workchain: 0,
+    publicKey: keyPair.publicKey,
+  });
+
+  const contract = client.open(wallet);
+  return { contract, keyPair, client };
+}
+
+async function transferNFT(wallet, nftAddress, newOwner) {
+  const seqno = await wallet.contract.getSeqno();
+
+  // Build the TIP-4 transfer message body
+  const transferBody = beginCell()
+    .storeUint(0x5fcc3d14, 32) // TIP-4 transfer opcode
+    .storeUint(0, 64) // query_id (set to 0 for simplicity)
+    .storeAddress(newOwner) // new owner address
+    .storeAddress(wallet.contract.address) // response_destination (sender gets response)
+    .storeBit(0) // no custom payload
+    .storeCoins(toNano("0.02")) // forward_amount (for gas/notification)
+    .storeBit(0) // no forward_payload
+    .endCell();
+
+  // Send the transfer message
+  await wallet.contract.sendTransfer({
+    seqno,
+    secretKey: wallet.keyPair.secretKey,
+    messages: [
+      internal({
+        value: "0.05",
+        to: nftAddress,
+        body: transferBody,
+      }),
+    ],
+    sendMode: SendMode.PAY_GAS_SEPARATELY + SendMode.IGNORE_ERRORS,
+  });
+
+  return seqno;
+}
+
+// Transaction Verification and Transfer
+async function verifyAndTransferTransactions() {
+  try {
+    const pendingTransactions = await TONTransactions.find({
+      status: { $in: ["awaiting_payment", "payment_received", "transferring"] },
+    });
+
+    const response = await axios.get(`${TONCENTER_API_URL}/getTransactions`, {
+      params: {
+        address: "UQAyMah6BUuxR7D8HXt3hr0r2kbUgZ_kCOigjRnQj402WwY5",
+        limit: 100,
+        sort: "desc",
+        api_key: TONCENTER_API_KEY,
+        archival: true
+      },
+    });
+
+    for (const tx of pendingTransactions) {
+      if (tx.status === "awaiting_payment") {
+        const transactions = response.data.result;
+        const matchingTx = transactions.find(t =>
+          t.in_msg?.message === tx.memo 
+          // t.in_msg?.message === tx.memo &&
+          // t.in_msg?.value === tx.amount
+        );
+        if (matchingTx) {
+          const session = await mongoose.startSession();
+          try {
+            session.startTransaction();
+            await TONTransactions.updateOne(
+              { _id: tx._id },
+              { status: "payment_received", tx_hash: matchingTx.transaction_id.hash },
+              { session }
+            );
+            await session.commitTransaction();
+            console.log(`Payment received for memo ${tx.memo}`);
+          } catch (error) {
+            await session.abortTransaction();
+            console.error(`Failed to update payment status for memo ${tx.memo}:`, error);
+          } finally {
+            session.endSession();
+          }
+        }
+      }
+
+      if (tx.status === "payment_received") {
+        const session = await mongoose.startSession();
+        try {
+          session.startTransaction();
+          
+          const nft = await NFTItems.findOne({ memo: tx.memo, status: "locked" }, null, { session });
+          if (!nft) {
+            await TONTransactions.updateOne(
+              { _id: tx._id },
+              { status: "failed_transfer", error_message: "No locked NFT found" },
+              { session }
+            );
+            await session.commitTransaction();
+            console.error(`No locked NFT found for memo ${tx.memo}`);
+            continue;
+          }
+
+          await TONTransactions.updateOne({ _id: tx._id }, { status: "transferring" }, { session });
+
+          const buyerAddress = (await axios.get(`${TONCENTER_API_URL}/getTransactions`, {
+            params: { address: RECEIVING_WALLET_ADDRESS, hash: tx.tx_hash, api_key: TONCENTER_API_KEY, archival: true }
+          })).data.result[0].in_msg.source;
+
+          // Perform NFT transfer on TON
+          const wallet = { contract: walletContract, keyPair }; // Match OpenedWallet type
+
+          await transferNFT(wallet, nft.address, Address.parse(buyerAddress))
+
+          await NFTItems.updateOne(
+            { _id: nft._id },
+            { status: "sold", owner: buyerAddress, memo: null },
+            { session }
+          );
+          await TONTransactions.updateOne(
+            { _id: tx._id },
+            { status: "complete", transfer_tx_hash: "unknown" },
+            { session }
+          );
+
+          await session.commitTransaction();
+          console.log(`NFT ${nft.address} transferred to ${buyerAddress} for memo ${tx.memo}`);
+        } catch (error) {
+          await TONTransactions.updateOne(
+            { _id: tx._id },
+            { status: "failed_transfer", error_message: error.message },
+            { session }
+          );
+          await session.commitTransaction();
+          console.error(`Transfer failed for memo ${tx.memo}:`, error);
+        } finally {
+          session.endSession();
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error verifying transactions:", error);
+  }
+}
+
+// Unlock Expired Locks
+async function unlockExpiredLocks() {
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+
+    const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const expiredLocks = await NFTItems.find(
+      { status: "locked", lockedAt: { $lt: twentyFourHoursAgo } },
+      null,
+      { session }
+    );
+
+    if (expiredLocks.length > 0) {
+      const expiredMemos = expiredLocks.map(nft => nft.memo);
+      await NFTItems.updateMany(
+        { _id: { $in: expiredLocks.map(nft => nft._id) } },
+        { status: "available", memo: null, lockedAt: null },
+        { session }
+      );
+      await TONTransactions.updateMany(
+        { memo: { $in: expiredMemos }, status: { $in: ["awaiting_payment", "payment_received"] } },
+        { status: "expired" },
+        { session }
+      );
+      await session.commitTransaction();
+      console.log(`Unlocked ${expiredLocks.length} expired NFT locks and marked transactions as expired`);
+    } else {
+      await session.abortTransaction();
+    }
+  } catch (error) {
+    console.error("Error unlocking expired locks:", error);
+    await session.abortTransaction();
+  } finally {
+    session.endSession();
+  }
+}
+
 const txScanConfig = {
   processType: "TX_SCANNER",
   cronSchedule: "*/10 * * * * *",
   durationFunction: async () => {
     try {
-      const mnemonic = process.env.MNEMONICS.split(" "); // Expects space-separated mnemonic
-      const testnet = process.env.TESTNET === "true";
-      const wallet = await openWallet(mnemonic, testnet);
-      walletContract = wallet.contract;
-      keyPair = wallet.keyPair;
-      tonClient = wallet.client;
-  
-      const RECEIVING_WALLET_ADDRESS = walletContract.address.toString();
       console.log("Server wallet address:", RECEIVING_WALLET_ADDRESS);
   
       verifyAndTransferTransactions();
@@ -782,4 +1001,4 @@ export const BoostProccess = genericProcessScheduler("boost", boostProcessConfig
 export const AutoclaimProccess = genericProcessScheduler("autoclaim", autoclaimProcessConfig);
 export const RefsRecalsProcess = genericProcessScheduler("investment_level_checks", investmentLevelsProcessConfig);
 export const NftScanProcess = genericProcessScheduler("nft_scan", nftScanConfig);
-export const TxScanProcess = genericProcessScheduler("tx_scan", txScanConfig);
+export const TxScanProcess = processIndependentScheduler("tx_scan", txScanConfig);
