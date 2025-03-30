@@ -59,11 +59,11 @@ import TONTransactions from "../../models/tx/tonTransactionModel.js"
 import NFTItems from "../../models/nft/nftItemModel.js"
 import mongoose from "mongoose"
 import { v4 as uuidv4 } from "uuid"
-import { mnemonicToPrivateKey } from "ton-crypto";
+import { mnemonicToPrivateKey } from "ton-crypto"
 import { config } from "dotenv"
 config()
-import TON from "@ton/ton";
-const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON;
+import TON, { beginCell } from "@ton/ton"
+const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON
 
 let walletContract, keyPair, tonClient
 
@@ -85,24 +85,24 @@ const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY
 const TONCENTER_API_URL = "https://toncenter.com/api/v2"
 
 async function openWallet(mnemonic, testnet) {
-  const keyPair = await mnemonicToPrivateKey(mnemonic);
+  const keyPair = await mnemonicToPrivateKey(mnemonic)
 
   const toncenterBaseEndpoint = testnet
     ? "https://testnet.toncenter.com"
-    : "https://toncenter.com";
+    : "https://toncenter.com"
 
   const client = new TonClient({
     endpoint: `${toncenterBaseEndpoint}/api/v2/jsonRPC`,
     apiKey: process.env.TONCENTER_API_KEY,
-  });
+  })
 
   const wallet = WalletContractV4.create({
     workchain: 0,
     publicKey: keyPair.publicKey,
-  });
+  })
 
-  const contract = client.open(wallet);
-  return { contract, keyPair, client };
+  const contract = client.open(wallet)
+  return { contract, keyPair, client }
 }
 
 // Ensure the bot does not start polling (to avoid conflicts with getUpdates)
@@ -1936,11 +1936,25 @@ router.get("/nft/transaction-details", async (req, res) => {
 
     await session.commitTransaction()
 
-    res.json({
-      address: RECEIVING_WALLET_ADDRESS,
-      amount,
-      memo: nft.memo,
-    })
+    // Create payload with UUID as a comment
+    const body = beginCell()
+      .storeUint(0, 32) // 32-bit 0 opcode for comment
+      .storeStringTail(nft.memo) // Use UUID as memo
+      .endCell()
+
+    const paymentRequest = {
+      messages: [
+        {
+          address: "UQAyMah6BUuxR7D8HXt3hr0r2kbUgZ_kCOigjRnQj402WwY5",
+          amount: toNano("0.05", amount).toString(),
+          payload: body.toBoc().toString("base64"), // Proper TON cell serialization
+        },
+      ],
+      validUntil: Math.floor(Date.now() / 1000) + 3600, // 1 hour
+      network: "-239", // Mainnet
+    }
+
+    res.json({paymentRequest})
   } catch (error) {
     console.error("Error generating transaction details:", error)
     await session.abortTransaction()

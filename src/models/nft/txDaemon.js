@@ -19,7 +19,7 @@ app.use(express.json());
 
 // MongoDB Connection and Replica Set Initialization
 async function initializeMongoDB() {
-  const mongoUri = process.env.MONGO_URI || "mongodb://databaseTest:27017/Floor?replicaSet=rs0"; // Use service name 'database'
+  const mongoUri = process.env.MONGO_URI || "mongodb://localhost:27017/Floor?replicaSet=rs0"; // Use service name 'database'
   const maxRetries = 10;
   let retries = 0;
 

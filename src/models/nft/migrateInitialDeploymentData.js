@@ -11535,7 +11535,7 @@ const nameToMetadataMap = {
   
   async function populateDB() {
     try {
-      await mongoose.connect("mongodb://databaseTest:27017/Floor", {
+      await mongoose.connect("mongodb://localhost:27017/Floor", {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
