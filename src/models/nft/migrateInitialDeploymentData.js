@@ -11535,7 +11535,7 @@ const nameToMetadataMap = {
   
   export async function populateDB() {
     try {
-      mongoose.connect("mongodb://localhost:27017/Floor")
+      mongoose.connect("mongodb://databaseTest:27017/Floor?replicaSet=rs0")
       await mongoose.syncIndexes()
       console.log("Connected to MongoDB");
       
