@@ -11535,6 +11535,7 @@ const nameToMetadataMap = {
   
   export async function populateDB() {
     try {
+      mongoose.connect("mongodb://localhost:27017/Floor")
       await mongoose.syncIndexes()
       console.log("Connected to MongoDB");
       
@@ -11571,12 +11572,29 @@ const nameToMetadataMap = {
         });
       }
   
-      async function insertInBatches(items, batchSize = 50, delayMs = 500) {
+      async function insertInBatches(items, batchSize = 50, delayMs = 1000) {
+        console.log("Total items to insert:", items.length);
+        console.log("Unique addresses in batch:", [...new Set(items.map(item => item.address))].length, "Sample:", items.slice(0, 2));
+      
         for (let i = 0; i < items.length; i += batchSize) {
           const batch = items.slice(i, i + batchSize);
-          await NFTItems.insertMany(batch);
-          if (i + batchSize < items.length) await new Promise(resolve => setTimeout(resolve, delayMs));
+          try {
+            const result = await NFTItems.insertMany(batch, { ordered: false });
+            console.log(`Batch ${i / batchSize + 1}: Inserted ${result.length} of ${batch.length} items`);
+          } catch (error) {
+            if (error.code === 11000) { // Duplicate key error
+              console.log(`Batch ${i / batchSize + 1}: Skipped duplicates -`, error.writeErrors?.length || "unknown count");
+            } else {
+              console.error(`Batch ${i / batchSize + 1} failed:`, error.message);
+              throw error; // Rethrow non-duplicate errors
+            }
+          }
+          if (i + batchSize < items.length) {
+            console.log(`Waiting ${delayMs}ms before next batch...`);
+            await new Promise(resolve => setTimeout(resolve, delayMs));
+          }
         }
+        console.log("All batches processed");
       }
       
       // Usage
