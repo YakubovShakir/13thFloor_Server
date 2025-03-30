@@ -11535,8 +11535,8 @@ const nameToMetadataMap = {
   
   export async function populateDB() {
     try {
-      mongoose.connect("mongodb://databaseTest:27017/Floor?replicaSet=rs0")
-      await mongoose.syncIndexes()
+      // mongoose.connect("mongodb://databaseTest:27017/Floor?replicaSet=rs0")
+      // await mongoose.syncIndexes()
       console.log("Connected to MongoDB");
       
       const anyItems = await NFTItems.countDocuments()
