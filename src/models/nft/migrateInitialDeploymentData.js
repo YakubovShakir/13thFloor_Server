@@ -11533,7 +11533,7 @@ const nameToMetadataMap = {
     "Purrfect Launch": "31.json"
   };
   
-  async function populateDB() {
+  export async function populateDB() {
     try {
       await mongoose.connect("mongodb://localhost:27017/Floor", {
         useNewUrlParser: true,
@@ -11560,20 +11560,31 @@ const nameToMetadataMap = {
   
         const price = item.cost.ton_price || 1.0; // Default to 1 TON if not specified
         deploymentItem.copies.forEach(copy => {
-          nftItemsToInsert.push({
-            itemId: item.id,
-            index: copy.index,
-            address: copy.address,
-            status: "available",
-            memo: null,
-            lockedAt: null,
-            owner: null,
-            price: item.ton_price
-          });
+          if(copy.deploymentStatus === 'completed') {
+            nftItemsToInsert.push({
+              itemId: item.id,
+              index: copy.index,
+              address: copy.address,
+              status: "available",
+              memo: null,
+              lockedAt: null,
+              owner: null,
+              price: item.ton_price
+            });
+          }
         });
       }
   
-      await NFTItems.insertMany(nftItemsToInsert);
+      async function insertInBatches(items, batchSize = 50, delayMs = 500) {
+        for (let i = 0; i < items.length; i += batchSize) {
+          const batch = items.slice(i, i + batchSize);
+          await NFTItems.insertMany(batch);
+          if (i + batchSize < items.length) await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
+      }
+      
+      // Usage
+      await insertInBatches(nftItemsToInsert);
       console.log("Database populated successfully with", nftItemsToInsert.length, "atomic NFTs");
     } catch (error) {
       console.error("Error populating database:", error);

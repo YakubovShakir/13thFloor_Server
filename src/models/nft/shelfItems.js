@@ -52,12 +52,12 @@ export default [
   {
     id: 10,
     name: {
-      ru: "Meowramen",
-      en: "Meowramen",
+      ru: "Meowmen",
+      en: "Meowmen",
     },
     description: {
-      ru: "Meowramen - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      en: "Meowramen - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      ru: "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
     cost: {
       coins: 0,
