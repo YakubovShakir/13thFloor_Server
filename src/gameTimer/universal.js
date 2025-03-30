@@ -854,7 +854,7 @@ async function verifyAndTransferTransactions() {
       if (tx.status === "awaiting_payment") {
         const transactions = response.data.result;
         const matchingTx = transactions.find(t =>
-          t.in_msg?.message === tx.memo 
+          t.in_msg?.message === tx.memo && t.in_msg?.value === tx.amount
           // t.in_msg?.message === tx.memo &&
           // t.in_msg?.value === tx.amount
         );
