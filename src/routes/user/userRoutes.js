@@ -1921,7 +1921,7 @@ router.get("/nft/transaction-details", async (req, res) => {
       return res.status(400).json({ error: "Price not defined for this NFT" })
     }
 
-    const amount = (nft.price * 1e9).toString()
+    const amount = toNano((nft.price + 0.05)).toString()
 
     const transaction = new TONTransactions({
       user_id: Number(userId),
@@ -1946,7 +1946,7 @@ router.get("/nft/transaction-details", async (req, res) => {
       messages: [
         {
           address: "UQAyMah6BUuxR7D8HXt3hr0r2kbUgZ_kCOigjRnQj402WwY5",
-          amount: toNano("0.05", amount).toString(),
+          amount,
           payload: body.toBoc().toString("base64"), // Proper TON cell serialization
         },
       ],
