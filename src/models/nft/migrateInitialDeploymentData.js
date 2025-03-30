@@ -11535,14 +11535,10 @@ const nameToMetadataMap = {
   
   export async function populateDB() {
     try {
-      await mongoose.connect("mongodb://localhost:27017/Floor", {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
-
       await mongoose.syncIndexes()
       console.log("Connected to MongoDB");
-  
+      
+      const anyItems = await NFTItems.countDocuments()
       await NFTItems.deleteMany({});
       console.log("Cleared existing NFTItems");
   
