@@ -102,7 +102,6 @@ async function main() {
     deleteConstantEffects(),
     addSpins(),
   ])
-  await populateDB()
 }
 
 async function deleteTasks() {
