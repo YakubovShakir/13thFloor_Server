@@ -39,6 +39,7 @@ import { mnemonicToPrivateKey } from '@ton/crypto';
 import TONTransactions from "../models/tx/tonTransactionModel.js";
 import NFTItems from "../models/nft/nftItemModel.js";
 import Queue from 'bull';
+import Autoclaims from "../models/investments/autoclaimsModel.js";
 
 // Centralized queue for all DB updates
 const dbUpdateQueue = new Queue('db-updates', {
@@ -884,7 +885,7 @@ export const autoclaimProcessConfig = {
       await log("verbose", `Autoclaim process scheduler started iteration`);
 
       const now = new Date();
-      const usersWithAutoclaim = await Autoclaim.find({
+      const usersWithAutoclaim = await Autoclaims.find({
         expiresAt: { $gt: now }, // Active autoclaims
       });
 
@@ -913,7 +914,7 @@ export const autoclaimProcessConfig = {
       await log("error", "Error in autoclaim process", { error: e.message, stack: e.stack });
     }
   },
-  Model: Autoclaim, // Updated to use new model
+  Model: Autoclaims, // Updated to use new model
   getTypeSpecificParams: () => ({}),
   start() {
     this.task = cron.schedule(this.cronSchedule, this.durationFunction, { scheduled: false });

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { InvestmentTypes } from "./userLaunchedInvestments";
+import { InvestmentTypes } from "./userLaunchedInvestments.js";
 import e from "express";
 
 const autoclaimSchema = new mongoose.Schema({
