@@ -43,7 +43,7 @@ import Autoclaims from "../models/investments/autoclaimsModel.js";
 
 // Centralized queue for all DB updates
 const dbUpdateQueue = new Queue('db-updates', {
-  redis: { host: process.env.REDIS_HOST || 'localhost' , port: 6379, password: 'redis_password' }, // Adjust Redis config
+  redis: { host: process.env.REDIS_HOST || 'localhost', port: 6379, password: 'redis_password' }, // Adjust Redis config
   defaultJobOptions: {
     attempts: 3, // Retry on transient failures
     backoff: { type: 'exponential', delay: 100 }, // Exponential backoff
@@ -118,15 +118,15 @@ const operationMap = {
     const process = await gameProcess.findOne({ _id: processId }, null, { session });
     const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
     const baseParameters = await Work.findOne({ work_id: baseParametersId }, null, { session });
-  
+
     if (!process || !userParameters || !baseParameters) {
       throw new Error(`Missing data for work process completion: ${processId}`);
     }
-  
+
     const nekoBoostMultiplier = await getNekoBoostMultiplier(userParameters.id);
     const baseCoinsReward = (baseParameters.coins_in_hour / 3600) * (baseParameters.duration * 60);
     const coinsReward = baseCoinsReward * nekoBoostMultiplier;
-  
+
     // Pass profits to recalcValuesByParameters
     await recalcValuesByParameters(userParameters, { coinsReward }, session);
     await upUserExperience(userParameters.id, baseParameters.experience_reward, session);
@@ -143,8 +143,8 @@ const operationMap = {
     const { processId, userParametersId, skillId, subType } = params;
     const process = await gameProcess.findOne({ _id: processId }, null, { session });
     const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
-    const skill = subType === 'constant_effects' 
-      ? await ConstantEffects.findOne({ id: skillId }, null, { session }) 
+    const skill = subType === 'constant_effects'
+      ? await ConstantEffects.findOne({ id: skillId }, null, { session })
       : await Skill.findOne({ skill_id: skillId }, null, { session });
 
     if (!process || !userParameters || !skill) {
@@ -340,9 +340,11 @@ const operationMap = {
 
   processSkill: async (params, session) => {
     const { processId, userParametersId, skillId, subType } = params;
+    console.log("Skill ID:", skillId); // Debug log
+
     const process = await gameProcess.findOne({ _id: processId }, null, { session });
     const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
-    const skill = subType === 'constant_effects'
+    const skill = subType === "constant_effects"
       ? await ConstantEffects.findOne({ id: skillId }, null, { session })
       : await Skill.findOne({ skill_id: skillId }, null, { session });
 
@@ -361,7 +363,11 @@ const operationMap = {
         await userParameters.save({ session });
         await upUserExperience(userParametersId, skill.experience_reward, session);
       } else {
-        await UserSkill.create({ id: userParametersId, skill_id: skillId }, { session });
+        // Fix: Use array syntax for create() with session and match schema field names
+        await UserSkill.create([{
+          id: userParameters.id, // Ensure this matches your schema's 'id' field
+          skill_id: skill.skill_id, // Ensure this matches your schema's 'skill_id' field
+        }], { session });
         await upUserExperience(userParametersId, skill.experience_reward, session);
       }
       await gameProcess.deleteOne({ _id: processId }, { session });
@@ -369,6 +375,7 @@ const operationMap = {
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
+      await log("debug", `Skill process timestamp updated`, { processId });
     }
   },
 
@@ -1142,7 +1149,7 @@ const syncShelfInventory = async (userId, nftItemIds) => {
     session.startTransaction();
 
     const inventory = await UserCurrentInventory.findOne({ user_id: userId }, null, { session }) ||
-                     await UserCurrentInventory.create({ user_id: userId, shelf: [] }, { session });
+      await UserCurrentInventory.create({ user_id: userId, shelf: [] }, { session });
     const user = await User.findOne({ id: userId }, null, { session });
 
     const currentShelfIds = (inventory.shelf || []).map(item => item.id);
@@ -1285,7 +1292,7 @@ async function verifyAndTransferTransactions() {
         const session = await mongoose.startSession();
         try {
           session.startTransaction();
-          
+
           const nft = await NFTItems.findOne({ memo: tx.memo, status: "locked" }, null, { session });
           if (!nft) {
             await TONTransactions.updateOne(
