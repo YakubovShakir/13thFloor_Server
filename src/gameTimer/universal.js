@@ -25,7 +25,7 @@ import { Address, beginCell, internal, SendMode, toNano, TonClient, WalletContra
 import nftMap from "./nft_mapping.json" with { type: "json" };
 import axios from "axios";
 import { ActiveEffectTypes, ActiveEffectsModel } from "../models/effects/activeEffectsModel.js";
-// import { log } from "../utils/log.js";
+import { log } from "../utils/log.js";
 import Referal from "../models/referral/referralModel.js";
 import { calculateGamecenterLevel } from "../controllers/user/userController.js";
 import mongoose from "mongoose";
@@ -38,8 +38,6 @@ import Skill from "../models/skill/skillModel.js";
 import { mnemonicToPrivateKey } from '@ton/crypto';
 import TONTransactions from "../models/tx/tonTransactionModel.js";
 import NFTItems from "../models/nft/nftItemModel.js";
-import NftItem from "./contracts/NftItem.js";
-import NftCollection from "./contracts/NftCollection.js";
 import Queue from 'bull';
 
 // Centralized queue for all DB updates
