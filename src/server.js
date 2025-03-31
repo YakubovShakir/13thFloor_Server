@@ -45,7 +45,7 @@ import constantEffects from "./models/effects/migration.js"
 import { addUserSubscriptionStatus, collectRefStatsFromDb } from "./controllers/user/userController.js"
 import UserBoost from "./models/user/userBoostsModel.js"
 import { UserSpins } from "./models/user/userSpinsModel.js"
-import { populateDB } from "./models/nft/migrateInitialDeploymentData.js"
+// import { populateDB } from "./models/nft/migrateInitialDeploymentData.js"
 
 dotenv.config()
 
@@ -102,7 +102,6 @@ async function main() {
     deleteConstantEffects(),
     addSpins(),
   ])
-  await populateDB()
 }
 
 async function deleteTasks() {
