@@ -1,4 +1,7 @@
-import { queueDbUpdate } from "../gameTimer/universal.js"
+import colors from "ansi-colors"
+import UserParameters from "../models/user/userParametersModel.js"
+import { withTransaction } from "./dbUtils.js"
+import { log } from "./log.js"
 import { upUserBalance } from "./userParameters/upUserBalance.js"
 
 export const isFullMood = (mood) => mood === 100
@@ -73,68 +76,53 @@ export function canStartWorking(userParameters) {
 }
 
 export const recalcValuesByParameters = async (
-    userParameters,
-    { coinsReward = 0, moodProfit = 0 }
-  ) => {
-    console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}`);
-  
-    const jobIds = [];
-  
+  userParameters,
+  { coinsReward = 0, moodProfit = 0 }
+) => {
+  console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}`);
+
+  return await withTransaction(async (session) => {
+    // Fetch the latest userParameters within the transaction
+    const user = await UserParameters.findOne({ id: userParameters.id }, null, { session });
+    if (!user) throw new Error(`UserParameters not found for ID: ${userParameters.id}`);
+
     // Mood updates
-    let moodChange = moodProfit; // Base profit
-    if (userParameters.hungry > 49) {
-      // No penalty, just apply moodProfit
-    } else if (userParameters.hungry <= 49 && userParameters.hungry >= 9) {
-      moodChange = Math.max(0, -0.09722) + moodProfit; // Apply penalty + profit
+    let moodChange = moodProfit;
+    if (user.hungry > 49) {
+      // No penalty
+    } else if (user.hungry <= 49 && user.hungry >= 9) {
+      moodChange = Math.max(0, -0.09722) + moodProfit;
     } else {
-      moodChange = Math.max(0, -0.155) + moodProfit; // Apply larger penalty + profit
+      moodChange = Math.max(0, -0.155) + moodProfit;
     }
-  
+
     if (moodChange !== 0) {
-      const moodJobId = await queueDbUpdate(
-        'applyUserParameterUpdates',
-        {
-          userParametersId: userParameters.id,
-          periodCosts: {}, // No costs here
-          periodProfits: { mood: moodChange },
-          processType: 'recalc_mood',
-        },
-        `Update mood for user ${userParameters.id}`,
-        userParameters.id
-      );
-      jobIds.push(moodJobId);
-      console.log(`[recalcValuesByParameters] Enqueued mood update with change ${moodChange}`);
+      user.mood = Math.min(100, user.mood + moodChange);
+      await user.save({ session });
+      console.log(`[recalcValuesByParameters] mood updated to ${user.mood}`);
     }
-  
+
     // Balance updates
     let adjustedCoinsReward = coinsReward;
-    if (userParameters.mood > 49) {
-      adjustedCoinsReward = coinsReward; // Full reward
-    } else if (userParameters.mood <= 49 && userParameters.mood > 9) {
-      adjustedCoinsReward = coinsReward * 0.9; // 90% reward
-    } else if (userParameters.mood <= 9 && userParameters.mood > 1) {
-      adjustedCoinsReward = coinsReward * 0.5; // 50% reward
+    if (user.mood > 49) {
+      adjustedCoinsReward = coinsReward;
+    } else if (user.mood <= 49 && user.mood > 9) {
+      adjustedCoinsReward = coinsReward * 0.9;
+    } else if (user.mood <= 9 && user.mood > 1) {
+      adjustedCoinsReward = coinsReward * 0.5;
     } else if (coinsReward > 0) {
-      adjustedCoinsReward = 1; // Minimum reward
+      adjustedCoinsReward = 1;
     }
-  
+
     if (adjustedCoinsReward !== 0) {
-      const balanceJobId = await queueDbUpdate(
-        'updateUserBalance',
-        {
-          userParametersId: userParameters.id,
-          amount: adjustedCoinsReward,
-        },
-        `Update balance for user ${userParameters.id}`,
-        userParameters.id
-      );
-      jobIds.push(balanceJobId);
-      console.log(`[recalcValuesByParameters] Enqueued balance update with amount ${adjustedCoinsReward}`);
+      await upUserBalance(userParameters.id, adjustedCoinsReward); // Already uses withTransaction
+      console.log(`[recalcValuesByParameters] balance updated with amount ${adjustedCoinsReward}`);
     }
-  
-    await log("debug", colors.cyan(`Enqueued updates in recalcValuesByParameters for user ${userParameters.id}`), { jobIds });
-    return jobIds; // Return job IDs for tracking if needed
-  };
+
+    await log("debug", colors.cyan(`Completed recalcValuesByParameters for user ${userParameters.id}`));
+    return { mood: user.mood, coins: user.coins }; // Return updated values
+  });
+};
 
 export function canApplyConstantEffects(userParameters) {
   console.log(

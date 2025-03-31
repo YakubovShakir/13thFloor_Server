@@ -25,7 +25,7 @@ import { Address, beginCell, internal, SendMode, toNano, TonClient, WalletContra
 import nftMap from "./nft_mapping.json" with { type: "json" };
 import axios from "axios";
 import { ActiveEffectTypes, ActiveEffectsModel } from "../models/effects/activeEffectsModel.js";
-import { log } from "../utils/log.js";
+// import { log } from "../utils/log.js";
 import Referal from "../models/referral/referralModel.js";
 import { calculateGamecenterLevel } from "../controllers/user/userController.js";
 import mongoose from "mongoose";
@@ -269,8 +269,6 @@ const mnemonic = process.env.MNEMONICS.split(" ");
 const testnet = process.env.TESTNET === "true";
 const wallet = await openWallet(mnemonic, testnet);
 const walletContract = wallet.contract;
-const keyPair = wallet.keyPair;
-const tonClient = wallet.client;
 const RECEIVING_WALLET_ADDRESS = walletContract.address.toString();
 
 function normalizeAddress(rawAddress) {
