@@ -688,7 +688,7 @@ export const buyItemsForCoins = async (req, res) => {
 
 export const requestStarsPaymentLink = async (req, res) => {
   try {
-    const { productType, id, lang = "en", userId } = req.body
+    const { productType, id, lang = "en", userId, durationHours } = req.body
 
     let product, name, description, amount, title
 
@@ -730,6 +730,12 @@ export const requestStarsPaymentLink = async (req, res) => {
       amount = 50
     }
 
+    const autoclaimDurationToPrice = {
+      6: 10,
+      10: 50,
+      16: 100
+    }
+
     if (productType === "autoclaim") {
       name = {
         ru: "Автоклейм",
@@ -740,7 +746,7 @@ export const requestStarsPaymentLink = async (req, res) => {
         en: "Autoclaim of your businesses`s revenue",
       }[lang]
       title = name
-      amount = 10
+      amount = autoclaimDurationToPrice[durationHours]
     }
 
     const invoiceLink = await _fetch(`${process.env.BOT_ADDR}payment-create`, {
@@ -756,6 +762,7 @@ export const requestStarsPaymentLink = async (req, res) => {
         productName: name,
         description,
         userId,
+        durationHours
       }),
     })
       .then((res) => res.json())
