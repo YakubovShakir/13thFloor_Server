@@ -35,6 +35,10 @@ const schema = new mongoose.Schema(
     telegram_payment_charge_id: {
       type: String, default: null
     },
+    affiliate_id: {
+      type: Number,
+      default: null
+    }
   },
   { timestamps: true }
 )
