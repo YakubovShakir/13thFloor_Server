@@ -82,9 +82,9 @@ export const recalcValuesByParameters = async (
   
     // Mood updates
     let moodChange = moodProfit; // Base profit
-    if (userParameters.hungry > 59) {
+    if (userParameters.hungry > 49) {
       // No penalty, just apply moodProfit
-    } else if (userParameters.hungry <= 59 && userParameters.hungry >= 19) {
+    } else if (userParameters.hungry <= 49 && userParameters.hungry >= 9) {
       moodChange = Math.max(0, -0.09722) + moodProfit; // Apply penalty + profit
     } else {
       moodChange = Math.max(0, -0.155) + moodProfit; // Apply larger penalty + profit
@@ -108,11 +108,11 @@ export const recalcValuesByParameters = async (
   
     // Balance updates
     let adjustedCoinsReward = coinsReward;
-    if (userParameters.mood > 59) {
+    if (userParameters.mood > 49) {
       adjustedCoinsReward = coinsReward; // Full reward
-    } else if (userParameters.mood <= 59 && userParameters.mood > 19) {
+    } else if (userParameters.mood <= 49 && userParameters.mood > 9) {
       adjustedCoinsReward = coinsReward * 0.9; // 90% reward
-    } else if (userParameters.mood <= 19 && userParameters.mood > 1) {
+    } else if (userParameters.mood <= 9 && userParameters.mood > 1) {
       adjustedCoinsReward = coinsReward * 0.5; // 50% reward
     } else if (coinsReward > 0) {
       adjustedCoinsReward = 1; // Minimum reward
