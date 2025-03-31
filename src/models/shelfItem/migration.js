@@ -319,7 +319,7 @@ export const ShelfItems = [
     },
     link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/7.gif",
     shelf_link:
-      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/7.gif",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2F%D0%BD%D1%84%D1%82-%D0%B4%D0%B6%D0%B5%D0%B4%D0%B0%D0%B92-%D0%B1%D0%B5%D0%B7%D1%84%D0%BE%D0%BD%D0%B0.gif",
     type: ShelfItemTypes.Neko,
     respect: 2500,
     rarity: NEKO_RARITIES.COMMON, // Note: First array says UNCOMMON, second says COMMON
@@ -495,7 +495,7 @@ export const ShelfItems = [
     },
     link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/15.gif",
     shelf_link:
-      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/15.gif",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2F%D0%BD%D1%84%D1%82-%D0%B8%D0%BA%D1%80%D0%B0.gif",
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.COMMON,
     respect: 1500,
