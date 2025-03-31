@@ -63,6 +63,7 @@ import { mnemonicToPrivateKey } from "ton-crypto"
 import { config } from "dotenv"
 config()
 import TON, { beginCell } from "@ton/ton"
+import { InvestmentTypes } from "../../models/investments/userLaunchedInvestments.js"
 const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON
 
 let walletContract, keyPair, tonClient
@@ -2016,5 +2017,50 @@ router.get("/nft/transaction-details", async (req, res) => {
     session.endSession()
   }
 })
+
+const SERVER_TIMEZONE = moment.tz.guess()
+const investmentTypeKeys = Object.fromEntries(
+  Object.entries(InvestmentTypes).map(([key, value]) => [value, key])
+);
+
+export const getAutoclaimStatus = async (userId) => {
+  try {
+    const now = new Date();
+
+    // Find all active autoclaims for the user (not expired)
+    const activeAutoclaims = await Autoclaim.find({
+      userId,
+      expiresAt: { $gt: now },
+    });
+
+    // Initialize result with all investment types set to inactive
+    const status = {
+      GameCenter: { is_active: false, active_until: null, tz: SERVER_TIMEZONE },
+      ZooShop: { is_active: false, active_until: null, tz: SERVER_TIMEZONE },
+      CoffeeShop: { is_active: false, active_until: null, tz: SERVER_TIMEZONE },
+    };
+
+    // Update status for each active autoclaim
+    activeAutoclaims.forEach((autoclaim) => {
+      const key = investmentTypeKeys[autoclaim.investmentType];
+      if (key) { // Only update if investmentType matches a known key
+        status[key] = {
+          is_active: true,
+          active_until: autoclaim.expiresAt,
+          tz: SERVER_TIMEZONE,
+        };
+      }
+    });
+
+    await log("debug", `Retrieved autoclaim status for user ${userId}`, { status });
+    return status;
+  } catch (err) {
+    await log("error", `Failed to get autoclaim status for user ${userId}`, {
+      error: err.message,
+      stack: err.stack,
+    });
+    throw err; // Re-throw to handle in caller if needed
+  }
+};
 
 export default router
