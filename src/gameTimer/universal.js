@@ -7,7 +7,7 @@ import UserParameters from "../models/user/userParametersModel.js";
 import cron from "node-cron";
 import moment from "moment-timezone";
 import { canApplyConstantEffects } from "../utils/parametersDepMath.js";
-import { upUserExperience } from "../utils/userParameters/upUserBalance.js";
+import { upUserBalance, upUserExperience } from "../utils/userParameters/upUserBalance.js";
 import { recalcValuesByParameters } from "../utils/parametersDepMath.js";
 import Work from "../models/work/workModel.js";
 import TrainingParameters from "../models/training/trainingParameters.js";
@@ -196,6 +196,66 @@ const operationMap = {
 
     await applyUserParameterUpdates(userParameters, {}, profits, "food");
     await log("info", `Food process completed`, { userId: userParameters.id, profits });
+  },
+  processAutoclaim: async (params, session) => {
+    const { investmentType, userId } = params;
+
+    const currentInvestment = await UserLaunchedInvestments.findOne({
+      user_id: userId,
+      investment_type: investmentType,
+      claimed: false, // Only unclaimed investments
+    }, null, { session, sort: { createdAt: -1 } });
+
+    if (currentInvestment) {
+      const investment = await Investments.findOne({ id: currentInvestment.investment_id })
+      
+      currentInvestment.claimed = true;
+      await currentInvestment.save({ session });
+      await upUserBalance(investment.coins_per_hour)
+      await log("info", `Investment marked as claimed for user ${userId}`, {
+        investmentType,
+        durationHours,
+      });
+    } else {
+      await log("warn", `No active unclaimed investment found for user ${userId}`, { investmentType });
+    }
+
+    // Step 3: Enqueue a new UserLaunchedInvestment
+    await queueDbUpdate(
+      "createUserLaunchedInvestment",
+      { userId, investmentType },
+      `Create new investment for ${investmentType}, user ${userId}`,
+      userId
+    );
+
+    await log("info", `Autoclaim processed and new investment enqueued`, { userId, investmentType, reward });
+  },
+
+  createUserLaunchedInvestment: async (params, session) => {
+    const { userId, investmentType } = params;
+
+    const user = await User.findOne({ id: userId }, { investment_levels: 1 }, { session });
+    const userInvestmentLevel = user.investment_levels[investmentType];
+
+    const investment = await Investments.findOne({ type: investmentType, level: userInvestmentLevel }, null, { session });
+    if (!investment) {
+      await log("error", `Investment definition not found`, { investment_type, userInvestmentLevel, userId });
+      await session.abortTransaction();
+      return;
+    }
+
+    const newInvestment = new UserLaunchedInvestments({
+      user_id: userId,
+      investment_type: investmentType,
+      to_claim: investment.coins_per_hour()
+    });
+
+    await newInvestment.save({ session });
+    await log("info", `New investment launched for user ${userId}`, {
+      investmentType,
+      durationHours,
+      expiresAt,
+    });
   },
 };
 
@@ -849,35 +909,61 @@ const processInBatches = async (items, batchSize, processFn) => {
   }
 };
 
-const autoclaimProcessConfig = {
+export const autoclaimProcessConfig = {
   processType: "autoclaim",
-  cronSchedule: "*/1 * * * * *",
-  durationFunction: async (session) => {
+  cronSchedule: "*/1 * * * * *", // Every 1 second (adjust as needed)
+  durationFunction: async () => { // No session here, enqueueing handles it
     try {
       await log("verbose", `Autoclaim process scheduler started iteration`);
-      const usersWithAutoclaim = await User.aggregate([
-        { $match: { $or: [{ "has_autoclaim.game_center": true }, { "has_autoclaim.zoo_shop": true }, { "has_autoclaim.coffee_shop": true }] } },
-      ]);
 
-      await processInBatches(usersWithAutoclaim, 50, async (user) => {
-        const { has_autoclaim: { game_center = false, zoo_shop = false, coffee_shop = false } } = user;
-        if (game_center) await claim(InvestmentTypes.GameCenter, user.id, session);
-        if (zoo_shop) await claim(InvestmentTypes.ZooShop, user.id, session);
-        if (coffee_shop) await claim(InvestmentTypes.CoffeeShop, user.id, session);
+      const now = new Date();
+      const usersWithAutoclaim = await Autoclaim.find({
+        expiresAt: { $gt: now }, // Active autoclaims
       });
 
-      await log("verbose", `Autoclaim process scheduler finished iteration`, { usersEligible: usersWithAutoclaim.length });
+      if (usersWithAutoclaim.length === 0) {
+        await log("verbose", "No active autoclaims found");
+        return;
+      }
+
+      await processInBatches(usersWithAutoclaim, 50, async (autoclaim) => {
+        const userId = autoclaim.userId;
+        const investmentType = autoclaim.investmentType;
+
+        // Enqueue the claim operation
+        await queueDbUpdate(
+          "processAutoclaim",
+          { investmentType, userId },
+          `Autoclaim claim for ${investmentType}, user ${userId}`,
+          userId
+        );
+      });
+
+      await log("verbose", `Autoclaim process scheduler finished iteration`, {
+        usersEligible: usersWithAutoclaim.length,
+      });
     } catch (e) {
       await log("error", "Error in autoclaim process", { error: e.message, stack: e.stack });
     }
   },
-  Model: User,
+  Model: Autoclaim, // Updated to use new model
   getTypeSpecificParams: () => ({}),
+  start() {
+    this.task = cron.schedule(this.cronSchedule, this.durationFunction, { scheduled: false });
+    this.task.start();
+    log("info", `Started ${this.processType} process`);
+  },
+  stop() {
+    if (this.task) {
+      this.task.stop();
+      log("info", `Stopped ${this.processType} process`);
+    }
+  },
 };
 
 const investmentLevelsProcessConfig = {
   processType: "investment_level_checks",
-  cronSchedule: "*/10 * * * * *",
+  cronSchedule: "*/15 * * * * *",
   durationFunction: async () => {
     try {
       await log("verbose", `investment_level_checks process scheduler started iteration`);
