@@ -48,6 +48,8 @@ const dbUpdateQueue = new Queue('db-updates', {
   defaultJobOptions: {
     attempts: 3, // Retry on transient failures
     backoff: { type: 'exponential', delay: 100 }, // Exponential backoff
+    removeOnComplete: true, // Explicitly remove completed jobs (default behavior)
+    removeOnFail: false, // Keep failed jobs for debugging (optional: set to true to remove them)
   },
 });
 
