@@ -177,24 +177,40 @@ const operationMap = {
     const process = await gameProcess.findOne({ _id: processId }, null, { session });
     const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
     const baseParameters = await Work.findOne({ work_id: baseParametersId }, null, { session });
+    const user = await User.findOne({ id: userParametersId }, null, { session });
+    const userClothing = await UserClothing.findOne({ user_id: userParametersId }, null, { session });
 
-    if (!process || !userParameters || !baseParameters) {
+    if (!process || !userParameters || !baseParameters || !user) {
       throw new Error(`Missing data for work process: ${processId}`);
     }
 
-    // Restore combinedEffects logic
     let durationDecreasePercentage = 0;
     let combinedEffects = {};
-    if (process.effects && process.type !== "boost") {
-      mergeEffects(combinedEffects, process.effects);
+    if (process.effects && process.type !== "boost") mergeEffects(combinedEffects, process.effects);
+    const shelfItems = Object.values(user.shelf).filter(Boolean);
+    if (shelfItems.length > 0) {
+      const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } }, null, { session });
+      shelf.forEach((item) => {
+        if (item.effects) mergeEffects(combinedEffects, item.effects);
+      });
+    }
+    if (userClothing) {
+      const clothesItems = [userClothing.hat, userClothing.top, userClothing.pants, userClothing.shoes, userClothing.accessories]
+        .filter(item => item !== null && item !== undefined);
+      if (clothesItems.length > 0) {
+        const clothing = await Clothing.find({ clothing_id: { $in: clothesItems } }, null, { session });
+        clothing.forEach((item) => {
+          if (item.effects) mergeEffects(combinedEffects, item.effects);
+        });
+      }
     }
     if (userParameters.constant_effects_levels["work_duration_decrease"]) {
       durationDecreasePercentage = userParameters.constant_effects_levels["work_duration_decrease"];
     } else if (combinedEffects.duration_decrease) {
       durationDecreasePercentage = combinedEffects.duration_decrease;
     }
+    log("debug", colors.cyan(`Combined effects for work: ${JSON.stringify(combinedEffects)}`));
 
-    // Calculate costs and profits with effects
     const costConfig = {
       mood: baseParameters.mood_cost_per_minute || 0,
       hungry: baseParameters.hungry_cost_per_minute || 0,
@@ -204,30 +220,12 @@ const operationMap = {
     const now = moment();
     const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.updatedAt), "seconds");
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
-    const totalDurationSeconds = baseParameters.duration * 60; // Convert minutes to seconds
+    const totalDurationSeconds = baseParameters.duration * 60;
     const actualDurationSeconds = calculateDuration(baseParameters.duration, durationDecreasePercentage);
 
-    const periodCosts = calculatePeriodCosts(
-      baseParameters,
-      combinedEffects,
-      diffSeconds,
-      costConfig,
-      [], // costBlackList
-      userParameters,
-      totalDurationSeconds,
-      "work"
-    );
-    const periodProfits = calculatePeriodProfits(
-      baseParameters,
-      combinedEffects,
-      diffSeconds,
-      profitConfig,
-      [], // effectEntries
-      userParameters,
-      totalDurationSeconds
-    );
+    const periodCosts = calculatePeriodCosts(baseParameters, combinedEffects, diffSeconds, costConfig, [], userParameters, totalDurationSeconds, "work");
+    const periodProfits = calculatePeriodProfits(baseParameters, combinedEffects, diffSeconds, profitConfig, [], userParameters, totalDurationSeconds);
 
-    // Check resource sufficiency
     const hasSufficientResources = Object.keys(periodCosts).every(key => {
       const available = Math.floor(userParameters[key] || 0);
       const cost = Math.floor(periodCosts[key] || 0);
@@ -242,12 +240,11 @@ const operationMap = {
         userId: userParametersId,
         processId,
         costs: periodCosts,
-        available: { ...userParameters.toObject() },
+        available: { mood: userParameters.mood, hungry: userParameters.hungry, energy: userParameters.energy },
       });
       return;
     }
 
-    // Apply updates
     Object.keys(periodCosts).forEach((key) => {
       userParameters[key] = Math.max(0, userParameters[key] - periodCosts[key]);
     });
@@ -256,12 +253,10 @@ const operationMap = {
     });
     await userParameters.save({ session });
 
-    // Check completion
     if (processDurationSeconds >= actualDurationSeconds) {
       const nekoBoostMultiplier = await getNekoBoostMultiplier(userParametersId, session);
       const baseCoinsReward = (baseParameters.coins_in_hour / 3600) * (baseParameters.duration * 60);
       const coinsReward = baseCoinsReward * nekoBoostMultiplier;
-
       await operationMap.updateUserBalance({ id: userParametersId, amount: coinsReward }, session);
       await operationMap.updateUserExperience({ id: userParametersId, amount: baseParameters.experience_reward }, session);
 
@@ -283,22 +278,39 @@ const operationMap = {
     const process = await gameProcess.findOne({ _id: processId }, null, { session });
     const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
     const baseParameters = await TrainingParameters.findOne({ level: baseParametersId }, null, { session });
-  
-    if (!process || !userParameters || !baseParameters) {
+    const user = await User.findOne({ id: userParametersId }, null, { session });
+    const userClothing = await UserClothing.findOne({ user_id: userParametersId }, null, { session });
+
+    if (!process || !userParameters || !baseParameters || !user) {
       throw new Error(`Missing data for training process: ${processId}`);
     }
-  
+
     let durationDecreasePercentage = 0;
     let combinedEffects = {};
-    if (process.effects && process.type !== "boost") {
-      mergeEffects(combinedEffects, process.effects);
+    if (process.effects && process.type !== "boost") mergeEffects(combinedEffects, process.effects);
+    const shelfItems = Object.values(user.shelf).filter(Boolean);
+    if (shelfItems.length > 0) {
+      const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } }, null, { session });
+      shelf.forEach((item) => {
+        if (item.effects) mergeEffects(combinedEffects, item.effects);
+      });
+    }
+    if (userClothing) {
+      const clothesItems = [userClothing.hat, userClothing.top, userClothing.pants, userClothing.shoes, userClothing.accessories]
+        .filter(item => item !== null && item !== undefined);
+      if (clothesItems.length > 0) {
+        const clothing = await Clothing.find({ clothing_id: { $in: clothesItems } }, null, { session });
+        clothing.forEach((item) => {
+          if (item.effects) mergeEffects(combinedEffects, item.effects);
+        });
+      }
     }
     if (userParameters.constant_effects_levels["training_duration_decrease"]) {
       durationDecreasePercentage = userParameters.constant_effects_levels["training_duration_decrease"];
     } else if (combinedEffects.duration_decrease) {
       durationDecreasePercentage = combinedEffects.duration_decrease;
     }
-  
+
     const costConfig = {
       energy: baseParameters.energy_spend || 0,
       hungry: baseParameters.hungry_spend || 0,
@@ -309,22 +321,28 @@ const operationMap = {
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
     const totalDurationSeconds = (baseParameters.duration || 1) * 60;
     const actualDurationSeconds = calculateDuration(baseParameters.duration || 1, durationDecreasePercentage);
-  
+
     const periodCosts = calculatePeriodCosts(baseParameters, combinedEffects, diffSeconds, costConfig, [], userParameters, totalDurationSeconds, "training");
     const periodProfits = calculatePeriodProfits(baseParameters, combinedEffects, diffSeconds, profitConfig, [], userParameters, totalDurationSeconds);
-  
+
     const hasSufficientResources = Object.keys(periodCosts).every(key => {
       const available = Math.floor(userParameters[key] || 0);
       const cost = Math.floor(periodCosts[key] || 0);
-      return available >= cost;
+      const ok = available >= cost;
+      if (!ok) log("warn", colors.yellow(`Insufficient ${key}: ${available} < ${cost}`));
+      return ok;
     });
-  
+
     if (!hasSufficientResources) {
       await gameProcess.deleteOne({ _id: processId }, { session });
-      await log("info", colors.yellow(`Training process ended - insufficient resources`), { userId: userParametersId });
+      await log("info", colors.yellow(`Training process ended - insufficient resources`), {
+        userId: userParametersId,
+        costs: periodCosts,
+        available: { energy: userParameters.energy, hungry: userParameters.hungry },
+      });
       return;
     }
-  
+
     Object.keys(periodCosts).forEach((key) => {
       userParameters[key] = Math.max(0, userParameters[key] - periodCosts[key]);
     });
@@ -336,10 +354,9 @@ const operationMap = {
       }
     });
     await userParameters.save({ session });
-  
+
     const finishCondition = userParameters.energy <= 0 || userParameters.hungry <= 0;
     if (processDurationSeconds >= actualDurationSeconds || finishCondition) {
-      // Add completion logic (e.g., skill upgrades) if needed
       await gameProcess.deleteOne({ _id: processId }, { session });
       await log("info", colors.green(`Training process completed and deleted`), { userId: userParametersId });
     } else {
@@ -353,37 +370,51 @@ const operationMap = {
     const process = await gameProcess.findOne({ _id: processId }, null, { session });
     const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
     const baseParameters = await LevelsParameters.findOne({ level: baseParametersId }, null, { session });
-  
-    if (!process || !userParameters || !baseParameters) {
+    const user = await User.findOne({ id: userParametersId }, null, { session });
+    const userClothing = await UserClothing.findOne({ user_id: userParametersId }, null, { session });
+
+    if (!process || !userParameters || !baseParameters || !user) {
       throw new Error(`Missing data for sleep process: ${processId}`);
     }
-  
+
     let durationDecreasePercentage = 0;
     let combinedEffects = {};
-    if (process.effects && process.type !== "boost") {
-      mergeEffects(combinedEffects, process.effects);
+    if (process.effects && process.type !== "boost") mergeEffects(combinedEffects, process.effects);
+    const shelfItems = Object.values(user.shelf).filter(Boolean);
+    if (shelfItems.length > 0) {
+      const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } }, null, { session });
+      shelf.forEach((item) => {
+        if (item.effects) mergeEffects(combinedEffects, item.effects);
+      });
+    }
+    if (userClothing) {
+      const clothesItems = [userClothing.hat, userClothing.top, userClothing.pants, userClothing.shoes, userClothing.accessories]
+        .filter(item => item !== null && item !== undefined);
+      if (clothesItems.length > 0) {
+        const clothing = await Clothing.find({ clothing_id: { $in: clothesItems } }, null, { session });
+        clothing.forEach((item) => {
+          if (item.effects) mergeEffects(combinedEffects, item.effects);
+        });
+      }
     }
     if (userParameters.constant_effects_levels["sleeping_duration_decrease"]) {
       durationDecreasePercentage = userParameters.constant_effects_levels["sleeping_duration_decrease"];
     } else if (combinedEffects.duration_decrease) {
       durationDecreasePercentage = combinedEffects.duration_decrease;
     }
-  
+
     const profitConfig = { energy: baseParameters.energy_capacity || 0 };
     const now = moment();
     const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.updatedAt), "seconds");
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
     const totalDurationSeconds = baseParameters.sleep_duration * 60;
     const actualDurationSeconds = calculateDuration(baseParameters.sleep_duration, durationDecreasePercentage);
-  
+
     const periodProfits = calculatePeriodProfits(baseParameters, combinedEffects, diffSeconds, profitConfig, [], userParameters, totalDurationSeconds);
-  
-    userParameters.energy = Math.min(
-      userParameters.energy_capacity,
-      userParameters.energy + periodProfits.energy
-    );
+
+    userParameters.energy = Math.min(userParameters.energy_capacity, userParameters.energy + periodProfits.energy);
     await userParameters.save({ session });
-  
+
     if (processDurationSeconds >= actualDurationSeconds) {
       await gameProcess.deleteOne({ _id: processId }, { session });
       await log("info", colors.green(`Sleep process completed and deleted`), { userId: userParametersId });
@@ -712,46 +743,40 @@ const mergeEffects = (target, source) => {
 const calculatePeriodCosts = (baseParameters, combinedEffects, durationSeconds, costConfig, costBlackList, userParameters, totalDurationSeconds, processType) => {
   const finalCosts = {};
   Object.entries(costConfig).forEach(([key, baseValue]) => {
+    if (costBlackList.includes(key)) return;
     log("debug", colors.cyan(`Starting cost calc for ${key}: baseValue=${baseValue}`));
     let adjustedValue = Number(baseValue) || 0;
 
     const decreaseKey = `${key}_cost_decrease`;
     const decreaseValue = combinedEffects[decreaseKey];
     if (decreaseValue) {
-      log("debug", colors.yellow(`Applying ${decreaseKey}: ${decreaseValue}%`));
       adjustedValue *= (1 - decreaseValue / 100);
-      log("debug", colors.yellow(`Adjusted ${key} cost: ${baseValue} * (1 - ${decreaseValue / 100}) = ${adjustedValue.toFixed(4)}`));
-    } else {
-      log("debug", colors.yellow(`No ${decreaseKey} effect found`));
+      log("debug", colors.yellow(`Applied ${decreaseKey}: ${decreaseValue}% -> ${adjustedValue.toFixed(4)}`));
     }
 
     let cost;
     if (processType === "work") {
       const minutesElapsed = durationSeconds / 60;
       cost = adjustedValue * minutesElapsed;
-      log("debug", colors.magenta(`Cost for ${key} over ${durationSeconds}s: ${adjustedValue.toFixed(4)} * ${minutesElapsed.toFixed(4)}min = ${cost.toFixed(4)}`));
+      log("debug", colors.magenta(`Work cost for ${key}: ${adjustedValue.toFixed(4)} * ${minutesElapsed.toFixed(4)}min = ${cost.toFixed(4)}`));
     } else {
       const ratePerSecond = adjustedValue / totalDurationSeconds;
       cost = ratePerSecond * durationSeconds;
-      log("debug", colors.magenta(`Rate per second for ${key}: ${adjustedValue.toFixed(4)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
-      log("debug", colors.magenta(`Cost for ${key} over ${durationSeconds}s: ${ratePerSecond.toFixed(4)} * ${durationSeconds} = ${cost.toFixed(4)}`));
+      log("debug", colors.magenta(`Cost for ${key}: ${ratePerSecond.toFixed(4)}/s * ${durationSeconds}s = ${cost.toFixed(4)}`));
     }
 
     finalCosts[key] = Number(cost.toFixed(10));
-    log("info", colors.blue(`Final process cost for ${key}: ${finalCosts[key]} subtracted`));
+    log("info", colors.blue(`Final cost for ${key}: ${finalCosts[key]}`));
   });
   return finalCosts;
 };
 
 const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, profitConfig, effectEntries, userParameters, totalDurationSeconds) => {
   const profits = {};
-  if (!profitConfig) {
-    log("debug", colors.yellow(`No profitConfig provided, returning empty profits`));
-    return profits;
-  }
+  if (!profitConfig) return profits;
 
   if (!totalDurationSeconds || isNaN(totalDurationSeconds)) {
-    log("error", colors.red(`Invalid totalDurationSeconds: ${totalDurationSeconds}, defaulting to 1s to avoid NaN`));
+    log("error", colors.red(`Invalid totalDurationSeconds: ${totalDurationSeconds}, defaulting to 1s`));
     totalDurationSeconds = 1;
   }
 
@@ -760,20 +785,15 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
     let adjustedValue = Number(baseValue) || 0;
 
     if (combinedEffects[`${key}_increase`]) {
-      const increasePercent = combinedEffects[`${key}_increase`] || 0;
-      const increase = adjustedValue * (increasePercent / 100);
-      adjustedValue += increase;
-      log("debug", colors.yellow(`Applied ${key}_increase: ${increasePercent}% of ${baseValue} = +${increase.toFixed(4)}, adjustedValue=${adjustedValue.toFixed(4)}`));
-    } else {
-      log("debug", colors.yellow(`No ${key}_increase effect found`));
+      const increasePercent = combinedEffects[`${key}_increase`];
+      adjustedValue *= (1 + increasePercent / 100);
+      log("debug", colors.yellow(`Applied ${key}_increase: ${increasePercent}% -> ${adjustedValue.toFixed(4)}`));
     }
 
     const ratePerSecond = adjustedValue / totalDurationSeconds;
-    log("debug", colors.magenta(`Base rate per second for ${key}: ${adjustedValue.toFixed(4)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
-
     const profit = ratePerSecond * diffSeconds;
     profits[key] = isNaN(profit) ? 0 : Number(profit.toFixed(2));
-    log("debug", colors.magenta(`Base profit for ${key} over ${diffSeconds}s: ${ratePerSecond.toFixed(4)} * ${diffSeconds} = ${profits[key].toFixed(4)}`));
+    log("debug", colors.magenta(`Profit for ${key}: ${ratePerSecond.toFixed(4)}/s * ${diffSeconds}s = ${profits[key]}`));
   });
 
   combinedEffects.profit_hourly_percent?.forEach(effect => {
@@ -784,30 +804,18 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
     if (key === "energy" || key === "hungry" || key === "mood") {
       const currentValue = Number(userParameters[key]) || 0;
       const capacity = key === "energy" ? (Number(userParameters.energy_capacity) || 100) : 100;
-      log("debug", colors.white(`${key} currentValue=${currentValue}, capacity=${capacity}`));
-
       const baseRatio = currentValue / capacity;
-      log("debug", colors.white(`Base ratio for ${key}: ${currentValue} / ${capacity} = ${baseRatio.toFixed(4)}`));
-
       const hourlyProfit = baseRatio * (hourlyIncreasePercent / 100) * capacity;
-      log("debug", colors.yellow(`Hourly profit for ${key}: ${baseRatio.toFixed(5)} * (${hourlyIncreasePercent} / 100) * ${capacity} = ${hourlyProfit.toFixed(4)} units/hour`));
-
       const profitOverDuration = (hourlyProfit / 3600) * totalDurationSeconds;
-      log("debug", colors.yellow(`Profit over duration for ${key}: (${hourlyProfit.toFixed(5)} / 3600) * ${totalDurationSeconds}s = ${profitOverDuration.toFixed(4)}`));
-
       const ratePerSecond = profitOverDuration / totalDurationSeconds;
-      log("debug", colors.magenta(`Effect rate per second for ${key}: ${profitOverDuration.toFixed(5)} / ${totalDurationSeconds}s = ${ratePerSecond.toFixed(4)}/s`));
-
       const profitForTick = ratePerSecond * diffSeconds;
-      log("debug", colors.magenta(`Profit for ${key} over ${diffSeconds}s: ${ratePerSecond.toFixed(5)} * ${diffSeconds} = ${profitForTick.toFixed(4)}`));
-
       const uncappedProfit = (profits[key] || 0) + profitForTick;
       const newTotal = currentValue + uncappedProfit;
       const cappedProfit = Math.min(uncappedProfit, Math.max(0, capacity - currentValue));
       profits[key] = isNaN(cappedProfit) ? 0 : Number(cappedProfit.toFixed(5));
-      log("debug", colors.yellow(`Capping ${key}: current=${currentValue}, uncapped new total=${newTotal.toFixed(5)}, capacity=${capacity}, capped profit=${profits[key].toFixed(4)}`));
+      log("debug", colors.yellow(`Capped ${key} profit: current=${currentValue}, uncapped=${newTotal.toFixed(5)}, capacity=${capacity}, capped=${profits[key]}`));
     }
-    log("info", colors.blue(`Final process profit for ${key}: ${profits[key].toFixed(5)} added`));
+    log("info", colors.blue(`Final profit for ${key}: ${profits[key]}`));
   });
 
   return profits;
@@ -815,49 +823,31 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
 
 const customDurationProcessTypes = ["autoclaim", "investment_level_checks", "nft_scan"];
 
-// Updated genericProcessScheduler to enqueue single atomic operation
 const genericProcessScheduler = (processType, processConfig) => {
   const { cronSchedule, Model, getTypeSpecificParams } = processConfig;
-  let isRunning = false;
+  const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`; // e.g., "processWork"
 
   const scheduler = cron.schedule(cronSchedule, async () => {
-    if (isRunning) {
-      await log("verbose", `${processType} iteration skipped - previous run in progress`);
-      return;
-    }
-    isRunning = true;
-
     try {
       await log("verbose", `${processType} process scheduler started iteration`);
       const processes = await gameProcess.find({ type: processType });
-
-      await processInBatches(processes, 50, async (process) => {
-        const userParameters = await UserParameters.findOne({ id: process.id });
-        const baseParameters = Model ? await Model.findOne(getTypeSpecificParams(process)) : {};
-
-        if (!userParameters || !baseParameters) {
-          await log("error", `${processType} process error: missing parameters`, { processId: process._id });
-          return;
-        }
-
+      await Promise.all(processes.map(async (process) => {
+        const params = {
+          processId: process._id,
+          userParametersId: process.id,
+          baseParametersId: process.type_id,
+        };
+        // Use operationMap key directly as the operation type
         await queueDbUpdate(
-          `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`,
-          {
-            processId: process._id,
-            userParametersId: userParameters.id,
-            baseParametersId: process.type_id,
-            ...(processType === "skill" ? { skillId: process.type_id, subType: process.sub_type } : {}),
-          },
-          `${processType} full cycle for process ${process._id}`,
-          userParameters.id
+          operationName, // e.g., "processWork"
+          params,
+          
         );
-      });
+      }));
 
       await log("verbose", `${processType} process scheduler finished iteration`, { processesCount: processes.length });
     } catch (e) {
-      await log("error", `Error in ${processType} scheduler`, { error: e.message, stack: e.stack });
-    } finally {
-      isRunning = false;
+      await log("error", `Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
     }
   }, { scheduled: false });
 
