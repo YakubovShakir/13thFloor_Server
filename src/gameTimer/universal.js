@@ -119,15 +119,16 @@ const operationMap = {
     const process = await gameProcess.findOne({ _id: processId }, null, { session });
     const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
     const baseParameters = await Work.findOne({ work_id: baseParametersId }, null, { session });
-
+  
     if (!process || !userParameters || !baseParameters) {
       throw new Error(`Missing data for work process completion: ${processId}`);
     }
-
+  
     const nekoBoostMultiplier = await getNekoBoostMultiplier(userParameters.id);
     const baseCoinsReward = (baseParameters.coins_in_hour / 3600) * (baseParameters.duration * 60);
     const coinsReward = baseCoinsReward * nekoBoostMultiplier;
-
+  
+    // Pass profits to recalcValuesByParameters
     await recalcValuesByParameters(userParameters, { coinsReward }, session);
     await upUserExperience(userParameters.id, baseParameters.experience_reward, session);
     await log("info", `Work process completed`, { userId: userParameters.id, coinsReward, experience: baseParameters.experience_reward });
@@ -397,7 +398,11 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
           userParameters.id
         );
         jobIds.push(completeJobId);
+
+        const completeJob = await dbUpdateQueue.getJob(completeJobId);
+        await completeJob.finished(); // Ensure completion finishes first
       }
+
       const deleteJobId = await queueDbUpdate(
         'deleteProcess',
         { processId: process._id },

@@ -72,76 +72,69 @@ export function canStartWorking(userParameters) {
   )
 }
 
-// Update dependent functions to use queue
 export const recalcValuesByParameters = async (
-  userParameters,
-  { coinsReward = 0, moodProfit = 0 }
-) => {
-  console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}`)
-
-  const moodUpdates = []
-  if (userParameters.hungry > 59) {
-    moodUpdates.push(async (session) => {
-      userParameters.mood = Math.min(100, userParameters.mood + moodProfit)
-      await userParameters.save({ session })
-      console.log(
-        `[recalcValuesByParameters] mood updated to ${userParameters.mood}`
-      )
-    })
-  } else if (userParameters.hungry <= 59 && userParameters.hungry >= 19) {
-    moodUpdates.push(async (session) => {
-      userParameters.mood = Math.min(
-        100,
-        Math.max(0, userParameters.mood - 0.09722) + moodProfit
-      )
-      await userParameters.save({ session })
-      console.log(
-        `[recalcValuesByParameters] mood updated to ${userParameters.mood}`
-      )
-    })
-  } else {
-    moodUpdates.push(async (session) => {
-      userParameters.mood = Math.min(
-        100,
-        Math.max(0, userParameters.mood - 0.155) + moodProfit
-      )
-      await userParameters.save({ session })
-      console.log(
-        `[recalcValuesByParameters] mood updated to ${userParameters.mood}`
-      )
-    })
-  }
-
-  const balanceUpdates = []
-  if (userParameters.mood > 59) {
-    balanceUpdates.push(
-      async (session) =>
-        await upUserBalance(userParameters.id, coinsReward, session)
-    )
-  } else if (userParameters.mood <= 59 && userParameters.mood > 19) {
-    balanceUpdates.push(
-      async (session) =>
-        await upUserBalance(userParameters.id, coinsReward * 0.9, session)
-    )
-  } else if (userParameters.mood <= 19 && userParameters.mood > 1) {
-    balanceUpdates.push(
-      async (session) =>
-        await upUserBalance(userParameters.id, coinsReward * 0.5, session)
-    )
-  } else if (coinsReward > 0) {
-    balanceUpdates.push(
-      async (session) => await upUserBalance(userParameters.id, 1, session)
-    )
-  }
-
-  for (const update of [...moodUpdates, ...balanceUpdates]) {
-    await queueDbUpdate(
-      update,
-      `recalcValuesByParameters for user ${userParameters.id}`,
-      userParameters.id
-    )
-  }
-}
+    userParameters,
+    { coinsReward = 0, moodProfit = 0 }
+  ) => {
+    console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}`);
+  
+    const jobIds = [];
+  
+    // Mood updates
+    let moodChange = moodProfit; // Base profit
+    if (userParameters.hungry > 59) {
+      // No penalty, just apply moodProfit
+    } else if (userParameters.hungry <= 59 && userParameters.hungry >= 19) {
+      moodChange = Math.max(0, -0.09722) + moodProfit; // Apply penalty + profit
+    } else {
+      moodChange = Math.max(0, -0.155) + moodProfit; // Apply larger penalty + profit
+    }
+  
+    if (moodChange !== 0) {
+      const moodJobId = await queueDbUpdate(
+        'applyUserParameterUpdates',
+        {
+          userParametersId: userParameters.id,
+          periodCosts: {}, // No costs here
+          periodProfits: { mood: moodChange },
+          processType: 'recalc_mood',
+        },
+        `Update mood for user ${userParameters.id}`,
+        userParameters.id
+      );
+      jobIds.push(moodJobId);
+      console.log(`[recalcValuesByParameters] Enqueued mood update with change ${moodChange}`);
+    }
+  
+    // Balance updates
+    let adjustedCoinsReward = coinsReward;
+    if (userParameters.mood > 59) {
+      adjustedCoinsReward = coinsReward; // Full reward
+    } else if (userParameters.mood <= 59 && userParameters.mood > 19) {
+      adjustedCoinsReward = coinsReward * 0.9; // 90% reward
+    } else if (userParameters.mood <= 19 && userParameters.mood > 1) {
+      adjustedCoinsReward = coinsReward * 0.5; // 50% reward
+    } else if (coinsReward > 0) {
+      adjustedCoinsReward = 1; // Minimum reward
+    }
+  
+    if (adjustedCoinsReward !== 0) {
+      const balanceJobId = await queueDbUpdate(
+        'updateUserBalance',
+        {
+          userParametersId: userParameters.id,
+          amount: adjustedCoinsReward,
+        },
+        `Update balance for user ${userParameters.id}`,
+        userParameters.id
+      );
+      jobIds.push(balanceJobId);
+      console.log(`[recalcValuesByParameters] Enqueued balance update with amount ${adjustedCoinsReward}`);
+    }
+  
+    await log("debug", colors.cyan(`Enqueued updates in recalcValuesByParameters for user ${userParameters.id}`), { jobIds });
+    return jobIds; // Return job IDs for tracking if needed
+  };
 
 export function canApplyConstantEffects(userParameters) {
   console.log(
