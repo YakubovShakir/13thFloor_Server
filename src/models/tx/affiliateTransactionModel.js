@@ -10,4 +10,4 @@ const AffiliateTransactionSchema = new mongoose.Schema({
   tonTxHash: { type: String, default: null },
 }, { timestamps: true });
 
-export default mongoose.model('AffiliateTransaction', AffiliateTransactionSchema);
+export default mongoose.model('affiliate_tx', AffiliateTransactionSchema);
