@@ -60,44 +60,71 @@ export function canStartWorking(userParameters) {
 
 export async function recalcValuesByParameters(
     userParameters,
-    { coinsReward = 0, moodProfit = 0 }
-) {
+    { coinsReward = 0, moodProfit = 0 },
+    session = null // Optional session parameter for transaction support
+  ) {
     console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}`);
-
-    if(userParameters.hungry > 59) {
-        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, hungry > 49`);
-        //Nothing in terms of mood affection
-        userParameters.mood = Math.min(100, userParameters.mood + moodProfit)
-    } else if(userParameters.hungry <= 59 && userParameters.hungry >= 19) {
-        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, 49 <= hungry > 9`);
-        // -1.5% mood + potential profit
+  
+    // If no session is provided, run without a transaction (for backward compatibility)
+    const useTransaction = !!session;
+    let localSession;
+  
+    if (!useTransaction) {
+      localSession = await mongoose.startSession();
+      localSession.startTransaction();
+    }
+  
+    try {
+      // Mood adjustments based on hunger levels
+      if (userParameters.hungry > 59) {
+        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, hungry > 59`);
+        userParameters.mood = Math.min(100, userParameters.mood + moodProfit);
+      } else if (userParameters.hungry <= 59 && userParameters.hungry >= 19) {
+        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, 59 <= hungry >= 19`);
         userParameters.mood = Math.min(100, Math.max(0, userParameters.mood - 0.09722) + moodProfit);
-    } else {
-        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, hungry < 9`);
-        // -3% mood + potential profit
+      } else {
+        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, hungry < 19`);
         userParameters.mood = Math.min(100, Math.max(0, userParameters.mood - 0.155) + moodProfit);
-    }
-
-    if(userParameters.mood > 59){
-        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, mood > 49`);
-        await upUserBalance(userParameters.id, coinsReward)
-    } else if(userParameters.mood <= 59 && userParameters.mood > 19) {
-        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, 49 <= mood > 9, applying 10% income penalty`);
-        // -10% from potential income
-        await upUserBalance(userParameters.id, coinsReward * 0.9)
-    } else if(userParameters.mood <= 19 && userParameters.mood > 1) { 
-        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, mood <= 9 > 1, applying 50% income penalty`);
-        await upUserBalance(userParameters.id, coinsReward * 0.5)
-    } else {
-        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, mood < 1, equing any potential income to 1!!!`);
-        // Make potential income 1
-        if(coinsReward > 0) {
-            await upUserBalance(userParameters.id, 1)
+      }
+  
+      // Balance adjustments based on mood levels
+      if (userParameters.mood > 59) {
+        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, mood > 59`);
+        await upUserBalance(userParameters.id, coinsReward, useTransaction ? session : localSession);
+      } else if (userParameters.mood <= 59 && userParameters.mood > 19) {
+        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, 59 <= mood > 19, applying 10% income penalty`);
+        await upUserBalance(userParameters.id, coinsReward * 0.9, useTransaction ? session : localSession);
+      } else if (userParameters.mood <= 19 && userParameters.mood > 1) {
+        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, 19 >= mood > 1, applying 50% income penalty`);
+        await upUserBalance(userParameters.id, coinsReward * 0.5, useTransaction ? session : localSession);
+      } else {
+        console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}, mood <= 1, equating any potential income to 1!!!`);
+        if (coinsReward > 0) {
+          await upUserBalance(userParameters.id, 1, useTransaction ? session : localSession);
         }
+      }
+  
+      // Save userParameters within the transaction
+      await userParameters.save({ session: useTransaction ? session : localSession });
+  
+      // Commit the transaction if we created it locally
+      if (!useTransaction) {
+        await localSession.commitTransaction();
+      }
+    } catch (error) {
+      // Roll back the transaction if it fails
+      if (!useTransaction) {
+        await localSession.abortTransaction();
+      }
+      console.error(`[recalcValuesByParameters] Error for user ${userParameters.id}: ${error.message}`);
+      throw error; // Re-throw to let the caller handle it
+    } finally {
+      // End the local session if we created it
+      if (!useTransaction && localSession) {
+        localSession.endSession();
+      }
     }
-
-    await userParameters.save()
-}
+  }
 
 export function canApplyConstantEffects (userParameters) {
     console.log(`[canApplyConstantEffects] hit by user ${userParameters.id}, deciding...`);

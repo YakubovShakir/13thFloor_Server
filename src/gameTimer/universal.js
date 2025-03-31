@@ -74,8 +74,7 @@ function normalizeAddress(rawAddress) {
 
 const recalcValuesProcessTypeWhitelist = ["work", "training", "sleep"];
 
-const applyUserParameterUpdates = async (userParameters, periodCosts, periodProfits, processType) => {
-  
+const applyUserParameterUpdates = async (userParameters, periodCosts, periodProfits, processType, session) => {
   Object.keys(periodCosts).forEach((key) => {
     userParameters[key] = Math.max(0, userParameters[key] - periodCosts[key]);
   });
@@ -90,9 +89,9 @@ const applyUserParameterUpdates = async (userParameters, periodCosts, periodProf
   });
 
   if (recalcValuesProcessTypeWhitelist.includes(processType)) {
-    await recalcValuesByParameters(userParameters, { coinsReward: 0, ...periodProfits });
+    await recalcValuesByParameters(userParameters, { coinsReward: 0, ...periodProfits }, session);
   } else {
-    await userParameters.save();
+    await userParameters.save({ session });
   }
 };
 
@@ -116,7 +115,7 @@ const mergeEffects = (target, source) => {
   }
 };
 
-const processDurationHandler = async (process, userParameters, baseParameters, processConfig) => {
+const processDurationHandler = async (process, userParameters, baseParameters, processConfig, session) => {
   const {
     durationDecreaseKey,
     costConfig: rawCostConfig,
@@ -128,7 +127,11 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
     processType,
   } = processConfig;
 
+  const session = await mongoose.startSession();
+
   try {
+    session.startTransaction();
+
     let durationDecreasePercentage = 0;
     let combinedEffects = {};
 
@@ -143,11 +146,7 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
         hungry: baseParameters.hungry_cost_per_minute || 0,
         energy: baseParameters.energy_cost_per_minute || 0,
       };
-      profitConfig = {
-        // Calculated when finishing
-        coins: 0
-        // coins: baseParameters.coins_in_hour ? baseParameters.coins_in_hour / 60 : 0, // Convert to per-minute
-      };
+      profitConfig = { coins: 0 };
     } else {
       costConfig = {};
       profitConfig = {};
@@ -158,18 +157,15 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
         profitConfig[key] = config.baseValueKey ? baseParameters[config.baseValueKey] || 0 : config;
       });
     }
-    log("debug", colors.white(`Cost config: ${JSON.stringify(costConfig)}`));
-    log("debug", colors.white(`Profit config: ${JSON.stringify(profitConfig)}`));
 
     // Effects for non-skill processes
     if (processType !== "skill") {
-      const userClothing = await UserClothing.findOne({ user_id: process.id }, { _id: 0, user_id: 0 });
-      const user = await User.findOne({ id: process.id });
-      log("debug", colors.cyan(`Collecting effects for ${processType} (processId: ${process._id})`));
+      const userClothing = await UserClothing.findOne({ user_id: process.id }, { _id: 0, user_id: 0 }, { session });
+      const user = await User.findOne({ id: process.id }, null, { session });
 
       const shelfItems = Object.values(user.shelf).filter(Boolean);
       if (shelfItems.length > 0) {
-        const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } });
+        const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } }, null, { session });
         shelf.forEach((item) => {
           if (item.effects) mergeEffects(combinedEffects, item.effects);
         });
@@ -179,7 +175,7 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
         const clothesItems = [userClothing.hat, userClothing.top, userClothing.pants, userClothing.shoes, userClothing.accessories]
           .filter(item => item !== null && item !== undefined);
         if (clothesItems.length > 0) {
-          const clothing = await Clothing.find({ clothing_id: { $in: clothesItems } });
+          const clothing = await Clothing.find({ clothing_id: { $in: clothesItems } }, null, { session });
           clothing.forEach((item) => {
             if (item.effects) mergeEffects(combinedEffects, item.effects);
           });
@@ -189,8 +185,6 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
       if (process.effects && process.type !== "boost") {
         mergeEffects(combinedEffects, process.effects);
       }
-
-      log("debug", colors.cyan(`Final combinedEffects: ${JSON.stringify(combinedEffects)}`));
     }
 
     // Apply duration decrease
@@ -199,29 +193,20 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
     } else if (combinedEffects.duration_decrease) {
       durationDecreasePercentage = combinedEffects.duration_decrease;
     }
-    log("debug", colors.yellow(`Applied ${durationDecreaseKey || 'duration_decrease'}: ${durationDecreasePercentage}%`));
 
-    const baseDurationMinutes = process.base_duration_in_seconds / 60; // Assuming this is in seconds
+    const baseDurationMinutes = process.base_duration_in_seconds / 60;
     const totalDurationSeconds = baseDurationMinutes * 60;
     const actualDurationSeconds = calculateDuration(baseDurationMinutes, durationDecreasePercentage);
-
-    log("debug", colors.white(`Duration: base=${baseDurationMinutes.toFixed(2)}min (${totalDurationSeconds}s), total=${totalDurationSeconds}s, actual=${actualDurationSeconds.toFixed(2)}s`));
 
     const now = moment();
     const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.updatedAt), "seconds");
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
-
-    log("debug", colors.white(`Timing: diffSeconds=${diffSeconds}s, processDurationSeconds=${processDurationSeconds}s`));
-    log("debug", colors.cyan(`Starting cost/profit calc for ${processType} (processId: ${process._id}) over ${diffSeconds}s`));
 
     const periodCosts = calculatePeriodCosts(baseParameters, combinedEffects, diffSeconds, costConfig, [], userParameters, totalDurationSeconds, processType);
     const periodProfits = calculatePeriodProfits(baseParameters, combinedEffects, diffSeconds, profitConfig, [], userParameters, totalDurationSeconds);
 
     const finalCosts = { ...periodCosts };
     const finalProfits = { ...periodProfits };
-
-    log("debug", colors.blue(`Final costs: ${JSON.stringify(finalCosts)}`));
-    log("debug", colors.blue(`Final profits: ${JSON.stringify(finalProfits)}`));
 
     const hasSufficientResources = Object.keys(finalCosts).length === 0 || Object.keys(finalCosts).every(key => {
       const available = Math.floor(userParameters[key] || 0);
@@ -232,23 +217,22 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
     });
 
     if (hasSufficientResources) {
-      await applyUserParameterUpdates(userParameters, finalCosts, finalProfits, processType);
+      await applyUserParameterUpdates(userParameters, finalCosts, finalProfits, processType, session);
 
       if (updateUserParamsOnTick) {
-        console.log('here updating BOOOOOSTS!!!!!!!!!!!')
-        await updateUserParamsOnTick(userParameters, finalProfits, baseParameters, diffSeconds);
+        await updateUserParamsOnTick(userParameters, finalProfits, baseParameters, diffSeconds, session);
       }
 
       if (processDurationSeconds >= actualDurationSeconds || (finishConditionCheck && finishConditionCheck(userParameters, finalCosts, baseParameters, process))) {
-        if (onProcessCompletion) await onProcessCompletion(process, userParameters, baseParameters);
+        if (onProcessCompletion) await onProcessCompletion(process, userParameters, baseParameters, session);
+        await gameProcess.deleteOne({ _id: process._id }, { session });
         await log("info", colors.green(`${processType} process finished`), { userId: userParameters.id, processType, processId: process._id });
-        await gameProcess.deleteOne({ _id: process._id });
-        return;
+      } else {
+        process.user_parameters_updated_at = now.toDate();
+        await process.save({ session });
       }
-
-      process.user_parameters_updated_at = now.toDate();
-      await process.save();
     } else {
+      await gameProcess.deleteOne({ _id: process._id }, { session });
       await log("info", colors.yellow(`${processType} process ended - insufficient resources`), {
         userId: userParameters.id,
         processType,
@@ -256,15 +240,19 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
         costs: finalCosts,
         available: { ...userParameters },
       });
-      await gameProcess.deleteOne({ _id: process._id });
     }
+
+    await session.commitTransaction();
   } catch (error) {
+    await session.abortTransaction();
     await log("error", colors.red(`Error in ${processType} process duration handler`), {
       processId: process._id,
       error: error.message,
       stack: error.stack,
     });
     throw error;
+  } finally {
+    session.endSession();
   }
 };
 
@@ -405,32 +393,48 @@ const genericProcessScheduler = (processType, processConfig) => {
   const { cronSchedule, durationFunction, Model, getTypeSpecificParams } = processConfig;
 
   const scheduler = cron.schedule(cronSchedule, async () => {
+    let session; // Declare session outside try block for cleanup in finally
+
     try {
+      // Start a single session and transaction for the entire iteration
+      session = await mongoose.startSession();
+      session.startTransaction();
+
       if (customDurationProcessTypes.includes(processType)) {
         await log("verbose", `${processType} process scheduler started iteration, using custom duration func`);
-        await durationFunction();
+        await durationFunction(session); // No session needed for custom duration types per your original logic
+        await session.commitTransaction(); // Commit since no DB ops are implied here
         return;
       }
 
       await log("verbose", `${processType} process scheduler started iteration`);
-      const processes = await gameProcess.find({ type: processType });
+      const processes = await gameProcess.find({ type: processType }, null, { session });
 
       await Promise.all(processes.map(async (process) => {
-        const userParameters = await UserParameters.findOne({ id: process.id });
-        const baseParameters = Model ? await Model.findOne(getTypeSpecificParams(process)) : {};
-        
+        const userParameters = await UserParameters.findOne({ id: process.id }, null, { session });
+        const baseParameters = Model ? await Model.findOne(getTypeSpecificParams(process), null, { session }) : {};
+
         await log("verbose", `${processType} process scheduler fetched params`, { userParameters, baseParameters });
 
         if (!userParameters || !baseParameters) {
           await log("error", `${processType} process error: base parameters or userParameters not found`, { processId: process._id });
           return;
         }
-        await durationFunction(process, userParameters, baseParameters, processConfig);
+        // Pass the session to durationFunction
+        await durationFunction(process, userParameters, baseParameters, processConfig, session);
       }));
 
       await log("verbose", `${processType} process scheduler finished iteration`, { processesCount: processes.length });
+      await session.commitTransaction();
     } catch (e) {
+      if (session) {
+        await session.abortTransaction();
+      }
       await log("error", `Error in ${processType} Process:`, { error: e.message, stack: e.stack });
+    } finally {
+      if (session) {
+        session.endSession(); // Ensure session is always closed
+      }
     }
   }, { scheduled: false });
 
@@ -470,15 +474,15 @@ const workProcessConfig = {
   },
   baseDurationKey: "base_duration_in_seconds",
   profitConfig: {},
-  onProcessCompletion: async (process, userParameters, baseParameters) => {
+  onProcessCompletion: async (process, userParameters, baseParameters, session) => {
     await log("verbose", colors.blue("Fetching neko multiplier for user..."), { processId: process._id, userId: process.id });
     const nekoBoostMultiplier = await getNekoBoostMultiplier(userParameters.id);
     await log("verbose", colors.blue("Fetched neko multiplier for user"), { processId: process._id, userId: process.id, nekoBoostMultiplier });
     const baseCoinsReward = (baseParameters.coins_in_hour / 3600) * (baseParameters.duration * 60);
     const coinsReward = baseCoinsReward * nekoBoostMultiplier;
     await log("verbose", colors.yellow("Base work reward for user: " + coinsReward), { processId: process._id, userId: process.id, nekoBoostMultiplier, workId: process.type_id });
-    await recalcValuesByParameters(userParameters, { coinsReward });
-    await upUserExperience(userParameters.id, baseParameters.experience_reward);
+    await recalcValuesByParameters(userParameters, { coinsReward }, session);
+    await upUserExperience(userParameters.id, baseParameters.experience_reward, session);
   },
 };
 
@@ -519,7 +523,7 @@ const skillProcessConfig = {
   durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ id: process.type_id }),
   baseDurationKey: "base_duration_in_seconds",
-  onProcessCompletion: async (process, userParameters, baseParameters) => {
+  onProcessCompletion: async (process, userParameters, baseParameters, session) => {
     const userId = process.id;
     const skillId = process.type_id;
     const skill = process.sub_type === 'constant_effects' ? await ConstantEffects.findOne({ id: skillId }) : await Skill.find({ skill_id: skillId })
@@ -528,10 +532,10 @@ const skillProcessConfig = {
 
     if (process.sub_type === "constant_effects") {
       userParameters.constant_effects_levels[skill.type] = skill.level;
-      await upUserExperience(userId, skill.experience_reward);
+      await upUserExperience(userId, skill.experience_reward, session);
       await userParameters.save();
     } else {
-      await upUserExperience(userId, skill.experience_reward);
+      await upUserExperience(userId, skill.experience_reward, session);
       await UserSkill.create({ id: userId, skill_id: skillId });
     }
   },
@@ -573,54 +577,65 @@ const boostProcessConfig = {
 };
 
 const claim = async (investment_type, userId) => {
+  const session = await mongoose.startSession();
   try {
+    session.startTransaction();
+
     if (!Object.values(InvestmentTypes).includes(investment_type)) {
       await log("warn", `Invalid investment type`, { investment_type, userId });
+      await session.abortTransaction();
       return;
     }
 
-    const user = await User.findOne({ id: userId }, { investment_levels: 1 });
-    const userParams = await UserParameters.findOne({ id: userId });
+    const user = await User.findOne({ id: userId }, { investment_levels: 1 }, { session });
+    const userParams = await UserParameters.findOne({ id: userId }, null, { session });
     const userInvestmentLevel = user.investment_levels[investment_type];
-    const investmentsOfType = (await Investments.find({ type: investment_type }, { id: 1 })).map(item => item.id);
+    const investmentsOfType = (await Investments.find({ type: investment_type }, { id: 1 }, { session })).map(item => item.id);
     const investmentToClaim = await UserLaunchedInvestments.findOne(
       { user_id: userId, investment_id: { $in: investmentsOfType }, claimed: false },
       null,
-      { sort: { createdAt: -1 } }
+      { sort: { createdAt: -1 }, session }
     );
 
     if (!investmentToClaim) {
       await log("debug", `No claimable investment found`, { userId, investment_type });
+      await session.abortTransaction();
       return;
     }
 
-    const investment = await Investments.findOne({ type: investment_type, level: userInvestmentLevel });
+    const investment = await Investments.findOne({ type: investment_type, level: userInvestmentLevel }, null, { session });
     if (!investment) {
       await log("error", `Investment definition not found`, { investment_type, userInvestmentLevel, userId });
+      await session.abortTransaction();
       return;
     }
 
     const claimableTime = 3600000;
     if (Date.now() - new Date(investmentToClaim.createdAt).getTime() < claimableTime) {
       await log("debug", `Investment not yet claimable`, { userId, investment_type });
+      await session.abortTransaction();
       return;
     }
 
-    await recalcValuesByParameters(userParams, { coinsReward: investmentToClaim.to_claim });
-    await upUserExperience(userId, investment.experience_reward);
+    await recalcValuesByParameters(userParams, { coinsReward: investmentToClaim.to_claim }, session);
+    await upUserExperience(userId, investment.experience_reward, session);
     investmentToClaim.claimed = true;
-    await investmentToClaim.save();
+    await investmentToClaim.save({ session });
 
     await new UserLaunchedInvestments({
       user_id: userId,
       investment_id: investment.id,
       to_claim: investment.coins_per_hour,
       investment_type,
-    }).save();
+    }).save({ session });
 
-    await userParams.save();
+    await userParams.save({ session });
+    await session.commitTransaction();
   } catch (error) {
+    await session.abortTransaction();
     await log("error", `Error during investment claim process`, { userId, investment_type, error: error.message });
+  } finally {
+    session.endSession();
   }
 };
 
@@ -635,7 +650,7 @@ const processInBatches = async (items, batchSize, processFn) => {
 const autoclaimProcessConfig = {
   processType: "autoclaim",
   cronSchedule: "*/1 * * * * *",
-  durationFunction: async () => {
+  durationFunction: async (session) => {
     try {
       await log("verbose", `Autoclaim process scheduler started iteration`);
       const usersWithAutoclaim = await User.aggregate([
@@ -644,9 +659,9 @@ const autoclaimProcessConfig = {
 
       await processInBatches(usersWithAutoclaim, 50, async (user) => {
         const { has_autoclaim: { game_center = false, zoo_shop = false, coffee_shop = false } } = user;
-        if (game_center) await claim(InvestmentTypes.GameCenter, user.id);
-        if (zoo_shop) await claim(InvestmentTypes.ZooShop, user.id);
-        if (coffee_shop) await claim(InvestmentTypes.CoffeeShop, user.id);
+        if (game_center) await claim(InvestmentTypes.GameCenter, user.id, session);
+        if (zoo_shop) await claim(InvestmentTypes.ZooShop, user.id, session);
+        if (coffee_shop) await claim(InvestmentTypes.CoffeeShop, user.id, session);
       });
 
       await log("verbose", `Autoclaim process scheduler finished iteration`, { usersEligible: usersWithAutoclaim.length });
@@ -719,10 +734,13 @@ const getWhitelistedNftsFromWallet = async (walletAddress) => {
 };
 
 const syncShelfInventory = async (userId, nftItemIds) => {
+  const session = await mongoose.startSession();
   try {
-    const inventory = await UserCurrentInventory.findOne({ user_id: userId }) ||
-                     await UserCurrentInventory.create({ user_id: userId, shelf: [] });
-    const user = await User.findOne({ id: userId });
+    session.startTransaction();
+
+    const inventory = await UserCurrentInventory.findOne({ user_id: userId }, null, { session }) ||
+                     await UserCurrentInventory.create({ user_id: userId, shelf: [] }, { session });
+    const user = await User.findOne({ id: userId }, null, { session });
 
     const currentShelfIds = (inventory.shelf || []).map(item => item.id);
     const nftShelfIds = nftItemIds.filter(id => id >= 9 && id <= 38);
@@ -732,20 +750,24 @@ const syncShelfInventory = async (userId, nftItemIds) => {
     const itemsToRemove = currentManagedIds.filter(id => !nftShelfIds.includes(id));
 
     if (user?.shelf?.neko && itemsToRemove.includes(user.shelf.neko)) {
-      await User.updateOne({ id: userId }, { $set: { "shelf.neko": null } });
+      await User.updateOne({ id: userId }, { $set: { "shelf.neko": null } }, { session });
     }
 
     if (itemsToAdd.length) {
-      await UserCurrentInventory.updateOne({ user_id: userId }, { $addToSet: { shelf: { $each: itemsToAdd } } });
+      await UserCurrentInventory.updateOne({ user_id: userId }, { $addToSet: { shelf: { $each: itemsToAdd } } }, { session });
     }
     if (itemsToRemove.length) {
-      await UserCurrentInventory.updateOne({ user_id: userId }, { $pull: { shelf: { id: { $in: itemsToRemove } } } });
+      await UserCurrentInventory.updateOne({ user_id: userId }, { $pull: { shelf: { id: { $in: itemsToRemove } } } }, { session });
     }
 
+    await session.commitTransaction();
     return { added: itemsToAdd, removed: itemsToRemove };
   } catch (error) {
+    await session.abortTransaction();
     await log("error", `Error syncing inventory for ${userId}`, { error: error.message });
     return { added: [], removed: [] };
+  } finally {
+    session.endSession();
   }
 };
 
