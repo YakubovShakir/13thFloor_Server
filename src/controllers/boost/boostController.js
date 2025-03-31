@@ -22,49 +22,50 @@ export const getUserBoosts = async (req, res) => {
     return res.status(400).send({ message: "userId are required" })
 
   try {
-    const userBoosts = await UserBoost.find({ id: userId })
-
+    
+    const userBoosts = await UserBoost.find({ id: Number(userId) })
+    console.log(userId, userBoosts)
     return res.status(200).json({ userBoosts })
   } catch (e) {
     console.log("Error in getUserBoosts", e)
     return res.status(500).send({ error: "Internal server error" })
   }
 }
-export const buyBoost = async (req, res) => {
-  const { userId, boostId } = req.query
+// export const buyBoost = async (req, res) => {
+//   const { userId, boostId } = req.query
 
-  if (!parseInt(userId) || !parseInt(boostId)) {
-    return res.status(400).send({ message: "userId and boostId are required" })
-  }
+//   if (!parseInt(userId) || !parseInt(boostId)) {
+//     return res.status(400).send({ message: "userId and boostId are required" })
+//   }
 
-  try {
-    const boost = await Boost.findOne({ boost_id: boostId })
-    if (!boost) {
-      return res.status(404).send({ message: "Boost not found" })
-    }
+//   try {
+//     const boost = await Boost.findOne({ boost_id: boostId })
+//     if (!boost) {
+//       return res.status(404).send({ message: "Boost not found" })
+//     }
 
-    const user = await UserParameters.findOne({ id: userId })
-    if (!user) {
-      return res.status(404).send({ message: "User not found" })
-    }
+//     const user = await UserParameters.findOne({ id: userId })
+//     if (!user) {
+//       return res.status(404).send({ message: "User not found" })
+//     }
 
-    if (user.coins < boost.stars_price) {
-      return res.status(400).send({ message: "Not enough stars to buy boost" })
-    }
+//     if (user.coins < boost.stars_price) {
+//       return res.status(400).send({ message: "Not enough stars to buy boost" })
+//     }
 
-    user.coins -= boost.stars_price
-    await UserBoost.create({ id: userId, boost_id: boostId })
+//     user.coins -= boost.stars_price
+//     await UserBoost.create({ id: userId, boost_id: boostId })
 
-    await user.save()
+//     await user.save()
 
-    return res.status(200).send({
-      message: "Boost purchased and applied successfully",
-    })
-  } catch (e) {
-    console.error("Error buying boost: ", e)
-    return res.status(500).send({ error: "Internal server error" })
-  }
-}
+//     return res.status(200).send({
+//       message: "Boost purchased and applied successfully",
+//     })
+//   } catch (e) {
+//     console.error("Error buying boost: ", e)
+//     return res.status(500).send({ error: "Internal server error" })
+//   }
+// }
 
 export const useBoost = async (req, res) => {
   const { userId, boostId } = req.query

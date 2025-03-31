@@ -100,7 +100,7 @@ async function main() {
     deleteInvestments(),
     deleteTasks(),
     deleteConstantEffects(),
-    addSpins(),
+    // addSpins(),
   ])
 }
 

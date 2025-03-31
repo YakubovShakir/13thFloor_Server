@@ -235,7 +235,8 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
       await applyUserParameterUpdates(userParameters, finalCosts, finalProfits, processType);
 
       if (updateUserParamsOnTick) {
-        updateUserParamsOnTick(userParameters, finalProfits, baseParameters, diffSeconds);
+        console.log('here updating BOOOOOSTS!!!!!!!!!!!')
+        await updateUserParamsOnTick(userParameters, finalProfits, baseParameters, diffSeconds);
       }
 
       if (processDurationSeconds >= actualDurationSeconds || (finishConditionCheck && finishConditionCheck(userParameters, finalCosts, baseParameters, process))) {
@@ -558,18 +559,17 @@ const boostProcessConfig = {
   durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ boost_id: process.type_id }),
   profitConfig: {},
-  updateUserParamsOnTick: (userParameters, periodProfits, baseParameters, diffSeconds) => {
+  updateUserParamsOnTick: async (userParameters, periodProfits, baseParameters, diffSeconds) => {
     if (baseParameters.type === "tonic-drink") {
+      const energyRestore = (userParameters.energy_capacity / (3 * 3600)) * diffSeconds
       userParameters.energy = Math.min(
         userParameters.energy_capacity,
-        userParameters.energy + (userParameters.energy_capacity / (3 * 3600)) * diffSeconds
+        userParameters.energy + energyRestore
       );
+      await userParameters.save()
+      await log('info', `${colors.cyanBright('Applied energy restore from tonic-drink')}`, { user_id: userParameters.id, energyRestore })
     }
-  },
-  finishConditionCheck: (userParameters, periodCosts, baseParameters, process) => {
-    const boostDurationSeconds = calculateDuration(baseParameters.duration, 0);
-    return moment().diff(moment(process.createdAt), "seconds") >= boostDurationSeconds;
-  },
+  }
 };
 
 const claim = async (investment_type, userId) => {
