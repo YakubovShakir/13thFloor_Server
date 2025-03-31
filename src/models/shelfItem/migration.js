@@ -166,7 +166,7 @@ export const ShelfItems = [
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/нфт-исходник.gif",
     shelf_link:
-      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/нфт-исходник2.gif",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2FcatCat.gif",
     type: ShelfItemTypes.Neko,
     respect: 5000,
     rarity: NEKO_RARITIES.BASE,
