@@ -1988,7 +1988,7 @@ router.get("/nft/transaction-details", async (req, res) => {
       product_id: productId,
       memo: nft.memo,
       status: "awaiting_payment",
-      affiliate_id: affiliate?.id || null
+      affiliate_id: affiliate?.refer_id || null
     })
     await transaction.save({ session })
 
