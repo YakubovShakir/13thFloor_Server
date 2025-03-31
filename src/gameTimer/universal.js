@@ -661,7 +661,7 @@ dbUpdateQueue.process(async (job) => {
     }
     await operation(params, session);
     await session.commitTransaction();
-    await log("info", colors.green(`DB update completed: ${description}`));
+    await log("info", colors.green(`DB update completed: ${JSON.stringify(job.data)}`));
   } catch (error) {
     await session.abortTransaction();
     await log("error", colors.red(`DB update failed: ${description}`), { error: error.message, stack: error.stack });
