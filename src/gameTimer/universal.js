@@ -165,65 +165,355 @@ const operationMap = {
   completeFoodProcess: async (params, session) => {
     await log("info", `Food process completed`, { userId: userParameters.id, profits });
   },
+  processWork: async (params, session) => {
+    const { processId, userParametersId, baseParametersId } = params;
+    const process = await gameProcess.findOne({ _id: processId }, null, { session });
+    const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
+    const baseParameters = await Work.findOne({ work_id: baseParametersId }, null, { session });
+
+    if (!process || !userParameters || !baseParameters) {
+      throw new Error(`Missing data for work process: ${processId}`);
+    }
+
+    // Calculate costs and profits
+    const costConfig = {
+      mood: baseParameters.mood_cost_per_minute || 0,
+      hungry: baseParameters.hungry_cost_per_minute || 0,
+      energy: baseParameters.energy_cost_per_minute || 0,
+    };
+    const profitConfig = { coins: 0 };
+    const now = moment();
+    const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.updatedAt), "seconds");
+    const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
+    const totalDurationSeconds = (baseParameters.duration * 60); // Convert minutes to seconds
+    const durationDecreasePercentage = userParameters.constant_effects_levels["work_duration_decrease"] || 0;
+    const actualDurationSeconds = calculateDuration(baseParameters.duration, durationDecreasePercentage);
+
+    const periodCosts = calculatePeriodCosts(baseParameters, {}, diffSeconds, costConfig, [], userParameters, totalDurationSeconds, "work");
+    const periodProfits = calculatePeriodProfits(baseParameters, {}, diffSeconds, profitConfig, [], userParameters, totalDurationSeconds);
+
+    // Check resource sufficiency
+    const hasSufficientResources = Object.keys(periodCosts).every(key => {
+      const available = Math.floor(userParameters[key] || 0);
+      const cost = Math.floor(periodCosts[key] || 0);
+      const ok = available >= cost;
+      if (!ok) log("warn", colors.yellow(`Insufficient ${key}: ${available} < ${cost}`));
+      return ok;
+    });
+
+    if (!hasSufficientResources) {
+      await gameProcess.deleteOne({ _id: processId }, { session });
+      await log("info", colors.yellow(`Work process ended - insufficient resources`), {
+        userId: userParametersId,
+        processId,
+        costs: periodCosts,
+        available: { ...userParameters },
+      });
+      return;
+    }
+
+    // Apply updates
+    Object.keys(periodCosts).forEach((key) => {
+      userParameters[key] = Math.max(0, userParameters[key] - periodCosts[key]);
+    });
+    Object.keys(periodProfits).forEach((key) => {
+      if (userParameters[key] !== undefined) userParameters[key] += periodProfits[key];
+    });
+    await userParameters.save({ session });
+
+    // Check completion
+    if (processDurationSeconds >= actualDurationSeconds) {
+      const nekoBoostMultiplier = await getNekoBoostMultiplier(userParametersId, session);
+      const baseCoinsReward = (baseParameters.coins_in_hour / 3600) * (baseParameters.duration * 60);
+      const coinsReward = baseCoinsReward * nekoBoostMultiplier;
+
+      await recalcValuesByParameters(userParameters, { coinsReward }, session);
+      await upUserExperience(userParametersId, baseParameters.experience_reward, session);
+      await userParameters.save({ session });
+      await gameProcess.deleteOne({ _id: processId }, { session });
+      await log("info", colors.green(`Work process completed and deleted`), {
+        userId: userParametersId,
+        coinsReward,
+        experience: baseParameters.experience_reward,
+      });
+    } else {
+      process.user_parameters_updated_at = now.toDate();
+      await process.save({ session });
+      await log("debug", `Updated work process timestamp`, { processId });
+    }
+  },
+
+  processTraining: async (params, session) => {
+    const { processId, userParametersId, baseParametersId } = params;
+    const process = await gameProcess.findOne({ _id: processId }, null, { session });
+    const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
+    const baseParameters = await TrainingParameters.findOne({ level: baseParametersId }, null, { session });
+
+    if (!process || !userParameters || !baseParameters) {
+      throw new Error(`Missing data for training process: ${processId}`);
+    }
+
+    const costConfig = {
+      energy: baseParameters.energy_spend || 0,
+      hungry: baseParameters.hungry_spend || 0,
+    };
+    const profitConfig = { mood: baseParameters.mood_profit || 0 };
+    const now = moment();
+    const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.updatedAt), "seconds");
+    const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
+    const totalDurationSeconds = baseParameters.duration * 60; // Assuming duration is in minutes
+    const durationDecreasePercentage = userParameters.constant_effects_levels["training_duration_decrease"] || 0;
+    const actualDurationSeconds = calculateDuration(baseParameters.duration || 1, durationDecreasePercentage);
+
+    const periodCosts = calculatePeriodCosts(baseParameters, {}, diffSeconds, costConfig, [], userParameters, totalDurationSeconds, "training");
+    const periodProfits = calculatePeriodProfits(baseParameters, {}, diffSeconds, profitConfig, [], userParameters, totalDurationSeconds);
+
+    const hasSufficientResources = Object.keys(periodCosts).every(key => {
+      const available = Math.floor(userParameters[key] || 0);
+      const cost = Math.floor(periodCosts[key] || 0);
+      return available >= cost;
+    });
+
+    if (!hasSufficientResources) {
+      await gameProcess.deleteOne({ _id: processId }, { session });
+      await log("info", colors.yellow(`Training process ended - insufficient resources`), { userId: userParametersId });
+      return;
+    }
+
+    Object.keys(periodCosts).forEach((key) => {
+      userParameters[key] = Math.max(0, userParameters[key] - periodCosts[key]);
+    });
+    Object.keys(periodProfits).forEach((key) => {
+      if (key === "mood") {
+        userParameters[key] = Math.min(100, userParameters[key] + periodProfits[key]);
+      } else if (userParameters[key] !== undefined) {
+        userParameters[key] += periodProfits[key];
+      }
+    });
+    await userParameters.save({ session });
+
+    const finishCondition = userParameters.energy <= 0 || userParameters.hungry <= 0;
+    if (processDurationSeconds >= actualDurationSeconds || finishCondition) {
+      // Add completion logic here (e.g., skill upgrades)
+      await gameProcess.deleteOne({ _id: processId }, { session });
+      await log("info", colors.green(`Training process completed and deleted`), { userId: userParametersId });
+    } else {
+      process.user_parameters_updated_at = now.toDate();
+      await process.save({ session });
+    }
+  },
+
+  processSleep: async (params, session) => {
+    const { processId, userParametersId, baseParametersId } = params;
+    const process = await gameProcess.findOne({ _id: processId }, null, { session });
+    const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
+    const baseParameters = await LevelsParameters.findOne({ level: baseParametersId }, null, { session });
+
+    if (!process || !userParameters || !baseParameters) {
+      throw new Error(`Missing data for sleep process: ${processId}`);
+    }
+
+    const profitConfig = { energy: baseParameters.energy_capacity || 0 };
+    const now = moment();
+    const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.updatedAt), "seconds");
+    const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
+    const totalDurationSeconds = baseParameters.sleep_duration * 60; // Assuming sleep_duration in minutes
+    const durationDecreasePercentage = userParameters.constant_effects_levels["sleeping_duration_decrease"] || 0;
+    const actualDurationSeconds = calculateDuration(baseParameters.sleep_duration || 1, durationDecreasePercentage);
+
+    const periodProfits = calculatePeriodProfits(baseParameters, {}, diffSeconds, profitConfig, [], userParameters, totalDurationSeconds);
+
+    userParameters.energy = Math.min(
+      userParameters.energy_capacity,
+      userParameters.energy + periodProfits.energy
+    );
+    await userParameters.save({ session });
+
+    if (processDurationSeconds >= actualDurationSeconds) {
+      await gameProcess.deleteOne({ _id: processId }, { session });
+      await log("info", colors.green(`Sleep process completed and deleted`), { userId: userParametersId });
+    } else {
+      process.user_parameters_updated_at = now.toDate();
+      await process.save({ session });
+    }
+  },
+
+  processSkill: async (params, session) => {
+    const { processId, userParametersId, skillId, subType } = params;
+    const process = await gameProcess.findOne({ _id: processId }, null, { session });
+    const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
+    const skill = subType === 'constant_effects'
+      ? await ConstantEffects.findOne({ id: skillId }, null, { session })
+      : await Skill.findOne({ skill_id: skillId }, null, { session });
+
+    if (!process || !userParameters || !skill) {
+      throw new Error(`Missing data for skill process: ${processId}`);
+    }
+
+    const now = moment();
+    const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
+    const totalDurationSeconds = skill.base_duration_in_seconds || 60; // Default to 1 minute if missing
+    const actualDurationSeconds = calculateDuration(totalDurationSeconds / 60, 0); // No decrease for simplicity
+
+    if (processDurationSeconds >= actualDurationSeconds) {
+      if (subType === "constant_effects") {
+        userParameters.constant_effects_levels[skill.type] = skill.level;
+        await userParameters.save({ session });
+        await upUserExperience(userParametersId, skill.experience_reward, session);
+      } else {
+        await UserSkill.create({ id: userParametersId, skill_id: skillId }, { session });
+        await upUserExperience(userParametersId, skill.experience_reward, session);
+      }
+      await gameProcess.deleteOne({ _id: processId }, { session });
+      await log("info", colors.green(`Skill process completed and deleted`), { userId: userParametersId, skillId });
+    } else {
+      process.user_parameters_updated_at = now.toDate();
+      await process.save({ session });
+    }
+  },
+
+  processFood: async (params, session) => {
+    const { processId, userParametersId, baseParametersId } = params;
+    const process = await gameProcess.findOne({ _id: processId }, null, { session });
+    const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
+    const baseParameters = await Food.findOne({ food_id: baseParametersId }, null, { session });
+
+    if (!process || !userParameters || !baseParameters) {
+      throw new Error(`Missing data for food process: ${processId}`);
+    }
+
+    // Add food-specific logic here if needed (e.g., hungry profit)
+    const now = moment();
+    const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
+    const totalDurationSeconds = baseParameters.duration || 60; // Default duration
+    const actualDurationSeconds = calculateDuration(totalDurationSeconds / 60, 0);
+
+    if (processDurationSeconds >= actualDurationSeconds) {
+      // Placeholder completion logic (e.g., increase hungry)
+      userParameters.hungry = Math.min(100, userParameters.hungry + (baseParameters.hungry_profit || 0));
+      await userParameters.save({ session });
+      await gameProcess.deleteOne({ _id: processId }, { session });
+      await log("info", colors.green(`Food process completed and deleted`), { userId: userParametersId });
+    } else {
+      process.user_parameters_updated_at = now.toDate();
+      await process.save({ session });
+    }
+  },
+
+  processBoost: async (params, session) => {
+    const { processId, userParametersId, baseParametersId } = params;
+    const process = await gameProcess.findOne({ _id: processId }, null, { session });
+    const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
+    const baseParameters = await Boost.findOne({ boost_id: baseParametersId }, null, { session });
+
+    if (!process || !userParameters || !baseParameters) {
+      throw new Error(`Missing data for boost process: ${processId}`);
+    }
+
+    const now = moment();
+    const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.updatedAt), "seconds");
+    const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
+    const totalDurationSeconds = baseParameters.duration || 60; // Default duration
+    const actualDurationSeconds = calculateDuration(totalDurationSeconds / 60, 0);
+
+    if (baseParameters.type === "tonic-drink") {
+      const energyRestore = (userParameters.energy_capacity / (3 * 3600)) * diffSeconds;
+      userParameters.energy = Math.min(
+        userParameters.energy_capacity,
+        userParameters.energy + energyRestore
+      );
+      await userParameters.save({ session });
+      await log('info', `${colors.cyanBright('Applied energy restore from tonic-drink')}`, {
+        user_id: userParametersId,
+        energyRestore,
+      });
+    }
+
+    if (processDurationSeconds >= actualDurationSeconds) {
+      await gameProcess.deleteOne({ _id: processId }, { session });
+      await log("info", colors.green(`Boost process completed and deleted`), { userId: userParametersId });
+    } else {
+      process.user_parameters_updated_at = now.toDate();
+      await process.save({ session });
+    }
+  },
+
   processAutoclaim: async (params, session) => {
     const { investmentType, userId } = params;
 
+    // Find current investment
     const currentInvestment = await UserLaunchedInvestments.findOne({
       user_id: userId,
       investment_type: investmentType,
-      claimed: false, // Only unclaimed investments
+      claimed: false,
     }, null, { session, sort: { createdAt: -1 } });
 
-    if (currentInvestment) {
-      const investment = await Investments.findOne({ id: currentInvestment.investment_id })
-      
-      currentInvestment.claimed = true;
-      await currentInvestment.save({ session });
-      await upUserBalance(investment.coins_per_hour)
-      await log("info", `Investment marked as claimed for user ${userId}`, {
-        investmentType,
-        durationHours,
-      });
-    } else {
+    if (!currentInvestment) {
       await log("warn", `No active unclaimed investment found for user ${userId}`, { investmentType });
+      return;
     }
 
-    // Step 3: Enqueue a new UserLaunchedInvestment
-    await queueDbUpdate(
-      "createUserLaunchedInvestment",
-      { userId, investmentType },
-      `Create new investment for ${investmentType}, user ${userId}`,
-      userId
-    );
+    const investmentDef = await Investments.findOne({ id: currentInvestment.investment_id }, null, { session });
+    if (!investmentDef) {
+      throw new Error(`Investment definition not found for ID ${currentInvestment.investment_id}`);
+    }
 
-    await log("info", `Autoclaim processed and new investment enqueued`, { userId, investmentType, reward });
-  },
+    const userParameters = await UserParameters.findOne({ id: userId }, null, { session });
+    if (!userParameters) {
+      throw new Error(`UserParameters ${userId} not found`);
+    }
 
-  createUserLaunchedInvestment: async (params, session) => {
-    const { userId, investmentType } = params;
+    // Step 1: Claim reward
+    const reward = investmentDef.coins_per_hour; // Adjust as needed
+    await recalcValuesByParameters(userParameters, { coinsReward: reward }, session);
+    await userParameters.save({ session });
 
+    // Step 2: Mark as claimed
+    currentInvestment.claimed = true;
+    await currentInvestment.save({ session });
+
+    // Step 3: Create new investment
     const user = await User.findOne({ id: userId }, { investment_levels: 1 }, { session });
     const userInvestmentLevel = user.investment_levels[investmentType];
-
-    const investment = await Investments.findOne({ type: investmentType, level: userInvestmentLevel }, null, { session });
-    if (!investment) {
-      await log("error", `Investment definition not found`, { investment_type, userInvestmentLevel, userId });
-      await session.abortTransaction();
-      return;
+    const newInvestmentDef = await Investments.findOne({ type: investmentType, level: userInvestmentLevel }, null, { session });
+    if (!newInvestmentDef) {
+      throw new Error(`Investment definition not found for type ${investmentType}, level ${userInvestmentLevel}`);
     }
 
     const newInvestment = new UserLaunchedInvestments({
       user_id: userId,
+      investment_id: newInvestmentDef.id,
       investment_type: investmentType,
-      to_claim: investment.coins_per_hour()
+      to_claim: newInvestmentDef.coins_per_hour,
     });
-
     await newInvestment.save({ session });
-    await log("info", `New investment launched for user ${userId}`, {
+
+    await log("info", colors.green(`Autoclaim processed: claimed, marked, new investment created`), {
+      userId,
       investmentType,
-      durationHours,
-      expiresAt,
+      reward,
     });
+  },
+
+  // Keep createUserLaunchedInvestment for initial activation
+  createUserLaunchedInvestment: async (params, session) => {
+    const { userId, investmentType } = params;
+    const user = await User.findOne({ id: userId }, { investment_levels: 1 }, { session });
+    const userInvestmentLevel = user.investment_levels[investmentType];
+    const investment = await Investments.findOne({ type: investmentType, level: userInvestmentLevel }, null, { session });
+
+    if (!investment) {
+      throw new Error(`Investment definition not found for ${investmentType}, level ${userInvestmentLevel}`);
+    }
+
+    const newInvestment = new UserLaunchedInvestments({
+      user_id: userId,
+      investment_id: investment.id,
+      investment_type: investmentType,
+      to_claim: investment.coins_per_hour,
+    });
+    await newInvestment.save({ session });
+    await log("info", `New investment launched for user ${userId}`, { investmentType });
   },
 };
 
@@ -581,8 +871,9 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
 
 const customDurationProcessTypes = ["autoclaim", "investment_level_checks", "nft_scan"];
 
+// Updated genericProcessScheduler to enqueue single atomic operation
 const genericProcessScheduler = (processType, processConfig) => {
-  const { cronSchedule, durationFunction, Model, getTypeSpecificParams } = processConfig;
+  const { cronSchedule, Model, getTypeSpecificParams } = processConfig;
   let isRunning = false;
 
   const scheduler = cron.schedule(cronSchedule, async () => {
@@ -592,63 +883,37 @@ const genericProcessScheduler = (processType, processConfig) => {
     }
     isRunning = true;
 
-    const MAX_RETRIES = 3;
-    let retryCount = 0;
+    try {
+      await log("verbose", `${processType} process scheduler started iteration`);
+      const processes = await gameProcess.find({ type: processType });
 
-    while (retryCount < MAX_RETRIES) {
-      let session;
-      try {
-        session = await mongoose.startSession();
-        session.startTransaction();
+      await processInBatches(processes, 50, async (process) => {
+        const userParameters = await UserParameters.findOne({ id: process.id });
+        const baseParameters = Model ? await Model.findOne(getTypeSpecificParams(process)) : {};
 
-        if (customDurationProcessTypes.includes(processType)) {
-          await log("verbose", `${processType} process scheduler started iteration, using custom duration func`);
-          await durationFunction(session);
-          await session.commitTransaction();
-          break;
+        if (!userParameters || !baseParameters) {
+          await log("error", `${processType} process error: missing parameters`, { processId: process._id });
+          return;
         }
 
-        await log("verbose", `${processType} process scheduler started iteration`);
-        const processes = await gameProcess.find({ type: processType }, null, { session });
+        await queueDbUpdate(
+          `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`,
+          {
+            processId: process._id,
+            userParametersId: userParameters.id,
+            baseParametersId: process.type_id,
+            ...(processType === "skill" ? { skillId: process.type_id, subType: process.sub_type } : {}),
+          },
+          `${processType} full cycle for process ${process._id}`,
+          userParameters.id
+        );
+      });
 
-        await Promise.all(processes.map(async (process) => {
-          const userParameters = await UserParameters.findOne({ id: process.id }, null, { session });
-          const baseParameters = Model ? await Model.findOne(getTypeSpecificParams(process), null, { session }) : {};
-
-          await log("verbose", `${processType} process scheduler fetched params`, { userParameters, baseParameters });
-
-          if (!userParameters || !baseParameters) {
-            await log("error", `${processType} process error: base parameters or userParameters not found`, { processId: process._id });
-            return;
-          }
-          await durationFunction(process, userParameters, baseParameters, processConfig, session);
-        }));
-
-        await log("verbose", `${processType} process scheduler finished iteration`, { processesCount: processes.length });
-        await session.commitTransaction();
-        break;
-      } catch (e) {
-        if (session) {
-          await session.abortTransaction();
-        }
-        if (e.name === "MongoServerError" && e.code === 112) {
-          retryCount++;
-          if (retryCount < MAX_RETRIES) {
-            await log("warn", colors.yellow(`WriteConflict detected in ${processType} scheduler, retrying (${retryCount}/${MAX_RETRIES})`));
-            await new Promise(resolve => setTimeout(resolve, 100 * retryCount));
-            continue;
-          } else {
-            await log("error", `Max retries reached for ${processType} scheduler`, { error: e.message, stack: e.stack });
-          }
-        } else {
-          await log("error", `Error in ${processType} Process:`, { error: e.message, stack: e.stack });
-        }
-      } finally {
-        if (session) {
-          session.endSession();
-        }
-        isRunning = false;
-      }
+      await log("verbose", `${processType} process scheduler finished iteration`, { processesCount: processes.length });
+    } catch (e) {
+      await log("error", `Error in ${processType} scheduler`, { error: e.message, stack: e.stack });
+    } finally {
+      isRunning = false;
     }
   }, { scheduled: false });
 
@@ -672,83 +937,45 @@ const processIndependentScheduler = (processType, processConfig) => {
   return scheduler;
 };
 
-// Process Configurations
 const workProcessConfig = {
   processType: "work",
   cronSchedule: "*/10 * * * * *",
   Model: Work,
-  durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ work_id: process.type_id }),
-  durationDecreaseKey: "work_duration_decrease",
-  costConfig: {
-    mood: { baseValueKey: "mood_cost_per_minute" },
-    hungry: { baseValueKey: "hungry_cost_per_minute" },
-    energy: { baseValueKey: "energy_cost_per_minute" },
-  },
-  baseDurationKey: "base_duration_in_seconds",
-  profitConfig: {},
-  onProcessCompletion: { operationType: 'completeWorkProcess' },
 };
 
 const trainingProcessConfig = {
   processType: "training",
   cronSchedule: "*/10 * * * * *",
   Model: TrainingParameters,
-  durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ level: process.type_id }),
-  costConfig: {
-    energy: { baseValueKey: "energy_spend" },
-    hungry: { baseValueKey: "hungry_spend" },
-  },
-  profitConfig: {
-    mood: { baseValueKey: "mood_profit" },
-  },
-  durationDecreaseKey: "training_duration_decrease",
-  finishConditionCheck: (userParameters) => userParameters.energy <= 0 || userParameters.hungry <= 0,
-  onProcessCompletion: { operationType: 'completeTrainingProcess' },
 };
 
 const sleepProcessConfig = {
   processType: "sleep",
   cronSchedule: "*/10 * * * * *",
   Model: LevelsParameters,
-  durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ level: process.type_id }),
-  profitConfig: {
-    energy: { baseValueKey: "energy_capacity" },
-  },
-  baseDurationKey: "sleep_duration",
-  durationDecreaseKey: "sleeping_duration_decrease",
-  finishConditionCheck: (userParameters) => false,
-  onProcessCompletion: { operationType: 'completeSleepProcess' },
 };
 
 const skillProcessConfig = {
   processType: "skill",
   cronSchedule: "*/10 * * * * *",
-  durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ id: process.type_id }),
-  baseDurationKey: "base_duration_in_seconds",
-  onProcessCompletion: { operationType: 'completeSkillProcess' },
 };
 
 const foodProcessConfig = {
   processType: "food",
   cronSchedule: "*/10 * * * * *",
   Model: Food,
-  durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ food_id: process.type_id }),
-  onProcessCompletion: { operationType: 'completeFoodProcess' },
 };
 
 const boostProcessConfig = {
   processType: "boost",
   cronSchedule: "*/10 * * * * *",
   Model: Boost,
-  durationFunction: processDurationHandler,
   getTypeSpecificParams: (process) => ({ boost_id: process.type_id }),
-  profitConfig: {},
-  updateUserParamsOnTick: true,
 };
 
 // Add these to the operationMap
