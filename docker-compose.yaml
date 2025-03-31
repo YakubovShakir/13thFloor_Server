@@ -7,7 +7,6 @@ networks:
 services:
   database:
     image: mongo:5
-    hotsname: databaseTest
     volumes:
       - db-floor:/data/db
       - ./restore-folder:/data/restore
@@ -22,15 +21,15 @@ services:
     networks:
       - default
 
-  # redis:
-  #   image: redis:7
-  #   volumes:
-  #     - redis-data:/data
-  #   ports:
-  #     - 6379:6379
-  #   command: redis-server --requirepass redis_password
-  #   networks:
-  #     - default
+  redis:
+    image: redis:7
+    volumes:
+      - redis-data:/data
+    ports:
+      - 6379:6379
+    command: redis-server --requirepass redis_password
+    networks:
+      - default
 
 volumes:
   db-floor:
