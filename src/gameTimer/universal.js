@@ -425,39 +425,38 @@ const operationMap = {
   },
 
   processSkill: async (params, session) => {
-    const { processId, userParametersId, skillId, subType } = params;
-    console.log("Skill ID:", skillId); // Debug log
-
+    const { processId, userParametersId, baseParametersId, subType } = params; // Use baseParametersId instead of skillId
+    console.log("Base Parameters ID (skillId):", baseParametersId, "SubType:", subType); // Debug log
+  
     const process = await gameProcess.findOne({ _id: processId }, null, { session });
     const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
     const skill = subType === "constant_effects"
-      ? await ConstantEffects.findOne({ id: skillId }, null, { session })
-      : await Skill.findOne({ skill_id: skillId }, null, { session });
-
+      ? await ConstantEffects.findOne({ id: baseParametersId }, null, { session })
+      : await Skill.findOne({ skill_id: baseParametersId }, null, { session });
+  
     if (!process || !userParameters || !skill) {
       throw new Error(`Missing data for skill process: ${processId}`);
     }
-
+  
     const now = moment();
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
     const totalDurationSeconds = skill.base_duration_in_seconds || 60; // Default to 1 minute if missing
     const actualDurationSeconds = calculateDuration(totalDurationSeconds / 60, 0); // No decrease for simplicity
-
+  
     if (processDurationSeconds >= actualDurationSeconds) {
       if (subType === "constant_effects") {
         userParameters.constant_effects_levels[skill.type] = skill.level;
         await userParameters.save({ session });
-        await upUserExperience(userParametersId, skill.experience_reward, session);
+        await operationMap.updateUserExperience({ id: userParametersId, amount: skill.experience_reward }, session); // Use atomic version
       } else {
-        // Fix: Use array syntax for create() with session and match schema field names
         await UserSkill.create([{
-          id: userParameters.id, // Ensure this matches your schema's 'id' field
-          skill_id: skill.skill_id, // Ensure this matches your schema's 'skill_id' field
+          id: userParameters.id, // Match schema field 'id'
+          skill_id: skill.skill_id, // Match schema field 'skill_id'
         }], { session });
-        await upUserExperience(userParametersId, skill.experience_reward, session);
+        await operationMap.updateUserExperience({ id: userParametersId, amount: skill.experience_reward }, session); // Use atomic version
       }
       await gameProcess.deleteOne({ _id: processId }, { session });
-      await log("info", colors.green(`Skill process completed and deleted`), { userId: userParametersId, skillId });
+      await log("info", colors.green(`Skill process completed and deleted`), { userId: userParametersId, skillId: baseParametersId });
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
@@ -825,23 +824,25 @@ const customDurationProcessTypes = ["autoclaim", "investment_level_checks", "nft
 
 const genericProcessScheduler = (processType, processConfig) => {
   const { cronSchedule, Model, getTypeSpecificParams } = processConfig;
-  const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`; // e.g., "processWork"
+  const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`; // e.g., "processSkill"
 
   const scheduler = cron.schedule(cronSchedule, async () => {
     try {
       await log("verbose", `${processType} process scheduler started iteration`);
       const processes = await gameProcess.find({ type: processType });
+
       await Promise.all(processes.map(async (process) => {
         const params = {
           processId: process._id,
           userParametersId: process.id,
           baseParametersId: process.type_id,
+          subType: process.sub_type,
         };
-        // Use operationMap key directly as the operation type
         await queueDbUpdate(
-          operationName, // e.g., "processWork"
-          params,
-          
+          operationName, // e.g., "processSkill"
+          params, // The params object
+          `${processType} full cycle for process ${process._id}`, // Descriptive string
+          process.id // userId
         );
       }));
 
