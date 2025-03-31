@@ -187,7 +187,7 @@ export const ShelfItems = [
     },
     link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/0.gif",
     shelf_link:
-      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/0.gif",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2F%D0%BD%D1%84%D1%82-%D0%BF%D0%BE%D0%B2%D0%B0%D1%80.gif",
     type: ShelfItemTypes.Neko,
     respect: 1500,
     rarity: NEKO_RARITIES.COMMON,
@@ -200,8 +200,8 @@ export const ShelfItems = [
       en: "Meowmen",
     },
     description: {
-      ru: "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1",
-      en: "Meowmen - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      ru: "Meowramen - A common Maneki-neko from the 13th Floor Collection | Season 1",
+      en: "Meowramen - A common Maneki-neko from the 13th Floor Collection | Season 1",
     },
     cost: {
       coins: 0,
@@ -209,7 +209,7 @@ export const ShelfItems = [
     },
     link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/1.gif",
     shelf_link:
-      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/1.gif",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2F%D0%BD%D1%84%D1%82-%D0%BF%D0%BE%D0%B2%D0%B0%D1%802.gif",
     type: ShelfItemTypes.Neko,
     respect: 1500,
     rarity: NEKO_RARITIES.COMMON,
@@ -297,7 +297,7 @@ export const ShelfItems = [
     },
     link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/6.gif",
     shelf_link:
-      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/6.gif",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2F%D0%BD%D1%84%D1%82-%D0%B4%D0%B6%D0%B5%D0%B4%D0%B0%D0%B9.gif",
     type: ShelfItemTypes.Neko,
     respect: 2500,
     rarity: NEKO_RARITIES.UNCOMMON,
@@ -473,7 +473,7 @@ export const ShelfItems = [
     },
     link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/14.gif",
     shelf_link:
-      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/14.gif",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2F%D0%BD%D1%84%D1%82-%D0%B0%D1%81%D0%B0%D1%81%D0%B8%D0%BD.gif",
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.UNCOMMON,
     respect: 2500,
@@ -539,7 +539,7 @@ export const ShelfItems = [
     },
     link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/17.gif",
     shelf_link:
-      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/17.gif",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2F%D0%BD%D1%84%D1%82-%D0%BC%D0%B0%D0%BD%D0%B4%D0%B0%D0%BB%D0%BE%D1%80%D0%B5%D1%86.gif",
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.RARE,
     respect: 5000,
@@ -561,7 +561,7 @@ export const ShelfItems = [
     },
     link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/19.gif",
     shelf_link:
-      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/19.gif",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2F%D0%BD%D1%84%D1%82-%D1%80%D0%BE%D0%BA.gif",
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.UNCOMMON,
     respect: 2500,
@@ -649,7 +649,7 @@ export const ShelfItems = [
     },
     link: "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/23.gif",
     shelf_link:
-      "https://361785fd-861d-4cce-a8b5-3e86fc75d291.selstorage.ru/nobg/23.gif",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2F%D0%BD%D1%84%D1%82-%D1%81%D0%B8%D0%B3%D0%B0%D0%BB.gif",
     type: ShelfItemTypes.Neko,
     rarity: NEKO_RARITIES.UNCOMMON,
     respect: 2500,
