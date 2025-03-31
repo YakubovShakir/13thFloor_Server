@@ -89,7 +89,7 @@ export const checkCanStopWork = async (userId) => {
   console.log(processStartTime, elapsedSeconds, secondsLeft)
   // Check if user can still work (assuming canStartWorking exists)
   if (!canStartWorking(user)) {
-    await gameProcess.deleteOne({ id: userId, type_id: work.work_id });
+    await process.deleteOne({ id: userId, type_id: work.work_id });
     return { status: 200, data: { status: "ok" } };
   }
 

@@ -1893,6 +1893,59 @@ router.get("/nft/supply/:itemId", async (req, res) => {
   }
 })
 
+router.get("/:id/nft/shop", async (req, res) => {
+  try {
+    log("info", "Nft shop endpoint requested")
+    const userId = parseInt(req.params.id)
+    if (isNaN(userId)) {
+      return res.status(400).json({ error: "Invalid userId" })
+    }
+
+    const shelfItems = await ShelfItemModel.find(
+      { type: "neko", id: { $not: { $in: [8] } } },
+      { _id: false },
+      { sort: { id: 1 } }
+    )
+
+    // Fetch supply for all shelf items in one query
+    const shelfIds = shelfItems.map((item) => item.id)
+    const supplyData = await NFTItems.aggregate([
+      { $match: { itemId: { $in: shelfIds }, status: "available" } },
+      { $group: { _id: "$itemId", availableSupply: { $sum: 1 } } },
+    ])
+
+    // Convert supply data to a lookup map for efficiency
+    const supplyMap = supplyData.reduce((map, { _id, availableSupply }) => {
+      map[_id] = availableSupply
+      return map
+    }, {})
+
+    // Format shelf items with supply
+    const formattedShelfItems = shelfItems.map((item) => ({
+      id: item.id,
+      productType: "shelf",
+      name: item.name, // Assuming name is an object with language keys (e.g., { en: "Name" })
+      image: item.link,
+      price: item.cost.stars || item.cost.coins || 0,
+      tonPrice: item.tonPrice || "0", // Default to "0" if not provided
+      supply: supplyMap[item.id] || 0, // Use supply from map, default to 0 if not found
+      category: "Shelf",
+      isPrem: (item.cost.stars || 0) > 0,
+      available: (item.cost.stars || 0) > 0 || (item.cost.coins || 0) === 0, // Simplified logic
+      description: item.description, // Assuming description is an object with language keys
+      respect: item.respect || 0,
+    }))
+
+    // Combine and return
+    return res.status(200).json({
+      shelf: formattedShelfItems,
+    })
+  } catch (err) {
+    console.error("Failed to fetch shop items:", err)
+    return res.status(500).json({ error: "Internal server error" })
+  }
+})
+
 // Transaction Details Endpoint
 router.get("/nft/transaction-details", async (req, res) => {
   const { userId, productId } = req.query
@@ -1921,7 +1974,7 @@ router.get("/nft/transaction-details", async (req, res) => {
       return res.status(400).json({ error: "Price not defined for this NFT" })
     }
 
-    const amount = toNano((nft.price + 0.05)).toString()
+    const amount = toNano(nft.price + 0.05).toString()
 
     const transaction = new TONTransactions({
       user_id: Number(userId),
@@ -1954,7 +2007,7 @@ router.get("/nft/transaction-details", async (req, res) => {
       network: "-239", // Mainnet
     }
 
-    res.json({paymentRequest})
+    res.json({ paymentRequest })
   } catch (error) {
     console.error("Error generating transaction details:", error)
     await session.abortTransaction()
