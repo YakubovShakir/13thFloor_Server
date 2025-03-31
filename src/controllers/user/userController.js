@@ -727,7 +727,7 @@ export const requestStarsPaymentLink = async (req, res) => {
         en: "An attempt to play the wheel!",
       }[lang]
       title = name
-      amount = 1
+      amount = 50
     }
 
     if (productType === "autoclaim") {
@@ -740,7 +740,7 @@ export const requestStarsPaymentLink = async (req, res) => {
         en: "Autoclaim of your businesses`s revenue",
       }[lang]
       title = name
-      amount = 1
+      amount = 10
     }
 
     const invoiceLink = await _fetch(`${process.env.BOT_ADDR}payment-create`, {
