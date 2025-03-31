@@ -746,6 +746,7 @@ export const requestStarsPaymentLink = async (req, res) => {
         en: "Autoclaim of your businesses`s revenue",
       }[lang]
       title = name
+      console.log(durationHours, productType, id)
       amount = autoclaimDurationToPrice[durationHours]
     }
 
