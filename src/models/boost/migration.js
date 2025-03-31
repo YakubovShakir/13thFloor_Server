@@ -32,7 +32,7 @@ export default [
   {
     boost_id: 4,
     name: { ru: "Расслабляющий массаж", en: "Relaxing Massage" },
-    stars_price: 15,
+    stars_price: 25,
     description: {
       ru: "Расслабляющий массаж делает ваc абсолютно счастливым, на все 100%",
       en: "A relaxing massage makes you absolutely happy, 100%",
