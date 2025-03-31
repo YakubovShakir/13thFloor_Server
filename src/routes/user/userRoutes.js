@@ -64,6 +64,7 @@ import { config } from "dotenv"
 config()
 import TON, { beginCell } from "@ton/ton"
 import { InvestmentTypes } from "../../models/investments/userLaunchedInvestments.js"
+import Referal from "../../models/referral/referralModel.js"
 const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON
 
 let walletContract, keyPair, tonClient
@@ -1977,6 +1978,8 @@ router.get("/nft/transaction-details", async (req, res) => {
 
     const amount = toNano(nft.price + 0.05).toString()
 
+    const affiliate = await Referal.findOne({ referral_id: userId })
+
     const transaction = new TONTransactions({
       user_id: Number(userId),
       currency: "TON",
@@ -1985,6 +1988,7 @@ router.get("/nft/transaction-details", async (req, res) => {
       product_id: productId,
       memo: nft.memo,
       status: "awaiting_payment",
+      affiliate_id: affiliate?.id || null
     })
     await transaction.save({ session })
 

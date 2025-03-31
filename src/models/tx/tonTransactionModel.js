@@ -60,6 +60,10 @@ const schema = new mongoose.Schema(
       type: String,
       default: null, // Stores error details if status is failed_*
     },
+    affiliate_id: {
+      type: Number,
+      default: null
+    }
   },
   { timestamps: true }
 );
