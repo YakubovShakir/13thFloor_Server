@@ -42,7 +42,7 @@ import Queue from 'bull';
 
 // Centralized queue for all DB updates
 const dbUpdateQueue = new Queue('db-updates', {
-  redis: { host: 'localhost', port: 6379, password: 'redis_password' }, // Adjust Redis config
+  redis: { host: process.env.REDIS_HOST || 'localhost' , port: 6379, password: 'redis_password' }, // Adjust Redis config
   defaultJobOptions: {
     attempts: 3, // Retry on transient failures
     backoff: { type: 'exponential', delay: 100 }, // Exponential backoff
