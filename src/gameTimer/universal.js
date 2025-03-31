@@ -132,28 +132,10 @@ const operationMap = {
     await log("info", `Work process completed`, { userId: userParameters.id, coinsReward, experience: baseParameters.experience_reward });
   },
   completeTrainingProcess: async (params, session) => {
-    const { processId, userParametersId, baseParametersId } = params;
-    const process = await gameProcess.findOne({ _id: processId }, null, { session });
-    const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
-    const baseParameters = await TrainingParameters.findOne({ level: baseParametersId }, null, { session });
-
-    if (!process || !userParameters || !baseParameters) {
-      throw new Error(`Missing data for training process completion: ${processId}`);
-    }
-
     // Training completion logic (e.g., apply skill upgrades or stats)
     await log("info", `Training process completed`, { userId: userParameters.id });
   },
   completeSleepProcess: async (params, session) => {
-    const { processId, userParametersId, baseParametersId } = params;
-    const process = await gameProcess.findOne({ _id: processId }, null, { session });
-    const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
-    const baseParameters = await LevelsParameters.findOne({ level: baseParametersId }, null, { session });
-
-    if (!process || !userParameters || !baseParameters) {
-      throw new Error(`Missing data for sleep process completion: ${processId}`);
-    }
-
     await log("info", `Sleep process completed`, { userId: userParameters.id });
   },
   completeSkillProcess: async (params, session) => {
@@ -180,21 +162,6 @@ const operationMap = {
     await log("info", `Skill process completed`, { userId: userParametersId, skillId });
   },
   completeFoodProcess: async (params, session) => {
-    const { processId, userParametersId, baseParametersId } = params;
-    const process = await gameProcess.findOne({ _id: processId }, null, { session });
-    const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
-    const baseParameters = await Food.findOne({ food_id: baseParametersId }, null, { session });
-
-    if (!process || !userParameters || !baseParameters) {
-      throw new Error(`Missing data for food process completion: ${processId}`);
-    }
-
-    const profits = {};
-    if (baseParameters?.long_hungry_restore?.value) profits.hungry = baseParameters.long_hungry_restore.value;
-    if (baseParameters?.long_mood_restore?.value) profits.mood = baseParameters.long_mood_restore.value;
-    if (baseParameters?.long_energy_restore?.value) profits.energy = baseParameters.long_energy_restore.value;
-
-    await applyUserParameterUpdates(userParameters, {}, profits, "food");
     await log("info", `Food process completed`, { userId: userParameters.id, profits });
   },
   processAutoclaim: async (params, session) => {
