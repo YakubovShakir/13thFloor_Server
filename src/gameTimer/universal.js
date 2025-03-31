@@ -127,11 +127,7 @@ const processDurationHandler = async (process, userParameters, baseParameters, p
     processType,
   } = processConfig;
 
-  const session = await mongoose.startSession();
-
   try {
-    session.startTransaction();
-
     let durationDecreasePercentage = 0;
     let combinedEffects = {};
 
