@@ -120,6 +120,7 @@ services:
     environment:
       - NODE_ENV=test
       - MONGO_URI=mongodb://databaseTest:27017/Floor?replicaSet=rs0
+      - REDIS_HOST=redis-test
     command: ["node", "./src/daemons/tonAffiliateDaemon.js"]
     depends_on:
       databaseTest:
