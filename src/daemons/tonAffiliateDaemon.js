@@ -72,9 +72,7 @@ const worker = new Worker(
     }
   },
   null,
-  {
-    connection: redisConfig, // Ensure BullMQ uses this config
-  }
+  redisConfig
 );
 
 worker.on('ready', () => {
