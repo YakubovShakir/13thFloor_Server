@@ -215,6 +215,8 @@ const transferTON = async (destinationAddress, amount, session, affiliateId, sta
     await affiliateTransaction.save({ session });
 
     console.log(`Transfer successful! Transaction hash: ${txHash}`);
+    await User.updateOne({ id: affiliateId }, { $set: { is_withdrawing: false } }, { session })
+    
     return txHash;
   } catch (error) {
     console.error("TON transfer failed:", error);
@@ -223,6 +225,8 @@ const transferTON = async (destinationAddress, amount, session, affiliateId, sta
       affiliateTransaction.error_message = error.message;
       await affiliateTransaction.save({ session });
     }
+    await User.updateOne({ id: affiliateId }, { $set: { is_withdrawing: false } }, { session })
+
     throw new Error(`TON transfer failed: ${error.message}`);
   }
 };
@@ -386,10 +390,11 @@ export const withdrawAffiliateEarnings = async (affiliateId) => {
 
     if (totalTON <= 0) throw new Error("No available earnings to withdraw");
     if (totalTON < 5) throw new Error("Less than 5 ton pending")
-      
+
     // Check Wallet and Transfer
     const walletAddress = await getConnectedWallet(affiliateId, session);
     if (walletAddress) {
+      await User.updateOne({ id: affiliateId }, { $set: { is_withdrawing: true } }, { session })
       const tonTxHash = await transferTON(
         walletAddress, // Pass the Address object directly
         totalTON,
