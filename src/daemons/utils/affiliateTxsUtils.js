@@ -1,3 +1,4 @@
+import { Queue } from 'bullmq';
 import { config } from 'dotenv';
 import IORedis from 'ioredis';
 config()
