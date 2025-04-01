@@ -65,6 +65,8 @@ config()
 import TON, { beginCell } from "@ton/ton"
 import { InvestmentTypes } from "../../models/investments/userLaunchedInvestments.js"
 import Referal from "../../models/referral/referralModel.js"
+import { getAffiliateEarningsData } from "../../services/paymentService.js"
+import ansiColors from "ansi-colors"
 const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON
 
 let walletContract, keyPair, tonClient
@@ -2066,5 +2068,23 @@ export const getAutoclaimStatus = async (userId) => {
     throw err; // Re-throw to handle in caller if needed
   }
 };
+
+router.get('/:id/affiliate-data', async (req, res) => {
+  const userId = parseInt(req.params.id)
+  try {
+    const data = await getAffiliateEarningsData(userId)
+
+    await log('info', ansiColors.cyan('Affiliate data requested'), { userId, ...data })
+    
+    return res.status(200).json({ ...data })
+  } catch(err) {
+    await log("error", `Failed to get autoclaim status for user ${userId}`, {
+      error: err.message,
+      stack: err.stack,
+    });
+
+    return res.status(500).send() 
+  }
+})
 
 export default router

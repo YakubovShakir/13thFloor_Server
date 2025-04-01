@@ -196,7 +196,7 @@ export const ShelfItems = [
   {
     id: 10,
     name: {
-      ru: "Meowmen", // Updated from "Meowmen" in second array to match first
+      ru: "Meowmen",
       en: "Meowmen",
     },
     description: {
