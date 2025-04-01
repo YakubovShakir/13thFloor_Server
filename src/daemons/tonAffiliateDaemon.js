@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import mongoose from 'mongoose';
-import { Queue, Worker } from 'bullmq';
+import { Queue, RedisConnection, Worker } from 'bullmq';
 import { createClient } from 'redis';
 import { withdrawAffiliateEarnings } from '../services/paymentService.js'
 
@@ -71,8 +71,9 @@ const worker = new Worker(
       }
     }
   },
-  null,
-  redisConfig
+  {
+    connection: redisConfig
+  }
 );
 
 worker.on('ready', () => {
@@ -102,10 +103,7 @@ const releaseLock = async (key) => {
 };
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}).then(() => {
+mongoose.connect(process.env.MONGO_URI).then(() => {
   console.log('Connected to MongoDB');
 }).catch((err) => {
   console.error('MongoDB connection error:', err);
