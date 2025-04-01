@@ -67,6 +67,7 @@ import { InvestmentTypes } from "../../models/investments/userLaunchedInvestment
 import Referal from "../../models/referral/referralModel.js"
 import { getAffiliateEarningsData } from "../../services/paymentService.js"
 import ansiColors from "ansi-colors"
+import { queueAffiliateWithdrawal } from "../../daemons/utils/affiliateTxsUtils.js"
 const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON
 
 let walletContract, keyPair, tonClient
@@ -82,7 +83,6 @@ const TELEGRAM_BOT_TOKEN = "7775483956:AAHc14xqGCeNQ7DVsqABf0qAa8gdqwMWE6w"
 const bot = new Bot(TELEGRAM_BOT_TOKEN)
 
 const RECEIVING_WALLET_ADDRESS = walletContract.address.toString()
-console.log("Server wallet address:", RECEIVING_WALLET_ADDRESS)
 
 export async function openWallet(mnemonic, testnet) {
   const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY
@@ -1987,7 +1987,7 @@ router.get("/nft/transaction-details", async (req, res) => {
       product_id: productId,
       memo: nft.memo,
       status: "awaiting_payment",
-      affiliate_id: affiliate?.refer_id || null
+      affiliate_id: affiliate?.refer_id || null,
     })
     await transaction.save({ session })
 
@@ -2024,63 +2024,94 @@ router.get("/nft/transaction-details", async (req, res) => {
 const SERVER_TIMEZONE = moment.tz.guess()
 const investmentTypeKeys = Object.fromEntries(
   Object.entries(InvestmentTypes).map(([key, value]) => [value, key])
-);
+)
 
 export const getAutoclaimStatus = async (userId) => {
   try {
-    const now = new Date();
+    const now = new Date()
 
     // Find all active autoclaims for the user (not expired)
     const activeAutoclaims = await Autoclaim.find({
       userId,
       expiresAt: { $gt: now },
-    });
+    })
 
     // Initialize result with all investment types set to inactive
     const status = {
       GameCenter: { is_active: false, active_until: null, tz: SERVER_TIMEZONE },
       ZooShop: { is_active: false, active_until: null, tz: SERVER_TIMEZONE },
       CoffeeShop: { is_active: false, active_until: null, tz: SERVER_TIMEZONE },
-    };
+    }
 
     // Update status for each active autoclaim
     activeAutoclaims.forEach((autoclaim) => {
-      const key = investmentTypeKeys[autoclaim.investmentType];
-      if (key) { // Only update if investmentType matches a known key
+      const key = investmentTypeKeys[autoclaim.investmentType]
+      if (key) {
+        // Only update if investmentType matches a known key
         status[key] = {
           is_active: true,
           active_until: autoclaim.expiresAt,
           tz: SERVER_TIMEZONE,
-        };
+        }
       }
-    });
+    })
 
-    await log("debug", `Retrieved autoclaim status for user ${userId}`, { status });
-    return status;
+    await log("debug", `Retrieved autoclaim status for user ${userId}`, {
+      status,
+    })
+    return status
   } catch (err) {
     await log("error", `Failed to get autoclaim status for user ${userId}`, {
       error: err.message,
       stack: err.stack,
-    });
-    throw err; // Re-throw to handle in caller if needed
+    })
+    throw err // Re-throw to handle in caller if needed
   }
-};
+}
 
-router.get('/:id/affiliate-data', async (req, res) => {
+router.get("/:id/affiliate-data", async (req, res) => {
   const userId = parseInt(req.params.id)
   try {
     const data = await getAffiliateEarningsData(userId)
 
-    await log('info', ansiColors.cyan('Affiliate data requested'), { userId, ...data })
-    
+    await log("info", ansiColors.cyan("Affiliate data requested"), {
+      userId,
+      ...data,
+    })
+
     return res.status(200).json({ ...data })
-  } catch(err) {
+  } catch (err) {
     await log("error", `Failed to get autoclaim status for user ${userId}`, {
       error: err.message,
       stack: err.stack,
-    });
+    })
 
-    return res.status(500).send() 
+    return res.status(500).send()
+  }
+})
+
+router.get("/:id/affiliate-withdraw", async (req, res) => {
+  const affiliateId = parseInt(req.params.id)
+
+  try {
+    if (!affiliateId) {
+      return res.status(400).json({ error: 'Affiliate ID is required' });
+    }
+
+    // Add withdrawal request to the queue
+    const jobId = await queueAffiliateWithdrawal(affiliateId);
+
+    return res.status(202).json({
+      message: 'Withdrawal request queued successfully',
+      jobId,
+      affiliateId,
+    });
+  } catch (error) {
+    console.error('Error queuing withdrawal:', error.message);
+    if (error.message.includes('Withdrawal already in progress')) {
+      return res.status(409).json({ error: 'Already in progess'}); // 409 Conflict
+    }
+    return res.status(500).json({ error: 'Failed to queue withdrawal request' });
   }
 })
 

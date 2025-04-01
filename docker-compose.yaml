@@ -5,6 +5,24 @@ networks:
       com.docker.network.driver.mtu: 1450
 
 services:
+  tx-daemon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: node ./src/daemons/tonAffiliateDaemon.js
+    depends_on:
+      database:
+        condition: service_healthy  # Wait for MongoDB to be healthy
+      redis:
+        condition: service_started  # Wait for Redis to start
+    networks:
+      - default
+    environment:
+      - MONGO_URI=mongodb://database:27017/yourdb
+      - REDIS_HOST=redis
+      - REDIS_PASSWORD=redis_password
+    restart: unless-stopped  # Optional: Restart unless explicitly stopped
+
   database:
     image: mongo:5
     volumes:
@@ -24,8 +42,9 @@ services:
       /bin/bash -c "
       mongod --replSet rs0 --bind_ip_all & 
       sleep 5 && 
-      mongo --eval 'rs.initiate({_id: \"rs0\", members: [{_id: 0, host: \"localhost:27017\"}]})' && 
+      mongo --eval 'rs.initiate({_id: \"rs0\", members: [{_id: 0, host: \"database:27017\"}]})' && 
       wait"
+    restart: unless-stopped  # Optional: Ensure it restarts on failure
 
   redis:
     image: redis:7
@@ -36,6 +55,7 @@ services:
     command: redis-server --requirepass redis_password
     networks:
       - default
+    restart: unless-stopped  # Optional: Ensure it restarts on failure
 
 volumes:
   db-floor:

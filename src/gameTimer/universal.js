@@ -678,17 +678,6 @@ dbUpdateQueue.on('failed', (job, err) => {
   log("error", colors.red(`DB update job failed after retries`), { jobId: job.id, description: job.data.description, error: err.message });
 });
 
-// Simplified applyUserParameterUpdates using the queue
-const applyUserParameterUpdates = async (userParameters, periodCosts, periodProfits, processType) => {
-  const jobId = await queueDbUpdate(
-    'applyUserParameterUpdates',
-    { userParametersId: userParameters.id, periodCosts, periodProfits, processType },
-    `applyUserParameterUpdates for ${processType}, user ${userParameters.id}`,
-    userParameters.id
-  );
-  return [jobId];
-};
-
 const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY;
 const TONCENTER_API_URL = "https://toncenter.com/api/v2";
 

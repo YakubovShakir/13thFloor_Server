@@ -2,19 +2,14 @@
 import StarsTransactions from "../models/tx/starsTransactionModel.mjs";
 import TONTransactions from "../models/tx/tonTransactionModel.js";
 import AffiliateTransaction from "../models/tx/affiliateTransactionModel.js";
-import mongoose from "mongoose";
 import { withTransaction } from "../utils/dbUtils.js";
 import TON from "ton-core";
 import { Address, internal, beginCell } from '@ton/ton'
-import { mnemonicToPrivateKey } from "@ton/crypto";
 import { openWallet } from "../routes/user/userRoutes.js";
 import axios from "axios";
 import User from "../models/user/userModel.js";
 
-const { TonClient, WalletContractV4, toNano, SendMode } = TON;
-
-// Constants for calculations
-const STARS_TO_TON_RATE = 1000; // 1000 Stars = 1 TON
+const { toNano, SendMode } = TON;
 
 // TON Center API configuration
 const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY;

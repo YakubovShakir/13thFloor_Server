@@ -72,7 +72,6 @@ connectDB().then(() => {
       product_type: 'autoclaim',
       product_id: 'game_center'
     }).save()
-    // withdrawAffiliateEarnings(790629329)
 })
 
 app.use("/api/process/", processRouter)
