@@ -1,18 +1,17 @@
-import { Queue } from 'bullmq';
 import { config } from 'dotenv';
-
+import IORedis from 'ioredis';
 config()
 
 const redisConfig = {
-  socket: {
-    host: process.env.REDIS_HOST || 'redis-test',
-    port: parseInt(process.env.REDIS_PORT || '6379', 10),
-  },
+  host: process.env.REDIS_HOST || 'redis-test',
+  port: parseInt(process.env.REDIS_PORT || '6379', 10),
   password: process.env.REDIS_PASSWORD || 'redis_password',
 };
 
+const redisConnection = new IORedis(redisConfig);
+
 const affiliateWithdrawQueue = new Queue('affiliate-withdrawals', {
-  connection: redisConfig,
+  connection: redisConnection,
 });
 
 export const queueAffiliateWithdrawal = async (affiliateId) => {
