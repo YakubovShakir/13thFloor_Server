@@ -6,6 +6,8 @@ import mongoose from 'mongoose';
 
 config();
 
+
+console.log(process.env.REDIS_HOST)
 const redisConfig = {
   host: process.env.REDIS_HOST,
   port: 6379,

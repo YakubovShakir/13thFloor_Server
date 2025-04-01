@@ -66,22 +66,6 @@ services:
     networks:
       - app-network
 
-  redis-test:
-    image: redis:7
-    volumes:
-      - redis-data:/data
-    ports:
-      - "6379:6379"
-    command: redis-server --requirepass redis_password
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "redis_password", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - app-network
-    restart: unless-stopped
-
   bot:
     build:
       context: ./bot
@@ -131,7 +115,8 @@ services:
       - NODE_ENV=test
       - MONGO_URI=mongodb://databaseTest:27017/Floor?replicaSet=rs0
       - REDIS_HOST=redis-test
-      - REDIS_PASSWORD=redis_password  # Add password for Redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=redis_password
     command: ["node", "./src/daemons/tonAffiliateDaemon.js"]
     depends_on:
       databaseTest:
@@ -140,6 +125,22 @@ services:
         condition: service_healthy
     networks:
       - app-network
+
+  redis-test:
+    image: redis:7
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass redis_password --bind 0.0.0.0
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redis_password", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+    restart: unless-stopped
 
 volumes:
   db-floor-tests:
