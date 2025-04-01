@@ -14,14 +14,14 @@ services:
       database:
         condition: service_healthy  # Wait for MongoDB to be healthy
       redis:
-        condition: service_started  # Wait for Redis to start
+        condition: service_healthy  # Wait for Redis to be healthy
     networks:
       - default
     environment:
       - MONGO_URI=mongodb://database:27017/yourdb
       - REDIS_HOST=redis
       - REDIS_PASSWORD=redis_password
-    restart: unless-stopped  # Optional: Restart unless explicitly stopped
+    restart: unless-stopped
 
   database:
     image: mongo:5
@@ -44,7 +44,7 @@ services:
       sleep 5 && 
       mongo --eval 'rs.initiate({_id: \"rs0\", members: [{_id: 0, host: \"database:27017\"}]})' && 
       wait"
-    restart: unless-stopped  # Optional: Ensure it restarts on failure
+    restart: unless-stopped
 
   redis:
     image: redis:7
@@ -53,9 +53,14 @@ services:
     ports:
       - 6379:6379
     command: redis-server --requirepass redis_password
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "redis_password", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - default
-    restart: unless-stopped  # Optional: Ensure it restarts on failure
+    restart: unless-stopped
 
 volumes:
   db-floor:
