@@ -7,6 +7,7 @@ const redisConfig = {
   host: process.env.REDIS_HOST || 'redis-test',
   port: parseInt(process.env.REDIS_PORT || '6379', 10),
   password: process.env.REDIS_PASSWORD || 'redis_password',
+  maxRetriesPerRequest: null
 };
 
 const redisConnection = new IORedis(redisConfig);
