@@ -82,8 +82,6 @@ tonClient = wallet.client
 const TELEGRAM_BOT_TOKEN = "7775483956:AAHc14xqGCeNQ7DVsqABf0qAa8gdqwMWE6w"
 const bot = new Bot(TELEGRAM_BOT_TOKEN)
 
-const RECEIVING_WALLET_ADDRESS = walletContract.address.toString()
-
 export async function openWallet(mnemonic, testnet) {
   const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY
   const keyPair = await mnemonicToPrivateKey(mnemonic)
@@ -387,7 +385,7 @@ const itemsPoolRaw = [
 router.get("/:id/gacha/items", async (req, res) => {
   const result = []
 
-  const userId = parseInt(req.params.id)
+  const userId = req.userId
   const user = await User.findOne({ id: userId })
 
   if (!user) {
@@ -449,7 +447,7 @@ router.get("/:id/gacha/items", async (req, res) => {
 
 router.get("/:id/gacha/attempts", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = req.userId
     console.log(userId)
     const attempts = await UserSpins.find(
       { user_id: userId, is_used: false },
@@ -471,8 +469,7 @@ router.get("/:id/gacha/attempts", async (req, res) => {
 
 router.get("/:id/gacha/spin", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
-
+    const userId = req.userId
     const attempts = await UserSpins.find(
       { user_id: userId, is_used: false },
       { _id: 1, type: 1 },
@@ -691,7 +688,7 @@ const createMongoDate = (momentDate) => {
 // Claim Reward Endpoint
 router.get("/:id/daily/claim", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = req.userId
     const todayMoment = getStartOfDay()
     const today = todayMoment.toDate()
 
@@ -804,7 +801,7 @@ router.get("/:id/daily/claim", async (req, res) => {
 // Status Endpoint
 router.get("/:id/daily/status", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = req.userId
     const todayMoment = getStartOfDay()
     const today = todayMoment.toDate()
 
@@ -912,7 +909,7 @@ router.get("/:id/daily/status", async (req, res) => {
 
 router.get("/:id/effects/current", async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = req.userId
     console.log(`Fetching effects for userId: ${userId}`)
 
     const userParameters = await UserParameters.findOne({ id: userId })
@@ -1329,7 +1326,7 @@ export const logAction = async (userId, actionType, metadata = {}) => {
 // Route for Home page: Get user's clicking state
 router.get("/neko/user-state/:userId", async (req, res) => {
   try {
-    const userId = parseInt(req.params.userId)
+    const userId = req.userId
     if (isNaN(userId)) {
       return res.status(400).json({ error: "Invalid userId" })
     }
@@ -1343,7 +1340,8 @@ router.get("/neko/user-state/:userId", async (req, res) => {
 // Route for ForeignHome page: Get interaction state
 router.post("/neko/interaction-state", async (req, res) => {
   try {
-    const { userId, targetUserId } = req.body
+    const { targetUserId } = req.body
+    const userId = req.userId
     if (!userId || !targetUserId) {
       return res
         .status(400)
@@ -1367,7 +1365,8 @@ router.post("/neko/interaction-state", async (req, res) => {
 // Route to interact with a target user's neko
 router.post("/neko/interact", async (req, res) => {
   try {
-    const { userId, targetUserId } = req.body
+    const { targetUserId } = req.body
+    const userId = req.userId
     if (!userId || !targetUserId) {
       return res
         .status(400)
@@ -1444,7 +1443,7 @@ const spawnCoin = (process) => {
 
 // Start sleep process
 router.post("/sleep/start/:userId", async (req, res) => {
-  const userId = parseInt(req.params.userId)
+  const userId = req.userId
   try {
     const userParams = await UserParameters.findOne({ id: userId })
     if (!userParams || userParams.energy >= userParams.energy_capacity) {
@@ -1505,7 +1504,7 @@ router.post("/sleep/start/:userId", async (req, res) => {
 router.get(
   "/sleep/state/:userId",
   limiter.wrap(async (req, res) => {
-    const userId = parseInt(req.params.userId)
+    const userId = req.userId
     try {
       const process = await gameProcess.findOne({
         id: userId,
@@ -1569,7 +1568,7 @@ router.get(
 router.post(
   "/sleep/jump/:userId",
   limiter.wrap(async (req, res) => {
-    const userId = parseInt(req.params.userId)
+    const userId = req.userId
     const { y, time } = req.body
 
     try {
@@ -1602,7 +1601,7 @@ router.post(
 router.post(
   "/sleep/collect-coin/:userId",
   limiter.wrap(async (req, res) => {
-    const userId = parseInt(req.params.userId)
+    const userId = req.userId
     const {
       coinId,
       collectionToken,
@@ -1773,7 +1772,7 @@ export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
 // GET endpoint to calculate TRX earnings from referrals
 router.get("/:userId/referral-earnings/", async (req, res) => {
   try {
-    const { userId } = req.params
+    const userId = req.userId
 
     // Convert userId to number since it's stored as Number in the schema
     const numericUserId = Number(userId)
@@ -1897,7 +1896,7 @@ router.get("/nft/supply/:itemId", async (req, res) => {
 router.get("/:id/nft/shop", async (req, res) => {
   try {
     log("info", "Nft shop endpoint requested")
-    const userId = parseInt(req.params.id)
+    const userId = req.userId
     if (isNaN(userId)) {
       return res.status(400).json({ error: "Invalid userId" })
     }
@@ -1949,7 +1948,8 @@ router.get("/:id/nft/shop", async (req, res) => {
 
 // Transaction Details Endpoint
 router.get("/nft/transaction-details", async (req, res) => {
-  const { userId, productId } = req.query
+  const { productId } = req.query
+  const userId = req.userId
 
   if (!userId || !productId) {
     return res.status(400).json({ error: "userId and productId are required" })
@@ -2070,10 +2070,10 @@ export const getAutoclaimStatus = async (userId) => {
 }
 
 router.get("/:id/affiliate-data", async (req, res) => {
-  const userId = parseInt(req.params.id)
+  const userId = parseInt(req.userId)
   try {
     const data = await getAffiliateEarningsData(userId)
-
+    const user
     await log("info", ansiColors.cyan("Affiliate data requested"), {
       userId,
       ...data,
