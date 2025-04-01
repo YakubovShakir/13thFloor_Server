@@ -2,7 +2,7 @@ import { config } from 'dotenv';
 import mongoose from 'mongoose';
 import { Queue, Worker } from 'bullmq';
 import { createClient } from 'redis';
-import { withdrawAffiliateEarnings } from './utils/affiliateTxsUtils.js'
+import { withdrawAffiliateEarnings } from '../services/paymentService.js'
 
 config();
 
