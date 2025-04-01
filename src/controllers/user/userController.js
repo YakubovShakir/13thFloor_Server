@@ -274,7 +274,7 @@ export const createUserPersonage = async (req, res) => {
     userParam.respect += sumRespect
     await userParam.save()
 
-    await new UserSpins({ user_id: userId, type: "daily", is_ }).save()
+    await new UserSpins({ user_id: userId, type: "daily" }).save()
 
     return res.status(200).json({})
   } catch (e) {
