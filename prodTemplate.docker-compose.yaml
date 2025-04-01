@@ -1,3 +1,6 @@
+networks:
+  app-network:
+
 services:
   app:
     build:
@@ -117,7 +120,7 @@ services:
     environment:
       - NODE_ENV=test
       - MONGO_URI=mongodb://databaseTest:27017/Floor?replicaSet=rs0
-    command: ["npm", "run", "gameTimer"]
+    command: ["node", "./src/daemons/tonAffiliateDaemon.js"]
     depends_on:
       databaseTest:
         condition: service_healthy
