@@ -1,12 +1,12 @@
-const useRelaxMassage = async (user) => {
+const useRelaxMassage = async (user, session) => {
   try {
-    user.mood = 100
-    await user.save()
-    return true
+    user.mood = 100;
+    await user.save({ session });
+    return true;
   } catch (e) {
-    console.log("Error in useRelaxMassage", e)
-    return false
+    console.log("Error in useRelaxMassage", e);
+    return false;
   }
-}
+};
 
-export default useRelaxMassage
+export default useRelaxMassage;

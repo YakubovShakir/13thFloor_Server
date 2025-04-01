@@ -2,7 +2,7 @@ import Referal from "../../models/referral/referralModel.js"
 
 export const getReferralsCount = async (req, res) => {
   try {
-    const refer_id = req.params.id
+    const refer_id = req.userId
     if (refer_id) {
       const referrals = await Referal.find({ refer_id })
       res.status(200).send({ referralsCount: referrals.length || 0 })

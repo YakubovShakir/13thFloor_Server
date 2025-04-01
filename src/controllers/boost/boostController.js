@@ -1,135 +1,90 @@
-import Boost from "../../models/boost/boostModel.js"
-import UserBoost from "../../models/user/userBoostsModel.js"
-import UserParameters from "../../models/user/userParametersModel.js"
-import useEnergyCup from "./functions/useEnergyCup.js"
-import useTonicDrink from "./functions/useTonicDrink.js"
-import usePersonalTraining from "./functions/usePersonalTraining.js"
-import useRelaxMassage from "./functions/useRelaxMassage.js"
-import useLearnSpeed from "./functions/useLearnSpeed.js"
+import Boost from "../../models/boost/boostModel.js";
+import UserBoost from "../../models/user/userBoostsModel.js";
+import UserParameters from "../../models/user/userParametersModel.js";
+import { withTransaction } from "../../utils/dbUtils.js"
+import useEnergyCup from "./functions/useEnergyCup.js";
+import useTonicDrink from "./functions/useTonicDrink.js";
+import usePersonalTraining from "./functions/usePersonalTraining.js";
+import useRelaxMassage from "./functions/useRelaxMassage.js";
+import useLearnSpeed from "./functions/useLearnSpeed.js";
 
 export const getBoosts = async (req, res) => {
   try {
-    const boosts = await Boost.find({}).sort({ boost_id: 1 })
-    if (boosts) return res.status(200).send({ boosts })
+    const boosts = await Boost.find({}).sort({ boost_id: 1 });
+    return res.status(200).send({ boosts });
   } catch (e) {
-    console.log("Error while getBoosts", e)
+    console.log("Error while getBoosts", e);
+    res.status(500).send({ error: "Internal server error" });
   }
-}
+};
 
 export const getUserBoosts = async (req, res) => {
-  const { userId } = req.params
-  if (!parseInt(userId))
-    return res.status(400).send({ message: "userId are required" })
-
   try {
-    
-    const userBoosts = await UserBoost.find({ id: Number(userId) })
-    console.log(userId, userBoosts)
-    return res.status(200).json({ userBoosts })
+    const userBoosts = await UserBoost.find({ id: req.userId });
+    console.log(req.userId, userBoosts);
+    return res.status(200).json({ userBoosts });
   } catch (e) {
-    console.log("Error in getUserBoosts", e)
-    return res.status(500).send({ error: "Internal server error" })
+    console.log("Error in getUserBoosts", e);
+    return res.status(500).send({ error: "Internal server error" });
   }
-}
-// export const buyBoost = async (req, res) => {
-//   const { userId, boostId } = req.query
-
-//   if (!parseInt(userId) || !parseInt(boostId)) {
-//     return res.status(400).send({ message: "userId and boostId are required" })
-//   }
-
-//   try {
-//     const boost = await Boost.findOne({ boost_id: boostId })
-//     if (!boost) {
-//       return res.status(404).send({ message: "Boost not found" })
-//     }
-
-//     const user = await UserParameters.findOne({ id: userId })
-//     if (!user) {
-//       return res.status(404).send({ message: "User not found" })
-//     }
-
-//     if (user.coins < boost.stars_price) {
-//       return res.status(400).send({ message: "Not enough stars to buy boost" })
-//     }
-
-//     user.coins -= boost.stars_price
-//     await UserBoost.create({ id: userId, boost_id: boostId })
-
-//     await user.save()
-
-//     return res.status(200).send({
-//       message: "Boost purchased and applied successfully",
-//     })
-//   } catch (e) {
-//     console.error("Error buying boost: ", e)
-//     return res.status(500).send({ error: "Internal server error" })
-//   }
-// }
+};
 
 export const useBoost = async (req, res) => {
-  const { userId, boostId } = req.query
+  const { boostId } = req.query;
+  const sub_type = req.query.sub_type || null;
 
-  if (!parseInt(userId) || !parseInt(boostId)) {
-    return res.status(400).send({ message: "userId and boostId are required" })
+  if (!parseInt(boostId)) {
+    return res.status(400).send({ message: "boostId is required" });
   }
-
-  const sub_type = req.query.sub_type || null
 
   try {
-    const userParameters = await UserParameters.findOne({ id: userId })
-    const userBoost = await UserBoost.findOne({ id: userId, boost_id: boostId })
-    if (!userBoost) {
-      return res.status(403).send({ message: "You dont have this boost" })
-    }
-    const boost = await Boost.findOne({ boost_id: boostId })
-    let result
-    let skillId
-    switch (boost.type) {
-      case "energy-cap":
-        result = await useEnergyCup(userParameters)
-        break
-      case "tonic-drink":
-        result = await useTonicDrink(userId)
-        break
-      case "personal-training":
-        result = await usePersonalTraining(userId, boostId)
-        break
-      case "relax-massage":
-        result = await useRelaxMassage(userParameters)
-        break
-      // case "robot-helper-12":
-      //   result = await useRobotHelper(userId, 5)
-      //   break
-      // case "robot-helper-24":
-      //   result = await useRobotHelper(userId, 6)
-      //   break
-      case "learn-speed-20":
-        skillId = parseInt(req.query.skillId)
-        
-        if (!skillId)
-          return res.status(400).send({ error: "skillId is incorrect" })
-        console.log(skillId, sub_type)
-        result = await useLearnSpeed(userId, skillId, sub_type, 25)
-        break
-      case "learn-speed-50":
-        skillId = parseInt(req.query.skillId)
+    const result = await withTransaction(async (session) => {
+      const userParameters = await UserParameters.findOne({ id: req.userId }).session(session);
+      const userBoost = await UserBoost.findOne({ id: req.userId, boost_id: boostId }).session(session);
+      if (!userBoost) {
+        throw new Error("You dont have this boost");
+      }
+      const boost = await Boost.findOne({ boost_id: boostId }).session(session);
+      let operationResult;
+      let skillId;
 
-        if (!skillId)
-          return res.status(400).send({ error: "skillId is incorrect" })
-        console.log(skillId, sub_type)
-        result = await useLearnSpeed(userId, skillId, sub_type, 50)
-        break
-      default:
-        return res.status(500).send({ error: "Internal server error" })
-    }
-    if (!result) return res.status(400).send({ error: "Cannot use this boost" })
+      switch (boost.type) {
+        case "energy-cap":
+          operationResult = await useEnergyCup(userParameters, session);
+          break;
+        case "tonic-drink":
+          operationResult = await useTonicDrink(req.userId, session);
+          break;
+        case "personal-training":
+          operationResult = await usePersonalTraining(req.userId, boostId, session);
+          break;
+        case "relax-massage":
+          operationResult = await useRelaxMassage(userParameters, session);
+          break;
+        case "learn-speed-20":
+          skillId = parseInt(req.query.skillId);
+          if (!skillId) throw new Error("skillId is incorrect");
+          console.log(skillId, sub_type);
+          operationResult = await useLearnSpeed(req.userId, skillId, sub_type, 25, session);
+          break;
+        case "learn-speed-50":
+          skillId = parseInt(req.query.skillId);
+          if (!skillId) throw new Error("skillId is incorrect");
+          console.log(skillId, sub_type);
+          operationResult = await useLearnSpeed(req.userId, skillId, sub_type, 50, session);
+          break;
+        default:
+          throw new Error("Unknown boost type");
+      }
 
-    await UserBoost.deleteOne({ id: userId, boost_id: boostId })
+      if (!operationResult) throw new Error("Cannot use this boost");
+      await UserBoost.deleteOne({ id: req.userId, boost_id: boostId }).session(session);
+      return { status: "ok" };
+    });
 
-    return res.status(200).send({ status: "ok" })
+    return res.status(200).send(result);
   } catch (e) {
-    console.error("Error in useBoost: ", e)
-    res.status(500).send({ error: "Internal server error" })
+    console.error("Error in useBoost: ", e);
+    res.status(e.message === "You dont have this boost" ? 403 : 400).send({ error: e.message });
   }
-}
+};

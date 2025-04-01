@@ -1,65 +1,157 @@
-import express from "express"
-import cors from "cors"
-import connectDB from "./config/db.js"
-import usersRouter from "./routes/user/userRoutes.js"
-import referralRouter from "./routes/referral/referralRoutes.js"
-import foodsRouter from "./routes/food/foodRoutes.js"
-import boostRouter from "./routes/boost/boostRoutes.js"
-import worksRouter from "./routes/work/workRoutes.js"
-import skillsRouter from "./routes/skill/skillRoutes.js"
-import processRouter from "./routes/process/processRoutes.js"
-import levelsRouter from "./routes/level/levelRoutes.js"
-import dotenv from "dotenv"
+import express from "express";
+import cors from "cors";
+import connectDB from "./config/db.js";
+import usersRouter from "./routes/user/userRoutes.js";
+import referralRouter from "./routes/referral/referralRoutes.js";
+import foodsRouter from "./routes/food/foodRoutes.js";
+import boostRouter from "./routes/boost/boostRoutes.js";
+import worksRouter from "./routes/work/workRoutes.js";
+import skillsRouter from "./routes/skill/skillRoutes.js";
+import processRouter from "./routes/process/processRoutes.js";
+import levelsRouter from "./routes/level/levelRoutes.js";
+import dotenv from "dotenv";
+import IORedis from "ioredis";
+import crypto from "crypto";
 
-import ClothingItems from "./models/clothing/migration.js"
-import SkillItems from "./models/skill/migration.js"
-import FoodItems from "./models/food/migration.js"
-import BoostItems from "./models/boost/migration.js"
-import WorkItems from "./models/work/migration.js"
-import LevelItems from "./models/level/migration.js"
-import TrainingItems from "./models/training/migration.js"
+import ClothingItems from "./models/clothing/migration.js";
+import SkillItems from "./models/skill/migration.js";
+import FoodItems from "./models/food/migration.js";
+import BoostItems from "./models/boost/migration.js";
+import WorkItems from "./models/work/migration.js";
+import LevelItems from "./models/level/migration.js";
+import TrainingItems from "./models/training/migration.js";
 
-import Clothing from "./models/clothing/clothingModel.js"
-import Skill from "./models/skill/skillModel.js"
-import Food from "./models/food/foodModel.js"
-import Boost from "./models/boost/boostModel.js"
-import Work from "./models/work/workModel.js"
-import LevelsParameters from "./models/level/levelParametersModel.js"
-import TrainingParameters from "./models/training/trainingParameters.js"
-import UserParameters from "./models/user/userParametersModel.js"
-import UserCurrentInventory from "./models/user/userInventoryModel.js"
-import UserClothing from "./models/user/userClothingModel.js"
-import User from "./models/user/userModel.js"
-import ShelfItemModel from "./models/shelfItem/shelfItemModel.js"
-import { ShelfItems } from "./models/shelfItem/migration.js"
-import UserLaunchedInvestments from "./models/investments/userLaunchedInvestments.js"
-import Investments from "./models/investments/investmentModel.js"
-import InvestmentsMigration from "./models/investments/migration.js"
-import CompletedTasks from "./models/tasks/completedTask.js"
-import Tasks from "./models/tasks/taskModel.js"
-import TasksMigration from "./models/tasks/migration.js"
-import UserSkill from "./models/user/userSkillModel.js"
-import UserProcess from "./models/process/processModel.js"
-import { ConstantEffects } from "./models/effects/constantEffectsLevels.js"
-import constantEffects from "./models/effects/migration.js"
-import { addUserSubscriptionStatus, collectRefStatsFromDb } from "./controllers/user/userController.js"
-import UserBoost from "./models/user/userBoostsModel.js"
-import { UserSpins } from "./models/user/userSpinsModel.js"
-import StarsTransactions from './models/tx/starsTransactionModel.mjs'
-import { withdrawAffiliateEarnings } from "./services/paymentService.js"
-// import { populateDB } from "./models/nft/migrateInitialDeploymentData.js"
+import Clothing from "./models/clothing/clothingModel.js";
+import Skill from "./models/skill/skillModel.js";
+import Food from "./models/food/foodModel.js";
+import Boost from "./models/boost/boostModel.js";
+import Work from "./models/work/workModel.js";
+import LevelsParameters from "./models/level/levelParametersModel.js";
+import TrainingParameters from "./models/training/trainingParameters.js";
+import UserParameters from "./models/user/userParametersModel.js";
+import UserCurrentInventory from "./models/user/userInventoryModel.js";
+import UserClothing from "./models/user/userClothingModel.js";
+import User from "./models/user/userModel.js";
+import ShelfItemModel from "./models/shelfItem/shelfItemModel.js";
+import { ShelfItems } from "./models/shelfItem/migration.js";
+import UserLaunchedInvestments from "./models/investments/userLaunchedInvestments.js";
+import Investments from "./models/investments/investmentModel.js";
+import InvestmentsMigration from "./models/investments/migration.js";
+import CompletedTasks from "./models/tasks/completedTask.js";
+import Tasks from "./models/tasks/taskModel.js";
+import TasksMigration from "./models/tasks/migration.js";
+import UserSkill from "./models/user/userSkillModel.js";
+import UserProcess from "./models/process/processModel.js";
+import { ConstantEffects } from "./models/effects/constantEffectsLevels.js";
+import constantEffects from "./models/effects/migration.js";
+import { addUserSubscriptionStatus, collectRefStatsFromDb } from "./controllers/user/userController.js";
+import UserBoost from "./models/user/userBoostsModel.js";
+import { UserSpins } from "./models/user/userSpinsModel.js";
+import StarsTransactions from './models/tx/starsTransactionModel.mjs';
+import { withdrawAffiliateEarnings } from "./services/paymentService.js";
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
-// const corsOptions = {
-//   origin: process.env.CORS_ORIGIN,
-//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//   credentials: true,
-// }
+// Redis connection
+const redis = new IORedis({
+  host: process.env.REDIS_HOST || 'redis-test',
+  port: parseInt(process.env.REDIS_PORT || '6379', 10),
+  password: process.env.REDIS_PASSWORD || 'redis_password',
+});
 
-app.use(cors())
-app.use(express.json())
+redis.on('connect', () => console.log('Redis connected for middleware'));
+redis.on('error', (err) => console.error('Redis error in middleware:', err));
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+// Global middleware to validate Telegram initData and attach user.id
+const validateTelegramInitData = async (req, res, next) => {
+  const initData = req.headers.authorization;
+
+  if (!initData || !initData.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Authorization header missing or invalid' });
+  }
+
+  const token = initData.replace('Bearer ', '');
+  const cacheKey = `tg:initData:${crypto.createHash('sha256').update(token).digest('hex')}`;
+  const TTL = 30 * 60; // 30 minutes in seconds
+
+  try {
+    // Check Redis cache
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      const [validity, userId] = cached.split(':');
+      if (validity === 'valid') {
+        console.log('Cached valid initData:', cacheKey);
+        req.userId = parseInt(userId, 10); // Attach user.id to req
+        return next();
+      }
+    }
+
+    // Parse initData
+    const params = new URLSearchParams(token);
+    const authDate = parseInt(params.get('auth_date'), 10);
+    const hash = params.get('hash');
+    const userRaw = params.get('user');
+
+    if (!authDate || !hash || !userRaw) {
+      return res.status(401).json({ error: 'Invalid initData format' });
+    }
+
+    // Extract user.id
+    let user;
+    try {
+      user = JSON.parse(userRaw);
+      if (!user.id) throw new Error('User ID missing');
+    } catch (e) {
+      return res.status(401).json({ error: 'Invalid user data in initData' });
+    }
+    const userId = user.id;
+
+    // Check timestamp (within 30 minutes)
+    const now = Math.floor(Date.now() / 1000);
+    if (now - authDate > TTL) {
+      return res.status(401).json({ error: 'initData expired' });
+    }
+
+    // Validate hash
+    params.delete('hash');
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    if (!botToken) {
+      throw new Error('TELEGRAM_BOT_TOKEN not set in environment');
+    }
+
+    const dataCheckString = Array.from(params.entries())
+      .sort()
+      .map(([key, value]) => `${key}=${value}`)
+      .join('\n');
+    const secretKey = crypto.createHmac('sha256', 'WebAppData').update(botToken).digest();
+    const computedHash = crypto.createHmac('sha256', secretKey).update(dataCheckString).digest('hex');
+
+    if (computedHash !== hash) {
+      return res.status(401).json({ error: 'Invalid initData hash' });
+    }
+
+    // Cache the valid result with userId
+    await redis.set(cacheKey, `valid:${userId}`, 'EX', TTL);
+    console.log('Validated and cached initData:', cacheKey, 'with userId:', userId);
+    req.userId = userId; // Attach user.id to req
+    next();
+  } catch (error) {
+    console.error('Error validating initData:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+if(process.env.USE_AUTH !== 'false') {
+  // Apply middleware globally
+  app.use(validateTelegramInitData);
+} else {
+  app.use((req, res, next) => { req.userId = process.env.DEV_ID || '790629329'; next() })
+}
 
 connectDB().then(() => {
   if (process.env.NODE_ENV === "test") main()

@@ -1,216 +1,186 @@
-import process from "../../models/process/processModel.js"
-import User from "../../models/user/userModel.js"
-import startWork, { checkCanStopWork } from "../work/functions/startWork.js"
-import startTraining, {
-  checkCanStopTraining,
-} from "../training/functions/startTraining.js"
-import { checkCanStopSleep, startSleep } from "../sleep/sleepController.js"
-import { checkCanStopLearning } from '../skill/skillController.js'
-import buySkill from "../skill/functions/buySkill.js"
-import buyFood from "../food/functions/buyFood.js"
-import Work from "../../models/work/workModel.js"
-import moment from "moment-timezone"
+import processModel from "../../models/process/processModel.js";
+import User from "../../models/user/userModel.js";
+import { withTransaction } from "../../utils/dbUtils.js"
+import startWork, { checkCanStopWork } from "../work/functions/startWork.js";
+import startTraining, { checkCanStopTraining } from "../training/functions/startTraining.js";
+import { checkCanStopSleep, startSleep } from "../sleep/sleepController.js";
+import { checkCanStopLearning } from '../skill/skillController.js';
+import buySkill from "../skill/functions/buySkill.js";
+import buyFood from "../food/functions/buyFood.js";
+import Work from "../../models/work/workModel.js";
+import moment from "moment-timezone";
+
 export const startProcess = async (req, res) => {
   try {
-    // Проверяем тип процесса
-    const processType = req.query.type
-
-    if (!["food", "work", "skill", "training", "sleep"].includes(processType))
-      return res.status(400).json({ error: "Not valid type" })
-    const userId = parseInt(req.query.id)
-    if (!userId) return res.status(400).json({ error: "Incorrect userId" })
-    const user = await User.findOne({ id: userId })
-    if (!user) return res.status(404).json({ error: "user not found" })
-
-    let result
-    switch (processType) {
-      case "work":
-        result = await startWork(userId) 
-        break
-      case "training":
-        result = await startTraining(userId)
-        break
-      case "sleep":
-        result = await startSleep(userId)
-        break
-      case "skill":
-        const skillId = parseInt(req.query.typeId)
-        const sub_type = req.query.sub_type
-        console.log(sub_type, skillId)
-        if (!skillId)
-          return res.status(400).json({ error: "Incorrect skillId!" })
-        result = await buySkill(userId, skillId, sub_type)
-        break
-      case "food":
-        const foodId = parseInt(req.query.typeId)
-        if (!foodId) return res.status(400).json({ error: "Incorrect foodId!" })
-        result = await buyFood(userId, foodId)
-        break
+    const processType = req.query.type;
+    if (!["food", "work", "skill", "training", "sleep"].includes(processType)) {
+      return res.status(400).json({ error: "Not valid type" });
     }
-    return res.status(result?.status).json({ ...result?.data })
+
+    const result = await withTransaction(async (session) => {
+      const user = await User.findOne({ id: req.userId }).session(session);
+      if (!user) throw new Error("user not found");
+
+      let operationResult;
+      switch (processType) {
+        case "work":
+          operationResult = await startWork(req.userId, session);
+          break;
+        case "training":
+          operationResult = await startTraining(req.userId, session);
+          break;
+        case "sleep":
+          operationResult = await startSleep(req.userId, session);
+          break;
+        case "skill":
+          const skillId = parseInt(req.query.typeId);
+          const sub_type = req.query.sub_type;
+          if (!skillId) throw new Error("Incorrect skillId!");
+          console.log(sub_type, skillId);
+          operationResult = await buySkill(req.userId, skillId, sub_type, session);
+          break;
+        case "food":
+          const foodId = parseInt(req.query.typeId);
+          if (!foodId) throw new Error("Incorrect foodId!");
+          operationResult = await buyFood(req.userId, foodId, session);
+          break;
+      }
+      return operationResult;
+    });
+
+    return res.status(result?.status || 200).json({ ...result?.data });
   } catch (e) {
-    console.log("Error in startProcess - ", e)
+    console.log("Error in startProcess - ", e);
+    res.status(e.message === "user not found" ? 404 : 400).json({ error: e.message });
   }
-}
+};
 
 export const stopActiveProcess = async (req, res) => {
-  console.log("Stopping process")
-  const userId = parseInt(req.query.id)
-  if (!userId) return res.status(400).json({ error: "<id> is required!" })
+  console.log("Stopping process");
+  try {
+    const result = await withTransaction(async (session) => {
+      const user = await User.findOne({ id: req.userId }).session(session);
+      if (!user) throw new Error("User not found!");
 
-  const user = await User.findOne({ id: userId })
-  if (!user) return res.status(404).json({ error: "User not found!" })
+      const activeProcess = await processModel.findOne({ id: req.userId, active: true }).session(session);
+      if (!activeProcess) throw new Error("Active Process not found!");
 
-  const activeProcess = await process.findOne({ id: userId, active: true })
-  console.log(userId)
-  if (!activeProcess)
-    return res.status(404).json({ error: "Active Process not found!" })
+      await processModel.deleteOne({ id: req.userId, active: true }).session(session);
+      return { status: "ok" };
+    });
 
-  await process.deleteOne({ id: userId, active: true })
-  return res.status(200).json({ status: "ok" })
-}
+    return res.status(200).json(result);
+  } catch (e) {
+    console.log("Error in stopActiveProcess - ", e);
+    res.status(e.message === "User not found!" ? 404 : 404).json({ error: e.message });
+  }
+};
 
 export const getUserProcesses = async (req, res) => {
   try {
-    const userId = parseInt(req.query.id)
+    const processType = req.query.type;
+    if (!["food", "work", "skill", "training", "boost"].includes(processType)) {
+      return res.status(400).json({ error: "<type> is wrong!" });
+    }
 
-    if (!userId) return res.status(400).json({ error: "<id> is required!" })
+    const user = await User.findOne({ id: req.userId });
+    if (!user) return res.status(404).json({ error: "User not found" });
 
-    const processType = req.query.type
-    if (!["food", "work", "skill", "training", "boost"].includes(processType))
-      return res.status(400).json({ error: "<type> is wrong!" })
-
-    const user = await User.findOne({ id: userId })
-    if (!user) return res.status(404).json({ error: "User not found" })
-
-    const processes = await process.find(
-      {
-        id: userId,
-        type: processType,
-      },
+    const processes = await processModel.find(
+      { id: req.userId, type: processType },
       { _id: false }
-    )
-    return res.status(200).json({ processes })
+    );
+    return res.status(200).json({ processes });
   } catch (e) {
-    console.log("Error while getUserProcesses - ", e)
+    console.log("Error while getUserProcesses - ", e);
+    res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
 export const checkCanStop = async (req, res) => {
-  const userId = parseInt(req.params.id)
-  const { sub_type: subType = null, type: processType, id } = req.body
+  const { sub_type: subType = null, type: processType, id } = req.body;
 
-  let activeProcess = id ? await process.findOne({ id: userId, type: processType, type_id: id }) : await process.findOne({ id: userId, type: processType })
-  
-  if(!activeProcess) {
-    return res.status(404).json({})
-  }
-  
-  switch (activeProcess?.type) {
-    case "work":
-      try {
-        const { status, data } = await checkCanStopWork(userId, activeProcess)
-        return res.status(status).json(data)
-      } catch (err) {
-        console.log(err)
-        return res.status(err.status).json(err.data)
-      }
-    case "training":
-      try {
-        const { status, data } = await checkCanStopTraining(
-          userId,
-          activeProcess
-        )
-        return res.status(status).json(data)
-      } catch (err) {
-        console.log(err)
-        return res.status(err.status).json(err.data)
-      }
+  try {
+    const activeProcess = id
+      ? await processModel.findOne({ id: req.userId, type: processType, type_id: id })
+      : await processModel.findOne({ id: req.userId, type: processType });
+
+    if (!activeProcess) {
+      return res.status(404).json({});
+    }
+
+    let result;
+    switch (activeProcess.type) {
+      case "work":
+        result = await checkCanStopWork(req.userId, activeProcess);
+        break;
+      case "training":
+        result = await checkCanStopTraining(req.userId, activeProcess);
+        break;
       case "sleep":
-        try {
-          const { status, data } = await checkCanStopSleep(
-            userId,
-            activeProcess
-          )
-          return res.status(status).json(data)
-        } catch (err) {
-          console.log(err)
-          return res.status(err.status).json(err.data)
-        }
+        result = await checkCanStopSleep(req.userId, activeProcess);
+        break;
       case "skill":
-        try {
-          const skillProcess = await process.findOne({
-            type: 'skill',
-            sub_type: subType
-          })
-          const { status, data } = await checkCanStopLearning(
-            userId,
-            skillProcess
-          )
-          return res.status(status).json(data)
-        } catch(err) {
-          console.log(err)
-          return res.status(err.status).json(err.data)
-        }
+        const skillProcess = await processModel.findOne({ type: 'skill', sub_type: subType });
+        result = await checkCanStopLearning(req.userId, skillProcess);
+        break;
       case "food":
-        try {
-          if (moment().diff(moment(activeProcess.createdAt), 'seconds') >= (activeProcess.target_duration_in_seconds || activeProcess.base_duration_in_seconds)) {
-            await process.deleteOne({ _id: activeProcess._id })
-          }
-          return res.status(200).json({})
-        } catch(err) {
-          console.log(err)
-          return res.status(err.status).json(err.data)
+        if (moment().diff(moment(activeProcess.createdAt), 'seconds') >= (activeProcess.target_duration_in_seconds || activeProcess.base_duration_in_seconds)) {
+          await withTransaction(async (session) => {
+            await processModel.deleteOne({ _id: activeProcess._id }).session(session);
+          });
         }
-    default:
-      return res.status(200).json({ status: 'ok' })
+        return res.status(200).json({});
+      default:
+        return res.status(200).json({ status: 'ok' });
+    }
+
+    return res.status(result.status).json(result.data);
+  } catch (err) {
+    console.log(err);
+    return res.status(err.status || 500).json(err.data || { error: "Internal server error" });
   }
-}
+};
 
 export const getUserActiveProcess = async (req, res) => {
   try {
-    const userId = parseInt(req.query.id)
-    if (!userId) return res.status(400).json({ error: "<id> is required!" })
+    let user = await User.findOne({ id: req.userId });
+    if (!user) {
+      user = await withTransaction(async (session) => {
+        return await new User({
+          id: req.userId,
+          prestart: true,
+          personage: {},
+          shelf: [],
+        }).save({ session });
+      });
+    }
 
-    let user = await User.findOne({ id: userId })
-    if (!user)
-      user = await new User({
-        id: userId,
-        prestart: true,
-        personage: {},
-        shelf: [],
-      }).save()
-
-    const activeProcess = await process.findOne(
-      {
-        id: userId,
-        active: true,
-      },
+    const activeProcess = await processModel.findOne(
+      { id: req.userId, active: true },
       { _id: false }
-    )
+    );
 
     if (activeProcess) {
-      let activeProcessWithCoins
-
+      let activeProcessWithCoins;
       if (activeProcess.type === "work") {
-        const work = await Work.findOne({ work_id: activeProcess.type_id })
-        activeProcessWithCoins = { ...activeProcess._doc }
-        activeProcessWithCoins.coins_in_hour = work?.coins_in_hour || null
+        const work = await Work.findOne({ work_id: activeProcess.type_id });
+        activeProcessWithCoins = { ...activeProcess._doc };
+        activeProcessWithCoins.coins_in_hour = work?.coins_in_hour || null;
       }
-      return res
-        .status(200)
-        .json({ process: activeProcessWithCoins || activeProcess })
+      return res.status(200).json({ process: activeProcessWithCoins || activeProcess });
     } else {
-      return res.status(200).json({ process: null })
+      return res.status(200).json({ process: null });
     }
   } catch (e) {
-    console.log("Error while getUserActiveProcesses - ", e)
+    console.log("Error while getUserActiveProcesses - ", e);
+    res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
 export default {
   startProcess,
   stopActiveProcess,
   getUserActiveProcess,
   getUserProcesses,
-}
+};
