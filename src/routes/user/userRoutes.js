@@ -84,11 +84,8 @@ const bot = new Bot(TELEGRAM_BOT_TOKEN)
 const RECEIVING_WALLET_ADDRESS = walletContract.address.toString()
 console.log("Server wallet address:", RECEIVING_WALLET_ADDRESS)
 
-// TON Center API Configuration
-const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY
-const TONCENTER_API_URL = "https://toncenter.com/api/v2"
-
-async function openWallet(mnemonic, testnet) {
+export async function openWallet(mnemonic, testnet) {
+  const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY
   const keyPair = await mnemonicToPrivateKey(mnemonic)
 
   const toncenterBaseEndpoint = testnet
@@ -97,7 +94,7 @@ async function openWallet(mnemonic, testnet) {
 
   const client = new TonClient({
     endpoint: `${toncenterBaseEndpoint}/api/v2/jsonRPC`,
-    apiKey: process.env.TONCENTER_API_KEY,
+    apiKey: TONCENTER_API_KEY,
   })
 
   const wallet = WalletContractV4.create({

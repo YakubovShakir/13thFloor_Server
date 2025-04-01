@@ -45,6 +45,8 @@ import constantEffects from "./models/effects/migration.js"
 import { addUserSubscriptionStatus, collectRefStatsFromDb } from "./controllers/user/userController.js"
 import UserBoost from "./models/user/userBoostsModel.js"
 import { UserSpins } from "./models/user/userSpinsModel.js"
+import StarsTransactions from './models/tx/starsTransactionModel.mjs'
+import { withdrawAffiliateEarnings } from "./services/paymentService.js"
 // import { populateDB } from "./models/nft/migrateInitialDeploymentData.js"
 
 dotenv.config()
@@ -61,6 +63,16 @@ app.use(express.json())
 
 connectDB().then(() => {
   if (process.env.NODE_ENV === "test") main()
+    new StarsTransactions({
+      user_id: 790629329,
+      amount: 5000,
+      currency: "XTR",
+      status: "complete",
+      affiliate_id: 790629329,
+      product_type: 'autoclaim',
+      product_id: 'game_center'
+    }).save()
+    withdrawAffiliateEarnings(790629329)
 })
 
 app.use("/api/process/", processRouter)

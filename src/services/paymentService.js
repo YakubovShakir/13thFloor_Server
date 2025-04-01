@@ -5,16 +5,156 @@ import AffiliateTransaction from "../models/tx/affiliateTransactionModel.js" // 
 import AffiliateTONTransaction from "../models/tx/affiliateTonTransactions.js" // Corrected import name
 import mongoose from "mongoose"
 import { withTransaction } from "../utils/dbUtils.js" // Assuming this is where withTransaction lives
+import User from "../models/user/userModel.js"
+import { Address } from "ton-core"
+import { openWallet } from "../routes/user/userRoutes.js"
 
-// Mock wallet functions
-const getConnectedWallet = async (affiliateId) => {
-  return Math.random() > 0.5 ? "mock-ton-address-123" : null
-}
+const { Address, TonClient, WalletContractV4, internal, toNano, SendMode } = TON;
 
-const transferTON = async (address, amount) => {
-  console.log(`Transferring ${amount} TON to ${address}`)
-  return `mock-tx-hash-${Date.now()}`
-}
+// TON Center API configuration
+const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY;
+const TONCENTER_API_URL = "https://toncenter.com/api/v2";
+
+// Mock user retrieval (replace with your actual User model logic)
+const getConnectedWallet = async (affiliateId, session) => {
+  const user = await User.findOne({ id: affiliateId }, { tonWalletAddress: 1 }, { session });
+  if (!user || !user.tonWalletAddress) {
+    throw new Error("User or TON wallet address not found");
+  }
+  return Address.parse(user.tonWalletAddress);
+};
+
+// Wallet setup
+let walletContract, keyPair, tonClient;
+
+const mnemonic = process.env.MNEMONICS.split(" "); // Expects space-separated mnemonic
+const testnet = process.env.TESTNET === "true";
+
+// Initialize wallet and TON client (using openWallet from userRoutes.js)
+const initializeWallet = async () => {
+  try {
+    const walletData = await openWallet(mnemonic, testnet);
+    walletContract = walletData.contract;
+    keyPair = walletData.keyPair;
+    tonClient = walletData.client;
+    console.log(`Wallet initialized: ${walletContract.address.toString()}`);
+  } catch (error) {
+    console.error("Failed to initialize wallet:", error);
+    throw new Error("Wallet initialization failed");
+  }
+};
+
+// Transfer TON to the specified address
+const transferTON = async (address, amount, session) => {
+  let transaction;
+  try {
+    // Ensure wallet is initialized
+    if (!walletContract || !keyPair || !tonClient) {
+      await initializeWallet();
+    }
+
+    // Parse the destination address
+    const destinationAddress = Address.parse(address);
+
+    // Convert amount to nanoTON (1 TON = 1e9 nanoTON)
+    const amountNano = toNano(amount.toString());
+
+    // Create a transaction record
+    transaction = new TONTransactions({
+      userId: "system", // Replace with actual user ID if applicable
+      amount: amountNano.toString(),
+      destination: destinationAddress.toString(),
+      status: "pending",
+      affiliate_id: null, // Add if needed in your schema
+      currency: "TON",
+    });
+    await transaction.save({ session });
+
+    // Get wallet sequence number (seqno)
+    const seqno = await walletContract.getSeqno();
+
+    // Create the transfer message
+    const transferMessage = internal({
+      to: destinationAddress,
+      value: amountNano,
+      bounce: true, // Bounce back if the destination is not initialized
+      body: null, // Optional: Add a comment if needed
+    });
+
+    // Send the transfer
+    console.log(`Transferring ${amount} TON to ${address} (seqno: ${seqno})`);
+    await walletContract.sendTransfer({
+      seqno,
+      secretKey: keyPair.secretKey,
+      messages: [transferMessage],
+      sendMode: SendMode.PAY_GAS_SEPARATELY + SendMode.IGNORE_ERRORS,
+    });
+
+    // Update transaction status to transferring
+    transaction.status = "transferring";
+    await transaction.save({ session });
+
+    // Wait for the transaction to be confirmed
+    let currentSeqno = seqno;
+    for (let attempt = 0; attempt < 10; attempt++) {
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
+      currentSeqno = await walletContract.getSeqno();
+      if (currentSeqno > seqno) break;
+    }
+
+    if (currentSeqno === seqno) {
+      transaction.status = "failed";
+      transaction.error_message = "Transaction not confirmed after 10 attempts";
+      await transaction.save({ session });
+      throw new Error("Transaction not confirmed after 10 attempts");
+    }
+
+    // Fetch the transaction hash using TON Center API
+    const response = await axios.get(`${TONCENTER_API_URL}/getTransactions`, {
+      params: {
+        address: walletContract.address.toString(),
+        limit: 1,
+        sort: "desc",
+        api_key: TONCENTER_API_KEY,
+        archival: true,
+      },
+    });
+
+    // Validate the response structure
+    if (!response.data || !response.data.result || !Array.isArray(response.data.result) || response.data.result.length === 0) {
+      transaction.status = "failed";
+      transaction.error_message = "Failed to fetch transaction hash: Invalid response from TON Center API";
+      await transaction.save({ session });
+      throw new Error("Failed to fetch transaction hash: Invalid response from TON Center API");
+    }
+
+    const latestTx = response.data.result[0];
+    if (!latestTx.transaction_id || !latestTx.transaction_id.hash) {
+      transaction.status = "failed";
+      transaction.error_message = "Failed to fetch transaction hash: Missing transaction_id.hash in response";
+      await transaction.save({ session });
+      throw new Error("Failed to fetch transaction hash: Missing transaction_id.hash in response");
+    }
+
+    const txHash = latestTx.transaction_id.hash;
+
+    // Update transaction status to complete
+    transaction.status = "complete";
+    transaction.tx_hash = txHash;
+    await transaction.save({ session });
+
+    console.log(`Transfer successful! Transaction hash: ${txHash}`);
+    return txHash;
+  } catch (error) {
+    console.error("TON transfer failed:", error);
+    if (transaction) {
+      transaction.status = "failed";
+      transaction.error_message = error.message;
+      await transaction.save({ session });
+    }
+    throw new Error(`TON transfer failed: ${error.message}`);
+  }
+};
 
 // Combined function to get Stars and TON affiliate earnings
 export const getAffiliateEarningsData = async (affiliateId) => {
@@ -216,5 +356,5 @@ export const withdrawAffiliateEarnings = async (affiliateId) => {
     }
   }
 
-  return await withTransaction(operation)
+  await withTransaction(operation)
 }
