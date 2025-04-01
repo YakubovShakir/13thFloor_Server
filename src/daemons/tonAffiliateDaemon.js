@@ -43,7 +43,7 @@ const affiliateWithdrawQueue = new Queue('affiliate-withdrawals', {
   },
 });
 
-// Worker to process jobs
+// Worker setup with explicit connection
 const worker = new Worker(
   'affiliate-withdrawals',
   async (job) => {
@@ -58,7 +58,9 @@ const worker = new Worker(
       }
       console.log(`Acquired lock for affiliate ${affiliateId}`);
 
-      await withdrawAffiliateEarnings(affiliateId);
+      const result = await withTransaction(async (session) => {
+        return await withdrawAffiliateEarnings(affiliateId);
+      });
 
       console.log(`Withdrawal completed for affiliate ${affiliateId}:`, result);
       return result;
@@ -72,7 +74,9 @@ const worker = new Worker(
       }
     }
   },
-  { connection: redisConfig }
+  {
+    connection: redisConfig, // Ensure BullMQ uses this config
+  }
 );
 
 worker.on('completed', (job, result) => {
