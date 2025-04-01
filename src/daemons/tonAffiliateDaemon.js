@@ -8,12 +8,14 @@ config();
 
 
 console.log(process.env.REDIS_HOST)
+
 const redisConfig = {
-  host: process.env.REDIS_HOST,
-  port: 6379,
+  socket: {
+    host: process.env.REDIS_HOST || 'redis-test',
+    port: parseInt(process.env.REDIS_PORT || '6379', 10),
+  },
   password: process.env.REDIS_PASSWORD || 'redis_password',
 };
-
 const redisClient = createClient(redisConfig);
 redisClient.connect().catch((err) => console.error('Redis client connection error:', err));
 mongoose.connect(process.env.MONGO_URI, { directConnection: true }).catch((err) => console.error('Mongodb client connection error:', err));
