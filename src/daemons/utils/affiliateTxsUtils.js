@@ -4,8 +4,10 @@ import { config } from 'dotenv';
 config()
 
 const redisConfig = {
-  host: process.env.REDIS_HOST,
-  port: 6379,
+  socket: {
+    host: process.env.REDIS_HOST || 'redis-test',
+    port: parseInt(process.env.REDIS_PORT || '6379', 10),
+  },
   password: process.env.REDIS_PASSWORD || 'redis_password',
 };
 
