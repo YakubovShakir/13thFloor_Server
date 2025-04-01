@@ -17,10 +17,6 @@ services:
         condition: service_healthy  # Wait for Redis to be healthy
     networks:
       - default
-    environment:
-      - MONGO_URI=mongodb://database:27017/yourdb
-      - REDIS_HOST=redis
-      - REDIS_PASSWORD=redis_password
     restart: unless-stopped
 
   database:
