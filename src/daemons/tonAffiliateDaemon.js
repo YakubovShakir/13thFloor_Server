@@ -3,6 +3,9 @@ import mongoose from 'mongoose';
 import { Queue, RedisConnection, Worker } from 'bullmq';
 import { createClient } from 'redis';
 import { withdrawAffiliateEarnings } from '../services/paymentService.js'
+import IORedis from 'ioredis';
+
+config();
 
 config();
 
@@ -12,35 +15,36 @@ console.log('REDIS_PORT loaded:', process.env.REDIS_PORT);
 console.log('REDIS_PASSWORD loaded:', process.env.REDIS_PASSWORD);
 
 const redisConfig = {
-  socket: {
-    host: process.env.REDIS_HOST || 'redis-test',
-    port: parseInt(process.env.REDIS_PORT || '6379', 10),
-  },
+  host: process.env.REDIS_HOST || 'redis-test',
+  port: parseInt(process.env.REDIS_PORT || '6379', 10),
   password: process.env.REDIS_PASSWORD || 'redis_password',
 };
 
 // Log the config
 console.log('Redis Config:', JSON.stringify(redisConfig));
 
-// Standalone Redis client for locking
-const redisClient = createClient(redisConfig);
-redisClient.on('connect', () => {
-  console.log('Standalone Redis client connected to:', redisConfig.socket.host);
+// Create an ioredis instance for BullMQ
+const redisConnection = new IORedis(redisConfig);
+redisConnection.on('connect', () => {
+  console.log('IORedis connected to:', redisConfig.host);
 });
-redisClient.on('error', (err) => {
-  console.error('Standalone Redis client error:', err);
+redisConnection.on('error', (err) => {
+  console.error('IORedis error:', err);
 });
 
-await redisClient.connect();
-const pingResult = await redisClient.ping();
-console.log('Standalone Redis PING result:', pingResult);
+// Test the connection
+redisConnection.ping().then((result) => {
+  console.log('IORedis PING result:', result);
+}).catch((err) => {
+  console.error('IORedis PING failed:', err);
+});
 
-// BullMQ queue
+// BullMQ queue using ioredis
 const affiliateWithdrawQueue = new Queue('affiliate-withdrawals', {
-  connection: redisConfig,
+  connection: redisConnection,
 });
 
-// Worker setup with explicit connection
+// Worker setup using the same ioredis instance
 const worker = new Worker(
   'affiliate-withdrawals',
   async (job) => {
@@ -55,9 +59,7 @@ const worker = new Worker(
       }
       console.log(`Acquired lock for affiliate ${affiliateId}`);
 
-      const result = await withTransaction(async (session) => {
-        return await withdrawAffiliateEarnings(affiliateId);
-      });
+      await withdrawAffiliateEarnings(affiliateId);
 
       console.log(`Withdrawal completed for affiliate ${affiliateId}:`, result);
       return result;
@@ -72,12 +74,12 @@ const worker = new Worker(
     }
   },
   {
-    connection: redisConfig
+    connection: redisConnection, // Use the same ioredis instance
   }
 );
 
 worker.on('ready', () => {
-  console.log('Worker is ready with connection:', JSON.stringify(worker.opts.connection));
+  console.log('Worker is ready with connection:', JSON.stringify(redisConfig));
 });
 
 worker.on('completed', (job, result) => {
@@ -92,14 +94,14 @@ worker.on('error', (err) => {
   console.error('Worker error:', err);
 });
 
-// Custom lock functions
+// Custom lock functions using ioredis
 const acquireLock = async (key, ttl = 60000) => {
-  const result = await redisClient.set(key, 'locked', { NX: true, PX: ttl });
+  const result = await redisConnection.set(key, 'locked', 'NX', 'PX', ttl);
   return result === 'OK';
 };
 
 const releaseLock = async (key) => {
-  await redisClient.del(key);
+  await redisConnection.del(key);
 };
 
 // MongoDB connection
@@ -113,6 +115,6 @@ console.log('Affiliate withdrawal worker started');
 process.on('SIGINT', async () => {
   await worker.close();
   await affiliateWithdrawQueue.close();
-  await redisClient.quit();
+  await redisConnection.quit();
   process.exit(0);
 });
