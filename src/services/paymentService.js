@@ -385,7 +385,8 @@ export const withdrawAffiliateEarnings = async (affiliateId) => {
     const totalTON = parseFloat((starsInTON + pendingTON).toFixed(2));
 
     if (totalTON <= 0) throw new Error("No available earnings to withdraw");
-
+    if (totalTON < 5) throw new Error("Less than 5 ton pending")
+      
     // Check Wallet and Transfer
     const walletAddress = await getConnectedWallet(affiliateId, session);
     if (walletAddress) {

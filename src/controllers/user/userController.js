@@ -91,7 +91,7 @@ export const gamecenterLevelMap = {
   4325070: 35,
 }
 
-const gameCenterLevelRequirements = {
+export const gameCenterLevelRequirements = {
   1: 1,
   2: 5,
   3: 10,

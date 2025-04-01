@@ -21,6 +21,8 @@ import {
   getLeaderboard,
   startInvestment,
   saveProfileData,
+  gamecenterLevelMap,
+  gameCenterLevelRequirements,
 } from "../../controllers/user/userController.js"
 import { getUserParameters } from "../../controllers/user/userParametersController.js"
 import gameProcess from "../../models/process/processModel.js"
@@ -68,6 +70,7 @@ import Referal from "../../models/referral/referralModel.js"
 import { getAffiliateEarningsData } from "../../services/paymentService.js"
 import ansiColors from "ansi-colors"
 import { queueAffiliateWithdrawal } from "../../daemons/utils/affiliateTxsUtils.js"
+import Investments from "../../models/investments/investmentModel.js"
 const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON
 
 let walletContract, keyPair, tonClient
@@ -2073,10 +2076,21 @@ router.get("/:id/affiliate-data", async (req, res) => {
   const userId = parseInt(req.userId)
   try {
     const data = await getAffiliateEarningsData(userId)
-    const user
+    const refsCount = await Referal.countDocuments({ refer_id: userId })
+    
+    const gameCenterLevel = gamecenterLevelMap[refsCount]
+    const nextLevelGameCenter = gameCenterLevel + 1
+
+    const currentLevelRefsRequired = gameCenterLevelRequirements[gameCenterLevel]
+    const nextLevelRefsRequired = gameCenterLevelRequirements[nextLevelGameCenter] || currentLevelRefsRequired
+
     await log("info", ansiColors.cyan("Affiliate data requested"), {
       userId,
       ...data,
+      gameCenterLevel,
+      refsCount,
+      currentLevelRefsRequired,
+      nextLevelRefsRequired
     })
 
     return res.status(200).json({ ...data })
