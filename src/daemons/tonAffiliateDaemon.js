@@ -1,13 +1,15 @@
-import { Queue, Worker } from 'bullmq';
-import { createClient } from 'redis';
-import { withdrawAffiliateEarnings } from '../services/paymentService.js';
 import { config } from 'dotenv';
 import mongoose from 'mongoose';
+import { Queue, Worker } from 'bullmq';
+import { createClient } from 'redis';
+import { withdrawAffiliateEarnings } from './utils/affiliateTxsUtils.js'
 
 config();
 
-
-console.log(process.env.REDIS_HOST)
+// Log environment variables
+console.log('REDIS_HOST loaded:', process.env.REDIS_HOST);
+console.log('REDIS_PORT loaded:', process.env.REDIS_PORT);
+console.log('REDIS_PASSWORD loaded:', process.env.REDIS_PASSWORD);
 
 const redisConfig = {
   socket: {
@@ -16,31 +18,26 @@ const redisConfig = {
   },
   password: process.env.REDIS_PASSWORD || 'redis_password',
 };
+
+// Log the config
+console.log('Redis Config:', JSON.stringify(redisConfig));
+
+// Standalone Redis client for locking
 const redisClient = createClient(redisConfig);
-redisClient.connect().catch((err) => console.error('Redis client connection error:', err));
-mongoose.connect(process.env.MONGO_URI, { directConnection: true }).catch((err) => console.error('Mongodb client connection error:', err));
+redisClient.on('connect', () => {
+  console.log('Standalone Redis client connected to:', redisConfig.socket.host);
+});
+redisClient.on('error', (err) => {
+  console.error('Standalone Redis client error:', err);
+});
 
-
-
-// Custom lock functions
-const acquireLock = async (key, ttl = 60000) => {
-  const result = await redisClient.set(key, 'locked', { NX: true, PX: ttl });
-  return result === 'OK';
-};
-
-const releaseLock = async (key) => {
-  await redisClient.del(key);
-};
+await redisClient.connect();
+const pingResult = await redisClient.ping();
+console.log('Standalone Redis PING result:', pingResult);
 
 // BullMQ queue
 const affiliateWithdrawQueue = new Queue('affiliate-withdrawals', {
   connection: redisConfig,
-  defaultJobOptions: {
-    attempts: 3,
-    backoff: { type: 'exponential', delay: 1000 },
-    removeOnComplete: true,
-    removeOnFail: false,
-  },
 });
 
 // Worker setup with explicit connection
@@ -79,6 +76,10 @@ const worker = new Worker(
   }
 );
 
+worker.on('ready', () => {
+  console.log('Worker is ready with connection:', JSON.stringify(worker.opts.connection));
+});
+
 worker.on('completed', (job, result) => {
   console.log(`Job ${job.id} completed for affiliate ${job.data.affiliateId}`, result);
 });
@@ -89,6 +90,26 @@ worker.on('failed', (job, err) => {
 
 worker.on('error', (err) => {
   console.error('Worker error:', err);
+});
+
+// Custom lock functions
+const acquireLock = async (key, ttl = 60000) => {
+  const result = await redisClient.set(key, 'locked', { NX: true, PX: ttl });
+  return result === 'OK';
+};
+
+const releaseLock = async (key) => {
+  await redisClient.del(key);
+};
+
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+}).then(() => {
+  console.log('Connected to MongoDB');
+}).catch((err) => {
+  console.error('MongoDB connection error:', err);
 });
 
 console.log('Affiliate withdrawal worker started');
