@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 networks:
   app-network:
@@ -21,15 +21,15 @@ services:
     environment:
       - NODE_ENV=test
       - MONGO_URI=mongodb://databaseTest:27017/Floor?replicaSet=rs0
-      - REDIS_HOST=redis-test  # Explicitly set for consistency
-      - REDIS_PASSWORD=redis_password  # Add password for Redis
+      - REDIS_HOST=redis-test # Explicitly set for consistency
+      - REDIS_PASSWORD=redis_password # Add password for Redis
     ports:
       - "3026:3000"
     depends_on:
       databaseTest:
         condition: service_healthy
       redis-test:
-        condition: service_healthy  # Ensure Redis is ready
+        condition: service_healthy # Ensure Redis is ready
     networks:
       - app-network
 

@@ -77,7 +77,7 @@ const operationMap = {
         userParameters.energy + energyRestore
       );
       await userParameters.save({ session });
-      await log('info', `${colors.cyanBright('Applied energy restore from tonic-drink')}`, { user_id: userParameters.id, energyRestore });
+      log('info', `${colors.cyanBright('Applied energy restore from tonic-drink')}`, { user_id: userParameters.id, energyRestore });
     }
   },
   updateTimestamp: async (params, session) => {
@@ -88,7 +88,7 @@ const operationMap = {
     }
     process.user_parameters_updated_at = timestamp;
     await process.save({ session });
-    await log("debug", `Updated timestamp for process ${processId} to ${timestamp}`);
+    log("debug", `Updated timestamp for process ${processId} to ${timestamp}`);
   },
   deleteProcess: async (params, session) => {
     const { processId } = params;
@@ -118,7 +118,7 @@ const operationMap = {
     });
 
     await userParameters.save({ session });
-    await log("debug", `Applied updates for ${processType} to user ${userParametersId}`);
+    log("debug", `Applied updates for ${processType} to user ${userParametersId}`);
   },
   completeWorkProcess: async (params, session) => {
     const { processId, userParametersId, baseParametersId } = params;
@@ -137,14 +137,14 @@ const operationMap = {
     // Pass profits to recalcValuesByParameters
     await recalcValuesByParameters(userParameters, { coinsReward }, session);
     await upUserExperience(userParameters.id, baseParameters.experience_reward, session);
-    await log("info", `Work process completed`, { userId: userParameters.id, coinsReward, experience: baseParameters.experience_reward });
+    log("info", `Work process completed`, { userId: userParameters.id, coinsReward, experience: baseParameters.experience_reward });
   },
   completeTrainingProcess: async (params, session) => {
     // Training completion logic (e.g., apply skill upgrades or stats)
-    await log("info", `Training process completed`, { userId: userParameters.id });
+    log("info", `Training process completed`, { userId: userParameters.id });
   },
   completeSleepProcess: async (params, session) => {
-    await log("info", `Sleep process completed`, { userId: userParameters.id });
+    log("info", `Sleep process completed`, { userId: userParameters.id });
   },
   completeSkillProcess: async (params, session) => {
     const { processId, userParametersId, skillId, subType } = params;
@@ -167,10 +167,10 @@ const operationMap = {
       await upUserExperience(userParametersId, skill.experience_reward, session);
     }
 
-    await log("info", `Skill process completed`, { userId: userParametersId, skillId });
+    log("info", `Skill process completed`, { userId: userParametersId, skillId });
   },
   completeFoodProcess: async (params, session) => {
-    await log("info", `Food process completed`, { userId: userParameters.id, profits });
+    log("info", `Food process completed`, { userId: userParameters.id, profits });
   },
   processWork: async (params, session) => {
     const { processId, userParametersId, baseParametersId } = params;
@@ -236,7 +236,7 @@ const operationMap = {
 
     if (!hasSufficientResources) {
       await gameProcess.deleteOne({ _id: processId }, { session });
-      await log("info", colors.yellow(`Work process ended - insufficient resources`), {
+      log("info", colors.yellow(`Work process ended - insufficient resources`), {
         userId: userParametersId,
         processId,
         costs: periodCosts,
@@ -261,7 +261,7 @@ const operationMap = {
       await operationMap.updateUserExperience({ id: userParametersId, amount: baseParameters.experience_reward }, session);
 
       await gameProcess.deleteOne({ _id: processId }, { session });
-      await log("info", colors.green(`Work process completed and deleted`), {
+      log("info", colors.green(`Work process completed and deleted`), {
         userId: userParametersId,
         coinsReward,
         experience: baseParameters.experience_reward,
@@ -269,7 +269,7 @@ const operationMap = {
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
-      await log("debug", `Updated work process timestamp`, { processId });
+      log("debug", `Updated work process timestamp`, { processId });
     }
   },
 
@@ -335,7 +335,7 @@ const operationMap = {
 
     if (!hasSufficientResources) {
       await gameProcess.deleteOne({ _id: processId }, { session });
-      await log("info", colors.yellow(`Training process ended - insufficient resources`), {
+      log("info", colors.yellow(`Training process ended - insufficient resources`), {
         userId: userParametersId,
         costs: periodCosts,
         available: { energy: userParameters.energy, hungry: userParameters.hungry },
@@ -358,7 +358,7 @@ const operationMap = {
     const finishCondition = userParameters.energy <= 0 || userParameters.hungry <= 0;
     if (processDurationSeconds >= actualDurationSeconds || finishCondition) {
       await gameProcess.deleteOne({ _id: processId }, { session });
-      await log("info", colors.green(`Training process completed and deleted`), { userId: userParametersId });
+      log("info", colors.green(`Training process completed and deleted`), { userId: userParametersId });
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
@@ -417,7 +417,7 @@ const operationMap = {
 
     if (processDurationSeconds >= actualDurationSeconds) {
       await gameProcess.deleteOne({ _id: processId }, { session });
-      await log("info", colors.green(`Sleep process completed and deleted`), { userId: userParametersId });
+      log("info", colors.green(`Sleep process completed and deleted`), { userId: userParametersId });
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
@@ -456,11 +456,11 @@ const operationMap = {
         await operationMap.updateUserExperience({ id: userParametersId, amount: skill.experience_reward }, session); // Use atomic version
       }
       await gameProcess.deleteOne({ _id: processId }, { session });
-      await log("info", colors.green(`Skill process completed and deleted`), { userId: userParametersId, skillId: baseParametersId });
+      log("info", colors.green(`Skill process completed and deleted`), { userId: userParametersId, skillId: baseParametersId });
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
-      await log("debug", `Skill process timestamp updated`, { processId });
+      log("debug", `Skill process timestamp updated`, { processId });
     }
   },
 
@@ -485,7 +485,7 @@ const operationMap = {
       userParameters.hungry = Math.min(100, userParameters.hungry + (baseParameters.hungry_profit || 0));
       await userParameters.save({ session });
       await gameProcess.deleteOne({ _id: processId }, { session });
-      await log("info", colors.green(`Food process completed and deleted`), { userId: userParametersId });
+      log("info", colors.green(`Food process completed and deleted`), { userId: userParametersId });
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
@@ -515,7 +515,7 @@ const operationMap = {
         userParameters.energy + energyRestore
       );
       await userParameters.save({ session });
-      await log('info', `${colors.cyanBright('Applied energy restore from tonic-drink')}`, {
+      log('info', `${colors.cyanBright('Applied energy restore from tonic-drink')}`, {
         user_id: userParametersId,
         energyRestore,
       });
@@ -523,7 +523,7 @@ const operationMap = {
 
     if (processDurationSeconds >= actualDurationSeconds) {
       await gameProcess.deleteOne({ _id: processId }, { session });
-      await log("info", colors.green(`Boost process completed and deleted`), { userId: userParametersId });
+      log("info", colors.green(`Boost process completed and deleted`), { userId: userParametersId });
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
@@ -540,7 +540,7 @@ const operationMap = {
     }, null, { session, sort: { createdAt: -1 } });
   
     if (!currentInvestment) {
-      await log("warn", `No active unclaimed investment found for user ${userId}`, { investmentType });
+      log("warn", `No active unclaimed investment found for user ${userId}`, { investmentType });
       return;
     }
   
@@ -575,7 +575,7 @@ const operationMap = {
     });
     await newInvestment.save({ session });
   
-    await log("info", colors.green(`Autoclaim processed: claimed, marked, new investment created`), {
+    log("info", colors.green(`Autoclaim processed: claimed, marked, new investment created`), {
       userId,
       investmentType,
       reward,
@@ -600,7 +600,7 @@ const operationMap = {
       to_claim: investment.coins_per_hour,
     });
     await newInvestment.save({ session });
-    await log("info", `New investment launched for user ${userId}`, { investmentType });
+    log("info", `New investment launched for user ${userId}`, { investmentType });
   },
   // Add atomic balance update
   updateUserBalance: async (params, session) => {
@@ -641,7 +641,7 @@ export const queueDbUpdate = async (operationType, params, description, userId =
     throw new Error(`Unknown operation type: ${operationType} for ${description}`);
   }
   const jobData = { operationType, params, description, userId };
-  await log("debug", `Enqueuing job for ${description}`, { jobData });
+  log("debug", `Enqueuing job for ${description}`, { jobData });
   const job = await dbUpdateQueue.add(jobData);
   return job.id;
 };
@@ -660,10 +660,10 @@ dbUpdateQueue.process(async (job) => {
     }
     await operation(params, session);
     await session.commitTransaction();
-    await log("info", colors.green(`DB update completed: ${JSON.stringify(job.data)}`));
+    log("info", colors.green(`DB update completed: ${JSON.stringify(job.data)}`));
   } catch (error) {
     await session.abortTransaction();
-    await log("error", colors.red(`DB update failed: ${description}`), { error: error.message, stack: error.stack });
+    log("error", colors.red(`DB update failed: ${description}`), { error: error.message, stack: error.stack });
     throw error;
   } finally {
     session.endSession();
@@ -671,7 +671,7 @@ dbUpdateQueue.process(async (job) => {
 });
 
 dbUpdateQueue.on('completed', (job) => {
-  log("verbose", colors.green(`DB update job completed`), { jobId: job.id, description: job.data.description });
+  log("info", colors.green(`DB update job completed`), { jobId: job.id, description: job.data.description });
 });
 
 dbUpdateQueue.on('failed', (job, err) => {
@@ -817,7 +817,7 @@ const genericProcessScheduler = (processType, processConfig) => {
 
   const scheduler = cron.schedule(cronSchedule, async () => {
     try {
-      await log("verbose", `${processType} process scheduler started iteration`);
+      log("info", `${processType} process scheduler started iteration`);
       const processes = await gameProcess.find({ type: processType });
 
       await Promise.all(processes.map(async (process) => {
@@ -835,9 +835,9 @@ const genericProcessScheduler = (processType, processConfig) => {
         );
       }));
 
-      await log("verbose", `${processType} process scheduler finished iteration`, { processesCount: processes.length });
+      log("info", `${processType} process scheduler finished iteration`, { processesCount: processes.length });
     } catch (e) {
-      await log("error", `Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
+      log("error", `Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
     }
   }, { scheduled: false });
 
@@ -851,9 +851,9 @@ const processIndependentScheduler = (processType, processConfig) => {
   const scheduler = cron.schedule(cronSchedule, async () => {
     try {
       await durationFunction();
-      await log("verbose", `${processType} process scheduler finished iteration`);
+      log("info", `${processType} process scheduler finished iteration`);
     } catch (e) {
-      await log("error", `Error in ${processType} Process:`, { error: e.message, stack: e.stack });
+      log("error", `Error in ${processType} Process:`, { error: e.message, stack: e.stack });
     }
   }, { scheduled: false });
 
@@ -913,7 +913,7 @@ operationMap.applyInvestmentClaim = async (params, session) => {
   await recalcValuesByParameters(userParameters, { coinsReward }, session);
   await upUserExperience(userParametersId, experienceReward, session);
   await userParameters.save({ session });
-  await log("debug", `Applied investment claim rewards`, { userId: userParametersId, coinsReward, experienceReward });
+  log("debug", `Applied investment claim rewards`, { userId: userParametersId, coinsReward, experienceReward });
 };
 
 operationMap.markInvestmentClaimed = async (params, session) => {
@@ -925,7 +925,7 @@ operationMap.markInvestmentClaimed = async (params, session) => {
 
   investment.claimed = true;
   await investment.save({ session });
-  await log("debug", `Marked investment as claimed`, { investmentId });
+  log("debug", `Marked investment as claimed`, { investmentId });
 };
 
 operationMap.createNewInvestment = async (params, session) => {
@@ -937,7 +937,7 @@ operationMap.createNewInvestment = async (params, session) => {
     investment_type: investmentType,
   });
   await newInvestment.save({ session });
-  await log("debug", `Created new investment entry`, { userId, investmentType, toClaim });
+  log("debug", `Created new investment entry`, { userId, investmentType, toClaim });
 };
 
 const processInBatches = async (items, batchSize, processFn) => {
@@ -953,7 +953,7 @@ export const autoclaimProcessConfig = {
   cronSchedule: "*/1 * * * * *", // Every 1 second (adjust as needed)
   durationFunction: async () => { // No session here, enqueueing handles it
     try {
-      await log("verbose", `Autoclaim process scheduler started iteration`);
+      log("info", `Autoclaim process scheduler started iteration`);
 
       const now = new Date();
       const usersWithAutoclaim = await Autoclaims.find({
@@ -961,7 +961,7 @@ export const autoclaimProcessConfig = {
       });
 
       if (usersWithAutoclaim.length === 0) {
-        await log("verbose", "No active autoclaims found");
+        log("info", "No active autoclaims found");
         return;
       }
 
@@ -978,11 +978,11 @@ export const autoclaimProcessConfig = {
         );
       });
 
-      await log("verbose", `Autoclaim process scheduler finished iteration`, {
+      log("info", `Autoclaim process scheduler finished iteration`, {
         usersEligible: usersWithAutoclaim.length,
       });
     } catch (e) {
-      await log("error", "Error in autoclaim process", { error: e.message, stack: e.stack });
+      log("error", "Error in autoclaim process", { error: e.message, stack: e.stack });
     }
   },
   Model: Autoclaims, // Updated to use new model
@@ -1005,7 +1005,7 @@ const investmentLevelsProcessConfig = {
   cronSchedule: "*/15 * * * * *",
   durationFunction: async () => {
     try {
-      await log("verbose", `investment_level_checks process scheduler started iteration`);
+      log("info", `investment_level_checks process scheduler started iteration`);
       const usersWithRefs = await Referal.aggregate([
         { $group: { _id: "$refer_id", referral_count: { $sum: 1 } } },
         { $project: { refer_id: "$_id", referral_count: 1 } },
@@ -1019,14 +1019,14 @@ const investmentLevelsProcessConfig = {
           if (calculatedLevel > currentLevel) {
             userDoc.investment_levels.game_center = calculatedLevel;
             await userDoc.save();
-            await log("info", `Updated game_center level`, { userId: user.refer_id, newLevel: calculatedLevel });
+            log("info", `Updated game_center level`, { userId: user.refer_id, newLevel: calculatedLevel });
           }
         }
       });
 
-      await log("verbose", "investment_level_checks iterated all users");
+      log("info", "investment_level_checks iterated all users");
     } catch (e) {
-      await log("error", "Error in investment_level_checks process", { error: e.message, stack: e.stack });
+      log("error", "Error in investment_level_checks process", { error: e.message, stack: e.stack });
     }
   },
   Model: User,
@@ -1055,7 +1055,7 @@ const getWhitelistedNftsFromWallet = async (walletAddress) => {
 
     return [...new Set(allNfts.filter(address => nftMap[address] !== undefined).map(address => nftMap[address]))];
   } catch (error) {
-    await log("error", `Error fetching NFTs for ${walletAddress}`, { error: error.message });
+    log("error", `Error fetching NFTs for ${walletAddress}`, { error: error.message });
     return [];
   }
 };
@@ -1091,7 +1091,7 @@ const syncShelfInventory = async (userId, nftItemIds) => {
     return { added: itemsToAdd, removed: itemsToRemove };
   } catch (error) {
     await session.abortTransaction();
-    await log("error", `Error syncing inventory for ${userId}`, { error: error.message });
+    log("error", `Error syncing inventory for ${userId}`, { error: error.message });
     return { added: [], removed: [] };
   } finally {
     session.endSession();
@@ -1105,12 +1105,12 @@ const nftScanConfig = {
   cronSchedule: "*/10 * * * * *",
   durationFunction: async () => {
     if (isRunning) {
-      await log("verbose", "NFT-scanner iteration skipped - previous run still in progress");
+      log("info", "NFT-scanner iteration skipped - previous run still in progress");
       return;
     }
     isRunning = true;
     try {
-      await log("verbose", "NFT-scanner process scheduler started iteration");
+      log("info", "NFT-scanner process scheduler started iteration");
       const usersWithWallets = await User.find({ tonWalletAddress: { $ne: null } });
 
       await processInBatches(usersWithWallets, 50, async (user) => {
@@ -1118,9 +1118,9 @@ const nftScanConfig = {
         await syncShelfInventory(user.id, nftItemIds);
       });
 
-      await log("verbose", "NFT-scanner process scheduler finished iteration", { totalUsers: usersWithWallets.length });
+      log("info", "NFT-scanner process scheduler finished iteration", { totalUsers: usersWithWallets.length });
     } catch (e) {
-      await log("error", "Error in NFT scan process", { error: e.message, stack: e.stack });
+      log("error", "Error in NFT scan process", { error: e.message, stack: e.stack });
     } finally {
       isRunning = false;
     }

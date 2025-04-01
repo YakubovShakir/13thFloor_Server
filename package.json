@@ -14,6 +14,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@elastic/ecs-winston-format": "^1.5.3",
+    "@elastic/elasticsearch": "^7.10.0",
     "@orbs-network/ton-access": "^2.3.3",
     "@telegram-apps/init-data-node": "^2.0.3",
     "@ton/crypto": "^3.3.0",
@@ -30,6 +32,7 @@
     "ioredis": "^5.6.0",
     "isomorphic-fetch": "^3.0.0",
     "jsonwebtoken": "^9.0.2",
+    "logstash": "^5.0.2",
     "moment-timezone": "^0.5.46",
     "mongoose": "^8.8.0",
     "ngrok": "^5.0.0-beta.2",
@@ -43,7 +46,10 @@
     "ton-core": "^0.53.0",
     "ton-crypto": "^3.2.0",
     "uuid": "^11.1.0",
-    "uuidv4": "^6.2.13"
+    "uuidv4": "^6.2.13",
+    "winston": "^3.17.0",
+    "winston-elasticsearch": "^0.19.0",
+    "winston-logstash": "^1.2.1"
   },
   "type": "module"
 }

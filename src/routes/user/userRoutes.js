@@ -464,7 +464,7 @@ router.get("/:id/gacha/attempts", async (req, res) => {
       attempts: attempts?.length || 0,
     })
   } catch (error) {
-    await log("error", "error in fetching gacha attempts", error)
+    log("error", "error in fetching gacha attempts", error)
 
     return res.status(500).send()
   }
@@ -796,7 +796,7 @@ router.get("/:id/daily/claim", async (req, res) => {
     console.log("Claim recorded - Streak:", streak)
     res.status(200).json({ wonItem, streak })
   } catch (error) {
-    await log("error", "error in claiming daily reward", error)
+    log("error", "error in claiming daily reward", error)
     res.status(500).json({ error: "Internal server error" })
   }
 })
@@ -905,7 +905,7 @@ router.get("/:id/daily/status", async (req, res) => {
       isStreakBroken, // Added to make it explicit
     })
   } catch (error) {
-    await log("error", "error in fetching daily status", error)
+    log("error", "error in fetching daily status", error)
     res.status(500).json({ error: "Internal server error" })
   }
 })
@@ -1261,7 +1261,7 @@ export const interactWithNeko = async (userId, targetUserId) => {
       })
 
       await userEffect.save()
-      await log("info", "Effect applied to owner", {
+      log("info", "Effect applied to owner", {
         userId: targetUserId,
         effectType: activeEffectType,
       })
@@ -1269,7 +1269,7 @@ export const interactWithNeko = async (userId, targetUserId) => {
 
       targetUserParams.respect += respectReward
       await targetUserParams.save()
-      await log(
+      log(
         "info",
         `Added ${respectReward} respect to user ${targetUserId}`
       )
@@ -1278,10 +1278,10 @@ export const interactWithNeko = async (userId, targetUserId) => {
     // Add coins to the clicker (userId)
     if (coinReward > 0) {
       await upUserBalance(userId, coinReward)
-      await log("info", "Coins added to clicker", { userId, coinReward })
+      log("info", "Coins added to clicker", { userId, coinReward })
     }
 
-    await log("info", "Neko interacted", {
+    log("info", "Neko interacted", {
       userId,
       targetUserId,
       nekoId,
@@ -1490,13 +1490,13 @@ router.post("/sleep/start/:userId", async (req, res) => {
     })
     await process.save()
 
-    await log("info", "Sleep process started with initial coin", {
+    log("info", "Sleep process started with initial coin", {
       userId,
       processId: process._id,
     })
     return res.status(201).json({ success: true, processId: process._id })
   } catch (err) {
-    await log("error", "Error starting sleep", { userId, error: err.message })
+    log("error", "Error starting sleep", { userId, error: err.message })
     return res
       .status(500)
       .json({ error: true, message: "Internal server error" })
@@ -1541,7 +1541,7 @@ router.get(
         const newCoin = spawnCoin(process)
         process.sleep_game.coins.push(newCoin)
         process.sleep_game.lastSpawnTime = now.toDate()
-        await log("verbose", "Coin spawned in state", {
+        log("info", "Coin spawned in state", {
           userId,
           coinId: newCoin.id,
         })
@@ -1556,7 +1556,7 @@ router.get(
         serverTime: now.toISOString(),
       })
     } catch (err) {
-      await log("error", "Error fetching sleep game state", {
+      log("error", "Error fetching sleep game state", {
         userId,
         error: err.message,
       })
@@ -1589,10 +1589,10 @@ router.post(
       const now = moment().tz("Europe/Moscow")
       process.sleep_game.playerJumps.push({ time: new Date(time), y })
       await process.save()
-      await log("verbose", "Player jump recorded", { userId, y, time })
+      log("info", "Player jump recorded", { userId, y, time })
       return res.status(200).json({ success: true })
     } catch (err) {
-      await log("error", "Error recording jump", { userId, error: err.message })
+      log("error", "Error recording jump", { userId, error: err.message })
       return res
         .status(500)
         .json({ error: true, message: "Internal server error" })
@@ -1660,7 +1660,7 @@ router.post(
         playerY + 40 < coin.y - bufferY ||
         playerY > coin.y + 20 + bufferY
       ) {
-        await log("debug", "Coin collision check failed", {
+        log("debug", "Coin collision check failed", {
           userId,
           coinId,
           coinAge,
@@ -1695,7 +1695,7 @@ router.post(
       process.updatedAt = now.toDate()
       await process.save()
 
-      await log("info", "Sleep coin collected", {
+      log("info", "Sleep coin collected", {
         userId,
         processId: process._id,
         coinId,
@@ -1710,7 +1710,7 @@ router.post(
         ),
       })
     } catch (err) {
-      await log("error", "Error collecting sleep coin", {
+      log("error", "Error collecting sleep coin", {
         userId,
         error: err.message,
       })
@@ -1731,14 +1731,14 @@ export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
       const languageCode = chatMember?.user?.language_code || "en"
       // Map language code to "en" or "ru"
       userLanguage = languageCode.startsWith("ru") ? "ru" : "en"
-      await log("info", "Fetched user language via getChatMember", {
+      log("info", "Fetched user language via getChatMember", {
         userId: targetUserId,
         chatId: targetUserId,
         languageCode,
         mappedLanguage: userLanguage,
       })
     } catch (error) {
-      await log(
+      log(
         "warning",
         "Failed to fetch user language via getChatMember, defaulting to English",
         {
@@ -1759,13 +1759,13 @@ export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
 
     // Send the message
     await bot.api.sendMessage(targetUserId, message)
-    await log("info", "Telegram message sent to owner", {
+    log("info", "Telegram message sent to owner", {
       userId: targetUserId,
       chatId: targetUserId,
       message,
     })
   } catch (error) {
-    await log("error", "Failed to send Telegram message to owner", {
+    log("error", "Failed to send Telegram message to owner", {
       userId: targetUserId,
       error: error.message,
     })
@@ -2059,12 +2059,12 @@ export const getAutoclaimStatus = async (userId) => {
       }
     })
 
-    await log("debug", `Retrieved autoclaim status for user ${userId}`, {
+    log("debug", `Retrieved autoclaim status for user ${userId}`, {
       status,
     })
     return status
   } catch (err) {
-    await log("error", `Failed to get autoclaim status for user ${userId}`, {
+    log("error", `Failed to get autoclaim status for user ${userId}`, {
       error: err.message,
       stack: err.stack,
     })
@@ -2084,7 +2084,7 @@ router.get("/:id/affiliate-data", async (req, res) => {
     const currentLevelRefsRequired = gameCenterLevelRequirements[gameCenterLevel]
     const nextLevelRefsRequired = gameCenterLevelRequirements[nextLevelGameCenter] || currentLevelRefsRequired
 
-    await log("info", ansiColors.cyan("Affiliate data requested"), {
+    log("info", ansiColors.cyan("Affiliate data requested"), {
       userId,
       ...data,
       gameCenterLevel,
@@ -2095,7 +2095,7 @@ router.get("/:id/affiliate-data", async (req, res) => {
 
     return res.status(200).json({ ...data })
   } catch (err) {
-    await log("error", `Failed to get autoclaim status for user ${userId}`, {
+    log("error", `Failed to get autoclaim status for user ${userId}`, {
       error: err.message,
       stack: err.stack,
     })

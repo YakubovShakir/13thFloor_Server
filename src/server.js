@@ -1,169 +1,275 @@
-import express from "express";
-import cors from "cors";
-import connectDB from "./config/db.js";
-import usersRouter from "./routes/user/userRoutes.js";
-import referralRouter from "./routes/referral/referralRoutes.js";
-import foodsRouter from "./routes/food/foodRoutes.js";
-import boostRouter from "./routes/boost/boostRoutes.js";
-import worksRouter from "./routes/work/workRoutes.js";
-import skillsRouter from "./routes/skill/skillRoutes.js";
-import processRouter from "./routes/process/processRoutes.js";
-import levelsRouter from "./routes/level/levelRoutes.js";
-import dotenv from "dotenv";
-import IORedis from "ioredis";
-import crypto from "crypto";
+import express from "express"
+import cors from "cors"
+import connectDB from "./config/db.js"
+import usersRouter from "./routes/user/userRoutes.js"
+import referralRouter from "./routes/referral/referralRoutes.js"
+import foodsRouter from "./routes/food/foodRoutes.js"
+import boostRouter from "./routes/boost/boostRoutes.js"
+import worksRouter from "./routes/work/workRoutes.js"
+import skillsRouter from "./routes/skill/skillRoutes.js"
+import processRouter from "./routes/process/processRoutes.js"
+import levelsRouter from "./routes/level/levelRoutes.js"
+import dotenv from "dotenv"
+import IORedis from "ioredis"
+import crypto from "crypto"
 
-import ClothingItems from "./models/clothing/migration.js";
-import SkillItems from "./models/skill/migration.js";
-import FoodItems from "./models/food/migration.js";
-import BoostItems from "./models/boost/migration.js";
-import WorkItems from "./models/work/migration.js";
-import LevelItems from "./models/level/migration.js";
-import TrainingItems from "./models/training/migration.js";
+import winston from "winston"
 
-import Clothing from "./models/clothing/clothingModel.js";
-import Skill from "./models/skill/skillModel.js";
-import Food from "./models/food/foodModel.js";
-import Boost from "./models/boost/boostModel.js";
-import Work from "./models/work/workModel.js";
-import LevelsParameters from "./models/level/levelParametersModel.js";
-import TrainingParameters from "./models/training/trainingParameters.js";
-import UserParameters from "./models/user/userParametersModel.js";
-import UserCurrentInventory from "./models/user/userInventoryModel.js";
-import UserClothing from "./models/user/userClothingModel.js";
-import User from "./models/user/userModel.js";
-import ShelfItemModel from "./models/shelfItem/shelfItemModel.js";
-import { ShelfItems } from "./models/shelfItem/migration.js";
-import UserLaunchedInvestments from "./models/investments/userLaunchedInvestments.js";
-import Investments from "./models/investments/investmentModel.js";
-import InvestmentsMigration from "./models/investments/migration.js";
-import CompletedTasks from "./models/tasks/completedTask.js";
-import Tasks from "./models/tasks/taskModel.js";
-import TasksMigration from "./models/tasks/migration.js";
-import UserSkill from "./models/user/userSkillModel.js";
-import UserProcess from "./models/process/processModel.js";
-import { ConstantEffects } from "./models/effects/constantEffectsLevels.js";
-import constantEffects from "./models/effects/migration.js";
-import { addUserSubscriptionStatus, collectRefStatsFromDb } from "./controllers/user/userController.js";
-import UserBoost from "./models/user/userBoostsModel.js";
-import { UserSpins } from "./models/user/userSpinsModel.js";
-import StarsTransactions from './models/tx/starsTransactionModel.mjs';
-import { withdrawAffiliateEarnings } from "./services/paymentService.js";
+import ClothingItems from "./models/clothing/migration.js"
+import SkillItems from "./models/skill/migration.js"
+import FoodItems from "./models/food/migration.js"
+import BoostItems from "./models/boost/migration.js"
+import WorkItems from "./models/work/migration.js"
+import LevelItems from "./models/level/migration.js"
+import TrainingItems from "./models/training/migration.js"
 
-dotenv.config();
+import Clothing from "./models/clothing/clothingModel.js"
+import Skill from "./models/skill/skillModel.js"
+import Food from "./models/food/foodModel.js"
+import Boost from "./models/boost/boostModel.js"
+import Work from "./models/work/workModel.js"
+import LevelsParameters from "./models/level/levelParametersModel.js"
+import TrainingParameters from "./models/training/trainingParameters.js"
+import UserParameters from "./models/user/userParametersModel.js"
+import UserCurrentInventory from "./models/user/userInventoryModel.js"
+import UserClothing from "./models/user/userClothingModel.js"
+import User from "./models/user/userModel.js"
+import ShelfItemModel from "./models/shelfItem/shelfItemModel.js"
+import { ShelfItems } from "./models/shelfItem/migration.js"
+import UserLaunchedInvestments from "./models/investments/userLaunchedInvestments.js"
+import Investments from "./models/investments/investmentModel.js"
+import InvestmentsMigration from "./models/investments/migration.js"
+import CompletedTasks from "./models/tasks/completedTask.js"
+import Tasks from "./models/tasks/taskModel.js"
+import TasksMigration from "./models/tasks/migration.js"
+import UserSkill from "./models/user/userSkillModel.js"
+import UserProcess from "./models/process/processModel.js"
+import { ConstantEffects } from "./models/effects/constantEffectsLevels.js"
+import constantEffects from "./models/effects/migration.js"
+import UserBoost from "./models/user/userBoostsModel.js"
+import { UserSpins } from "./models/user/userSpinsModel.js"
+import StarsTransactions from "./models/tx/starsTransactionModel.mjs"
+import { ElasticsearchTransport as Elasticsearch } from "winston-elasticsearch"
+import { Client } from "@elastic/elasticsearch"
+
+dotenv.config()
 
 // Redis connection
 const redis = new IORedis({
-  host: process.env.REDIS_HOST || 'redis-test',
-  port: parseInt(process.env.REDIS_PORT || '6379', 10),
-  password: process.env.REDIS_PASSWORD || 'redis_password',
-});
+  host: process.env.REDIS_HOST || "redis-test",
+  port: parseInt(process.env.REDIS_PORT || "6379", 10),
+  password: process.env.REDIS_PASSWORD || "redis_password",
+})
 
-redis.on('connect', () => console.log('Redis connected for middleware'));
-redis.on('error', (err) => console.error('Redis error in middleware:', err));
+redis.on("connect", () => console.log("Redis connected for middleware"))
+redis.on("error", (err) => console.error("Redis error in middleware:", err))
 
-const app = express();
+const app = express()
 
-app.use(cors());
-app.use(express.json());
+app.use(cors())
+app.use(express.json())
 
 // Global middleware to validate Telegram initData and attach user.id
 const validateTelegramInitData = async (req, res, next) => {
-  const initData = req.headers.authorization;
+  const initData = req.headers.authorization
 
-  if (!initData || !initData.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'Authorization header missing or invalid' });
+  if (!initData || !initData.startsWith("Bearer ")) {
+    return res
+      .status(401)
+      .json({ error: "Authorization header missing or invalid" })
   }
 
-  const token = initData.replace('Bearer ', '');
-  const cacheKey = `tg:initData:${crypto.createHash('sha256').update(token).digest('hex')}`;
-  const TTL = 30 * 60; // 30 minutes in seconds
+  const token = initData.replace("Bearer ", "")
+  const cacheKey = `tg:initData:${crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex")}`
+  const TTL = 30 * 60 // 30 minutes in seconds
 
   try {
-    // Check Redis cache
-    const cached = await redis.get(cacheKey);
+    const cached = await redis.get(cacheKey)
     if (cached) {
-      const [validity, userId] = cached.split(':');
-      if (validity === 'valid') {
-        console.log('Cached valid initData:', cacheKey);
-        req.userId = parseInt(userId, 10); // Attach user.id to req
-        return next();
+      const [validity, userId] = cached.split(":")
+      if (validity === "valid") {
+        logger.info("Cached valid initData", { cacheKey })
+        req.userId = parseInt(userId, 10)
+        return next()
       }
     }
 
-    // Parse initData
-    const params = new URLSearchParams(token);
-    const authDate = parseInt(params.get('auth_date'), 10);
-    const hash = params.get('hash');
-    const userRaw = params.get('user');
+    const params = new URLSearchParams(token)
+    const authDate = parseInt(params.get("auth_date"), 10)
+    const hash = params.get("hash")
+    const userRaw = params.get("user")
 
     if (!authDate || !hash || !userRaw) {
-      return res.status(401).json({ error: 'Invalid initData format' });
+      return res.status(401).json({ error: "Invalid initData format" })
     }
 
-    // Extract user.id
-    let user;
+    let user
     try {
-      user = JSON.parse(userRaw);
-      if (!user.id) throw new Error('User ID missing');
+      user = JSON.parse(userRaw)
+      if (!user.id) throw new Error("User ID missing")
     } catch (e) {
-      return res.status(401).json({ error: 'Invalid user data in initData' });
+      return res.status(401).json({ error: "Invalid user data in initData" })
     }
-    const userId = user.id;
+    const userId = user.id
 
-    // Check timestamp (within 30 minutes)
-    const now = Math.floor(Date.now() / 1000);
+    const now = Math.floor(Date.now() / 1000)
     if (now - authDate > TTL) {
-      return res.status(401).json({ error: 'initData expired' });
+      return res.status(401).json({ error: "initData expired" })
     }
 
-    // Validate hash
-    params.delete('hash');
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    params.delete("hash")
+    const botToken = process.env.TELEGRAM_BOT_TOKEN
     if (!botToken) {
-      throw new Error('TELEGRAM_BOT_TOKEN not set in environment');
+      throw new Error("TELEGRAM_BOT_TOKEN not set in environment")
     }
 
     const dataCheckString = Array.from(params.entries())
       .sort()
       .map(([key, value]) => `${key}=${value}`)
-      .join('\n');
-    const secretKey = crypto.createHmac('sha256', 'WebAppData').update(botToken).digest();
-    const computedHash = crypto.createHmac('sha256', secretKey).update(dataCheckString).digest('hex');
+      .join("\n")
+    const secretKey = crypto
+      .createHmac("sha256", "WebAppData")
+      .update(botToken)
+      .digest()
+    const computedHash = crypto
+      .createHmac("sha256", secretKey)
+      .update(dataCheckString)
+      .digest("hex")
 
     if (computedHash !== hash) {
-      return res.status(401).json({ error: 'Invalid initData hash' });
+      return res.status(401).json({ error: "Invalid initData hash" })
     }
 
-    // Cache the valid result with userId
-    await redis.set(cacheKey, `valid:${userId}`, 'EX', TTL);
-    console.log('Validated and cached initData:', cacheKey, 'with userId:', userId);
-    req.userId = userId; // Attach user.id to req
-    next();
+    await redis.set(cacheKey, `valid:${userId}`, "EX", TTL)
+    logger.info("Validated and cached initData", { cacheKey, userId })
+    req.userId = userId
+    next()
   } catch (error) {
-    console.error('Error validating initData:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error("Error validating initData", {
+      error: error.message,
+      stack: error.stack,
+    })
+    res.status(500).json({ error: "Internal server error" })
   }
-};
-
-if(process.env.USE_AUTH !== 'false') {
-  // Apply middleware globally
-  app.use(validateTelegramInitData);
-} else {
-  app.use((req, res, next) => { req.userId = process.env.DEV_ID || '790629329'; next() })
 }
+
+if (process.env.USE_AUTH !== "false") {
+  app.use(validateTelegramInitData)
+} else {
+  app.use((req, res, next) => {
+    req.userId = process.env.DEV_ID || "790629329"
+    next()
+  })
+}
+
+// Elasticsearch client setup
+const esClient = new Client({
+  node: process.env.ELASTICSEARCH_URL || "http://localhost:9200",
+  // Optional: Add authentication if needed
+  // auth: {
+  //   username: "elastic",
+  //   password: "your_password",
+  // },
+})
+
+// Custom transport to write directly to Elasticsearch
+class ElasticsearchTransport extends winston.Transport {
+  constructor(opts) {
+    super(opts)
+    this.esClient = esClient
+    this.indexPrefix = opts.indexPrefix || "app-logs"
+  }
+
+  async log(info, callback) {
+    setImmediate(() => this.emit("logged", info))
+
+    const { timestamp, level, message, ...meta } = info
+    const logEntry = {
+      "@timestamp": timestamp || new Date().toISOString(),
+      "log.level": level,
+      message,
+      ...meta,
+      ecs: { version: "1.8.0" }, // ECS version for compatibility
+    }
+
+    try {
+      await this.esClient.index({
+        index: `${this.indexPrefix}-${new Date().toISOString().slice(0, 10)}`, // e.g., app-logs-2025.04.01
+        body: logEntry,
+      })
+    } catch (error) {
+      console.error("Failed to write to Elasticsearch:", error) // Fallback to console
+    }
+
+    callback()
+  }
+}
+
+// Create the logger
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.Console({
+      handleExceptions: true,
+      format: winston.format.combine(
+        winston.format.colorize(),
+        winston.format.printf(({ timestamp, level, message, ...meta }) => {
+          return `${timestamp} [${level}]: ${message} ${
+            Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ""
+          }`
+        })
+      ),
+    }),
+    new ElasticsearchTransport({
+      level: "info",
+      indexPrefix: "app-logs",
+    }),
+  ],
+})
+
+// Global request logging middleware
+const requestLogger = (req, res, next) => {
+  const startTime = Date.now()
+
+  // Capture request details
+  const requestData = {
+    method: req.method,
+    url: req.url,
+    // headers: req.headers,
+    body: req.body, // Note: Ensure body-parser is used if logging POST/PUT bodies
+    ip: req.ip,
+    "http.version": req.httpVersion,
+  }
+
+  // Log the request
+  logger.info("HTTP Request", {
+    "http.request": requestData,
+    "http.response": responseData,
+  })
+
+  next()
+}
+
+app.use(requestLogger)
 
 connectDB().then(() => {
   if (process.env.NODE_ENV === "test") main()
-    new StarsTransactions({
-      user_id: 790629329,
-      amount: 5000,
-      currency: "XTR",
-      status: "complete",
-      affiliate_id: 790629329,
-      product_type: 'autoclaim',
-      product_id: 'game_center'
-    }).save()
+  new StarsTransactions({
+    user_id: 790629329,
+    amount: 5000,
+    currency: "XTR",
+    status: "complete",
+    affiliate_id: 790629329,
+    product_type: "autoclaim",
+    product_id: "game_center",
+  }).save()
 })
 
 app.use("/api/process/", processRouter)
@@ -220,7 +326,15 @@ async function deleteTasks() {
 async function addSpins() {
   const users = await User.find({})
   for (const user of users) {
-    await Promise.all(Array.from(new UserSpins({ is_used: false, user_id: user.id, type: 'daily'}).save()).fill(5))
+    await Promise.all(
+      Array.from(
+        new UserSpins({
+          is_used: false,
+          user_id: user.id,
+          type: "daily",
+        }).save()
+      ).fill(5)
+    )
   }
 }
 
@@ -360,3 +474,5 @@ async function deleteConstantEffects() {
     })
   )
 }
+
+export { logger }

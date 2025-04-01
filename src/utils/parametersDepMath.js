@@ -119,7 +119,7 @@ export const recalcValuesByParameters = async (
       console.log(`[recalcValuesByParameters] balance updated with amount ${adjustedCoinsReward}`);
     }
 
-    await log("debug", colors.cyan(`Completed recalcValuesByParameters for user ${userParameters.id}`));
+    log("debug", colors.cyan(`Completed recalcValuesByParameters for user ${userParameters.id}`));
     return { mood: user.mood, coins: user.coins }; // Return updated values
   });
 };

@@ -2,247 +2,223 @@
 import StarsTransactions from "../models/tx/starsTransactionModel.mjs";
 import TONTransactions from "../models/tx/tonTransactionModel.js";
 import AffiliateTransaction from "../models/tx/affiliateTransactionModel.js";
+import User from "../models/user/userModel.js";
 import { withTransaction } from "../utils/dbUtils.js";
-import TON from "ton-core";
-import { Address, internal, beginCell } from '@ton/ton'
+import { Address, internal, beginCell, toNano, SendMode } from "@ton/ton";
 import { openWallet } from "../routes/user/userRoutes.js";
 import axios from "axios";
-import User from "../models/user/userModel.js";
-
-const { toNano, SendMode } = TON;
+import { logger } from "../server.js";
 
 // TON Center API configuration
 const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY;
 const TONCENTER_API_URL = "https://toncenter.com/api/v2";
 
-// Mock user retrieval (replace with your actual User model logic)
-const getConnectedWallet = async (affiliateId, session) => {
-  const user = await User.findOne({ id: affiliateId }, { tonWalletAddress: 1 }, { session });
-  if (!user || !user.tonWalletAddress) {
-    throw new Error("User or TON wallet address not found");
+// Constants
+const STARS_LOCK_PERIOD_MS = 21 * 24 * 60 * 60 * 1000 + 10 * 60 * 1000; // 21 days + 10 minutes
+const TON_LOCK_PERIOD_MS = 1 * 24 * 60 * 60 * 1000; // 1 day
+const AFFILIATE_PERCENTAGE = 0.1; // 10% commission
+const STARS_TO_TON_RATE = 1000; // 1000 Stars = 1 TON
+const NANOTONS_TO_TON = 1e9; // 1 TON = 1,000,000,000 nanotons
+
+// Retry utility with exponential backoff
+const retry = async (operation, maxRetries = 5, delay = 1000) => {
+  let attempt = 0;
+  while (attempt < maxRetries) {
+    try {
+      const result = await operation();
+      logger.info({ message: "Operation succeeded", attempt: attempt + 1 });
+      return result;
+    } catch (error) {
+      attempt++;
+      if (attempt >= maxRetries) {
+        logger.error({
+          message: "Operation failed after max retries",
+          attempts: maxRetries,
+          error: error.message,
+        });
+        throw error;
+      }
+      const waitTime = delay * Math.pow(2, attempt - 1);
+      logger.warn({
+        message: "Operation failed, retrying",
+        attempt,
+        waitTime,
+        error: error.message,
+      });
+      await new Promise((resolve) => setTimeout(resolve, waitTime));
+    }
   }
-  // Parse the address from the database (raw or user-friendly format)
-  const parsedAddress = Address.parse(user.tonWalletAddress);
-  console.log(`Parsed wallet address for affiliate ${affiliateId}: ${parsedAddress.toString({ bounceable: false })}`);
-  return parsedAddress;
 };
 
 // Wallet setup
 let walletContract, keyPair, tonClient;
-
-const mnemonic = process.env.MNEMONICS.split(" "); // Expects space-separated mnemonic
+const mnemonic = process.env.MNEMONICS.split(" ");
 const testnet = process.env.TESTNET === "true";
 
-// Initialize wallet and TON client (using openWallet from userRoutes.js)
 const initializeWallet = async () => {
-  try {
-    const walletData = await openWallet(mnemonic, testnet);
-    walletContract = walletData.contract;
-    keyPair = walletData.keyPair;
-    tonClient = walletData.client;
-    console.log(`Wallet initialized: ${walletContract.address.toString({ bounceable: false })}`);
-  } catch (error) {
-    console.error("Failed to initialize wallet:", error);
-    throw new Error("Wallet initialization failed");
-  }
+  logger.info({ message: "Initializing wallet" });
+  const walletData = await openWallet(mnemonic, testnet);
+  walletContract = walletData.contract;
+  keyPair = walletData.keyPair;
+  tonClient = walletData.client;
+  logger.info({
+    message: "Wallet initialized",
+    address: walletContract.address.toString({ bounceable: false }),
+  });
 };
 
-// Check if the destination wallet is initialized
+// Check if wallet is initialized
 const isWalletInitialized = async (address) => {
-  try {
-    const response = await axios.get(`${TONCENTER_API_URL}/getAddressInformation`, {
-      params: {
-        address: address.toString({ bounceable: false }),
-        api_key: TONCENTER_API_KEY,
-      },
-    });
-    console.log(`Address information response: ${JSON.stringify(response.data, null, 2)}`);
-    return response.data.result.state === "active";
-  } catch (error) {
-    console.error(`Failed to check wallet initialization for ${address.toString({ bounceable: false })}:`, error);
-    return false; // Assume uninitialized if the API call fails
-  }
+  const response = await axios.get(`${TONCENTER_API_URL}/getAddressInformation`, {
+    params: {
+      address: address.toString({ bounceable: false }),
+      api_key: TONCENTER_API_KEY,
+    },
+  });
+  const isActive = response.data.result.state === "active";
+  logger.info({
+    message: "Checked wallet initialization",
+    address: address.toString({ bounceable: false }),
+    initialized: isActive,
+  });
+  return isActive;
 };
 
-// Transfer TON to the specified address and create AffiliateTransaction
-const transferTON = async (destinationAddress, amount, session, affiliateId, starsTxIds, tonTxIds, pendingStars, pendingTON) => {
-  let affiliateTransaction;
+// Get user's TON wallet address
+const getConnectedWallet = async (affiliateId, session) => {
+  const user = await User.findOne(
+    { id: affiliateId },
+    { tonWalletAddress: 1 },
+    { session }
+  );
+  if (!user || !user.tonWalletAddress) {
+    logger.error({ message: "User or wallet address not found", affiliateId });
+    throw new Error("User or TON wallet address not found");
+  }
+  const parsedAddress = Address.parse(user.tonWalletAddress);
+  logger.info({
+    message: "Retrieved wallet address",
+    affiliateId,
+    address: parsedAddress.toString({ bounceable: false }),
+  });
+  return parsedAddress;
+};
+
+// Transfer TON with retries and detailed tracking
+const transferTON = async (destinationAddress, amount, affiliateTransaction, session) => {
   try {
-    // Ensure wallet is initialized
+    logger.info({
+      message: "Starting TON transfer",
+      destination: destinationAddress.toString({ bounceable: false }),
+      amount,
+    });
+
+    // Initialize wallet if not already done
     if (!walletContract || !keyPair || !tonClient) {
-      await initializeWallet();
+      await retry(initializeWallet);
     }
 
-    // Make sure we have a proper Address object
-    let addressObject;
-    if (typeof destinationAddress === 'string') {
-      // If it's a string, parse it into an Address
-      addressObject = Address.parse(destinationAddress);
-    } else if (destinationAddress instanceof Address) {
-      // If it's already an Address object, use it directly
-      addressObject = destinationAddress;
-    } else {
-      throw new Error("Invalid address format provided");
-    }
+    const addressObject =
+      destinationAddress instanceof Address
+        ? destinationAddress
+        : Address.parse(destinationAddress);
 
+    // Check wallet initialization with retry
+    const walletInitialized = await retry(() => isWalletInitialized(addressObject));
 
-    // Log the destination address for debugging
-    console.log(`Destination address (raw): ${destinationAddress.toRawString()}`);
-    console.log(`Destination address (non-bounceable): ${destinationAddress.toString({ bounceable: false })}`);
-    console.log(`Destination address (bounceable): ${destinationAddress.toString({ bounceable: true })}`);
-
-    // Convert the address to a non-bounceable string to force the SDK to parse it correctly
-    const nonBounceableAddress = destinationAddress.toString({ bounceable: false });
-    console.log(`Using non-bounceable address for transfer: ${nonBounceableAddress}`);
-
-    // Check if the destination wallet is initialized
-    const walletInitialized = await isWalletInitialized(destinationAddress);
-    console.log(`Destination wallet initialized: ${walletInitialized}`);
-    // Note: We proceed with the transfer even if the wallet is not initialized, as bounce: true will handle it
-
-    // Convert amount to nanoTON (1 TON = 1e9 nanoTON)
     const amountNano = toNano(amount.toString());
 
-    affiliateTransaction = new AffiliateTransaction({
-      affiliateId: Number(affiliateId),
-      starsTxIds: starsTxIds || [],
-      tonTxIds: tonTxIds || [],
-      starsAmount: parseFloat(pendingStars.toFixed(2)),
-      tonAmount: parseFloat(pendingTON.toFixed(2)),
-      totalTonWithdrawn: amount,
-      status: "pending",
-    });
-    await affiliateTransaction.save({ session });
-
-    // Get wallet sequence number (seqno)
-    const seqno = await walletContract.getSeqno();
-
-    // Try reconstructing the address from its raw string format
-    const rawFormat = addressObject.toRawString();
-    const freshAddress = Address.parse(rawFormat);
-
-    // // Or try from the non-bounceable format
-    // const nonBounceableStr = addressObject.toString({ bounceable: false });
-    // const freshAddress = Address.parse(nonBounceableStr);
-
-    const textBytes = Buffer.from("🎉 13th Floor Affiliate Payment 🎉", 'utf-8');
-    const body = beginCell()
-      .storeUint(0, 32) // op code 0 for comments
-      .storeBuffer(textBytes)
-      .endCell();
-
-    // Create the transfer message using the fresh Address instance
-    const transferMessage = internal({
-      to: freshAddress,
-      value: amountNano,
-      body: body,
-      bounce: true
-    });
-
-    // Send the transfer
-    console.log(`Transferring ${amount} TON to ${nonBounceableAddress} (seqno: ${seqno})`);
-    await walletContract.sendTransfer({
-      seqno,
-      secretKey: keyPair.secretKey,
-      messages: [transferMessage],
-      sendMode: SendMode.PAY_GAS_SEPARATELY + SendMode.IGNORE_ERRORS,
-    });
-
-    // Update AffiliateTransaction status to transferring
+    // Update transaction to "transferring"
     affiliateTransaction.status = "transferring";
+    affiliateTransaction.transferInitiatedAt = new Date();
     await affiliateTransaction.save({ session });
-
-    // Wait for the transaction to be confirmed
-    let currentSeqno = seqno;
-    for (let attempt = 0; attempt < 10; attempt++) {
-      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
-      currentSeqno = await walletContract.getSeqno();
-      if (currentSeqno > seqno) break;
-    }
-
-    if (currentSeqno === seqno) {
-      affiliateTransaction.status = "failed";
-      affiliateTransaction.error_message = "Transaction not confirmed after 10 attempts";
-      await affiliateTransaction.save({ session });
-      throw new Error("Transaction not confirmed after 10 attempts");
-    }
-
-    // Fetch the transaction hash using TON Center API
-    const response = await axios.get(`${TONCENTER_API_URL}/getTransactions`, {
-      params: {
-        address: walletContract.address.toString({ bounceable: false }),
-        limit: 1,
-        sort: "desc",
-        api_key: TONCENTER_API_KEY,
-        archival: true,
-      },
+    logger.info({
+      message: "Updated transaction status to transferring",
+      transactionId: affiliateTransaction._id,
     });
 
-    // Log the full response for debugging
-    console.log("TON Center API response:", JSON.stringify(response.data, null, 2));
+    const seqno = await walletContract.getSeqno();
+    const transferMessage = internal({
+      to: addressObject,
+      value: amountNano,
+      body: beginCell()
+        .storeUint(0, 32)
+        .storeBuffer(Buffer.from("🎉 13th Floor Affiliate Payment 🎉", "utf-8"))
+        .endCell(),
+      bounce: !walletInitialized,
+    });
 
-    // Validate the response structure
-    if (!response.data || typeof response.data !== "object") {
-      affiliateTransaction.status = "failed";
-      affiliateTransaction.error_message = "Failed to fetch transaction hash: Invalid response from TON Center API";
-      await affiliateTransaction.save({ session });
-      throw new Error("Failed to fetch transaction hash: Invalid response from TON Center API");
-    }
+    // Send transfer with retry
+    await retry(() =>
+      walletContract.sendTransfer({
+        seqno,
+        secretKey: keyPair.secretKey,
+        messages: [transferMessage],
+        sendMode: SendMode.PAY_GAS_SEPARATELY + SendMode.IGNORE_ERRORS,
+      })
+    );
+    logger.info({ message: "TON transfer sent", seqno });
 
-    // Check if result exists and is an array
-    if (!response.data.result || !Array.isArray(response.data.result) || response.data.result.length === 0) {
-      affiliateTransaction.status = "failed";
-      affiliateTransaction.error_message = "Failed to fetch transaction hash: No transactions found in response";
-      await affiliateTransaction.save({ session });
-      throw new Error("Failed to fetch transaction hash: No transactions found in response");
-    }
+    // Confirm transaction with retry
+    const confirmTransaction = async () => {
+      const currentSeqno = await walletContract.getSeqno();
+      if (currentSeqno <= seqno) throw new Error("Transaction not confirmed yet");
+      return currentSeqno;
+    };
+    await retry(confirmTransaction, 20, 3000);
+    logger.info({ message: "Transaction confirmed on blockchain" });
 
-    const latestTx = response.data.result[0];
+    // Fetch transaction hash with retry
+    const getTxHash = async () => {
+      const response = await axios.get(`${TONCENTER_API_URL}/getTransactions`, {
+        params: {
+          address: walletContract.address.toString({ bounceable: false }),
+          limit: 1,
+          sort: "desc",
+          api_key: TONCENTER_API_KEY,
+          archival: true,
+        },
+      });
+      const txHash = response.data.result[0]?.transaction_id?.hash;
+      if (!txHash) throw new Error("Transaction hash not found");
+      return txHash;
+    };
+    const txHash = await retry(getTxHash);
+    logger.info({ message: "Fetched transaction hash", txHash });
 
-    // Check if transaction_id exists and has a hash
-    if (!latestTx.transaction_id || typeof latestTx.transaction_id.hash !== "string") {
-      affiliateTransaction.status = "failed";
-      affiliateTransaction.error_message = "Failed to fetch transaction hash: Missing or invalid transaction_id.hash in response";
-      await affiliateTransaction.save({ session });
-      throw new Error("Failed to fetch transaction hash: Missing or invalid transaction_id.hash in response");
-    }
-
-    const txHash = latestTx.transaction_id.hash;
-
-    // Update AffiliateTransaction status to complete
+    // Update transaction to "complete"
     affiliateTransaction.status = "complete";
     affiliateTransaction.tonTxHash = txHash;
+    affiliateTransaction.transferConfirmedAt = new Date();
     await affiliateTransaction.save({ session });
+    logger.info({
+      message: "Transfer completed",
+      transactionId: affiliateTransaction._id,
+      txHash,
+    });
 
-    console.log(`Transfer successful! Transaction hash: ${txHash}`);
-    await User.updateOne({ id: affiliateId }, { $set: { is_withdrawing: false } }, { session })
-    
     return txHash;
   } catch (error) {
-    console.error("TON transfer failed:", error);
-    if (affiliateTransaction) {
-      affiliateTransaction.status = "failed";
-      affiliateTransaction.error_message = error.message;
-      await affiliateTransaction.save({ session });
-    }
-    await User.updateOne({ id: affiliateId }, { $set: { is_withdrawing: false } }, { session })
-
-    throw new Error(`TON transfer failed: ${error.message}`);
+    logger.error({
+      message: "TON transfer failed",
+      error: error.message,
+      transactionId: affiliateTransaction?._id,
+    });
+    affiliateTransaction.status = "failed";
+    affiliateTransaction.error_message = error.message;
+    await affiliateTransaction.save({ session });
+    throw error;
   }
 };
 
-// Combined function to get Stars and TON affiliate earnings
+// Get affiliate earnings data
 export const getAffiliateEarningsData = async (affiliateId) => {
   if (!affiliateId) throw new Error("Affiliate ID is required");
 
-  const STARS_LOCK_PERIOD_MS = 21 * 24 * 60 * 60 * 1000 + 10 * 60 * 1000; // 21 days + 10 minutes
-  const TON_LOCK_PERIOD_MS = 1 * 24 * 60 * 60 * 1000; // 1 day
-  const AFFILIATE_PERCENTAGE = 0.1; // 10% commission
-  const NANOTONS_TO_TON = 1e9; // 1 TON = 1,000,000,000 nanotons
-  const STARS_TO_TON_RATE = 1000; // 1000 Stars = 1 TON
   const now = new Date();
+  logger.info({ message: "Fetching affiliate earnings data", affiliateId });
 
-  // --- Stars Transactions ---
+  // Stars transactions
   const starsTxs = await StarsTransactions.find({
     affiliate_id: Number(affiliateId),
     currency: "XTR",
@@ -273,7 +249,6 @@ export const getAffiliateEarningsData = async (affiliateId) => {
     { lockedStars: 0, pendingStars: 0 }
   );
 
-  // Convert Stars to TON
   const totalStarsLockedInTON = parseFloat(
     (starsResult.lockedStars / STARS_TO_TON_RATE).toFixed(2)
   );
@@ -281,7 +256,7 @@ export const getAffiliateEarningsData = async (affiliateId) => {
     (starsResult.pendingStars / STARS_TO_TON_RATE).toFixed(2)
   );
 
-  // --- TON Transactions ---
+  // TON transactions
   const tonTxs = await TONTransactions.find({
     affiliate_id: Number(affiliateId),
     currency: "TON",
@@ -313,102 +288,165 @@ export const getAffiliateEarningsData = async (affiliateId) => {
     { lockedTON: 0, pendingTON: 0 }
   );
 
-  return {
-    totalStarsLocked: parseFloat(starsResult.lockedStars.toFixed(2)), // Stars amount locked
-    totalStarsPendingWithdrawal: parseFloat(
-      starsResult.pendingStars.toFixed(2)
-    ), // Stars amount pending
-    totalStarsLockedInTON: totalStarsLockedInTON, // TON equivalent of locked Stars
-    totalStarsPendingInTON: totalStarsPendingInTON, // TON equivalent of pending Stars
-    totalTONLocked: parseFloat(tonResult.lockedTON.toFixed(2)), // TON amount locked
-    totalTONPendingWithdrawal: parseFloat(tonResult.pendingTON.toFixed(2)), // TON amount pending
+  const earningsData = {
+    totalStarsLocked: parseFloat(starsResult.lockedStars.toFixed(2)),
+    totalStarsPendingWithdrawal: parseFloat(starsResult.pendingStars.toFixed(2)),
+    totalStarsLockedInTON,
+    totalStarsPendingInTON,
+    totalTONLocked: parseFloat(tonResult.lockedTON.toFixed(2)),
+    totalTONPendingWithdrawal: parseFloat(tonResult.pendingTON.toFixed(2)),
   };
+
+  logger.info({ message: "Earnings data retrieved", affiliateId, data: earningsData });
+  return earningsData;
 };
 
-// Withdraw both Stars and TON earnings with transaction safety
+// Withdraw affiliate earnings
 export const withdrawAffiliateEarnings = async (affiliateId) => {
-  const STARS_LOCK_PERIOD_MS = 21 * 24 * 60 * 60 * 1000 + 10 * 60 * 1000;
-  const TON_LOCK_PERIOD_MS = 1 * 24 * 60 * 60 * 1000;
-  const AFFILIATE_PERCENTAGE = 0.1;
-  const STARS_TO_TON_RATE = 1000;
-  const NANOTONS_TO_TON = 1e9;
   const now = new Date();
+  logger.info({ message: "Starting withdrawal process", affiliateId });
 
   const operation = async (session) => {
-    // Fetch Pending Stars
-    const starsTxs = await StarsTransactions.find(
-      {
-        affiliate_id: Number(affiliateId),
-        currency: "XTR",
-        status: "complete",
-        createdAt: { $lt: new Date(now - STARS_LOCK_PERIOD_MS) },
-        _id: {
-          $nin: await AffiliateTransaction.find({
-            affiliateId: Number(affiliateId),
-            status: "complete",
-          }).distinct("starsTxIds"),
-        },
-      },
-      null,
-      { session }
-    ).sort({ createdAt: 1 });
-
-    const pendingStars = starsTxs.reduce((sum, tx) => {
-      const txAmount = parseFloat(tx.amount) * AFFILIATE_PERCENTAGE;
-      return sum + parseFloat(txAmount.toFixed(2));
-    }, 0);
-    const starsTxIds = starsTxs.map((tx) => tx._id);
-
-    // Fetch Pending TON
-    const tonTxs = await TONTransactions.find(
-      {
-        affiliate_id: Number(affiliateId),
-        currency: "TON",
-        status: "complete",
-        createdAt: { $lt: new Date(now - TON_LOCK_PERIOD_MS) },
-        _id: {
-          $nin: await AffiliateTransaction.find({
-            affiliateId: Number(affiliateId),
-            status: "complete",
-          }).distinct("tonTxIds"),
-        },
-      },
-      null,
-      { session }
-    ).sort({ createdAt: 1 });
-
-    const pendingTON = tonTxs.reduce((sum, tx) => {
-      const txAmountTON =
-        (parseFloat(tx.amount) / NANOTONS_TO_TON) * AFFILIATE_PERCENTAGE;
-      return sum + parseFloat(txAmountTON.toFixed(2));
-    }, 0);
-    const tonTxIds = tonTxs.map((tx) => tx._id);
-
-    // Calculate Total TON
-    const starsInTON = parseFloat((pendingStars / STARS_TO_TON_RATE).toFixed(2));
-    const totalTON = parseFloat((starsInTON + pendingTON).toFixed(2));
-
-    if (totalTON <= 0) throw new Error("No available earnings to withdraw");
-    if (totalTON < 5) throw new Error("Less than 5 ton pending")
-
-    // Check Wallet and Transfer
-    const walletAddress = await getConnectedWallet(affiliateId, session);
-    if (walletAddress) {
-      await User.updateOne({ id: affiliateId }, { $set: { is_withdrawing: true } }, { session })
-      const tonTxHash = await transferTON(
-        walletAddress, // Pass the Address object directly
-        totalTON,
-        session,
+    // Acquire lock atomically
+    const user = await User.findOneAndUpdate(
+      { id: affiliateId, is_withdrawing: false },
+      { $set: { is_withdrawing: true } },
+      { new: true, session }
+    );
+    if (!user) {
+      logger.error({
+        message: "Withdrawal already in progress or user not found",
         affiliateId,
+      });
+      throw new Error("Withdrawal already in progress or user not found");
+    }
+
+    try {
+      // Calculate pending earnings
+      const starsTxs = await StarsTransactions.find(
+        {
+          affiliate_id: Number(affiliateId),
+          currency: "XTR",
+          status: "complete",
+          createdAt: { $lt: new Date(now - STARS_LOCK_PERIOD_MS) },
+          _id: {
+            $nin: await AffiliateTransaction.find(
+              { affiliateId: Number(affiliateId), status: "complete" },
+              null,
+              { session }
+            ).distinct("starsTxIds"),
+          },
+        },
+        null,
+        { session }
+      ).sort({ createdAt: 1 });
+
+      const pendingStars = starsTxs.reduce((sum, tx) => {
+        const txAmount = parseFloat(tx.amount) * AFFILIATE_PERCENTAGE;
+        return sum + parseFloat(txAmount.toFixed(2));
+      }, 0);
+      const starsTxIds = starsTxs.map((tx) => tx._id);
+
+      const tonTxs = await TONTransactions.find(
+        {
+          affiliate_id: Number(affiliateId),
+          currency: "TON",
+          status: "complete",
+          createdAt: { $lt: new Date(now - TON_LOCK_PERIOD_MS) },
+          _id: {
+            $nin: await AffiliateTransaction.find(
+              { affiliateId: Number(affiliateId), status: "complete" },
+              null,
+              { session }
+            ).distinct("tonTxIds"),
+          },
+        },
+        null,
+        { session }
+      ).sort({ createdAt: 1 });
+
+      const pendingTON = tonTxs.reduce((sum, tx) => {
+        const txAmountTON =
+          (parseFloat(tx.amount) / NANOTONS_TO_TON) * AFFILIATE_PERCENTAGE;
+        return sum + parseFloat(txAmountTON.toFixed(2));
+      }, 0);
+      const tonTxIds = tonTxs.map((tx) => tx._id);
+
+      const starsInTON = parseFloat((pendingStars / STARS_TO_TON_RATE).toFixed(2));
+      const totalTON = parseFloat((starsInTON + pendingTON).toFixed(2));
+
+      logger.info({
+        message: "Calculated pending earnings",
+        affiliateId,
+        pendingStars,
+        pendingTON,
+        totalTON,
+      });
+
+      if (totalTON <= 0) {
+        logger.warn({ message: "No available earnings to withdraw", affiliateId });
+        throw new Error("No available earnings to withdraw");
+      }
+      if (totalTON < 5) {
+        logger.warn({ message: "Less than 5 TON pending", affiliateId, totalTON });
+        throw new Error("Less than 5 TON pending");
+      }
+
+      // Create AffiliateTransaction
+      const affiliateTransaction = new AffiliateTransaction({
+        affiliateId: Number(affiliateId),
         starsTxIds,
         tonTxIds,
-        pendingStars,
-        pendingTON
+        starsAmount: parseFloat(pendingStars.toFixed(2)),
+        tonAmount: parseFloat(pendingTON.toFixed(2)),
+        totalTonWithdrawn: totalTON,
+        status: "pending",
+      });
+      await affiliateTransaction.save({ session });
+      logger.info({
+        message: "Created affiliate transaction",
+        transactionId: affiliateTransaction._id,
+      });
+
+      // Get wallet address
+      const walletAddress = await getConnectedWallet(affiliateId, session);
+
+      // Perform TON transfer
+      const tonTxHash = await transferTON(
+        walletAddress,
+        totalTON,
+        affiliateTransaction,
+        session
       );
-      return { totalTON, tonTxHash, walletAddress: walletAddress.toString({ bounceable: false }) };
-    } else {
-      console.log("No wallet connected, withdrawal recorded but not transferred");
-      return { totalTON, tonTxHash: null, walletAddress: null };
+
+      // Release lock
+      await User.updateOne(
+        { id: affiliateId },
+        { $set: { is_withdrawing: false } },
+        { session }
+      );
+      logger.info({ message: "Withdrawal lock released", affiliateId });
+
+      const result = {
+        totalTON,
+        tonTxHash,
+        walletAddress: walletAddress.toString({ bounceable: false }),
+      };
+      logger.info({ message: "Withdrawal completed successfully", affiliateId, result });
+      return result;
+    } catch (error) {
+      // Release lock on error
+      await User.updateOne(
+        { id: affiliateId },
+        { $set: { is_withdrawing: false } },
+        { session }
+      );
+      logger.error({
+        message: "Withdrawal failed",
+        affiliateId,
+        error: error.message,
+      });
+      throw error;
     }
   };
 
