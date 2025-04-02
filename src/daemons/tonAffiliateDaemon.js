@@ -48,7 +48,7 @@ const worker = new Worker(
       }
       console.log(`Acquired lock for affiliate ${affiliateId}`);
 
-      await withdrawAffiliateEarnings(affiliateId);
+      const result = await withdrawAffiliateEarnings(affiliateId);
 
       console.log(`Withdrawal completed for affiliate ${affiliateId}:`, result);
       return result;

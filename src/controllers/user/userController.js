@@ -132,10 +132,7 @@ export const gameCenterLevelRequirements = {
 export const prebuildInitialInventory = async (user_id) => {
   await new UserCurrentInventory({
     user_id,
-    shelf:
-      process.env.NODE_ENV === "test"
-        ? [{ id: 1 }, { id: 2 }, { id: 5 }, { id: 8 }]
-        : [],
+    shelf: [],
     // all tier 0 items, no offence
     clothes: [
       {

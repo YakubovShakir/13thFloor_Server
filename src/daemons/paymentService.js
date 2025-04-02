@@ -10,6 +10,7 @@ import { mnemonicToPrivateKey } from "ton-crypto";
 import winston from "winston";
 import IORedis from 'ioredis'
 import { config } from "dotenv";
+import colors from 'ansi-colors'
 config()
 
 // TON Center API configuration
@@ -71,23 +72,21 @@ export const withTransaction = async (operation, maxRetries = 3, retryDelay = 50
       if (error.name === "MongoServerError" && error.code === 112) {
         retryCount++;
         if (retryCount < maxRetries) {
-          log(
-            "warn",
+          logger.warn(
             colors.yellow(`WriteConflict detected, retrying (${retryCount}/${maxRetries})`),
             { error: error.message }
           );
           await new Promise((resolve) => setTimeout(resolve, retryDelay * retryCount)); // Exponential delay
           continue;
         } else {
-          log(
-            "error",
+          logger.error(
             colors.red(`Max retries (${maxRetries}) reached for WriteConflict`),
             { error: error.message, stack: error.stack }
           );
           throw new Error(`Failed after ${maxRetries} retries due to WriteConflict: ${error.message}`);
         }
       } else {
-        log(
+        logger.error(
           "error",
           colors.red(`Transaction failed`),
           { error: error.message, stack: error.stack }
@@ -195,6 +194,9 @@ const getConnectedWallet = async (affiliateId, session) => {
     { tonWalletAddress: 1 },
     { session }
   );
+
+  console.log(user)
+
   if (!user || !user.tonWalletAddress) {
     logger.error({ message: "User or wallet address not found", affiliateId });
     throw new Error("User or TON wallet address not found");
@@ -491,10 +493,10 @@ export const withdrawAffiliateEarnings = async (affiliateId) => {
         logger.warn({ message: "No available earnings to withdraw", affiliateId });
         throw new Error("No available earnings to withdraw");
       }
-      // if (totalTON < 5) {
-      //   logger.warn({ message: "Less than 5 TON pending", affiliateId, totalTON });
-      //   throw new Error("Less than 5 TON pending");
-      // }
+      if (totalTON < 5) {
+        logger.warn({ message: "Less than 5 TON pending", affiliateId, totalTON });
+        throw new Error("Less than 5 TON pending");
+      }
 
       // Create AffiliateTransaction
       const affiliateTransaction = new AffiliateTransaction({
