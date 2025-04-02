@@ -3,12 +3,36 @@ import mongoose from 'mongoose';
 import { Queue, RedisConnection, Worker } from 'bullmq';
 import { createClient } from 'redis';
 import { withdrawAffiliateEarnings } from '../services/paymentService.js'
+import IORedis from 'ioredis';
 
 config();
 
+config();
+
+// Log environment variables
+console.log('REDIS_HOST loaded:', process.env.REDIS_HOST);
+console.log('REDIS_PORT loaded:', process.env.REDIS_PORT);
+console.log('REDIS_PASSWORD loaded:', process.env.REDIS_PASSWORD);
+
+// Redis setup
+const redis = new IORedis({
+  host: process.env.REDIS_HOST || "redis-test",
+  port: parseInt(process.env.REDIS_PORT || "6379", 10),
+  password: process.env.REDIS_PASSWORD || "redis_password",
+});
+redis.on("connect", () => console.log("Redis connected for middleware"));
+redis.on("error", (err) => console.error("Redis error in middleware:", err));
+
+// Test the connection
+redis.ping().then((result) => {
+  console.log('IORedis PING result:', result);
+}).catch((err) => {
+  console.error('IORedis PING failed:', err);
+});
+
 // BullMQ queue using ioredis
 const affiliateWithdrawQueue = new Queue('affiliate-withdrawals', {
-  connection: redisConnection,
+  connection: redis,
 });
 
 // Worker setup using the same ioredis instance
@@ -41,7 +65,7 @@ const worker = new Worker(
     }
   },
   {
-    connection: redisConnection, // Use the same ioredis instance
+    connection: redis, // Use the same ioredis instance
   }
 );
 
@@ -63,12 +87,12 @@ worker.on('error', (err) => {
 
 // Custom lock functions using ioredis
 const acquireLock = async (key, ttl = 60000) => {
-  const result = await redisConnection.set(key, 'locked', 'NX', 'PX', ttl);
+  const result = await redis.set(key, 'locked', 'NX', 'PX', ttl);
   return result === 'OK';
 };
 
 const releaseLock = async (key) => {
-  await redisConnection.del(key);
+  await redis.del(key);
 };
 
 // MongoDB connection
@@ -82,6 +106,6 @@ console.log('Affiliate withdrawal worker started');
 process.on('SIGINT', async () => {
   await worker.close();
   await affiliateWithdrawQueue.close();
-  await redisConnection.quit();
+  await redis.quit();
   process.exit(0);
 });
