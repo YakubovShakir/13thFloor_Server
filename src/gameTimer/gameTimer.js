@@ -1249,26 +1249,51 @@ const syncShelfInventory = async (userId, nftItemIds) => {
   try {
     session.startTransaction();
 
-    const inventory = await UserCurrentInventory.findOne({ user_id: userId }, null, { session }) ||
-      await UserCurrentInventory.create({ user_id: userId, shelf: [] }, { session });
+    const inventory = await UserCurrentInventory.findOne({ user_id: userId }, null, { session }) || 
+      await UserCurrentInventory.create([{ user_id: userId, shelf: [] }], { session });
     const user = await User.findOne({ id: userId }, null, { session });
 
-    const currentShelfIds = (inventory.shelf || []).map(item => item.id);
+    // Current shelf items
+    const currentShelf = inventory.shelf || [];
+    const currentShelfIds = currentShelf.map(item => item.id);
+    
+    // NFTs the user currently owns (filtered for managed range 9-38)
     const nftShelfIds = nftItemIds.filter(id => id >= 9 && id <= 38);
     const currentManagedIds = currentShelfIds.filter(id => id >= 9 && id <= 38);
 
-    const itemsToAdd = nftShelfIds.filter(id => !currentManagedIds.includes(id)).map(id => ({ id }));
-    const itemsToRemove = currentManagedIds.filter(id => !nftShelfIds.includes(id));
+    // Items to add: owned NFTs not in current shelf
+    const itemsToAdd = nftShelfIds
+      .filter(id => !currentShelfIds.includes(id))
+      .map(id => ({ id }));
 
+    // Items to remove: shelf items in managed range that aren't in owned NFTs
+    const itemsToRemove = currentManagedIds
+      .filter(id => !nftShelfIds.includes(id));
+
+    // If user's selected neko is being removed, clear it
     if (user?.shelf?.neko && itemsToRemove.includes(user.shelf.neko)) {
-      await User.updateOne({ id: userId }, { $set: { "shelf.neko": null } }, { session });
+      await User.updateOne(
+        { id: userId }, 
+        { $set: { "shelf.neko": null } }, 
+        { session }
+      );
     }
 
+    // Apply updates
     if (itemsToAdd.length) {
-      await UserCurrentInventory.updateOne({ user_id: userId }, { $addToSet: { shelf: { $each: itemsToAdd } } }, { session });
+      await UserCurrentInventory.updateOne(
+        { user_id: userId },
+        { $addToSet: { shelf: { $each: itemsToAdd } } },
+        { session }
+      );
     }
+    
     if (itemsToRemove.length) {
-      await UserCurrentInventory.updateOne({ user_id: userId }, { $pull: { shelf: { id: { $in: itemsToRemove } } } }, { session });
+      await UserCurrentInventory.updateOne(
+        { user_id: userId },
+        { $pull: { shelf: { id: { $in: itemsToRemove } } } },
+        { session }
+      );
     }
 
     await session.commitTransaction();
@@ -1295,7 +1320,7 @@ const nftScanConfig = {
     isRunning = true;
     try {
       log.info( "NFT-scanner process scheduler started iteration");
-      const usersWithWallets = await User.find({ tonWalletAddress: { $ne: null } });
+      const usersWithWallets = await User.find({});
 
       await processInBatches(usersWithWallets, 50, async (user) => {
         const nftItemIds = await getWhitelistedNftsFromWallet(user.tonWalletAddress);
