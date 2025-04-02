@@ -1448,8 +1448,7 @@ export const interactWithNeko = async (userId, targetUserId) => {
 
       targetUserParams.respect += respectReward
       await targetUserParams.save()
-      log(
-        "info",
+      logger.info(
         `Added ${respectReward} respect to user ${targetUserId}`
       )
     }
@@ -1469,7 +1468,7 @@ export const interactWithNeko = async (userId, targetUserId) => {
       coinReward,
       cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
     })
-    console.log(boostPercentage)
+
     return {
       cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
       received_coins: coinReward,
