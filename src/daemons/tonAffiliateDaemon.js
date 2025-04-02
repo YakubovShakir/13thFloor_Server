@@ -3,43 +3,8 @@ import mongoose from 'mongoose';
 import { Queue, RedisConnection, Worker } from 'bullmq';
 import { createClient } from 'redis';
 import { withdrawAffiliateEarnings } from '../services/paymentService.js'
-import IORedis from 'ioredis';
 
 config();
-
-config();
-
-// Log environment variables
-console.log('REDIS_HOST loaded:', process.env.REDIS_HOST);
-console.log('REDIS_PORT loaded:', process.env.REDIS_PORT);
-console.log('REDIS_PASSWORD loaded:', process.env.REDIS_PASSWORD);
-
-// Redis setup
-const redis = new IORedis({
-  host: process.env.REDIS_HOST || "redis-test",
-  port: parseInt(process.env.REDIS_PORT || "6379", 10),
-  password: process.env.REDIS_PASSWORD || "redis_password",
-});
-redis.on("connect", () => console.log("Redis connected for middleware"));
-redis.on("error", (err) => console.error("Redis error in middleware:", err));
-
-// Logger setup
-const logger = winston.createLogger({
-  level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-    winston.format.printf(({ timestamp, level, message, ...meta }) => {
-      return `${timestamp} [${level}]: ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ""}`;
-    })
-  ),
-  transports: [new winston.transports.Console()],
-});
-// Test the connection
-redisConnection.ping().then((result) => {
-  console.log('IORedis PING result:', result);
-}).catch((err) => {
-  console.error('IORedis PING failed:', err);
-});
 
 // BullMQ queue using ioredis
 const affiliateWithdrawQueue = new Queue('affiliate-withdrawals', {
