@@ -732,39 +732,39 @@ const operationMap = {
     if (!investmentDef) {
       throw new Error(`Investment definition not found for ID ${currentInvestment.investment_id}`);
     }
-
-    if(moment(investmentDef.createdAt).diff(moment(), 'hours') > 0) {
+    console.log(moment().diff(moment(currentInvestment.createdAt), 'seconds'))
+    if (moment().diff(moment(currentInvestment.createdAt), 'seconds') >= 3600) {
       const userParameters = await UserParameters.findOne({ id: userId }, null, { session });
-    if (!userParameters) {
-      throw new Error(`UserParameters ${userId} not found`);
-    }
+      if (!userParameters) {
+        throw new Error(`UserParameters ${userId} not found`);
+      }
 
-    const reward = investmentDef.coins_per_hour;
-    await operationMap.updateUserBalance({ id: userId, amount: reward }, session);
+      const reward = investmentDef.coins_per_hour;
+      await operationMap.updateUserBalance({ id: userId, amount: reward }, session);
 
-    currentInvestment.claimed = true;
-    await currentInvestment.save({ session });
+      currentInvestment.claimed = true;
+      await currentInvestment.save({ session });
 
-    const user = await User.findOne({ id: userId }, { investment_levels: 1 }, { session });
-    const userInvestmentLevel = user.investment_levels[investmentType];
-    const newInvestmentDef = await Investments.findOne({ type: investmentType, level: userInvestmentLevel }, null, { session });
-    if (!newInvestmentDef) {
-      throw new Error(`Investment definition not found for type ${investmentType}, level ${userInvestmentLevel}`);
-    }
+      const user = await User.findOne({ id: userId }, { investment_levels: 1 }, { session });
+      const userInvestmentLevel = user.investment_levels[investmentType];
+      const newInvestmentDef = await Investments.findOne({ type: investmentType, level: userInvestmentLevel }, null, { session });
+      if (!newInvestmentDef) {
+        throw new Error(`Investment definition not found for type ${investmentType}, level ${userInvestmentLevel}`);
+      }
 
-    const newInvestment = new UserLaunchedInvestments({
-      user_id: userId,
-      investment_id: newInvestmentDef.id,
-      investment_type: investmentType,
-      to_claim: newInvestmentDef.coins_per_hour,
-    });
-    await newInvestment.save({ session });
+      const newInvestment = new UserLaunchedInvestments({
+        user_id: userId,
+        investment_id: newInvestmentDef.id,
+        investment_type: investmentType,
+        to_claim: newInvestmentDef.coins_per_hour,
+      });
+      await newInvestment.save({ session });
 
-    log.info(colors.green(`Autoclaim processed: claimed, marked, new investment created`), {
-      userId,
-      investmentType,
-      reward,
-    });
+      log.info(colors.green(`Autoclaim processed: claimed, marked, new investment created`), {
+        userId,
+        investmentType,
+        reward,
+      });
     } else {
       log.info(colors.green(`Skipping autoclaim: investment not yet ready`), {
         userId,
@@ -1011,7 +1011,7 @@ const genericProcessScheduler = (processType, processConfig) => {
     try {
       if (processType !== 'autoclaim') {
         log.info(`${processType} process scheduler started iteration`);
-       
+
 
         await Promise.all(processes.map(async (process) => {
           const params = {
@@ -1163,17 +1163,17 @@ export const autoclaimProcessConfig = {
       }
 
       await processInBatches(usersWithAutoclaim, 50, async (autoclaim) => {
-          const userId = autoclaim.userId;
-          const investmentType = autoclaim.investmentType;
-          console.log('Queuing transaction for autoclaim')
-          // Enqueue the claim operation
-          await queueDbUpdate(
-            "processAutoclaim",
-            { investmentType, userId },
-            `Autoclaim claim for ${investmentType}, user ${userId}`,
-            userId
-          );
-        
+        const userId = autoclaim.userId;
+        const investmentType = autoclaim.investmentType;
+        console.log('Queuing transaction for autoclaim')
+        // Enqueue the claim operation
+        await queueDbUpdate(
+          "processAutoclaim",
+          { investmentType, userId },
+          `Autoclaim claim for ${investmentType}, user ${userId}`,
+          userId
+        );
+
       });
 
       log.info(`Autoclaim process scheduler finished iteration`, {

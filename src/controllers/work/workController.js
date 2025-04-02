@@ -13,7 +13,7 @@ export const getWorks = async (req, res) => {
 
 export const buyWork = async (req, res) => {
   try {
-    const userId = parseInt(req.query.id)
+    const userId = req.userId
     const workId = parseInt(req.query.workId)
     if (!userId || !workId)
       return res.status(400).json({ error: "Query Not Valid" })
