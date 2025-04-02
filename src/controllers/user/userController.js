@@ -779,7 +779,7 @@ export const getUserInvestments = async (req, res) => {
       { id: userId },
       { level: 1 }
     )
-    const userSkills = await UserSkill.find({ user_id: userId }) // Fetch user's learned skills
+    const userSkills = await UserSkill.find({ id: userId }) // Fetch user's learned skills
 
     // Current investments by user level
     const currentGameCenter = await Investments.findOne({

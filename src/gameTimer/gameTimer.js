@@ -732,7 +732,7 @@ const operationMap = {
     if (!investmentDef) {
       throw new Error(`Investment definition not found for ID ${currentInvestment.investment_id}`);
     }
-    console.log(moment().diff(moment(currentInvestment.createdAt), 'seconds'))
+
     if (moment().diff(moment(currentInvestment.createdAt), 'seconds') >= 3600) {
       const userParameters = await UserParameters.findOne({ id: userId }, null, { session });
       if (!userParameters) {
