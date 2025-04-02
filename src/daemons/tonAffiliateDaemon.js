@@ -19,6 +19,7 @@ const redis = new IORedis({
   host: process.env.REDIS_HOST || "redis-test",
   port: parseInt(process.env.REDIS_PORT || "6379", 10),
   password: process.env.REDIS_PASSWORD || "redis_password",
+  maxRetriesPerRequest: null
 });
 redis.on("connect", () => console.log("Redis connected for middleware"));
 redis.on("error", (err) => console.error("Redis error in middleware:", err));
