@@ -85,5 +85,3 @@ process.on('SIGINT', async () => {
   await redisConnection.quit();
   process.exit(0);
 });
-
-export { logger }
