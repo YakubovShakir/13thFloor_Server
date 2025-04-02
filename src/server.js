@@ -514,6 +514,7 @@ async function deleteUsers() {
     }
     logger.info('User collection didn’t exist, proceeding');
   }
+  logger.info('Before User.ensureIndexes');
   await User.ensureIndexes();
   logger.info('User indexes recreated');
 
@@ -527,6 +528,7 @@ async function deleteUsers() {
     }
     logger.info('UserParameters collection didn’t exist, proceeding');
   }
+  logger.info('Before UserParameters.ensureIndexes');
   await UserParameters.ensureIndexes();
   logger.info('UserParameters indexes recreated');
 
@@ -540,6 +542,7 @@ async function deleteUsers() {
     }
     logger.info('UserSkill collection didn’t exist, proceeding');
   }
+  logger.info('Before UserSkill.ensureIndexes');
   await UserSkill.ensureIndexes();
   logger.info('UserSkill indexes recreated');
 }
