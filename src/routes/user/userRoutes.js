@@ -71,6 +71,7 @@ import { logger } from '../../server.js'
 import { openWallet } from "../../services/paymentService.js"
 import StarsTransactions from '../../models/tx/starsTransactionModel.mjs'
 import AffiliateTransaction from '../../models/tx/affiliateTransactionModel.js'
+import Autoclaims from "../../models/investments/autoclaimsModel.js"
 
 export function calculateGamecenterLevel(refsCount) {
   const levels = Object.keys(gamecenterLevelMap)
@@ -2200,7 +2201,7 @@ export const getAutoclaimStatus = async (userId) => {
     const now = new Date()
 
     // Find all active autoclaims for the user (not expired)
-    const activeAutoclaims = await Autoclaim.find({
+    const activeAutoclaims = await Autoclaims.find({
       userId,
       expiresAt: { $gt: now },
     })
@@ -2237,6 +2238,22 @@ export const getAutoclaimStatus = async (userId) => {
     throw err // Re-throw to handle in caller if needed
   }
 }
+
+router.get('/autoclaim-data', async (req, res) => {
+  const userId = req.userId
+
+  try{
+    const status = await getAutoclaimStatus(userId)
+    res.status(200).json(status)
+  } catch(err) {
+    logger.error( `Failed to get autoclaim status for user ${userId}`, {
+      error: err.message,
+      stack: err.stack,
+    })
+    
+    res.status(500).end()
+  }
+})
 
 router.get("/:id/affiliate-data", async (req, res) => {
   const userId = req.userId

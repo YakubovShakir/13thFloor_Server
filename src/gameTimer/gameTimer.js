@@ -261,7 +261,7 @@ const operationMap = {
         userParameters.energy + energyRestore
       );
       await userParameters.save({ session });
-      log.info( `${colors.cyanBright('Applied energy restore from tonic-drink')}`, { user_id: userParameters.id, energyRestore });
+      log.info(`${colors.cyanBright('Applied energy restore from tonic-drink')}`, { user_id: userParameters.id, energyRestore });
     }
   },
   updateTimestamp: async (params, session) => {
@@ -272,7 +272,7 @@ const operationMap = {
     }
     process.user_parameters_updated_at = timestamp;
     await process.save({ session });
-    log.debug( `Updated timestamp for process ${processId} to ${timestamp}`);
+    log.debug(`Updated timestamp for process ${processId} to ${timestamp}`);
   },
   deleteProcess: async (params, session) => {
     const { processId } = params;
@@ -302,7 +302,7 @@ const operationMap = {
     });
 
     await userParameters.save({ session });
-    log.debug( `Applied updates for ${processType} to user ${userParametersId}`);
+    log.debug(`Applied updates for ${processType} to user ${userParametersId}`);
   },
   completeWorkProcess: async (params, session) => {
     const { processId, userParametersId, baseParametersId } = params;
@@ -321,14 +321,14 @@ const operationMap = {
     // Pass profits to recalcValuesByParameters
     await recalcValuesByParameters(userParameters, { coinsReward }, session);
     await operationMap.updateUserExperience({ id: userParameters.id, amount: baseParameters.experience_reward }, session);
-    log.info( `Work process completed`, { userId: userParameters.id, coinsReward, experience: baseParameters.experience_reward });
+    log.info(`Work process completed`, { userId: userParameters.id, coinsReward, experience: baseParameters.experience_reward });
   },
   completeTrainingProcess: async (params, session) => {
     // Training completion logic (e.g., apply skill upgrades or stats)
-    log.info( `Training process completed`, { userId: userParameters.id });
+    log.info(`Training process completed`, { userId: userParameters.id });
   },
   completeSleepProcess: async (params, session) => {
-    log.info( `Sleep process completed`, { userId: userParameters.id });
+    log.info(`Sleep process completed`, { userId: userParameters.id });
   },
   completeSkillProcess: async (params, session) => {
     const { processId, userParametersId, skillId, subType } = params;
@@ -351,10 +351,10 @@ const operationMap = {
       await operationMap.updateUserExperience({ id: userParametersId, amount: skill.experience_reward }, session);
     }
 
-    log.info( `Skill process completed`, { userId: userParametersId, skillId });
+    log.info(`Skill process completed`, { userId: userParametersId, skillId });
   },
   completeFoodProcess: async (params, session) => {
-    log.info( `Food process completed`, { userId: userParameters.id, profits });
+    log.info(`Food process completed`, { userId: userParameters.id, profits });
   },
   processWork: async (params, session) => {
     const { processId, userParametersId, baseParametersId } = params;
@@ -393,7 +393,7 @@ const operationMap = {
     } else if (combinedEffects.duration_decrease) {
       durationDecreasePercentage = combinedEffects.duration_decrease;
     }
-    log.debug( colors.cyan(`Combined effects for work: ${JSON.stringify(combinedEffects)}`));
+    log.debug(colors.cyan(`Combined effects for work: ${JSON.stringify(combinedEffects)}`));
 
     const costConfig = {
       mood: baseParameters.mood_cost_per_minute || 0,
@@ -420,7 +420,7 @@ const operationMap = {
 
     if (!hasSufficientResources) {
       await gameProcess.deleteOne({ _id: processId }, { session });
-      log.info( colors.yellow(`Work process ended - insufficient resources`), {
+      log.info(colors.yellow(`Work process ended - insufficient resources`), {
         userId: userParametersId,
         processId,
         costs: periodCosts,
@@ -445,7 +445,7 @@ const operationMap = {
       await operationMap.updateUserExperience({ id: userParametersId, amount: baseParameters.experience_reward }, session);
 
       await gameProcess.deleteOne({ _id: processId }, { session });
-      log.info( colors.green(`Work process completed and deleted`), {
+      log.info(colors.green(`Work process completed and deleted`), {
         userId: userParametersId,
         coinsReward,
         experience: baseParameters.experience_reward,
@@ -453,7 +453,7 @@ const operationMap = {
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
-      log.debug( `Updated work process timestamp`, { processId });
+      log.debug(`Updated work process timestamp`, { processId });
     }
   },
 
@@ -519,7 +519,7 @@ const operationMap = {
 
     if (!hasSufficientResources) {
       await gameProcess.deleteOne({ _id: processId }, { session });
-      log.info( colors.yellow(`Training process ended - insufficient resources`), {
+      log.info(colors.yellow(`Training process ended - insufficient resources`), {
         userId: userParametersId,
         costs: periodCosts,
         available: { energy: userParameters.energy, hungry: userParameters.hungry },
@@ -542,7 +542,7 @@ const operationMap = {
     const finishCondition = userParameters.energy <= 0 || userParameters.hungry <= 0;
     if (processDurationSeconds >= actualDurationSeconds || finishCondition) {
       await gameProcess.deleteOne({ _id: processId }, { session });
-      log.info( colors.green(`Training process completed and deleted`), { userId: userParametersId });
+      log.info(colors.green(`Training process completed and deleted`), { userId: userParametersId });
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
@@ -601,7 +601,7 @@ const operationMap = {
 
     if (processDurationSeconds >= actualDurationSeconds) {
       await gameProcess.deleteOne({ _id: processId }, { session });
-      log.info( colors.green(`Sleep process completed and deleted`), { userId: userParametersId });
+      log.info(colors.green(`Sleep process completed and deleted`), { userId: userParametersId });
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
@@ -611,22 +611,22 @@ const operationMap = {
   processSkill: async (params, session) => {
     const { processId, userParametersId, baseParametersId, subType } = params; // Use baseParametersId instead of skillId
     console.log("Base Parameters ID (skillId):", baseParametersId, "SubType:", subType); // Debug log
-  
+
     const process = await gameProcess.findOne({ _id: processId }, null, { session });
     const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
     const skill = subType === "constant_effects"
       ? await ConstantEffects.findOne({ id: baseParametersId }, null, { session })
       : await Skill.findOne({ skill_id: baseParametersId }, null, { session });
-  
+
     if (!process || !userParameters || !skill) {
       throw new Error(`Missing data for skill process: ${processId}`);
     }
-  
+
     const now = moment();
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
     const totalDurationSeconds = skill.base_duration_in_seconds || 60; // Default to 1 minute if missing
     const actualDurationSeconds = calculateDuration(totalDurationSeconds / 60, 0); // No decrease for simplicity
-  
+
     if (processDurationSeconds >= actualDurationSeconds) {
       if (subType === "constant_effects") {
         userParameters.constant_effects_levels[skill.type] = skill.level;
@@ -640,11 +640,11 @@ const operationMap = {
         await operationMap.updateUserExperience({ id: userParametersId, amount: skill.experience_reward }, session); // Use atomic version
       }
       await gameProcess.deleteOne({ _id: processId }, { session });
-      log.info( colors.green(`Skill process completed and deleted`), { userId: userParametersId, skillId: baseParametersId });
+      log.info(colors.green(`Skill process completed and deleted`), { userId: userParametersId, skillId: baseParametersId });
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
-      log.debug( `Skill process timestamp updated`, { processId });
+      log.debug(`Skill process timestamp updated`, { processId });
     }
   },
 
@@ -669,7 +669,7 @@ const operationMap = {
       userParameters.hungry = Math.min(100, userParameters.hungry + (baseParameters.hungry_profit || 0));
       await userParameters.save({ session });
       await gameProcess.deleteOne({ _id: processId }, { session });
-      log.info( colors.green(`Food process completed and deleted`), { userId: userParametersId });
+      log.info(colors.green(`Food process completed and deleted`), { userId: userParametersId });
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
@@ -699,7 +699,7 @@ const operationMap = {
         userParameters.energy + energyRestore
       );
       await userParameters.save({ session });
-      log.info( `${colors.cyanBright('Applied energy restore from tonic-drink')}`, {
+      log.info(`${colors.cyanBright('Applied energy restore from tonic-drink')}`, {
         user_id: userParametersId,
         energyRestore,
       });
@@ -707,7 +707,7 @@ const operationMap = {
 
     if (processDurationSeconds >= actualDurationSeconds) {
       await gameProcess.deleteOne({ _id: processId }, { session });
-      log.info( colors.green(`Boost process completed and deleted`), { userId: userParametersId });
+      log.info(colors.green(`Boost process completed and deleted`), { userId: userParametersId });
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
@@ -722,35 +722,36 @@ const operationMap = {
       investment_type: investmentType,
       claimed: false,
     }, null, { session, sort: { createdAt: -1 } });
-  
+
     if (!currentInvestment) {
-      log("warn", `No active unclaimed investment found for user ${userId}`, { investmentType });
+      log.info(`No active unclaimed investment found for user ${userId}`, { investmentType });
       return;
     }
-  
+
     const investmentDef = await Investments.findOne({ id: currentInvestment.investment_id }, null, { session });
     if (!investmentDef) {
       throw new Error(`Investment definition not found for ID ${currentInvestment.investment_id}`);
     }
-  
-    const userParameters = await UserParameters.findOne({ id: userId }, null, { session });
+
+    if(moment(investmentDef.createdAt).diff(moment(), 'hours') > 0) {
+      const userParameters = await UserParameters.findOne({ id: userId }, null, { session });
     if (!userParameters) {
       throw new Error(`UserParameters ${userId} not found`);
     }
-  
+
     const reward = investmentDef.coins_per_hour;
     await operationMap.updateUserBalance({ id: userId, amount: reward }, session);
-  
+
     currentInvestment.claimed = true;
     await currentInvestment.save({ session });
-  
+
     const user = await User.findOne({ id: userId }, { investment_levels: 1 }, { session });
     const userInvestmentLevel = user.investment_levels[investmentType];
     const newInvestmentDef = await Investments.findOne({ type: investmentType, level: userInvestmentLevel }, null, { session });
     if (!newInvestmentDef) {
       throw new Error(`Investment definition not found for type ${investmentType}, level ${userInvestmentLevel}`);
     }
-  
+
     const newInvestment = new UserLaunchedInvestments({
       user_id: userId,
       investment_id: newInvestmentDef.id,
@@ -758,12 +759,18 @@ const operationMap = {
       to_claim: newInvestmentDef.coins_per_hour,
     });
     await newInvestment.save({ session });
-  
-    log.info( colors.green(`Autoclaim processed: claimed, marked, new investment created`), {
+
+    log.info(colors.green(`Autoclaim processed: claimed, marked, new investment created`), {
       userId,
       investmentType,
       reward,
     });
+    } else {
+      log.info(colors.green(`Skipping autoclaim: investment not yet ready`), {
+        userId,
+        investmentType,
+      });
+    }
   },
 
   // Keep createUserLaunchedInvestment for initial activation
@@ -784,7 +791,7 @@ const operationMap = {
       to_claim: investment.coins_per_hour,
     });
     await newInvestment.save({ session });
-    log.info( `New investment launched for user ${userId}`, { investmentType });
+    log.info(`New investment launched for user ${userId}`, { investmentType });
   },
   // Add atomic balance update
   updateUserBalance: async (params, session) => {
@@ -825,7 +832,7 @@ export const queueDbUpdate = async (operationType, params, description, userId =
     throw new Error(`Unknown operation type: ${operationType} for ${description}`);
   }
   const jobData = { operationType, params, description, userId };
-  log.debug( `Enqueuing job for ${description}`, { jobData });
+  log.debug(`Enqueuing job for ${description}`, { jobData });
   const job = await dbUpdateQueue.add(jobData);
   return job.id;
 };
@@ -844,7 +851,7 @@ dbUpdateQueue.process(async (job) => {
     }
     await operation(params, session);
     await session.commitTransaction();
-    log.info( colors.green(`DB update completed: ${JSON.stringify(job.data)}`));
+    log.info(colors.green(`DB update completed: ${JSON.stringify(job.data)}`));
   } catch (error) {
     await session.abortTransaction();
     log.error(colors.red(`DB update failed: ${description}`), { error: error.message, stack: error.stack });
@@ -855,7 +862,7 @@ dbUpdateQueue.process(async (job) => {
 });
 
 dbUpdateQueue.on('completed', (job) => {
-  log.info( colors.green(`DB update job completed`), { jobId: job.id, description: job.data.description });
+  log.info(colors.green(`DB update job completed`), { jobId: job.id, description: job.data.description });
 });
 
 dbUpdateQueue.on('failed', (job, err) => {
@@ -916,29 +923,29 @@ const calculatePeriodCosts = (baseParameters, combinedEffects, durationSeconds, 
   const finalCosts = {};
   Object.entries(costConfig).forEach(([key, baseValue]) => {
     if (costBlackList.includes(key)) return;
-    log.debug( colors.cyan(`Starting cost calc for ${key}: baseValue=${baseValue}`));
+    log.debug(colors.cyan(`Starting cost calc for ${key}: baseValue=${baseValue}`));
     let adjustedValue = Number(baseValue) || 0;
 
     const decreaseKey = `${key}_cost_decrease`;
     const decreaseValue = combinedEffects[decreaseKey];
     if (decreaseValue) {
       adjustedValue *= (1 - decreaseValue / 100);
-      log.debug( colors.yellow(`Applied ${decreaseKey}: ${decreaseValue}% -> ${adjustedValue.toFixed(4)}`));
+      log.debug(colors.yellow(`Applied ${decreaseKey}: ${decreaseValue}% -> ${adjustedValue.toFixed(4)}`));
     }
 
     let cost;
     if (processType === "work") {
       const minutesElapsed = durationSeconds / 60;
       cost = adjustedValue * minutesElapsed;
-      log.debug( colors.magenta(`Work cost for ${key}: ${adjustedValue.toFixed(4)} * ${minutesElapsed.toFixed(4)}min = ${cost.toFixed(4)}`));
+      log.debug(colors.magenta(`Work cost for ${key}: ${adjustedValue.toFixed(4)} * ${minutesElapsed.toFixed(4)}min = ${cost.toFixed(4)}`));
     } else {
       const ratePerSecond = adjustedValue / totalDurationSeconds;
       cost = ratePerSecond * durationSeconds;
-      log.debug( colors.magenta(`Cost for ${key}: ${ratePerSecond.toFixed(4)}/s * ${durationSeconds}s = ${cost.toFixed(4)}`));
+      log.debug(colors.magenta(`Cost for ${key}: ${ratePerSecond.toFixed(4)}/s * ${durationSeconds}s = ${cost.toFixed(4)}`));
     }
 
     finalCosts[key] = Number(cost.toFixed(10));
-    log.info( colors.blue(`Final cost for ${key}: ${finalCosts[key]}`));
+    log.info(colors.blue(`Final cost for ${key}: ${finalCosts[key]}`));
   });
   return finalCosts;
 };
@@ -953,25 +960,25 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
   }
 
   Object.entries(profitConfig).forEach(([key, baseValue]) => {
-    log.debug( colors.cyan(`Starting profit calc for ${key}: baseValue=${baseValue}`));
+    log.debug(colors.cyan(`Starting profit calc for ${key}: baseValue=${baseValue}`));
     let adjustedValue = Number(baseValue) || 0;
 
     if (combinedEffects[`${key}_increase`]) {
       const increasePercent = combinedEffects[`${key}_increase`];
       adjustedValue *= (1 + increasePercent / 100);
-      log.debug( colors.yellow(`Applied ${key}_increase: ${increasePercent}% -> ${adjustedValue.toFixed(4)}`));
+      log.debug(colors.yellow(`Applied ${key}_increase: ${increasePercent}% -> ${adjustedValue.toFixed(4)}`));
     }
 
     const ratePerSecond = adjustedValue / totalDurationSeconds;
     const profit = ratePerSecond * diffSeconds;
     profits[key] = isNaN(profit) ? 0 : Number(profit.toFixed(2));
-    log.debug( colors.magenta(`Profit for ${key}: ${ratePerSecond.toFixed(4)}/s * ${diffSeconds}s = ${profits[key]}`));
+    log.debug(colors.magenta(`Profit for ${key}: ${ratePerSecond.toFixed(4)}/s * ${diffSeconds}s = ${profits[key]}`));
   });
 
   combinedEffects.profit_hourly_percent?.forEach(effect => {
     const key = effect.param;
     const hourlyIncreasePercent = effect.value || 0;
-    log.debug( colors.cyan(`Applying profit_hourly_percent for ${key}: ${hourlyIncreasePercent}%`));
+    log.debug(colors.cyan(`Applying profit_hourly_percent for ${key}: ${hourlyIncreasePercent}%`));
 
     if (key === "energy" || key === "hungry" || key === "mood") {
       const currentValue = Number(userParameters[key]) || 0;
@@ -985,9 +992,9 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
       const newTotal = currentValue + uncappedProfit;
       const cappedProfit = Math.min(uncappedProfit, Math.max(0, capacity - currentValue));
       profits[key] = isNaN(cappedProfit) ? 0 : Number(cappedProfit.toFixed(5));
-      log.debug( colors.yellow(`Capped ${key} profit: current=${currentValue}, uncapped=${newTotal.toFixed(5)}, capacity=${capacity}, capped=${profits[key]}`));
+      log.debug(colors.yellow(`Capped ${key} profit: current=${currentValue}, uncapped=${newTotal.toFixed(5)}, capacity=${capacity}, capped=${profits[key]}`));
     }
-    log.info( colors.blue(`Final profit for ${key}: ${profits[key]}`));
+    log.info(colors.blue(`Final profit for ${key}: ${profits[key]}`));
   });
 
   return profits;
@@ -1000,26 +1007,31 @@ const genericProcessScheduler = (processType, processConfig) => {
   const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`; // e.g., "processSkill"
 
   const scheduler = cron.schedule(cronSchedule, async () => {
+    const processes = await gameProcess.find({ type: processType });
     try {
-      log.info( `${processType} process scheduler started iteration`);
-      const processes = await gameProcess.find({ type: processType });
+      if (processType !== 'autoclaim') {
+        log.info(`${processType} process scheduler started iteration`);
+       
 
-      await Promise.all(processes.map(async (process) => {
-        const params = {
-          processId: process._id,
-          userParametersId: process.id,
-          baseParametersId: process.type_id,
-          subType: process.sub_type,
-        };
-        await queueDbUpdate(
-          operationName, // e.g., "processSkill"
-          params, // The params object
-          `${processType} full cycle for process ${process._id}`, // Descriptive string
-          process.id // userId
-        );
-      }));
+        await Promise.all(processes.map(async (process) => {
+          const params = {
+            processId: process._id,
+            userParametersId: process.id,
+            baseParametersId: process.type_id,
+            subType: process.sub_type,
+          };
+          await queueDbUpdate(
+            operationName, // e.g., "processSkill"
+            params, // The params object
+            `${processType} full cycle for process ${process._id}`, // Descriptive string
+            process.id // userId
+          );
+        }));
+      } else {
+        await processConfig.durationFunction()
+      }
 
-      log.info( `${processType} process scheduler finished iteration`, { processesCount: processes.length });
+      log.info(`${processType} process scheduler finished iteration`, { processesCount: processes.length });
     } catch (e) {
       log.error(`Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
     }
@@ -1035,7 +1047,7 @@ const processIndependentScheduler = (processType, processConfig) => {
   const scheduler = cron.schedule(cronSchedule, async () => {
     try {
       await durationFunction();
-      log.info( `${processType} process scheduler finished iteration`);
+      log.info(`${processType} process scheduler finished iteration`);
     } catch (e) {
       log.error(`Error in ${processType} Process:`, { error: e.message, stack: e.stack });
     }
@@ -1097,7 +1109,7 @@ operationMap.applyInvestmentClaim = async (params, session) => {
   await recalcValuesByParameters(userParameters, { coinsReward }, session);
   await operationMap.updateUserExperience({ id: userParametersId, amount: experienceReward }, session);
   await userParameters.save({ session });
-  log.debug( `Applied investment claim rewards`, { userId: userParametersId, coinsReward, experienceReward });
+  log.debug(`Applied investment claim rewards`, { userId: userParametersId, coinsReward, experienceReward });
 };
 
 operationMap.markInvestmentClaimed = async (params, session) => {
@@ -1109,7 +1121,7 @@ operationMap.markInvestmentClaimed = async (params, session) => {
 
   investment.claimed = true;
   await investment.save({ session });
-  log.debug( `Marked investment as claimed`, { investmentId });
+  log.debug(`Marked investment as claimed`, { investmentId });
 };
 
 operationMap.createNewInvestment = async (params, session) => {
@@ -1121,7 +1133,7 @@ operationMap.createNewInvestment = async (params, session) => {
     investment_type: investmentType,
   });
   await newInvestment.save({ session });
-  log.debug( `Created new investment entry`, { userId, investmentType, toClaim });
+  log.debug(`Created new investment entry`, { userId, investmentType, toClaim });
 };
 
 const processInBatches = async (items, batchSize, processFn) => {
@@ -1137,32 +1149,34 @@ export const autoclaimProcessConfig = {
   cronSchedule: "*/1 * * * * *", // Every 1 second (adjust as needed)
   durationFunction: async () => { // No session here, enqueueing handles it
     try {
-      log.info( `Autoclaim process scheduler started iteration`);
+      log.info(`Autoclaim process scheduler started iteration`);
 
       const now = new Date();
       const usersWithAutoclaim = await Autoclaims.find({
         expiresAt: { $gt: now }, // Active autoclaims
-      });
+      })
+      log.info('Users with autoclaim', usersWithAutoclaim)
 
       if (usersWithAutoclaim.length === 0) {
-        log.info( "No active autoclaims found");
+        log.info("No active autoclaims found");
         return;
       }
 
       await processInBatches(usersWithAutoclaim, 50, async (autoclaim) => {
-        const userId = autoclaim.user_id;
-        const investmentType = autoclaim.investment_type;
-        console.log('Queuing transaction for autoclaim')
-        // Enqueue the claim operation
-        await queueDbUpdate(
-          "processAutoclaim",
-          { investmentType, userId },
-          `Autoclaim claim for ${investmentType}, user ${userId}`,
-          userId
-        );
+          const userId = autoclaim.userId;
+          const investmentType = autoclaim.investmentType;
+          console.log('Queuing transaction for autoclaim')
+          // Enqueue the claim operation
+          await queueDbUpdate(
+            "processAutoclaim",
+            { investmentType, userId },
+            `Autoclaim claim for ${investmentType}, user ${userId}`,
+            userId
+          );
+        
       });
 
-      log.info( `Autoclaim process scheduler finished iteration`, {
+      log.info(`Autoclaim process scheduler finished iteration`, {
         usersEligible: usersWithAutoclaim.length,
       });
     } catch (e) {
@@ -1174,12 +1188,12 @@ export const autoclaimProcessConfig = {
   start() {
     this.task = cron.schedule(this.cronSchedule, this.durationFunction, { scheduled: false });
     this.task.start();
-    log.info( `Started ${this.processType} process`);
+    log.info(`Started ${this.processType} process`);
   },
   stop() {
     if (this.task) {
       this.task.stop();
-      log.info( `Stopped ${this.processType} process`);
+      log.info(`Stopped ${this.processType} process`);
     }
   },
 };
@@ -1189,7 +1203,7 @@ const investmentLevelsProcessConfig = {
   cronSchedule: "*/15 * * * * *",
   durationFunction: async () => {
     try {
-      log.info( `investment_level_checks process scheduler started iteration`);
+      log.info(`investment_level_checks process scheduler started iteration`);
       const usersWithRefs = await Referal.aggregate([
         { $group: { _id: "$refer_id", referral_count: { $sum: 1 } } },
         { $project: { refer_id: "$_id", referral_count: 1 } },
@@ -1203,12 +1217,12 @@ const investmentLevelsProcessConfig = {
           if (calculatedLevel > currentLevel) {
             userDoc.investment_levels.game_center = calculatedLevel;
             await userDoc.save();
-            log.info( `Updated game_center level`, { userId: user.refer_id, newLevel: calculatedLevel });
+            log.info(`Updated game_center level`, { userId: user.refer_id, newLevel: calculatedLevel });
           }
         }
       });
 
-      log.info( "investment_level_checks iterated all users");
+      log.info("investment_level_checks iterated all users");
     } catch (e) {
       log.error("Error in investment_level_checks process", { error: e.message, stack: e.stack });
     }
@@ -1249,14 +1263,14 @@ const syncShelfInventory = async (userId, nftItemIds) => {
   try {
     session.startTransaction();
 
-    const inventory = await UserCurrentInventory.findOne({ user_id: userId }, null, { session }) || 
+    const inventory = await UserCurrentInventory.findOne({ user_id: userId }, null, { session }) ||
       await UserCurrentInventory.create([{ user_id: userId, shelf: [] }], { session });
     const user = await User.findOne({ id: userId }, null, { session });
 
     // Current shelf items
     const currentShelf = inventory.shelf || [];
     const currentShelfIds = currentShelf.map(item => item.id);
-    
+
     // NFTs the user currently owns (filtered for managed range 9-38)
     const nftShelfIds = nftItemIds.filter(id => id >= 9 && id <= 38);
     const currentManagedIds = currentShelfIds.filter(id => id >= 9 && id <= 38);
@@ -1273,8 +1287,8 @@ const syncShelfInventory = async (userId, nftItemIds) => {
     // If user's selected neko is being removed, clear it
     if (user?.shelf?.neko && itemsToRemove.includes(user.shelf.neko)) {
       await User.updateOne(
-        { id: userId }, 
-        { $set: { "shelf.neko": null } }, 
+        { id: userId },
+        { $set: { "shelf.neko": null } },
         { session }
       );
     }
@@ -1287,7 +1301,7 @@ const syncShelfInventory = async (userId, nftItemIds) => {
         { session }
       );
     }
-    
+
     if (itemsToRemove.length) {
       await UserCurrentInventory.updateOne(
         { user_id: userId },
@@ -1314,12 +1328,12 @@ const nftScanConfig = {
   cronSchedule: "*/10 * * * * *",
   durationFunction: async () => {
     if (isRunning) {
-      log.info( "NFT-scanner iteration skipped - previous run still in progress");
+      log.info("NFT-scanner iteration skipped - previous run still in progress");
       return;
     }
     isRunning = true;
     try {
-      log.info( "NFT-scanner process scheduler started iteration");
+      log.info("NFT-scanner process scheduler started iteration");
       const usersWithWallets = await User.find({});
 
       await processInBatches(usersWithWallets, 50, async (user) => {
@@ -1327,7 +1341,7 @@ const nftScanConfig = {
         await syncShelfInventory(user.id, nftItemIds);
       });
 
-      log.info( "NFT-scanner process scheduler finished iteration", { totalUsers: usersWithWallets.length });
+      log.info("NFT-scanner process scheduler finished iteration", { totalUsers: usersWithWallets.length });
     } catch (e) {
       log.error("Error in NFT scan process", { error: e.message, stack: e.stack });
     } finally {
@@ -1529,7 +1543,7 @@ export const SleepProccess = genericProcessScheduler("sleep", sleepProcessConfig
 export const SkillProccess = genericProcessScheduler("skill", skillProcessConfig);
 export const FoodProccess = genericProcessScheduler("food", foodProcessConfig);
 export const BoostProccess = genericProcessScheduler("boost", boostProcessConfig);
-export const AutoclaimProccess = genericProcessScheduler("autoclaim", autoclaimProcessConfig);
+export const AutoclaimProccess = processIndependentScheduler("autoclaim", autoclaimProcessConfig);
 export const NftScanProcess = processIndependentScheduler("nft_scan", nftScanConfig);
 export const TxScanProcess = processIndependentScheduler("TX_SCANNER", txScanConfig);
 export const RefsRecalsProcess = processIndependentScheduler("investment_level_checks", investmentLevelsProcessConfig);
@@ -1552,7 +1566,7 @@ const gameTimer = {
     Object.values(this).forEach((scheduler) => {
       if (scheduler && typeof scheduler.stop === "function") {
         scheduler.stop();
-        log.info( `Stopped ${scheduler.name || "unknown"} process`);
+        log.info(`Stopped ${scheduler.name || "unknown"} process`);
       }
     });
   },
@@ -1561,7 +1575,7 @@ const gameTimer = {
 // Function to log memory usage
 const logMemoryUsage = () => {
   const memoryUsage = process.memoryUsage();
-  log.info( "Memory Usage Report", {
+  log.info("Memory Usage Report", {
     rss: formatMemoryUsage(memoryUsage.rss),
     heapTotal: formatMemoryUsage(memoryUsage.heapTotal),
     heapUsed: formatMemoryUsage(memoryUsage.heapUsed),
@@ -1576,7 +1590,7 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor')
     Object.entries(gameTimer).forEach(([name, scheduler]) => {
       if (typeof scheduler.start === "function") {
         scheduler.start();
-        log.info( `Started ${name} process`);
+        log.info(`Started ${name} process`);
       }
     });
 
@@ -1597,26 +1611,26 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor')
     gameTimer.stopAll = function () {
       originalStopAll.call(this);
       memoryLogScheduler.stop();
-      log.info( "Stopped memory usage logging");
+      log.info("Stopped memory usage logging");
     };
 
-    log.info( "Memory logging scheduler started");
+    log.info("Memory logging scheduler started");
   })
   .catch((err) => {
-    log.error( "Failed to connect to DB", { error: err.message });
+    log.error("Failed to connect to DB", { error: err.message });
     process.exit(1);
   });
 
 // Graceful Shutdown with Promise-based mongoose.connection.close()
 const shutdown = async (signal) => {
-  log.info( `Received ${signal}, shutting down...`);
+  log.info(`Received ${signal}, shutting down...`);
   gameTimer.stopAll();
   try {
     await mongoose.connection.close();
-    log.info( "MongoDB connection closed");
+    log.info("MongoDB connection closed");
     process.exit(0);
   } catch (err) {
-    log.error( "Error closing MongoDB connection", { error: err.message });
+    log.error("Error closing MongoDB connection", { error: err.message });
     process.exit(1);
   }
 };
