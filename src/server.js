@@ -281,7 +281,6 @@ app.listen(PORT, () => {
 
 async function main() {
   for (const promise of [
-    //! PROGRESS
     deleteUserParameters(),
     deleteUserInventories(),
     deleteUsers(),
@@ -289,7 +288,6 @@ async function main() {
     deleteUserInvestments(),
     deleteUserTasks(),
     deleteUserBoosts(),
-    //! SAFE MIGRATIONS
     deleteAndInsertClothing(),
     deleteAndInsertWork(),
     deleteAndInsertFood(),
@@ -307,208 +305,575 @@ async function main() {
 }
 
 async function deleteTasks() {
-  await Tasks.deleteMany({});
-  await mongoose.syncIndexes();
+  logger.info("Starting tasks migration")
+
+  const ids = TasksMigration.map((item) => item.id)
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  if (duplicates.length > 0) {
+    logger.error("Duplicate IDs found in TasksMigration:", { duplicates })
+    throw new Error(`Duplicate IDs in TasksMigration: ${duplicates}`)
+  }
+
+  try {
+    await Tasks.collection.drop()
+    logger.info("Tasks collection dropped")
+  } catch (err) {
+    if (err.codeName !== "NamespaceNotFound") {
+      logger.error("Failed to drop tasks collection:", { error: err })
+      throw err
+    }
+    logger.info("Tasks collection didn’t exist, proceeding")
+  }
+
+  await Tasks.ensureIndexes()
+  logger.info("Tasks indexes recreated")
 
   for (const item of TasksMigration) {
     try {
-      const task = new Tasks(item);
-      await task.save();
+      const task = new Tasks(item)
+      await task.save()
+      logger.info("Inserted task", { id: item.id })
     } catch (error) {
-      console.error(`Failed to insert task with id ${item.id}:`, error);
-      throw error;
+      logger.error("Failed to insert task", { id: item.id, error })
+      throw error
     }
   }
+
+  logger.info("Tasks migration completed")
 }
 
 async function deleteUserInvestments() {
-  await UserLaunchedInvestments.deleteMany({})
-  await mongoose.syncIndexes()
-}
+  logger.info("Starting user investments deletion")
 
-async function deleteUserProcesses() {
-  await UserProcess.deleteMany({})
-  await mongoose.syncIndexes()
-}
-
-async function deleteInvestments() {
-  await Investments.deleteMany({});
-  await mongoose.syncIndexes();
-
-  for (const item of InvestmentsMigration) {
-    try {
-      const investments = new Investments(item);
-      await investments.save();
-    } catch (error) {
-      console.error(`Failed to insert investment with id ${item.id}:`, error);
-      throw error;
+  try {
+    await UserLaunchedInvestments.collection.drop()
+    logger.info("UserLaunchedInvestments collection dropped")
+  } catch (err) {
+    if (err.codeName !== "NamespaceNotFound") {
+      logger.error("Failed to drop UserLaunchedInvestments collection:", {
+        error: err,
+      })
+      throw err
     }
+    logger.info("UserLaunchedInvestments collection didn’t exist, proceeding")
   }
-}
 
-async function deleteUserTasks() {
-  await UserCompletedTask.deleteMany({});
-  await mongoose.syncIndexes();
+  await UserLaunchedInvestments.ensureIndexes()
+  logger.info("UserLaunchedInvestments indexes recreated")
 }
 
 async function deleteAndInsertWork() {
-  await Work.deleteMany({});
-  await mongoose.syncIndexes();
+  logger.info("Starting work migration")
+
+  const ids = WorkItems.map((item) => item.id)
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  if (duplicates.length > 0) {
+    logger.error("Duplicate IDs found in WorkItems:", { duplicates })
+    throw new Error(`Duplicate IDs in WorkItems: ${duplicates}`)
+  }
+
+  try {
+    await Work.collection.drop()
+    logger.info("Work collection dropped")
+  } catch (err) {
+    if (err.codeName !== "NamespaceNotFound") {
+      logger.error("Failed to drop work collection:", { error: err })
+      throw err
+    }
+    logger.info("Work collection didn’t exist, proceeding")
+  }
+
+  await Work.ensureIndexes()
+  logger.info("Work indexes recreated")
 
   for (const item of WorkItems) {
     try {
-      const work = new Work({ ...item, effect: {} });
-      await work.save();
+      const work = new Work({ ...item, effect: {} })
+      await work.save()
+      logger.info("Inserted work item", { id: item.id })
     } catch (error) {
-      console.error(`Failed to insert work item with id ${item.id}:`, error);
-      throw error;
+      logger.error("Failed to insert work item", { id: item.id, error })
+      throw error
     }
   }
+
+  logger.info("Work migration completed")
+}
+
+async function deleteUserProcesses() {
+  logger.info("Starting user processes deletion")
+
+  try {
+    await UserProcess.collection.drop()
+    logger.info("UserProcess collection dropped")
+  } catch (err) {
+    if (err.codeName !== "NamespaceNotFound") {
+      logger.error("Failed to drop UserProcess collection:", { error: err })
+      throw err
+    }
+    logger.info("UserProcess collection didn’t exist, proceeding")
+  }
+
+  await UserProcess.ensureIndexes()
+  logger.info("UserProcess indexes recreated")
+}
+
+async function deleteInvestments() {
+  logger.info("Starting investments migration")
+
+  const ids = InvestmentsMigration.map((item) => item.id)
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  if (duplicates.length > 0) {
+    logger.error("Duplicate IDs found in InvestmentsMigration:", { duplicates })
+    throw new Error(`Duplicate IDs in InvestmentsMigration: ${duplicates}`)
+  }
+
+  try {
+    await Investments.collection.drop()
+    logger.info("Investments collection dropped")
+  } catch (err) {
+    if (err.codeName !== "NamespaceNotFound") {
+      logger.error("Failed to drop investments collection:", { error: err })
+      throw err
+    }
+    logger.info("Investments collection didn’t exist, proceeding")
+  }
+
+  await Investments.ensureIndexes()
+  logger.info("Investments indexes recreated")
+
+  for (const item of InvestmentsMigration) {
+    try {
+      const investments = new Investments(item)
+      await investments.save()
+      logger.info("Inserted investment", { id: item.id })
+    } catch (error) {
+      logger.error("Failed to insert investment", { id: item.id, error })
+      throw error
+    }
+  }
+
+  logger.info("Investments migration completed")
+}
+
+async function deleteUserTasks() {
+  logger.info("Starting user tasks deletion")
+
+  try {
+    await UserCompletedTask.collection.drop()
+    logger.info("UserCompletedTask collection dropped")
+  } catch (err) {
+    if (err.codeName !== "NamespaceNotFound") {
+      logger.error("Failed to drop UserCompletedTask collection:", {
+        error: err,
+      })
+      throw err
+    }
+    logger.info("UserCompletedTask collection didn’t exist, proceeding")
+  }
+
+  await UserCompletedTask.ensureIndexes()
+  logger.info("UserCompletedTask indexes recreated")
 }
 async function deleteAndInsertFood() {
-  await Food.deleteMany({});
-  await mongoose.syncIndexes();
+  logger.info("Starting food migration")
+
+  const ids = FoodItems.map((item) => item.id)
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  if (duplicates.length > 0) {
+    logger.error("Duplicate IDs found in FoodItems:", { duplicates })
+    throw new Error(`Duplicate IDs in FoodItems: ${duplicates}`)
+  }
+
+  try {
+    await Food.collection.drop()
+    logger.info("Food collection dropped")
+  } catch (err) {
+    if (err.codeName !== "NamespaceNotFound") {
+      logger.error("Failed to drop food collection:", { error: err })
+      throw err
+    }
+    logger.info("Food collection didn’t exist, proceeding")
+  }
+
+  await Food.ensureIndexes()
+  logger.info("Food indexes recreated")
 
   for (const item of FoodItems) {
     try {
-      const food = new Food({ ...item, effect: {} });
-      await food.save();
+      const food = new Food({ ...item, effect: {} })
+      await food.save()
+      logger.info("Inserted food item", { id: item.id })
     } catch (error) {
-      console.error(`Failed to insert food item with id ${item.id}:`, error);
-      throw error;
+      logger.error("Failed to insert food item", { id: item.id, error })
+      throw error
     }
   }
+
+  logger.info("Food migration completed")
 }
 
-async function deleteAndInsertSkill() 
-   
-{
-  await Skill.deleteMany({});
-  await mongoose.syncIndexes();
+async function deleteAndInsertSkill() {
+  logger.info('Starting skill migration');
+
+  const ids = SkillItems.map(item => item.id);
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  if (duplicates.length > 0) {
+    logger.error('Duplicate IDs found in SkillItems:', { duplicates });
+    throw new Error(`Duplicate IDs in SkillItems: ${duplicates}`);
+  }
+
+  try {
+    await Skill.collection.drop();
+    logger.info('Skill collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop skill collection:', { error: err });
+      throw err;
+    }
+    logger.info('Skill collection didn’t exist, proceeding');
+  }
+
+  await Skill.ensureIndexes();
+  logger.info('Skill indexes recreated');
 
   for (const item of SkillItems) {
     try {
       const skill = new Skill({ ...item, effect: {} });
       await skill.save();
+      logger.info('Inserted skill item', { id: item.id });
     } catch (error) {
-      console.error(`Failed to insert skill item with id ${item.id}:`, error);
+      logger.error('Failed to insert skill item', { id: item.id, error });
       throw error;
     }
   }
+
+  logger.info('Skill migration completed');
 }
 
 async function deleteUserBoosts() {
-  await UserBoost.deleteMany({})
-  await mongoose.syncIndexes()
+  logger.info('Starting user boosts deletion');
+
+  try {
+    await UserBoost.collection.drop();
+    logger.info('UserBoost collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop UserBoost collection:', { error: err });
+      throw err;
+    }
+    logger.info('UserBoost collection didn’t exist, proceeding');
+  }
+
+  await UserBoost.ensureIndexes();
+  logger.info('UserBoost indexes recreated');
 }
 
 async function deleteAndInsertBoost() {
-  await Boost.deleteMany({});
-  await mongoose.syncIndexes();
+  logger.info('Starting boost migration');
+
+  const ids = BoostItems.map(item => item.id);
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  if (duplicates.length > 0) {
+    logger.error('Duplicate IDs found in BoostItems:', { duplicates });
+    throw new Error(`Duplicate IDs in BoostItems: ${duplicates}`);
+  }
+
+  try {
+    await Boost.collection.drop();
+    logger.info('Boost collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop boost collection:', { error: err });
+      throw err;
+    }
+    logger.info('Boost collection didn’t exist, proceeding');
+  }
+
+  await Boost.ensureIndexes();
+  logger.info('Boost indexes recreated');
 
   for (const item of BoostItems) {
     try {
       const boost = new Boost({ ...item, effect: {} });
       await boost.save();
+      logger.info('Inserted boost item', { id: item.id });
     } catch (error) {
-      console.error(`Failed to insert boost item with id ${item.id}:`, error);
+      logger.error('Failed to insert boost item', { id: item.id, error });
       throw error;
     }
   }
+
+  logger.info('Boost migration completed');
 }
 
 async function deleteAndInsertLevels() {
-  await LevelsParameters.deleteMany({});
-  await mongoose.syncIndexes();
+  logger.info('Starting levels migration');
+
+  const ids = LevelItems.map(item => item.id);
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  if (duplicates.length > 0) {
+    logger.error('Duplicate IDs found in LevelItems:', { duplicates });
+    throw new Error(`Duplicate IDs in LevelItems: ${duplicates}`);
+  }
+
+  try {
+    await LevelsParameters.collection.drop();
+    logger.info('LevelsParameters collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop LevelsParameters collection:', { error: err });
+      throw err;
+    }
+    logger.info('LevelsParameters collection didn’t exist, proceeding');
+  }
+
+  await LevelsParameters.ensureIndexes();
+  logger.info('LevelsParameters indexes recreated');
 
   for (const item of LevelItems) {
     try {
       const level = new LevelsParameters({ ...item, effect: {} });
       await level.save();
+      logger.info('Inserted level item', { id: item.id });
     } catch (error) {
-      console.error(`Failed to insert level item with id ${item.id}:`, error);
+      logger.error('Failed to insert level item', { id: item.id, error });
       throw error;
     }
   }
+
+  logger.info('Levels migration completed');
 }
 
 async function deleteAndInsertTraining() {
-  await TrainingParameters.deleteMany({});
-  await mongoose.syncIndexes();
+  logger.info('Starting training migration');
+
+  const ids = TrainingItems.map(item => item.id);
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  if (duplicates.length > 0) {
+    logger.error('Duplicate IDs found in TrainingItems:', { duplicates });
+    throw new Error(`Duplicate IDs in TrainingItems: ${duplicates}`);
+  }
+
+  try {
+    await TrainingParameters.collection.drop();
+    logger.info('TrainingParameters collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop TrainingParameters collection:', { error: err });
+      throw err;
+    }
+    logger.info('TrainingParameters collection didn’t exist, proceeding');
+  }
+
+  await TrainingParameters.ensureIndexes();
+  logger.info('TrainingParameters indexes recreated');
 
   for (const item of TrainingItems) {
     try {
       const training = new TrainingParameters({ ...item, effect: {} });
       await training.save();
+      logger.info('Inserted training item', { id: item.id });
     } catch (error) {
-      console.error(`Failed to insert training item with id ${item.id}:`, error);
+      logger.error('Failed to insert training item', { id: item.id, error });
       throw error;
     }
   }
+
+  logger.info('Training migration completed');
 }
 
 async function deleteUserParameters() {
-  await UserParameters.deleteMany({})
-  await mongoose.syncIndexes()
+  logger.info('Starting user parameters deletion');
+
+  try {
+    await UserParameters.collection.drop();
+    logger.info('UserParameters collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop UserParameters collection:', { error: err });
+      throw err;
+    }
+    logger.info('UserParameters collection didn’t exist, proceeding');
+  }
+
+  await UserParameters.ensureIndexes();
+  logger.info('UserParameters indexes recreated');
 }
 
 async function deleteUserInventories() {
-  await UserCurrentInventory.deleteMany({})
-  await mongoose.syncIndexes()
+  logger.info('Starting user inventories deletion');
+
+  try {
+    await UserCurrentInventory.collection.drop();
+    logger.info('UserCurrentInventory collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop UserCurrentInventory collection:', { error: err });
+      throw err;
+    }
+    logger.info('UserCurrentInventory collection didn’t exist, proceeding');
+  }
+
+  await UserCurrentInventory.ensureIndexes();
+  logger.info('UserCurrentInventory indexes recreated');
 }
 
 async function deleteShelfItems() {
-  await ShelfItemModel.deleteMany({});
-  await mongoose.syncIndexes();
+  logger.info("Starting shelf items migration")
+
+  const ids = ShelfItems.map((item) => item.id)
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  if (duplicates.length > 0) {
+    logger.error("Duplicate IDs found in ShelfItems:", { duplicates })
+    throw new Error(`Duplicate IDs in ShelfItems: ${duplicates}`)
+  }
+
+  try {
+    await ShelfItemModel.collection.drop()
+    logger.info("Shelf items collection dropped")
+  } catch (err) {
+    if (err.codeName !== "NamespaceNotFound") {
+      logger.error("Failed to drop shelf_items collection:", { error: err })
+      throw err
+    }
+    logger.info("Shelf items collection didn’t exist, proceeding")
+  }
+
+  await ShelfItemModel.ensureIndexes()
+  logger.info("Shelf items indexes recreated")
 
   for (const item of ShelfItems) {
     try {
-      const shelfItem = new ShelfItemModel({ ...item });
-      await shelfItem.save();
+      const shelfItem = new ShelfItemModel({ ...item })
+      await shelfItem.save()
+      logger.info("Inserted shelf item", { id: item.id })
     } catch (error) {
-      console.error(`Failed to insert shelf item with id ${item.id}:`, error);
-      throw error;
+      logger.error("Failed to insert shelf item", { id: item.id, error })
+      throw error
     }
   }
+
+  logger.info("Shelf items migration completed")
 }
 
 async function deleteAndInsertClothing() {
-  await Clothing.deleteMany({});
-  await mongoose.syncIndexes();
+  logger.info("Starting clothing migration")
+
+  const ids = ClothingItems.map((item) => item.id)
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  if (duplicates.length > 0) {
+    logger.error("Duplicate IDs found in ClothingItems:", { duplicates })
+    throw new Error(`Duplicate IDs in ClothingItems: ${duplicates}`)
+  }
+
+  try {
+    await Clothing.collection.drop()
+    logger.info("Clothing collection dropped")
+  } catch (err) {
+    if (err.codeName !== "NamespaceNotFound") {
+      logger.error("Failed to drop clothing collection:", { error: err })
+      throw err
+    }
+    logger.info("Clothing collection didn’t exist, proceeding")
+  }
+
+  await Clothing.ensureIndexes()
+  logger.info("Clothing indexes recreated")
 
   for (const item of ClothingItems) {
     try {
-      const clothes = new Clothing({ ...item, effect: {} });
-      await clothes.save();
+      const clothes = new Clothing({ ...item, effect: {} })
+      await clothes.save()
+      logger.info("Inserted clothing item", { id: item.id })
     } catch (error) {
-      console.error(`Failed to insert clothing item with id ${item.id}:`, error);
-      throw error;
+      logger.error("Failed to insert clothing item", { id: item.id, error })
+      throw error
     }
   }
+
+  logger.info("Clothing migration completed")
 }
 
 async function deleteUsers() {
-  await User.deleteMany({})
-  await mongoose.syncIndexes()
-  await UserParameters.deleteMany({})
-  await mongoose.syncIndexes()
-  await UserSkill.deleteMany({})
-  await mongoose.syncIndexes()
+  logger.info('Starting users deletion');
+
+  try {
+    await User.collection.drop();
+    logger.info('User collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop User collection:', { error: err });
+      throw err;
+    }
+    logger.info('User collection didn’t exist, proceeding');
+  }
+  await User.ensureIndexes();
+  logger.info('User indexes recreated');
+
+  try {
+    await UserParameters.collection.drop();
+    logger.info('UserParameters collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop UserParameters collection:', { error: err });
+      throw err;
+    }
+    logger.info('UserParameters collection didn’t exist, proceeding');
+  }
+  await UserParameters.ensureIndexes();
+  logger.info('UserParameters indexes recreated');
+
+  try {
+    await UserSkill.collection.drop();
+    logger.info('UserSkill collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop UserSkill collection:', { error: err });
+      throw err;
+    }
+    logger.info('UserSkill collection didn’t exist, proceeding');
+  }
+  await UserSkill.ensureIndexes();
+  logger.info('UserSkill indexes recreated');
 }
 
 async function deleteConstantEffects() {
-  await ConstantEffects.deleteMany({});
-  await mongoose.syncIndexes();
+  logger.info('Starting constant effects migration');
+
+  const ids = constantEffects.map(effect => effect.id);
+  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  if (duplicates.length > 0) {
+    logger.error('Duplicate IDs found in constantEffects:', { duplicates });
+    throw new Error(`Duplicate IDs in constantEffects: ${duplicates}`);
+  }
+
+  try {
+    await ConstantEffects.collection.drop();
+    logger.info('ConstantEffects collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop ConstantEffects collection:', { error: err });
+      throw err;
+    }
+    logger.info('ConstantEffects collection didn’t exist, proceeding');
+  }
+
+  await ConstantEffects.ensureIndexes();
+  logger.info('ConstantEffects indexes recreated');
 
   for (const effect of constantEffects) {
     try {
       const e = new ConstantEffects(effect);
       await e.save();
+      logger.info('Inserted constant effect', { id: effect.id });
     } catch (error) {
-      console.error(`Failed to insert constant effect with id ${effect.id}:`, error);
+      logger.error('Failed to insert constant effect', { id: effect.id, error });
       throw error;
     }
   }
+
+  logger.info('Constant effects migration completed');
 }
 
 export { logger }
