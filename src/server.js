@@ -51,7 +51,6 @@ import { UserSpins } from "./models/user/userSpinsModel.js"
 import StarsTransactions from "./models/tx/starsTransactionModel.mjs"
 import { ElasticsearchTransport as Elasticsearch } from "winston-elasticsearch"
 import { Client } from "@elastic/elasticsearch"
-import mongoose, { syncIndexes } from "mongoose"
 import UserCompletedTask from "./models/user/userCompletedTaskModel.js"
 
 dotenv.config()
@@ -305,41 +304,46 @@ async function main() {
 }
 
 async function deleteTasks() {
-  logger.info("Starting tasks migration")
+  logger.info('Starting tasks migration');
 
-  const ids = TasksMigration.map((item) => item.id)
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  const ids = TasksMigration.map(item => item.id);
+  const validIds = ids.filter(id => id !== null && id !== undefined);
+  const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
   if (duplicates.length > 0) {
-    logger.error("Duplicate IDs found in TasksMigration:", { duplicates })
-    throw new Error(`Duplicate IDs in TasksMigration: ${duplicates}`)
+    logger.error('Duplicate IDs found in TasksMigration:', { duplicates });
+    throw new Error(`Duplicate IDs in TasksMigration: ${duplicates}`);
+  }
+  const invalidItems = TasksMigration.filter(item => item.id === null || item.id === undefined);
+  if (invalidItems.length > 0) {
+    logger.warn('Items without IDs found in TasksMigration:', { count: invalidItems.length, items: invalidItems });
   }
 
   try {
-    await Tasks.collection.drop()
-    logger.info("Tasks collection dropped")
+    await Tasks.collection.drop();
+    logger.info('Tasks collection dropped');
   } catch (err) {
-    if (err.codeName !== "NamespaceNotFound") {
-      logger.error("Failed to drop tasks collection:", { error: err })
-      throw err
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop tasks collection:', { error: err });
+      throw err;
     }
-    logger.info("Tasks collection didn’t exist, proceeding")
+    logger.info('Tasks collection didn’t exist, proceeding');
   }
 
-  await Tasks.ensureIndexes()
-  logger.info("Tasks indexes recreated")
+  await Tasks.ensureIndexes();
+  logger.info('Tasks indexes recreated');
 
   for (const item of TasksMigration) {
     try {
-      const task = new Tasks(item)
-      await task.save()
-      logger.info("Inserted task", { id: item.id })
+      const task = new Tasks(item);
+      await task.save();
+      logger.info('Inserted task', { id: item.id });
     } catch (error) {
-      logger.error("Failed to insert task", { id: item.id, error })
-      throw error
+      logger.error('Failed to insert task', { id: item.id, error });
+      throw error;
     }
   }
 
-  logger.info("Tasks migration completed")
+  logger.info('Tasks migration completed');
 }
 
 async function deleteUserInvestments() {
@@ -363,41 +367,46 @@ async function deleteUserInvestments() {
 }
 
 async function deleteAndInsertWork() {
-  logger.info("Starting work migration")
+  logger.info('Starting work migration');
 
-  const ids = WorkItems.map((item) => item.id)
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  const ids = WorkItems.map(item => item.id);
+  const validIds = ids.filter(id => id !== null && id !== undefined);
+  const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
   if (duplicates.length > 0) {
-    logger.error("Duplicate IDs found in WorkItems:", { duplicates })
-    throw new Error(`Duplicate IDs in WorkItems: ${duplicates}`)
+    logger.error('Duplicate IDs found in WorkItems:', { duplicates });
+    throw new Error(`Duplicate IDs in WorkItems: ${duplicates}`);
+  }
+  const invalidItems = WorkItems.filter(item => item.id === null || item.id === undefined);
+  if (invalidItems.length > 0) {
+    logger.warn('Items without IDs found in WorkItems:', { count: invalidItems.length, items: invalidItems });
   }
 
   try {
-    await Work.collection.drop()
-    logger.info("Work collection dropped")
+    await Work.collection.drop();
+    logger.info('Work collection dropped');
   } catch (err) {
-    if (err.codeName !== "NamespaceNotFound") {
-      logger.error("Failed to drop work collection:", { error: err })
-      throw err
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop work collection:', { error: err });
+      throw err;
     }
-    logger.info("Work collection didn’t exist, proceeding")
+    logger.info('Work collection didn’t exist, proceeding');
   }
 
-  await Work.ensureIndexes()
-  logger.info("Work indexes recreated")
+  await Work.ensureIndexes();
+  logger.info('Work indexes recreated');
 
   for (const item of WorkItems) {
     try {
-      const work = new Work({ ...item, effect: {} })
-      await work.save()
-      logger.info("Inserted work item", { id: item.id })
+      const work = new Work({ ...item, effect: {} });
+      await work.save();
+      logger.info('Inserted work item', { id: item.id });
     } catch (error) {
-      logger.error("Failed to insert work item", { id: item.id, error })
-      throw error
+      logger.error('Failed to insert work item', { id: item.id, error });
+      throw error;
     }
   }
 
-  logger.info("Work migration completed")
+  logger.info('Work migration completed');
 }
 
 async function deleteUserProcesses() {
@@ -419,41 +428,46 @@ async function deleteUserProcesses() {
 }
 
 async function deleteInvestments() {
-  logger.info("Starting investments migration")
+  logger.info('Starting investments migration');
 
-  const ids = InvestmentsMigration.map((item) => item.id)
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  const ids = InvestmentsMigration.map(item => item.id);
+  const validIds = ids.filter(id => id !== null && id !== undefined);
+  const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
   if (duplicates.length > 0) {
-    logger.error("Duplicate IDs found in InvestmentsMigration:", { duplicates })
-    throw new Error(`Duplicate IDs in InvestmentsMigration: ${duplicates}`)
+    logger.error('Duplicate IDs found in InvestmentsMigration:', { duplicates });
+    throw new Error(`Duplicate IDs in InvestmentsMigration: ${duplicates}`);
+  }
+  const invalidItems = InvestmentsMigration.filter(item => item.id === null || item.id === undefined);
+  if (invalidItems.length > 0) {
+    logger.warn('Items without IDs found in InvestmentsMigration:', { count: invalidItems.length, items: invalidItems });
   }
 
   try {
-    await Investments.collection.drop()
-    logger.info("Investments collection dropped")
+    await Investments.collection.drop();
+    logger.info('Investments collection dropped');
   } catch (err) {
-    if (err.codeName !== "NamespaceNotFound") {
-      logger.error("Failed to drop investments collection:", { error: err })
-      throw err
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop investments collection:', { error: err });
+      throw err;
     }
-    logger.info("Investments collection didn’t exist, proceeding")
+    logger.info('Investments collection didn’t exist, proceeding');
   }
 
-  await Investments.ensureIndexes()
-  logger.info("Investments indexes recreated")
+  await Investments.ensureIndexes();
+  logger.info('Investments indexes recreated');
 
   for (const item of InvestmentsMigration) {
     try {
-      const investments = new Investments(item)
-      await investments.save()
-      logger.info("Inserted investment", { id: item.id })
+      const investments = new Investments(item);
+      await investments.save();
+      logger.info('Inserted investment', { id: item.id });
     } catch (error) {
-      logger.error("Failed to insert investment", { id: item.id, error })
-      throw error
+      logger.error('Failed to insert investment', { id: item.id, error });
+      throw error;
     }
   }
 
-  logger.info("Investments migration completed")
+  logger.info('Investments migration completed');
 }
 
 async function deleteUserTasks() {
@@ -476,51 +490,61 @@ async function deleteUserTasks() {
   logger.info("UserCompletedTask indexes recreated")
 }
 async function deleteAndInsertFood() {
-  logger.info("Starting food migration")
+  logger.info('Starting food migration');
 
-  const ids = FoodItems.map((item) => item.id)
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  const ids = FoodItems.map(item => item.id);
+  const validIds = ids.filter(id => id !== null && id !== undefined);
+  const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
   if (duplicates.length > 0) {
-    logger.error("Duplicate IDs found in FoodItems:", { duplicates })
-    throw new Error(`Duplicate IDs in FoodItems: ${duplicates}`)
+    logger.error('Duplicate IDs found in FoodItems:', { duplicates });
+    throw new Error(`Duplicate IDs in FoodItems: ${duplicates}`);
+  }
+  const invalidItems = FoodItems.filter(item => item.id === null || item.id === undefined);
+  if (invalidItems.length > 0) {
+    logger.warn('Items without IDs found in FoodItems:', { count: invalidItems.length, items: invalidItems });
   }
 
   try {
-    await Food.collection.drop()
-    logger.info("Food collection dropped")
+    await Food.collection.drop();
+    logger.info('Food collection dropped');
   } catch (err) {
-    if (err.codeName !== "NamespaceNotFound") {
-      logger.error("Failed to drop food collection:", { error: err })
-      throw err
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop food collection:', { error: err });
+      throw err;
     }
-    logger.info("Food collection didn’t exist, proceeding")
+    logger.info('Food collection didn’t exist, proceeding');
   }
 
-  await Food.ensureIndexes()
-  logger.info("Food indexes recreated")
+  await Food.ensureIndexes();
+  logger.info('Food indexes recreated');
 
   for (const item of FoodItems) {
     try {
-      const food = new Food({ ...item, effect: {} })
-      await food.save()
-      logger.info("Inserted food item", { id: item.id })
+      const food = new Food({ ...item, effect: {} });
+      await food.save();
+      logger.info('Inserted food item', { id: item.id });
     } catch (error) {
-      logger.error("Failed to insert food item", { id: item.id, error })
-      throw error
+      logger.error('Failed to insert food item', { id: item.id, error });
+      throw error;
     }
   }
 
-  logger.info("Food migration completed")
+  logger.info('Food migration completed');
 }
 
 async function deleteAndInsertSkill() {
   logger.info('Starting skill migration');
 
   const ids = SkillItems.map(item => item.id);
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  const validIds = ids.filter(id => id !== null && id !== undefined);
+  const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
   if (duplicates.length > 0) {
     logger.error('Duplicate IDs found in SkillItems:', { duplicates });
     throw new Error(`Duplicate IDs in SkillItems: ${duplicates}`);
+  }
+  const invalidItems = SkillItems.filter(item => item.id === null || item.id === undefined);
+  if (invalidItems.length > 0) {
+    logger.warn('Items without IDs found in SkillItems:', { count: invalidItems.length, items: invalidItems });
   }
 
   try {
@@ -573,10 +597,15 @@ async function deleteAndInsertBoost() {
   logger.info('Starting boost migration');
 
   const ids = BoostItems.map(item => item.id);
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  const validIds = ids.filter(id => id !== null && id !== undefined);
+  const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
   if (duplicates.length > 0) {
     logger.error('Duplicate IDs found in BoostItems:', { duplicates });
     throw new Error(`Duplicate IDs in BoostItems: ${duplicates}`);
+  }
+  const invalidItems = BoostItems.filter(item => item.id === null || item.id === undefined);
+  if (invalidItems.length > 0) {
+    logger.warn('Items without IDs found in BoostItems:', { count: invalidItems.length, items: invalidItems });
   }
 
   try {
@@ -611,10 +640,15 @@ async function deleteAndInsertLevels() {
   logger.info('Starting levels migration');
 
   const ids = LevelItems.map(item => item.id);
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  const validIds = ids.filter(id => id !== null && id !== undefined);
+  const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
   if (duplicates.length > 0) {
     logger.error('Duplicate IDs found in LevelItems:', { duplicates });
     throw new Error(`Duplicate IDs in LevelItems: ${duplicates}`);
+  }
+  const invalidItems = LevelItems.filter(item => item.id === null || item.id === undefined);
+  if (invalidItems.length > 0) {
+    logger.warn('Items without IDs found in LevelItems:', { count: invalidItems.length, items: invalidItems });
   }
 
   try {
@@ -649,10 +683,15 @@ async function deleteAndInsertTraining() {
   logger.info('Starting training migration');
 
   const ids = TrainingItems.map(item => item.id);
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  const validIds = ids.filter(id => id !== null && id !== undefined);
+  const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
   if (duplicates.length > 0) {
     logger.error('Duplicate IDs found in TrainingItems:', { duplicates });
     throw new Error(`Duplicate IDs in TrainingItems: ${duplicates}`);
+  }
+  const invalidItems = TrainingItems.filter(item => item.id === null || item.id === undefined);
+  if (invalidItems.length > 0) {
+    logger.warn('Items without IDs found in TrainingItems:', { count: invalidItems.length, items: invalidItems });
   }
 
   try {
@@ -720,79 +759,89 @@ async function deleteUserInventories() {
 }
 
 async function deleteShelfItems() {
-  logger.info("Starting shelf items migration")
+  logger.info('Starting shelf items migration');
 
-  const ids = ShelfItems.map((item) => item.id)
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  const ids = ShelfItems.map(item => item.id);
+  const validIds = ids.filter(id => id !== null && id !== undefined);
+  const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
   if (duplicates.length > 0) {
-    logger.error("Duplicate IDs found in ShelfItems:", { duplicates })
-    throw new Error(`Duplicate IDs in ShelfItems: ${duplicates}`)
+    logger.error('Duplicate IDs found in ShelfItems:', { duplicates });
+    throw new Error(`Duplicate IDs in ShelfItems: ${duplicates}`);
+  }
+  const invalidItems = ShelfItems.filter(item => item.id === null || item.id === undefined);
+  if (invalidItems.length > 0) {
+    logger.warn('Items without IDs found in ShelfItems:', { count: invalidItems.length, items: invalidItems });
   }
 
   try {
-    await ShelfItemModel.collection.drop()
-    logger.info("Shelf items collection dropped")
+    await ShelfItemModel.collection.drop();
+    logger.info('Shelf items collection dropped');
   } catch (err) {
-    if (err.codeName !== "NamespaceNotFound") {
-      logger.error("Failed to drop shelf_items collection:", { error: err })
-      throw err
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop shelf_items collection:', { error: err });
+      throw err;
     }
-    logger.info("Shelf items collection didn’t exist, proceeding")
+    logger.info('Shelf items collection didn’t exist, proceeding');
   }
 
-  await ShelfItemModel.ensureIndexes()
-  logger.info("Shelf items indexes recreated")
+  await ShelfItemModel.ensureIndexes();
+  logger.info('Shelf items indexes recreated');
 
   for (const item of ShelfItems) {
     try {
-      const shelfItem = new ShelfItemModel({ ...item })
-      await shelfItem.save()
-      logger.info("Inserted shelf item", { id: item.id })
+      const shelfItem = new ShelfItemModel({ ...item });
+      await shelfItem.save();
+      logger.info('Inserted shelf item', { id: item.id });
     } catch (error) {
-      logger.error("Failed to insert shelf item", { id: item.id, error })
-      throw error
+      logger.error('Failed to insert shelf item', { id: item.id, error });
+      throw error;
     }
   }
 
-  logger.info("Shelf items migration completed")
+  logger.info('Shelf items migration completed');
 }
 
 async function deleteAndInsertClothing() {
-  logger.info("Starting clothing migration")
+  logger.info('Starting clothing migration');
 
-  const ids = ClothingItems.map((item) => item.id)
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index)
+  const ids = ClothingItems.map(item => item.id);
+  const validIds = ids.filter(id => id !== null && id !== undefined);
+  const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
   if (duplicates.length > 0) {
-    logger.error("Duplicate IDs found in ClothingItems:", { duplicates })
-    throw new Error(`Duplicate IDs in ClothingItems: ${duplicates}`)
+    logger.error('Duplicate IDs found in ClothingItems:', { duplicates });
+    throw new Error(`Duplicate IDs in ClothingItems: ${duplicates}`);
+  }
+  const invalidItems = ClothingItems.filter(item => item.id === null || item.id === undefined);
+  if (invalidItems.length > 0) {
+    logger.warn('Items without IDs found in ClothingItems:', { count: invalidItems.length, items: invalidItems });
   }
 
   try {
-    await Clothing.collection.drop()
-    logger.info("Clothing collection dropped")
+    await Clothing.collection.drop();
+    logger.info('Clothing collection dropped');
   } catch (err) {
-    if (err.codeName !== "NamespaceNotFound") {
-      logger.error("Failed to drop clothing collection:", { error: err })
-      throw err
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop clothing collection:', { error: err });
+      throw err;
     }
-    logger.info("Clothing collection didn’t exist, proceeding")
+    logger.info('Clothing collection didn’t exist, proceeding');
   }
 
-  await Clothing.ensureIndexes()
-  logger.info("Clothing indexes recreated")
+  await Clothing.ensureIndexes();
+  logger.info('Clothing indexes recreated');
 
   for (const item of ClothingItems) {
     try {
-      const clothes = new Clothing({ ...item, effect: {} })
-      await clothes.save()
-      logger.info("Inserted clothing item", { id: item.id })
+      const clothes = new Clothing({ ...item, effect: {} });
+      await clothes.save();
+      logger.info('Inserted clothing item', { id: item.id });
     } catch (error) {
-      logger.error("Failed to insert clothing item", { id: item.id, error })
-      throw error
+      logger.error('Failed to insert clothing item', { id: item.id, error });
+      throw error;
     }
   }
 
-  logger.info("Clothing migration completed")
+  logger.info('Clothing migration completed');
 }
 
 async function deleteUsers() {
@@ -842,10 +891,15 @@ async function deleteConstantEffects() {
   logger.info('Starting constant effects migration');
 
   const ids = constantEffects.map(effect => effect.id);
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
+  const validIds = ids.filter(id => id !== null && id !== undefined);
+  const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
   if (duplicates.length > 0) {
     logger.error('Duplicate IDs found in constantEffects:', { duplicates });
     throw new Error(`Duplicate IDs in constantEffects: ${duplicates}`);
+  }
+  const invalidItems = constantEffects.filter(effect => effect.id === null || effect.id === undefined);
+  if (invalidItems.length > 0) {
+    logger.warn('Items without IDs found in constantEffects:', { count: invalidItems.length, items: invalidItems });
   }
 
   try {
