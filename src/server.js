@@ -10,6 +10,7 @@ import skillsRouter from "./routes/skill/skillRoutes.js";
 import processRouter from "./routes/process/processRoutes.js";
 import levelsRouter from "./routes/level/levelRoutes.js";
 import dotenv from "dotenv";
+import crypto from "crypto"
 import IORedis from "ioredis";
 import winston from "winston";
 import mongoose from "mongoose";
