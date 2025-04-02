@@ -47,7 +47,7 @@ export const startProcess = async (req, res) => {
         break
     }
 
-    return res.status(operationResult?.status || 200).json({ ...result?.data })
+    return res.status(operationResult?.status || 200).json({ ...operationResult?.data })
   } catch (e) {
     console.log("Error in startProcess - ", e)
     res
