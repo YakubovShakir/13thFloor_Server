@@ -65,8 +65,6 @@ export const getUserParameters = async (req, res) => {
 
     if (!user) {
       console.log("Registering user with ID", userId);
-      // const bot = new Bot('7775483956:AAHc14xqGCeNQ7DVsqABf0qAa8gdqwMWE6w')
-      // const tgApiResponse = await bot.api.getChatMember(userId)
       const gameCenterLevel = gamecenterLevelMap[refs.toString()] || 0;
       
       // Create user document
