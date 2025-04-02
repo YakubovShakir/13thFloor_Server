@@ -293,7 +293,12 @@ export const getShopItems = async (req, res) => {
       await Clothing.find({}, { _id: false }, { sort: { tier: 1 } })
     ).filter((item) => !clothes.map((c) => c.id).includes(item.clothing_id))
     const shelfClean = (await ShelfItemModel.find({}, { _id: false })).filter(
-      (item) => !shelf.map((c) => c.id).includes(item.id)
+      (item) => {
+        const alreadyHasIt = !shelf.map((c) => c.id).includes(item.id)
+        const canBuy = item.cost ? !(item.cost?.coins === 0 && item.cost?.stars === 0 ) : true
+
+        return !(alreadyHasIt || canBuy)
+      }
     )
 
     return res.status(200).json({
@@ -654,6 +659,13 @@ export const buyItemsForCoins = async (req, res) => {
       product = await ShelfItemModel.findOne({ id: id })
       if (product) {
         const { coins, stars } = product.cost
+
+        if(coins === 0 && stars === 0) {
+          return res.status(403).json({
+            ok: false,
+            reason: "Play the game to earn this item <3!",
+          })
+        }
 
         // Block purchase for IDs 9-38
         if (id >= 9 && id <= 38) {
