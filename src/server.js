@@ -284,7 +284,6 @@ async function main() {
     //! PROGRESS
     deleteUserParameters(),
     deleteUserInventories(),
-    deleteAndInsertClothing(),
     deleteUsers(),
     deleteUserProcesses(),
     deleteUserInvestments(),
