@@ -1323,7 +1323,7 @@ const nftScanConfig = {
       const usersWithWallets = await User.find({});
 
       await processInBatches(usersWithWallets, 50, async (user) => {
-        const nftItemIds = await getWhitelistedNftsFromWallet(user.tonWalletAddress);
+        const nftItemIds = user.tonWalletAddress ? await getWhitelistedNftsFromWallet(user.tonWalletAddress) : [];
         await syncShelfInventory(user.id, nftItemIds);
       });
 
