@@ -738,7 +738,7 @@ export const requestStarsPaymentLink = async (req, res) => {
     const autoclaimDurationToPrice = {
       6: 10,
       10: 50,
-      16: 100
+      18: 100
     }
 
     if (productType === "autoclaim") {
