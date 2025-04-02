@@ -316,20 +316,34 @@ async function deleteTasks() {
   )
 }
 
-async function deleteUserTasks() {
-  await CompletedTasks.deleteMany({})
-  await mongoose.syncIndexes()
+async function deleteTasks() {
+  await Tasks.deleteMany({});
+  await mongoose.syncIndexes();
+
+  for (const item of TasksMigration) {
+    try {
+      const task = new Tasks(item);
+      await task.save();
+    } catch (error) {
+      console.error(`Failed to insert task with id ${item.id}:`, error);
+      throw error;
+    }
+  }
 }
 
 async function deleteInvestments() {
-  await Investments.deleteMany({})
-  await mongoose.syncIndexes()
-  await Promise.all(
-    InvestmentsMigration.map(async (item) => {
-      const investments = new Investments(item)
-      await investments.save()
-    })
-  )
+  await Investments.deleteMany({});
+  await mongoose.syncIndexes();
+
+  for (const item of InvestmentsMigration) {
+    try {
+      const investments = new Investments(item);
+      await investments.save();
+    } catch (error) {
+      console.error(`Failed to insert investment with id ${item.id}:`, error);
+      throw error;
+    }
+  }
 }
 
 async function deleteUserInvestments() {
@@ -342,48 +356,65 @@ async function deleteUserProcesses() {
   await mongoose.syncIndexes()
 }
 
-async function deleteShelfItems() {
-  await ShelfItemModel.deleteMany({})
-  await mongoose.syncIndexes()
-  await Promise.all(
-    ShelfItems.map(async (item) => {
-      const shelfItem = new ShelfItemModel({ ...item })
-      await shelfItem.save()
-    })
-  )
+async function deleteInvestments() {
+  await Investments.deleteMany({});
+  await mongoose.syncIndexes();
+
+  for (const item of InvestmentsMigration) {
+    try {
+      const investments = new Investments(item);
+      await investments.save();
+    } catch (error) {
+      console.error(`Failed to insert investment with id ${item.id}:`, error);
+      throw error;
+    }
+  }
 }
 
 async function deleteAndInsertWork() {
-  await Work.deleteMany({})
-  await mongoose.syncIndexes()
-  await Promise.all(
-    WorkItems.map(async (item) => {
-      const work = new Work({ ...item, effect: {} })
-      await work.save()
-    })
-  )
-}
+  await Work.deleteMany({});
+  await mongoose.syncIndexes();
 
+  for (const item of WorkItems) {
+    try {
+      const work = new Work({ ...item, effect: {} });
+      await work.save();
+    } catch (error) {
+      console.error(`Failed to insert work item with id ${item.id}:`, error);
+      throw error;
+    }
+  }
+}
 async function deleteAndInsertFood() {
-  await Food.deleteMany({})
-  await mongoose.syncIndexes()
-  await Promise.all(
-    FoodItems.map(async (item) => {
-      const food = new Food({ ...item, effect: {} })
-      await food.save()
-    })
-  )
+  await Food.deleteMany({});
+  await mongoose.syncIndexes();
+
+  for (const item of FoodItems) {
+    try {
+      const food = new Food({ ...item, effect: {} });
+      await food.save();
+    } catch (error) {
+      console.error(`Failed to insert food item with id ${item.id}:`, error);
+      throw error;
+    }
+  }
 }
 
-async function deleteAndInsertSkill() {
-  await Skill.deleteMany({})
-  await mongoose.syncIndexes()
-  await Promise.all(
-    SkillItems.map(async (item) => {
-      const skill = new Skill({ ...item, effect: {} })
-      await skill.save()
-    })
-  )
+async function deleteAndInsertSkill() 
+   
+{
+  await Skill.deleteMany({});
+  await mongoose.syncIndexes();
+
+  for (const item of SkillItems) {
+    try {
+      const skill = new Skill({ ...item, effect: {} });
+      await skill.save();
+    } catch (error) {
+      console.error(`Failed to insert skill item with id ${item.id}:`, error);
+      throw error;
+    }
+  }
 }
 
 async function deleteUserBoosts() {
@@ -392,36 +423,48 @@ async function deleteUserBoosts() {
 }
 
 async function deleteAndInsertBoost() {
-  await Boost.deleteMany({})
-  await mongoose.syncIndexes()
-  await Promise.all(
-    BoostItems.map(async (item) => {
-      const boost = new Boost({ ...item, effect: {} })
-      await boost.save()
-    })
-  )
+  await Boost.deleteMany({});
+  await mongoose.syncIndexes();
+
+  for (const item of BoostItems) {
+    try {
+      const boost = new Boost({ ...item, effect: {} });
+      await boost.save();
+    } catch (error) {
+      console.error(`Failed to insert boost item with id ${item.id}:`, error);
+      throw error;
+    }
+  }
 }
 
 async function deleteAndInsertLevels() {
-  await LevelsParameters.deleteMany({})
-  await mongoose.syncIndexes()
-  await Promise.all(
-    LevelItems.map(async (item) => {
-      const level = new LevelsParameters({ ...item, effect: {} })
-      await level.save()
-    })
-  )
+  await LevelsParameters.deleteMany({});
+  await mongoose.syncIndexes();
+
+  for (const item of LevelItems) {
+    try {
+      const level = new LevelsParameters({ ...item, effect: {} });
+      await level.save();
+    } catch (error) {
+      console.error(`Failed to insert level item with id ${item.id}:`, error);
+      throw error;
+    }
+  }
 }
 
 async function deleteAndInsertTraining() {
-  await TrainingParameters.deleteMany({})
-  await mongoose.syncIndexes()
-  await Promise.all(
-    TrainingItems.map(async (item) => {
-      const training = new TrainingParameters({ ...item, effect: {} })
-      await training.save()
-    })
-  )
+  await TrainingParameters.deleteMany({});
+  await mongoose.syncIndexes();
+
+  for (const item of TrainingItems) {
+    try {
+      const training = new TrainingParameters({ ...item, effect: {} });
+      await training.save();
+    } catch (error) {
+      console.error(`Failed to insert training item with id ${item.id}:`, error);
+      throw error;
+    }
+  }
 }
 
 async function deleteUserParameters() {
@@ -456,15 +499,18 @@ async function deleteUsers() {
 }
 
 async function deleteConstantEffects() {
-  await ConstantEffects.deleteMany({})
-  await mongoose.syncIndexes()
-  await Promise.all(
-    constantEffects.map(async (effect) => {
-      const e = new ConstantEffects(effect)
-      await e.save()
-    })
-  )
-  await mongoose.syncIndexes()
+  await ConstantEffects.deleteMany({});
+  await mongoose.syncIndexes();
+
+  for (const effect of constantEffects) {
+    try {
+      const e = new ConstantEffects(effect);
+      await e.save();
+    } catch (error) {
+      console.error(`Failed to insert constant effect with id ${effect.id}:`, error);
+      throw error;
+    }
+  }
 }
 
 export { logger }
