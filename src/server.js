@@ -320,21 +320,6 @@ async function deleteTasks() {
   }
 }
 
-async function deleteInvestments() {
-  await Investments.deleteMany({});
-  await mongoose.syncIndexes();
-
-  for (const item of InvestmentsMigration) {
-    try {
-      const investments = new Investments(item);
-      await investments.save();
-    } catch (error) {
-      console.error(`Failed to insert investment with id ${item.id}:`, error);
-      throw error;
-    }
-  }
-}
-
 async function deleteUserInvestments() {
   await UserLaunchedInvestments.deleteMany({})
   await mongoose.syncIndexes()
