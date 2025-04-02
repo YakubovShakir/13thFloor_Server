@@ -166,7 +166,7 @@ const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) => {
 
 // Centralized queue for all DB updates
 const dbUpdateQueue = new Queue('db-updates', {
-  redis: { host: process.env.REDIS_HOST || 'localhost', port: 6379, password: 'redis_password' }, // Adjust Redis config
+  redis: { host: process.env.REDIS_HOST || 'redis-test', port: 6379, password: 'redis_password' }, // Adjust Redis config
   defaultJobOptions: {
     attempts: 3, // Retry on transient failures
     backoff: { type: 'exponential', delay: 100 }, // Exponential backoff
@@ -193,7 +193,7 @@ const operationMap = {
         userParameters.energy + energyRestore
       );
       await userParameters.save({ session });
-      log('info', `${colors.cyanBright('Applied energy restore from tonic-drink')}`, { user_id: userParameters.id, energyRestore });
+      log.info( `${colors.cyanBright('Applied energy restore from tonic-drink')}`, { user_id: userParameters.id, energyRestore });
     }
   },
   updateTimestamp: async (params, session) => {
@@ -204,7 +204,7 @@ const operationMap = {
     }
     process.user_parameters_updated_at = timestamp;
     await process.save({ session });
-    log("debug", `Updated timestamp for process ${processId} to ${timestamp}`);
+    log.debug( `Updated timestamp for process ${processId} to ${timestamp}`);
   },
   deleteProcess: async (params, session) => {
     const { processId } = params;
@@ -234,7 +234,7 @@ const operationMap = {
     });
 
     await userParameters.save({ session });
-    log("debug", `Applied updates for ${processType} to user ${userParametersId}`);
+    log.debug( `Applied updates for ${processType} to user ${userParametersId}`);
   },
   completeWorkProcess: async (params, session) => {
     const { processId, userParametersId, baseParametersId } = params;
@@ -325,7 +325,7 @@ const operationMap = {
     } else if (combinedEffects.duration_decrease) {
       durationDecreasePercentage = combinedEffects.duration_decrease;
     }
-    log("debug", colors.cyan(`Combined effects for work: ${JSON.stringify(combinedEffects)}`));
+    log.debug( colors.cyan(`Combined effects for work: ${JSON.stringify(combinedEffects)}`));
 
     const costConfig = {
       mood: baseParameters.mood_cost_per_minute || 0,
@@ -385,7 +385,7 @@ const operationMap = {
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
-      log("debug", `Updated work process timestamp`, { processId });
+      log.debug( `Updated work process timestamp`, { processId });
     }
   },
 
@@ -576,7 +576,7 @@ const operationMap = {
     } else {
       process.user_parameters_updated_at = now.toDate();
       await process.save({ session });
-      log("debug", `Skill process timestamp updated`, { processId });
+      log.debug( `Skill process timestamp updated`, { processId });
     }
   },
 
@@ -631,7 +631,7 @@ const operationMap = {
         userParameters.energy + energyRestore
       );
       await userParameters.save({ session });
-      log('info', `${colors.cyanBright('Applied energy restore from tonic-drink')}`, {
+      log.info( `${colors.cyanBright('Applied energy restore from tonic-drink')}`, {
         user_id: userParametersId,
         energyRestore,
       });
@@ -757,7 +757,7 @@ export const queueDbUpdate = async (operationType, params, description, userId =
     throw new Error(`Unknown operation type: ${operationType} for ${description}`);
   }
   const jobData = { operationType, params, description, userId };
-  log("debug", `Enqueuing job for ${description}`, { jobData });
+  log.debug( `Enqueuing job for ${description}`, { jobData });
   const job = await dbUpdateQueue.add(jobData);
   return job.id;
 };
@@ -848,25 +848,25 @@ const calculatePeriodCosts = (baseParameters, combinedEffects, durationSeconds, 
   const finalCosts = {};
   Object.entries(costConfig).forEach(([key, baseValue]) => {
     if (costBlackList.includes(key)) return;
-    log("debug", colors.cyan(`Starting cost calc for ${key}: baseValue=${baseValue}`));
+    log.debug( colors.cyan(`Starting cost calc for ${key}: baseValue=${baseValue}`));
     let adjustedValue = Number(baseValue) || 0;
 
     const decreaseKey = `${key}_cost_decrease`;
     const decreaseValue = combinedEffects[decreaseKey];
     if (decreaseValue) {
       adjustedValue *= (1 - decreaseValue / 100);
-      log("debug", colors.yellow(`Applied ${decreaseKey}: ${decreaseValue}% -> ${adjustedValue.toFixed(4)}`));
+      log.debug( colors.yellow(`Applied ${decreaseKey}: ${decreaseValue}% -> ${adjustedValue.toFixed(4)}`));
     }
 
     let cost;
     if (processType === "work") {
       const minutesElapsed = durationSeconds / 60;
       cost = adjustedValue * minutesElapsed;
-      log("debug", colors.magenta(`Work cost for ${key}: ${adjustedValue.toFixed(4)} * ${minutesElapsed.toFixed(4)}min = ${cost.toFixed(4)}`));
+      log.debug( colors.magenta(`Work cost for ${key}: ${adjustedValue.toFixed(4)} * ${minutesElapsed.toFixed(4)}min = ${cost.toFixed(4)}`));
     } else {
       const ratePerSecond = adjustedValue / totalDurationSeconds;
       cost = ratePerSecond * durationSeconds;
-      log("debug", colors.magenta(`Cost for ${key}: ${ratePerSecond.toFixed(4)}/s * ${durationSeconds}s = ${cost.toFixed(4)}`));
+      log.debug( colors.magenta(`Cost for ${key}: ${ratePerSecond.toFixed(4)}/s * ${durationSeconds}s = ${cost.toFixed(4)}`));
     }
 
     finalCosts[key] = Number(cost.toFixed(10));
@@ -885,25 +885,25 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
   }
 
   Object.entries(profitConfig).forEach(([key, baseValue]) => {
-    log("debug", colors.cyan(`Starting profit calc for ${key}: baseValue=${baseValue}`));
+    log.debug( colors.cyan(`Starting profit calc for ${key}: baseValue=${baseValue}`));
     let adjustedValue = Number(baseValue) || 0;
 
     if (combinedEffects[`${key}_increase`]) {
       const increasePercent = combinedEffects[`${key}_increase`];
       adjustedValue *= (1 + increasePercent / 100);
-      log("debug", colors.yellow(`Applied ${key}_increase: ${increasePercent}% -> ${adjustedValue.toFixed(4)}`));
+      log.debug( colors.yellow(`Applied ${key}_increase: ${increasePercent}% -> ${adjustedValue.toFixed(4)}`));
     }
 
     const ratePerSecond = adjustedValue / totalDurationSeconds;
     const profit = ratePerSecond * diffSeconds;
     profits[key] = isNaN(profit) ? 0 : Number(profit.toFixed(2));
-    log("debug", colors.magenta(`Profit for ${key}: ${ratePerSecond.toFixed(4)}/s * ${diffSeconds}s = ${profits[key]}`));
+    log.debug( colors.magenta(`Profit for ${key}: ${ratePerSecond.toFixed(4)}/s * ${diffSeconds}s = ${profits[key]}`));
   });
 
   combinedEffects.profit_hourly_percent?.forEach(effect => {
     const key = effect.param;
     const hourlyIncreasePercent = effect.value || 0;
-    log("debug", colors.cyan(`Applying profit_hourly_percent for ${key}: ${hourlyIncreasePercent}%`));
+    log.debug( colors.cyan(`Applying profit_hourly_percent for ${key}: ${hourlyIncreasePercent}%`));
 
     if (key === "energy" || key === "hungry" || key === "mood") {
       const currentValue = Number(userParameters[key]) || 0;
@@ -917,7 +917,7 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
       const newTotal = currentValue + uncappedProfit;
       const cappedProfit = Math.min(uncappedProfit, Math.max(0, capacity - currentValue));
       profits[key] = isNaN(cappedProfit) ? 0 : Number(cappedProfit.toFixed(5));
-      log("debug", colors.yellow(`Capped ${key} profit: current=${currentValue}, uncapped=${newTotal.toFixed(5)}, capacity=${capacity}, capped=${profits[key]}`));
+      log.debug( colors.yellow(`Capped ${key} profit: current=${currentValue}, uncapped=${newTotal.toFixed(5)}, capacity=${capacity}, capped=${profits[key]}`));
     }
     log("info", colors.blue(`Final profit for ${key}: ${profits[key]}`));
   });
@@ -1029,7 +1029,7 @@ operationMap.applyInvestmentClaim = async (params, session) => {
   await recalcValuesByParameters(userParameters, { coinsReward }, session);
   await upUserExperience(userParametersId, experienceReward, session);
   await userParameters.save({ session });
-  log("debug", `Applied investment claim rewards`, { userId: userParametersId, coinsReward, experienceReward });
+  log.debug( `Applied investment claim rewards`, { userId: userParametersId, coinsReward, experienceReward });
 };
 
 operationMap.markInvestmentClaimed = async (params, session) => {
@@ -1041,7 +1041,7 @@ operationMap.markInvestmentClaimed = async (params, session) => {
 
   investment.claimed = true;
   await investment.save({ session });
-  log("debug", `Marked investment as claimed`, { investmentId });
+  log.debug( `Marked investment as claimed`, { investmentId });
 };
 
 operationMap.createNewInvestment = async (params, session) => {
@@ -1053,7 +1053,7 @@ operationMap.createNewInvestment = async (params, session) => {
     investment_type: investmentType,
   });
   await newInvestment.save({ session });
-  log("debug", `Created new investment entry`, { userId, investmentType, toClaim });
+  log.debug( `Created new investment entry`, { userId, investmentType, toClaim });
 };
 
 const processInBatches = async (items, batchSize, processFn) => {
