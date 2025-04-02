@@ -61,23 +61,21 @@ export const withTransaction = async (operation, maxRetries = 3, retryDelay = 50
       if (error.name === "MongoServerError" && error.code === 112) {
         retryCount++;
         if (retryCount < maxRetries) {
-          log(
-            "warn",
+          logger.warn(
             colors.yellow(`WriteConflict detected, retrying (${retryCount}/${maxRetries})`),
             { error: error.message }
           );
           await new Promise((resolve) => setTimeout(resolve, retryDelay * retryCount)); // Exponential delay
           continue;
         } else {
-          log(
-            "error",
+          logger.error(
             colors.red(`Max retries (${maxRetries}) reached for WriteConflict`),
             { error: error.message, stack: error.stack }
           );
           throw new Error(`Failed after ${maxRetries} retries due to WriteConflict: ${error.message}`);
         }
       } else {
-        log(
+        logger.error(
           "error",
           colors.red(`Transaction failed`),
           { error: error.message, stack: error.stack }
