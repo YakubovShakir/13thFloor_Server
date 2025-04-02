@@ -353,17 +353,6 @@ async function deleteShelfItems() {
   )
 }
 
-async function deleteAndInsertClothing() {
-  await Clothing.deleteMany({})
-  await mongoose.syncIndexes()
-  await Promise.all(
-    ClothingItems.map(async (item) => {
-      const clothes = new Clothing({ ...item, effect: {} })
-      await clothes.save()
-    })
-  )
-}
-
 async function deleteAndInsertWork() {
   await Work.deleteMany({})
   await mongoose.syncIndexes()
