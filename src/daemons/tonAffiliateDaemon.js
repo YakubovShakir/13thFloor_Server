@@ -1,12 +1,9 @@
 import { config } from 'dotenv';
 import mongoose from 'mongoose';
-import { Queue, RedisConnection, Worker } from 'bullmq';
-import { createClient } from 'redis';
+import { Queue, Worker } from 'bullmq';
 import { withdrawAffiliateEarnings } from '../services/paymentService.js'
 import IORedis from 'ioredis';
-
-config();
-
+import winston from 'winston/lib/winston/config/index.js';
 config();
 
 // Log environment variables
@@ -71,7 +68,7 @@ const worker = new Worker(
 );
 
 worker.on('ready', () => {
-  console.log('Worker is ready with connection:', JSON.stringify(redisConfig));
+  console.log('Worker is ready with connection:', JSON.stringify(redis));
 });
 
 worker.on('completed', (job, result) => {

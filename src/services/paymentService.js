@@ -3,11 +3,94 @@ import StarsTransactions from "../models/tx/starsTransactionModel.mjs";
 import TONTransactions from "../models/tx/tonTransactionModel.js";
 import AffiliateTransaction from "../models/tx/affiliateTransactionModel.js";
 import User from "../models/user/userModel.js";
-import { withTransaction } from "../utils/dbUtils.js";
-import { Address, internal, beginCell, toNano, SendMode } from "@ton/ton";
-import { openWallet } from "../routes/user/userRoutes.js";
+import { Address, internal, beginCell, toNano, SendMode, TonClient, WalletContractV4 } from "@ton/ton";
 import axios from "axios";
-import { log as logger } from "../gameTimer/gameTimer.js";
+import { mnemonicToPrivateKey } from "ton-crypto";
+import mongoose from "mongoose";
+import { config } from "dotenv";
+import IORedis from 'ioredis'
+import winston from "winston";
+
+config()
+
+const redis = new IORedis({
+  host: process.env.REDIS_HOST || "redis-test",
+  port: parseInt(process.env.REDIS_PORT || "6379", 10),
+  password: process.env.REDIS_PASSWORD || "redis_password",
+  maxRetriesPerRequest: null
+});
+redis.on("connect", () => console.log("Redis connected for middleware"));
+redis.on("error", (err) => console.error("Redis error in middleware:", err));
+
+// Test the connection
+redis.ping().then((result) => {
+  console.log('IORedis PING result:', result);
+}).catch((err) => {
+  console.error('IORedis PING failed:', err);
+});
+
+const logger = winston.createLogger({
+  level: "trace",
+  format: winston.format.combine(
+    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    winston.format.printf(({ timestamp, level, message, ...meta }) => {
+      return `${timestamp} [${level}]: ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ""}`;
+    })
+  ),
+  transports: [new winston.transports.Console()],
+});
+
+export const withTransaction = async (operation, maxRetries = 3, retryDelay = 500) => {
+  let retryCount = 0;
+  let session;
+
+  while (retryCount < maxRetries) {
+    try {
+      session = await mongoose.startSession();
+      session.startTransaction();
+
+      const result = await operation(session);
+
+      await session.commitTransaction();
+      return result; // Return whatever the operation returns
+    } catch (error) {
+      if (session) {
+        await session.abortTransaction();
+      }
+
+      if (error.name === "MongoServerError" && error.code === 112) {
+        retryCount++;
+        if (retryCount < maxRetries) {
+          log(
+            "warn",
+            colors.yellow(`WriteConflict detected, retrying (${retryCount}/${maxRetries})`),
+            { error: error.message }
+          );
+          await new Promise((resolve) => setTimeout(resolve, retryDelay * retryCount)); // Exponential delay
+          continue;
+        } else {
+          log(
+            "error",
+            colors.red(`Max retries (${maxRetries}) reached for WriteConflict`),
+            { error: error.message, stack: error.stack }
+          );
+          throw new Error(`Failed after ${maxRetries} retries due to WriteConflict: ${error.message}`);
+        }
+      } else {
+        log(
+          "error",
+          colors.red(`Transaction failed`),
+          { error: error.message, stack: error.stack }
+        );
+        throw error;
+      }
+    } finally {
+      if (session) {
+        session.endSession();
+      }
+    }
+  }
+};
 
 // TON Center API configuration
 const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY;
@@ -19,6 +102,28 @@ const TON_LOCK_PERIOD_MS = 1 * 24 * 60 * 60 * 1000; // 1 day
 const AFFILIATE_PERCENTAGE = 0.1; // 10% commission
 const STARS_TO_TON_RATE = 1000; // 1000 Stars = 1 TON
 const NANOTONS_TO_TON = 1e9; // 1 TON = 1,000,000,000 nanotons
+
+export async function openWallet(mnemonic, testnet) {
+  const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY
+  const keyPair = await mnemonicToPrivateKey(mnemonic)
+
+  const toncenterBaseEndpoint = testnet
+    ? "https://testnet.toncenter.com"
+    : "https://toncenter.com"
+
+  const client = new TonClient({
+    endpoint: `${toncenterBaseEndpoint}/api/v2/jsonRPC`,
+    apiKey: TONCENTER_API_KEY,
+  })
+
+  const wallet = WalletContractV4.create({
+    workchain: 0,
+    publicKey: keyPair.publicKey,
+  })
+
+  const contract = client.open(wallet)
+  return { contract, keyPair, client }
+}
 
 // Retry utility with exponential backoff
 const retry = async (operation, maxRetries = 5, delay = 1000) => {

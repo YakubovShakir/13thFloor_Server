@@ -3,6 +3,8 @@ import UserParameters from "../models/user/userParametersModel.js"
 import { withTransaction } from "./dbUtils.js"
 import { upUserBalance } from "./userParameters/upUserBalance.js"
 
+import { logger } from '../server.js'
+
 export const isFullMood = (mood) => mood === 100
 export const isHighMood = (mood) => mood < 100 && mood > 49
 export const isMediumMood = (mood) => mood <= 49 && mood > 9
@@ -118,13 +120,13 @@ export const recalcValuesByParameters = async (
       console.log(`[recalcValuesByParameters] balance updated with amount ${adjustedCoinsReward}`);
     }
 
-    log("debug", colors.cyan(`Completed recalcValuesByParameters for user ${userParameters.id}`));
+    logger.debug(`Completed recalcValuesByParameters for user ${userParameters.id}`);
     return { mood: user.mood, coins: user.coins }; // Return updated values
   });
 };
 
 export function canApplyConstantEffects(userParameters) {
-  console.log(
+  logger.info(
     `[canApplyConstantEffects] hit by user ${userParameters.id}, deciding...`
   )
 
@@ -135,7 +137,7 @@ export function canApplyConstantEffects(userParameters) {
   const isLowOrCriticalMood = isLowMood(mood) || isCriticallyMood(mood)
 
   const res = !(isLowOrCriticalHunger || isLowOrCriticalMood)
-  console.log(
+  logger.info(
     `[canApplyConstantEffects] hit by user ${userParameters.id}, decided: ${res}`
   )
 

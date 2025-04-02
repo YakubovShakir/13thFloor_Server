@@ -67,7 +67,10 @@ import ansiColors from "ansi-colors"
 import { queueAffiliateWithdrawal } from "../../daemons/utils/affiliateTxsUtils.js"
 import Investments from "../../models/investments/investmentModel.js"
 const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON
-import { logger as log } from '../../server.js'
+import { logger } from '../../server.js'
+import { openWallet } from "../../services/paymentService.js"
+import StarsTransactions from '../../models/tx/starsTransactionModel.mjs'
+import AffiliateTransaction from '../../models/tx/affiliateTransactionModel.js'
 
 export function calculateGamecenterLevel(refsCount) {
   const levels = Object.keys(gamecenterLevelMap)
@@ -174,6 +177,12 @@ export const gameCenterLevelRequirements = {
   35: 4325070,
 }
 
+const STARS_LOCK_PERIOD_MS = 21 * 24 * 60 * 60 * 1000 + 10 * 60 * 1000; // 21 days + 10 minutes
+const TON_LOCK_PERIOD_MS = 1 * 24 * 60 * 60 * 1000; // 1 day
+const AFFILIATE_PERCENTAGE = 0.1; // 10% commission
+const STARS_TO_TON_RATE = 1000; // 1000 Stars = 1 TON
+const NANOTONS_TO_TON = 1e9; // 1 TON = 1,000,000,000 nanoton
+
 // Get affiliate earnings data
 export const getAffiliateEarningsData = async (affiliateId) => {
   if (!affiliateId) throw new Error("Affiliate ID is required");
@@ -274,39 +283,8 @@ export const getNekoBoostMultiplier = async (userId, session) => {
   return boost ? 1 + getBoostPercentageFromType(boost.type) / 100 : 1;
 };
 
-let walletContract, keyPair, tonClient
-
-const mnemonic = process.env.MNEMONICS.split(" ") // Expects space-separated mnemonic
-const testnet = process.env.TESTNET === "true"
-const wallet = await openWallet(mnemonic, testnet)
-walletContract = wallet.contract
-keyPair = wallet.keyPair
-tonClient = wallet.client
-
 const TELEGRAM_BOT_TOKEN = "7775483956:AAHc14xqGCeNQ7DVsqABf0qAa8gdqwMWE6w"
 const bot = new Bot(TELEGRAM_BOT_TOKEN)
-
-export async function openWallet(mnemonic, testnet) {
-  const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY
-  const keyPair = await mnemonicToPrivateKey(mnemonic)
-
-  const toncenterBaseEndpoint = testnet
-    ? "https://testnet.toncenter.com"
-    : "https://toncenter.com"
-
-  const client = new TonClient({
-    endpoint: `${toncenterBaseEndpoint}/api/v2/jsonRPC`,
-    apiKey: TONCENTER_API_KEY,
-  })
-
-  const wallet = WalletContractV4.create({
-    workchain: 0,
-    publicKey: keyPair.publicKey,
-  })
-
-  const contract = client.open(wallet)
-  return { contract, keyPair, client }
-}
 
 // Ensure the bot does not start polling (to avoid conflicts with getUpdates)
 bot.stop() // Explicitly stop any polling (just in case)
@@ -665,7 +643,7 @@ router.get("/:id/gacha/attempts", async (req, res) => {
       attempts: attempts?.length || 0,
     })
   } catch (error) {
-    log.error( "error in fetching gacha attempts", error)
+    logger.error( "error in fetching gacha attempts", error)
 
     return res.status(500).send()
   }
@@ -997,7 +975,7 @@ router.get("/:id/daily/claim", async (req, res) => {
     console.log("Claim recorded - Streak:", streak)
     res.status(200).json({ wonItem, streak })
   } catch (error) {
-    log.error( "error in claiming daily reward", error)
+    logger.error( "error in claiming daily reward", error)
     res.status(500).json({ error: "Internal server error" })
   }
 })
@@ -1106,7 +1084,7 @@ router.get("/:id/daily/status", async (req, res) => {
       isStreakBroken, // Added to make it explicit
     })
   } catch (error) {
-    log.error( "error in fetching daily status", error)
+    logger.error( "error in fetching daily status", error)
     res.status(500).json({ error: "Internal server error" })
   }
 })
@@ -1449,7 +1427,7 @@ export const interactWithNeko = async (userId, targetUserId) => {
       })
 
       await userEffect.save()
-      log.info( "Effect applied to owner", {
+      logger.info( "Effect applied to owner", {
         userId: targetUserId,
         effectType: activeEffectType,
       })
@@ -1466,10 +1444,10 @@ export const interactWithNeko = async (userId, targetUserId) => {
     // Add coins to the clicker (userId)
     if (coinReward > 0) {
       await upUserBalance(userId, coinReward)
-      log.info( "Coins added to clicker", { userId, coinReward })
+      logger.info( "Coins added to clicker", { userId, coinReward })
     }
 
-    log.info( "Neko interacted", {
+    logger.info( "Neko interacted", {
       userId,
       targetUserId,
       nekoId,
@@ -1678,13 +1656,13 @@ router.post("/sleep/start/:userId", async (req, res) => {
     })
     await process.save()
 
-    log.info( "Sleep process started with initial coin", {
+    logger.info( "Sleep process started with initial coin", {
       userId,
       processId: process._id,
     })
     return res.status(201).json({ success: true, processId: process._id })
   } catch (err) {
-    log.error( "Error starting sleep", { userId, error: err.message })
+    logger.error( "Error starting sleep", { userId, error: err.message })
     return res
       .status(500)
       .json({ error: true, message: "Internal server error" })
@@ -1729,7 +1707,7 @@ router.get(
         const newCoin = spawnCoin(process)
         process.sleep_game.coins.push(newCoin)
         process.sleep_game.lastSpawnTime = now.toDate()
-        log.info( "Coin spawned in state", {
+        logger.info( "Coin spawned in state", {
           userId,
           coinId: newCoin.id,
         })
@@ -1744,7 +1722,7 @@ router.get(
         serverTime: now.toISOString(),
       })
     } catch (err) {
-      log.error( "Error fetching sleep game state", {
+      logger.error( "Error fetching sleep game state", {
         userId,
         error: err.message,
       })
@@ -1777,10 +1755,10 @@ router.post(
       const now = moment().tz("Europe/Moscow")
       process.sleep_game.playerJumps.push({ time: new Date(time), y })
       await process.save()
-      log.info( "Player jump recorded", { userId, y, time })
+      logger.info( "Player jump recorded", { userId, y, time })
       return res.status(200).json({ success: true })
     } catch (err) {
-      log.error( "Error recording jump", { userId, error: err.message })
+      logger.error( "Error recording jump", { userId, error: err.message })
       return res
         .status(500)
         .json({ error: true, message: "Internal server error" })
@@ -1848,7 +1826,7 @@ router.post(
         playerY + 40 < coin.y - bufferY ||
         playerY > coin.y + 20 + bufferY
       ) {
-        log.debug( "Coin collision check failed", {
+        logger.debug( "Coin collision check failed", {
           userId,
           coinId,
           coinAge,
@@ -1883,7 +1861,7 @@ router.post(
       process.updatedAt = now.toDate()
       await process.save()
 
-      log.info( "Sleep coin collected", {
+      logger.info( "Sleep coin collected", {
         userId,
         processId: process._id,
         coinId,
@@ -1898,7 +1876,7 @@ router.post(
         ),
       })
     } catch (err) {
-      log.error( "Error collecting sleep coin", {
+      logger.error( "Error collecting sleep coin", {
         userId,
         error: err.message,
       })
@@ -1919,7 +1897,7 @@ export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
       const languageCode = chatMember?.user?.language_code || "en"
       // Map language code to "en" or "ru"
       userLanguage = languageCode.startsWith("ru") ? "ru" : "en"
-      log.info( "Fetched user language via getChatMember", {
+      logger.info( "Fetched user language via getChatMember", {
         userId: targetUserId,
         chatId: targetUserId,
         languageCode,
@@ -1947,13 +1925,13 @@ export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
 
     // Send the message
     await bot.api.sendMessage(targetUserId, message)
-    log.info( "Telegram message sent to owner", {
+    logger.info( "Telegram message sent to owner", {
       userId: targetUserId,
       chatId: targetUserId,
       message,
     })
   } catch (error) {
-    log.error( "Failed to send Telegram message to owner", {
+    logger.error( "Failed to send Telegram message to owner", {
       userId: targetUserId,
       error: error.message,
     })
@@ -2086,7 +2064,7 @@ router.get("/nft/supply/:itemId", async (req, res) => {
 
 router.get("/:id/nft/shop", async (req, res) => {
   try {
-    log.info( "Nft shop endpoint requested")
+    logger.info( "Nft shop endpoint requested")
     const userId = req.userId
     if (isNaN(userId)) {
       return res.status(400).json({ error: "Invalid userId" })
@@ -2247,12 +2225,12 @@ export const getAutoclaimStatus = async (userId) => {
       }
     })
 
-    log.debug( `Retrieved autoclaim status for user ${userId}`, {
+    logger.debug( `Retrieved autoclaim status for user ${userId}`, {
       status,
     })
     return status
   } catch (err) {
-    log.error( `Failed to get autoclaim status for user ${userId}`, {
+    logger.error( `Failed to get autoclaim status for user ${userId}`, {
       error: err.message,
       stack: err.stack,
     })
@@ -2272,7 +2250,7 @@ router.get("/:id/affiliate-data", async (req, res) => {
     const currentLevelRefsRequired = gameCenterLevelRequirements[gameCenterLevel]
     const nextLevelRefsRequired = gameCenterLevelRequirements[nextLevelGameCenter] || currentLevelRefsRequired
 
-    log.info( ansiColors.cyan("Affiliate data requested"), {
+    logger.info( ansiColors.cyan("Affiliate data requested"), {
       userId,
       ...data,
       gameCenterLevel,
@@ -2283,7 +2261,7 @@ router.get("/:id/affiliate-data", async (req, res) => {
 
     return res.status(200).json({ ...data })
   } catch (err) {
-    log.error( `Failed to get autoclaim status for user ${userId}`, {
+    logger.error( `Failed to get autoclaim status for user ${userId}`, {
       error: err.message,
       stack: err.stack,
     })

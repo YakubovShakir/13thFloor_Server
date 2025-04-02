@@ -7,9 +7,6 @@ import colors from 'ansi-colors';
 import gameProcess from "../models/process/processModel.js";
 import UserParameters from "../models/user/userParametersModel.js";
 import moment from "moment-timezone";
-import { canApplyConstantEffects } from "../utils/parametersDepMath.js";
-import { upUserExperience } from "../utils/userParameters/upUserBalance.js";
-import { recalcValuesByParameters } from "../utils/parametersDepMath.js";
 import Work from "../models/work/workModel.js";
 import TrainingParameters from "../models/training/trainingParameters.js";
 import LevelsParameters from "../models/level/levelParametersModel.js";
@@ -39,6 +36,55 @@ import NFTItems from "../models/nft/nftItemModel.js";
 import Queue from 'bull';
 import winston from "winston";
 import Autoclaims from "../models/investments/autoclaimsModel.js";
+
+export const recalcValuesByParameters = async (
+  userParameters,
+  { coinsReward = 0, moodProfit = 0 }
+) => {
+  console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}`);
+
+  return await withTransaction(async (session) => {
+    // Fetch the latest userParameters within the transaction
+    const user = await UserParameters.findOne({ id: userParameters.id }, null, { session });
+    if (!user) throw new Error(`UserParameters not found for ID: ${userParameters.id}`);
+
+    // Mood updates
+    let moodChange = moodProfit;
+    if (user.hungry > 49) {
+      // No penalty
+    } else if (user.hungry <= 49 && user.hungry >= 9) {
+      moodChange = Math.max(0, -0.09722) + moodProfit;
+    } else {
+      moodChange = Math.max(0, -0.155) + moodProfit;
+    }
+
+    if (moodChange !== 0) {
+      user.mood = Math.min(100, user.mood + moodChange);
+      await user.save({ session });
+      console.log(`[recalcValuesByParameters] mood updated to ${user.mood}`);
+    }
+
+    // Balance updates
+    let adjustedCoinsReward = coinsReward;
+    if (user.mood > 49) {
+      adjustedCoinsReward = coinsReward;
+    } else if (user.mood <= 49 && user.mood > 9) {
+      adjustedCoinsReward = coinsReward * 0.9;
+    } else if (user.mood <= 9 && user.mood > 1) {
+      adjustedCoinsReward = coinsReward * 0.5;
+    } else if (coinsReward > 0) {
+      adjustedCoinsReward = 1;
+    }
+
+    if (adjustedCoinsReward !== 0) {
+      await upUserBalance(userParameters.id, adjustedCoinsReward); // Already uses withTransaction
+      console.log(`[recalcValuesByParameters] balance updated with amount ${adjustedCoinsReward}`);
+    }
+
+    log("debug", colors.cyan(`Completed recalcValuesByParameters for user ${userParameters.id}`));
+    return { mood: user.mood, coins: user.coins }; // Return updated values
+  });
+};
 
 // Redis setup
 const redis = new IORedis({
@@ -274,7 +320,7 @@ const operationMap = {
 
     // Pass profits to recalcValuesByParameters
     await recalcValuesByParameters(userParameters, { coinsReward }, session);
-    await upUserExperience(userParameters.id, baseParameters.experience_reward, session);
+    await operationMap.updateUserExperience({ id: userParameters.id, amount: baseParameters.experience_reward }, session);
     log.info( `Work process completed`, { userId: userParameters.id, coinsReward, experience: baseParameters.experience_reward });
   },
   completeTrainingProcess: async (params, session) => {
@@ -299,10 +345,10 @@ const operationMap = {
     if (subType === "constant_effects") {
       userParameters.constant_effects_levels[skill.type] = skill.level;
       await userParameters.save({ session });
-      await upUserExperience(userParametersId, skill.experience_reward, session);
+      await operationMap.updateUserExperience({ id: userParametersId, amount: skill.experience_reward }, session);
     } else {
       await UserSkill.create({ id: userParametersId, skill_id: skillId }, { session });
-      await upUserExperience(userParametersId, skill.experience_reward, session);
+      await operationMap.updateUserExperience({ id: userParametersId, amount: skill.experience_reward }, session);
     }
 
     log.info( `Skill process completed`, { userId: userParametersId, skillId });
@@ -1049,7 +1095,7 @@ operationMap.applyInvestmentClaim = async (params, session) => {
   }
 
   await recalcValuesByParameters(userParameters, { coinsReward }, session);
-  await upUserExperience(userParametersId, experienceReward, session);
+  await operationMap.updateUserExperience({ id: userParametersId, amount: experienceReward }, session);
   await userParameters.save({ session });
   log.debug( `Applied investment claim rewards`, { userId: userParametersId, coinsReward, experienceReward });
 };
