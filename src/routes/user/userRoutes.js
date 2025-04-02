@@ -21,14 +21,11 @@ import {
   getLeaderboard,
   startInvestment,
   saveProfileData,
-  gamecenterLevelMap,
-  gameCenterLevelRequirements,
 } from "../../controllers/user/userController.js"
 import { getUserParameters } from "../../controllers/user/userParametersController.js"
 import gameProcess from "../../models/process/processModel.js"
 import { getUserTrainingParameters } from "../../controllers/training/trainingController.js"
 import { UserSpins } from "../../models/user/userSpinsModel.js"
-import { log } from "../../utils/log.js"
 import Boost from "../../models/boost/boostModel.js"
 import Clothing from "../../models/clothing/clothingModel.js"
 import User from "../../models/user/userModel.js"
@@ -55,7 +52,6 @@ import Bottleneck from "bottleneck"
 import crypto from "crypto"
 import { canApplyConstantEffects } from "../../utils/parametersDepMath.js"
 import UserParameters from "../../models/user/userParametersModel.js"
-import { getNekoBoostMultiplier } from "../../gameTimer/universal.js"
 import { Bot } from "grammy"
 import TONTransactions from "../../models/tx/tonTransactionModel.js"
 import NFTItems from "../../models/nft/nftItemModel.js"
@@ -67,11 +63,216 @@ config()
 import TON, { beginCell } from "@ton/ton"
 import { InvestmentTypes } from "../../models/investments/userLaunchedInvestments.js"
 import Referal from "../../models/referral/referralModel.js"
-import { getAffiliateEarningsData } from "../../services/paymentService.js"
 import ansiColors from "ansi-colors"
 import { queueAffiliateWithdrawal } from "../../daemons/utils/affiliateTxsUtils.js"
 import Investments from "../../models/investments/investmentModel.js"
 const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON
+import { logger as log } from '../../server.js'
+
+export function calculateGamecenterLevel(refsCount) {
+  const levels = Object.keys(gamecenterLevelMap)
+    .map(Number)
+    .sort((a, b) => a - b) // Ensure sorted order
+  let low = 0
+  let high = levels.length - 1
+
+  if (refsCount < levels[0]) return 0 // Below first threshold
+
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2)
+    const threshold = levels[mid]
+
+    if (refsCount < threshold) {
+      high = mid - 1
+    } else if (
+      refsCount >= threshold &&
+      (mid === levels.length - 1 || refsCount < levels[mid + 1])
+    ) {
+      return gamecenterLevelMap[threshold] // Found the correct level
+    } else {
+      low = mid + 1
+    }
+  }
+
+  // If we exit the loop, return the highest level (shouldn't happen with proper map)
+  return gamecenterLevelMap[levels[levels.length - 1]]
+}
+
+export const gamecenterLevelMap = {
+  1: 1,
+  5: 2,
+  10: 3,
+  25: 4,
+  40: 5,
+  60: 6,
+  90: 7,
+  200: 8,
+  300: 9,
+  450: 10,
+  500: 11,
+  750: 12,
+  1000: 13,
+  1500: 14,
+  2250: 15,
+  2500: 16,
+  3750: 17,
+  5500: 18,
+  8250: 19,
+  10000: 20,
+  15000: 21,
+  22500: 22,
+  33750: 23,
+  50000: 24,
+  75000: 25,
+  112500: 26,
+  168750: 27,
+  253130: 28,
+  379700: 29,
+  569550: 30,
+  854330: 31,
+  1281500: 32,
+  1922250: 33,
+  2883380: 34,
+  4325070: 35,
+}
+
+export const gameCenterLevelRequirements = {
+  1: 1,
+  2: 5,
+  3: 10,
+  4: 25,
+  5: 40,
+  6: 60,
+  7: 90,
+  8: 200,
+  9: 300,
+  10: 450,
+  11: 500,
+  12: 750,
+  13: 1000,
+  14: 1500,
+  15: 2250,
+  16: 2500,
+  17: 3750,
+  18: 5500,
+  19: 8250,
+  20: 10000,
+  21: 15000,
+  22: 22500,
+  23: 33750,
+  24: 50000,
+  25: 75000,
+  26: 112500,
+  27: 168750,
+  28: 253130,
+  29: 379700,
+  30: 569550,
+  31: 854330,
+  32: 1281500,
+  33: 1922250,
+  34: 2883380,
+  35: 4325070,
+}
+
+// Get affiliate earnings data
+export const getAffiliateEarningsData = async (affiliateId) => {
+  if (!affiliateId) throw new Error("Affiliate ID is required");
+
+  const now = new Date();
+  logger.info({ message: "Fetching affiliate earnings data", affiliateId });
+
+  // Stars transactions
+  const starsTxs = await StarsTransactions.find({
+    affiliate_id: Number(affiliateId),
+    currency: "XTR",
+    status: "complete",
+  }).select("_id createdAt amount");
+
+  const starsWithdrawnTxIds = await AffiliateTransaction.find({
+    affiliateId: Number(affiliateId),
+    status: "complete",
+  }).distinct("starsTxIds");
+
+  const starsAvailableTxs = starsTxs.filter(
+    (tx) => !starsWithdrawnTxIds.some((id) => id.equals(tx._id))
+  );
+
+  const starsResult = starsAvailableTxs.reduce(
+    (acc, tx) => {
+      const txAgeMs = now - new Date(tx.createdAt);
+      const txAmount = parseFloat(tx.amount) * AFFILIATE_PERCENTAGE;
+      const roundedAmount = parseFloat(txAmount.toFixed(2));
+      if (txAgeMs < STARS_LOCK_PERIOD_MS) {
+        acc.lockedStars += roundedAmount;
+      } else {
+        acc.pendingStars += roundedAmount;
+      }
+      return acc;
+    },
+    { lockedStars: 0, pendingStars: 0 }
+  );
+
+  const totalStarsLockedInTON = parseFloat(
+    (starsResult.lockedStars / STARS_TO_TON_RATE).toFixed(2)
+  );
+  const totalStarsPendingInTON = parseFloat(
+    (starsResult.pendingStars / STARS_TO_TON_RATE).toFixed(2)
+  );
+
+  // TON transactions
+  const tonTxs = await TONTransactions.find({
+    affiliate_id: Number(affiliateId),
+    currency: "TON",
+    status: "complete",
+  }).select("_id createdAt amount");
+
+  const tonWithdrawnTxIds = await AffiliateTransaction.find({
+    affiliateId: Number(affiliateId),
+    status: "complete",
+  }).distinct("tonTxIds");
+
+  const tonAvailableTxs = tonTxs.filter(
+    (tx) => !tonWithdrawnTxIds.some((id) => id.equals(tx._id))
+  );
+
+  const tonResult = tonAvailableTxs.reduce(
+    (acc, tx) => {
+      const txAgeMs = now - new Date(tx.createdAt);
+      const txAmountTON =
+        (parseFloat(tx.amount) / NANOTONS_TO_TON) * AFFILIATE_PERCENTAGE;
+      const roundedAmount = parseFloat(txAmountTON.toFixed(2));
+      if (txAgeMs < TON_LOCK_PERIOD_MS) {
+        acc.lockedTON += roundedAmount;
+      } else {
+        acc.pendingTON += roundedAmount;
+      }
+      return acc;
+    },
+    { lockedTON: 0, pendingTON: 0 }
+  );
+
+  const earningsData = {
+    totalStarsLocked: parseFloat(starsResult.lockedStars.toFixed(2)),
+    totalStarsPendingWithdrawal: parseFloat(starsResult.pendingStars.toFixed(2)),
+    totalStarsLockedInTON,
+    totalStarsPendingInTON,
+    totalTONLocked: parseFloat(tonResult.lockedTON.toFixed(2)),
+    totalTONPendingWithdrawal: parseFloat(tonResult.pendingTON.toFixed(2)),
+  };
+
+  logger.info({ message: "Earnings data retrieved", affiliateId, data: earningsData });
+  return earningsData;
+};
+
+// Update getNekoBoostMultiplier to accept session
+export const getNekoBoostMultiplier = async (userId, session) => {
+  const boost = await ActiveEffectsModel.findOne({
+    user_id: userId,
+    type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
+    valid_until: { $gt: new Date() },
+  }, null, { session });
+  return boost ? 1 + getBoostPercentageFromType(boost.type) / 100 : 1;
+};
 
 let walletContract, keyPair, tonClient
 
@@ -464,7 +665,7 @@ router.get("/:id/gacha/attempts", async (req, res) => {
       attempts: attempts?.length || 0,
     })
   } catch (error) {
-    log("error", "error in fetching gacha attempts", error)
+    log.error( "error in fetching gacha attempts", error)
 
     return res.status(500).send()
   }
@@ -796,7 +997,7 @@ router.get("/:id/daily/claim", async (req, res) => {
     console.log("Claim recorded - Streak:", streak)
     res.status(200).json({ wonItem, streak })
   } catch (error) {
-    log("error", "error in claiming daily reward", error)
+    log.error( "error in claiming daily reward", error)
     res.status(500).json({ error: "Internal server error" })
   }
 })
@@ -905,7 +1106,7 @@ router.get("/:id/daily/status", async (req, res) => {
       isStreakBroken, // Added to make it explicit
     })
   } catch (error) {
-    log("error", "error in fetching daily status", error)
+    log.error( "error in fetching daily status", error)
     res.status(500).json({ error: "Internal server error" })
   }
 })
@@ -1107,19 +1308,6 @@ export const getActiveEffectTypeByNekoId = (id) => {
   }
   return null
 }
-
-// Helper to get boost percentage for owner
-export const getBoostPercentageFromType = (type) => {
-  switch (type) {
-    case ActiveEffectTypes.BasicNekoBoost:
-      return 5
-    case ActiveEffectTypes.NftNekoBoost:
-      return 10
-    default:
-      return 0
-  }
-}
-
 // Helper to get coin reward for clicker based on neko ID
 export const getCoinRewardByUserLevel = (level) => {
   return levelToNekoCoinsClaimAmountMap[level] || 0
@@ -1261,7 +1449,7 @@ export const interactWithNeko = async (userId, targetUserId) => {
       })
 
       await userEffect.save()
-      log("info", "Effect applied to owner", {
+      log.info( "Effect applied to owner", {
         userId: targetUserId,
         effectType: activeEffectType,
       })
@@ -1278,10 +1466,10 @@ export const interactWithNeko = async (userId, targetUserId) => {
     // Add coins to the clicker (userId)
     if (coinReward > 0) {
       await upUserBalance(userId, coinReward)
-      log("info", "Coins added to clicker", { userId, coinReward })
+      log.info( "Coins added to clicker", { userId, coinReward })
     }
 
-    log("info", "Neko interacted", {
+    log.info( "Neko interacted", {
       userId,
       targetUserId,
       nekoId,
@@ -1490,13 +1678,13 @@ router.post("/sleep/start/:userId", async (req, res) => {
     })
     await process.save()
 
-    log("info", "Sleep process started with initial coin", {
+    log.info( "Sleep process started with initial coin", {
       userId,
       processId: process._id,
     })
     return res.status(201).json({ success: true, processId: process._id })
   } catch (err) {
-    log("error", "Error starting sleep", { userId, error: err.message })
+    log.error( "Error starting sleep", { userId, error: err.message })
     return res
       .status(500)
       .json({ error: true, message: "Internal server error" })
@@ -1541,7 +1729,7 @@ router.get(
         const newCoin = spawnCoin(process)
         process.sleep_game.coins.push(newCoin)
         process.sleep_game.lastSpawnTime = now.toDate()
-        log("info", "Coin spawned in state", {
+        log.info( "Coin spawned in state", {
           userId,
           coinId: newCoin.id,
         })
@@ -1556,7 +1744,7 @@ router.get(
         serverTime: now.toISOString(),
       })
     } catch (err) {
-      log("error", "Error fetching sleep game state", {
+      log.error( "Error fetching sleep game state", {
         userId,
         error: err.message,
       })
@@ -1589,10 +1777,10 @@ router.post(
       const now = moment().tz("Europe/Moscow")
       process.sleep_game.playerJumps.push({ time: new Date(time), y })
       await process.save()
-      log("info", "Player jump recorded", { userId, y, time })
+      log.info( "Player jump recorded", { userId, y, time })
       return res.status(200).json({ success: true })
     } catch (err) {
-      log("error", "Error recording jump", { userId, error: err.message })
+      log.error( "Error recording jump", { userId, error: err.message })
       return res
         .status(500)
         .json({ error: true, message: "Internal server error" })
@@ -1660,7 +1848,7 @@ router.post(
         playerY + 40 < coin.y - bufferY ||
         playerY > coin.y + 20 + bufferY
       ) {
-        log("debug", "Coin collision check failed", {
+        log.debug( "Coin collision check failed", {
           userId,
           coinId,
           coinAge,
@@ -1695,7 +1883,7 @@ router.post(
       process.updatedAt = now.toDate()
       await process.save()
 
-      log("info", "Sleep coin collected", {
+      log.info( "Sleep coin collected", {
         userId,
         processId: process._id,
         coinId,
@@ -1710,7 +1898,7 @@ router.post(
         ),
       })
     } catch (err) {
-      log("error", "Error collecting sleep coin", {
+      log.error( "Error collecting sleep coin", {
         userId,
         error: err.message,
       })
@@ -1731,7 +1919,7 @@ export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
       const languageCode = chatMember?.user?.language_code || "en"
       // Map language code to "en" or "ru"
       userLanguage = languageCode.startsWith("ru") ? "ru" : "en"
-      log("info", "Fetched user language via getChatMember", {
+      log.info( "Fetched user language via getChatMember", {
         userId: targetUserId,
         chatId: targetUserId,
         languageCode,
@@ -1759,13 +1947,13 @@ export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
 
     // Send the message
     await bot.api.sendMessage(targetUserId, message)
-    log("info", "Telegram message sent to owner", {
+    log.info( "Telegram message sent to owner", {
       userId: targetUserId,
       chatId: targetUserId,
       message,
     })
   } catch (error) {
-    log("error", "Failed to send Telegram message to owner", {
+    log.error( "Failed to send Telegram message to owner", {
       userId: targetUserId,
       error: error.message,
     })
@@ -1898,7 +2086,7 @@ router.get("/nft/supply/:itemId", async (req, res) => {
 
 router.get("/:id/nft/shop", async (req, res) => {
   try {
-    log("info", "Nft shop endpoint requested")
+    log.info( "Nft shop endpoint requested")
     const userId = req.userId
     if (isNaN(userId)) {
       return res.status(400).json({ error: "Invalid userId" })
@@ -2059,12 +2247,12 @@ export const getAutoclaimStatus = async (userId) => {
       }
     })
 
-    log("debug", `Retrieved autoclaim status for user ${userId}`, {
+    log.debug( `Retrieved autoclaim status for user ${userId}`, {
       status,
     })
     return status
   } catch (err) {
-    log("error", `Failed to get autoclaim status for user ${userId}`, {
+    log.error( `Failed to get autoclaim status for user ${userId}`, {
       error: err.message,
       stack: err.stack,
     })
@@ -2084,7 +2272,7 @@ router.get("/:id/affiliate-data", async (req, res) => {
     const currentLevelRefsRequired = gameCenterLevelRequirements[gameCenterLevel]
     const nextLevelRefsRequired = gameCenterLevelRequirements[nextLevelGameCenter] || currentLevelRefsRequired
 
-    log("info", ansiColors.cyan("Affiliate data requested"), {
+    log.info( ansiColors.cyan("Affiliate data requested"), {
       userId,
       ...data,
       gameCenterLevel,
@@ -2095,7 +2283,7 @@ router.get("/:id/affiliate-data", async (req, res) => {
 
     return res.status(200).json({ ...data })
   } catch (err) {
-    log("error", `Failed to get autoclaim status for user ${userId}`, {
+    log.error( `Failed to get autoclaim status for user ${userId}`, {
       error: err.message,
       stack: err.stack,
     })

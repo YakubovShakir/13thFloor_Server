@@ -7,7 +7,7 @@ import UserParameters from "../models/user/userParametersModel.js";
 import cron from "node-cron";
 import moment from "moment-timezone";
 import { canApplyConstantEffects } from "../utils/parametersDepMath.js";
-import { upUserBalance, upUserExperience } from "../utils/userParameters/upUserBalance.js";
+import { upUserExperience } from "../utils/userParameters/upUserBalance.js";
 import { recalcValuesByParameters } from "../utils/parametersDepMath.js";
 import Work from "../models/work/workModel.js";
 import TrainingParameters from "../models/training/trainingParameters.js";
@@ -27,10 +27,8 @@ import axios from "axios";
 import { ActiveEffectTypes, ActiveEffectsModel } from "../models/effects/activeEffectsModel.js";
 import { log } from "../utils/log.js";
 import Referal from "../models/referral/referralModel.js";
-import { calculateGamecenterLevel } from "../controllers/user/userController.js";
 import mongoose from "mongoose";
 import UserCurrentInventory from "../models/user/userInventoryModel.js";
-import { getBoostPercentageFromType } from "../routes/user/userRoutes.js";
 import ShelfItemModel from "../models/shelfItem/shelfItemModel.js";
 import UserClothing from "../models/user/userClothingModel.js";
 import Clothing from "../models/clothing/clothingModel.js";
@@ -40,6 +38,124 @@ import TONTransactions from "../models/tx/tonTransactionModel.js";
 import NFTItems from "../models/nft/nftItemModel.js";
 import Queue from 'bull';
 import Autoclaims from "../models/investments/autoclaimsModel.js";
+
+// Helper to get boost percentage for owner
+export const getBoostPercentageFromType = (type) => {
+  switch (type) {
+    case ActiveEffectTypes.BasicNekoBoost:
+      return 5
+    case ActiveEffectTypes.NftNekoBoost:
+      return 10
+    default:
+      return 0
+  }
+}
+
+
+export function calculateGamecenterLevel(refsCount) {
+  const levels = Object.keys(gamecenterLevelMap)
+    .map(Number)
+    .sort((a, b) => a - b) // Ensure sorted order
+  let low = 0
+  let high = levels.length - 1
+
+  if (refsCount < levels[0]) return 0 // Below first threshold
+
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2)
+    const threshold = levels[mid]
+
+    if (refsCount < threshold) {
+      high = mid - 1
+    } else if (
+      refsCount >= threshold &&
+      (mid === levels.length - 1 || refsCount < levels[mid + 1])
+    ) {
+      return gamecenterLevelMap[threshold] // Found the correct level
+    } else {
+      low = mid + 1
+    }
+  }
+
+  // If we exit the loop, return the highest level (shouldn't happen with proper map)
+  return gamecenterLevelMap[levels[levels.length - 1]]
+}
+
+export const gamecenterLevelMap = {
+  1: 1,
+  5: 2,
+  10: 3,
+  25: 4,
+  40: 5,
+  60: 6,
+  90: 7,
+  200: 8,
+  300: 9,
+  450: 10,
+  500: 11,
+  750: 12,
+  1000: 13,
+  1500: 14,
+  2250: 15,
+  2500: 16,
+  3750: 17,
+  5500: 18,
+  8250: 19,
+  10000: 20,
+  15000: 21,
+  22500: 22,
+  33750: 23,
+  50000: 24,
+  75000: 25,
+  112500: 26,
+  168750: 27,
+  253130: 28,
+  379700: 29,
+  569550: 30,
+  854330: 31,
+  1281500: 32,
+  1922250: 33,
+  2883380: 34,
+  4325070: 35,
+}
+
+export const gameCenterLevelRequirements = {
+  1: 1,
+  2: 5,
+  3: 10,
+  4: 25,
+  5: 40,
+  6: 60,
+  7: 90,
+  8: 200,
+  9: 300,
+  10: 450,
+  11: 500,
+  12: 750,
+  13: 1000,
+  14: 1500,
+  15: 2250,
+  16: 2500,
+  17: 3750,
+  18: 5500,
+  19: 8250,
+  20: 10000,
+  21: 15000,
+  22: 22500,
+  23: 33750,
+  24: 50000,
+  25: 75000,
+  26: 112500,
+  27: 168750,
+  28: 253130,
+  29: 379700,
+  30: 569550,
+  31: 854330,
+  32: 1281500,
+  33: 1922250,
+  34: 2883380,
+  35: 4325070,
+}
 
 const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) => {
   const decreaseFactor = durationDecreasePercentage / 100;

@@ -1,7 +1,6 @@
 import colors from "ansi-colors"
 import UserParameters from "../models/user/userParametersModel.js"
 import { withTransaction } from "./dbUtils.js"
-import { log } from "./log.js"
 import { upUserBalance } from "./userParameters/upUserBalance.js"
 
 export const isFullMood = (mood) => mood === 100

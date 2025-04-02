@@ -3,8 +3,7 @@ config();
 
 import mongoose from "mongoose";
 import cron from "node-cron";
-import { log } from "../utils/log.js";
-import connectDB from "../config/db.js";
+
 import {
   RefsRecalsProcess,
   SkillProccess,
@@ -36,7 +35,7 @@ const gameTimer = {
     Object.values(this).forEach((scheduler) => {
       if (scheduler && typeof scheduler.stop === "function") {
         scheduler.stop();
-        log("info", `Stopped ${scheduler.name || "unknown"} process`);
+        log.info( `Stopped ${scheduler.name || "unknown"} process`);
       }
     });
   },
@@ -45,7 +44,7 @@ const gameTimer = {
 // Function to log memory usage
 const logMemoryUsage = () => {
   const memoryUsage = process.memoryUsage();
-  log("info", "Memory Usage Report", {
+  log.info( "Memory Usage Report", {
     rss: formatMemoryUsage(memoryUsage.rss),
     heapTotal: formatMemoryUsage(memoryUsage.heapTotal),
     heapUsed: formatMemoryUsage(memoryUsage.heapUsed),
@@ -54,14 +53,13 @@ const logMemoryUsage = () => {
   });
 };
 
-// Start Schedulers and Memory Logging
-connectDB()
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor')
   .then(() => {
     // Start game process schedulers
     Object.entries(gameTimer).forEach(([name, scheduler]) => {
       if (typeof scheduler.start === "function") {
         scheduler.start();
-        log("info", `Started ${name} process`);
+        log.info( `Started ${name} process`);
       }
     });
 
@@ -82,26 +80,26 @@ connectDB()
     gameTimer.stopAll = function () {
       originalStopAll.call(this);
       memoryLogScheduler.stop();
-      log("info", "Stopped memory usage logging");
+      log.info( "Stopped memory usage logging");
     };
 
-    log("info", "Memory logging scheduler started");
+    log.info( "Memory logging scheduler started");
   })
   .catch((err) => {
-    log("error", "Failed to connect to DB", { error: err.message });
+    log.error( "Failed to connect to DB", { error: err.message });
     process.exit(1);
   });
 
 // Graceful Shutdown with Promise-based mongoose.connection.close()
 const shutdown = async (signal) => {
-  log("info", `Received ${signal}, shutting down...`);
+  log.info( `Received ${signal}, shutting down...`);
   gameTimer.stopAll();
   try {
     await mongoose.connection.close();
-    log("info", "MongoDB connection closed");
+    log.info( "MongoDB connection closed");
     process.exit(0);
   } catch (err) {
-    log("error", "Error closing MongoDB connection", { error: err.message });
+    log.error( "Error closing MongoDB connection", { error: err.message });
     process.exit(1);
   }
 };

@@ -1,4 +1,4 @@
-import { getNekoBoostMultiplier } from "../../../gameTimer/universal.js"
+import { getNekoBoostMultiplier } from "../../../controllers/user/userParametersController.js"
 import {
   ConstantEffects,
   ConstantEffectTypes,

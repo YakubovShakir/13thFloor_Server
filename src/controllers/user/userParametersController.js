@@ -12,7 +12,17 @@ import { prebuildInitialInventory } from "./userController.js"
 import UserLaunchedInvestments from '../../models/investments/userLaunchedInvestments.js'
 import { ConstantEffects, ConstantEffectTypes } from "../../models/effects/constantEffectsLevels.js"
 import { Bot } from "grammy"
-import { getNekoBoostMultiplier } from "../../gameTimer/universal.js"
+import { ActiveEffectsModel, ActiveEffectTypes } from "../../models/effects/activeEffectsModel.js"
+
+// Update getNekoBoostMultiplier to accept session
+export const getNekoBoostMultiplier = async (userId, session) => {
+  const boost = await ActiveEffectsModel.findOne({
+    user_id: userId,
+    type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
+    valid_until: { $gt: new Date() },
+  }, null, { session });
+  return boost ? 1 + getBoostPercentageFromType(boost.type) / 100 : 1;
+};
 
 const gamecenterLevelMap = {
   "1": 1,
