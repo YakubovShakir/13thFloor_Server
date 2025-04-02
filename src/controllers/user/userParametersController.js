@@ -14,6 +14,18 @@ import { ConstantEffects, ConstantEffectTypes } from "../../models/effects/const
 import { Bot } from "grammy"
 import { ActiveEffectsModel, ActiveEffectTypes } from "../../models/effects/activeEffectsModel.js"
 
+
+export const getBoostPercentageFromType = (type) => {
+  switch (type) {
+    case ActiveEffectTypes.BasicNekoBoost:
+      return 5
+    case ActiveEffectTypes.NftNekoBoost:
+      return 10
+    default:
+      return 0
+  }
+}
+
 // Update getNekoBoostMultiplier to accept session
 export const getNekoBoostMultiplier = async (userId, session) => {
   const boost = await ActiveEffectsModel.findOne({
