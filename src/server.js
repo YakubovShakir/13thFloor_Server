@@ -461,7 +461,7 @@ async function deleteUsers() {
 
 async function deleteConstantEffects() {
   await ConstantEffects.deleteMany({})
-  await User.syncIndexes()
+  await ConstantEffects.syncIndexes()
   await Promise.all(
     constantEffects.map(async (effect) => {
       const e = new ConstantEffects(effect)
