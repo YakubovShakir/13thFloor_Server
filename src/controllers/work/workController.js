@@ -2,6 +2,7 @@ import Work from "../../models/work/workModel.js"
 import UserParameters from "../../models/user/userParametersModel.js"
 import UserSkill from "../../models/user/userSkillModel.js"
 import process from "../../models/process/processModel.js"
+import { calcRespectFromClothes } from "../user/userParametersController.js"
 export const getWorks = async (req, res) => {
   try {
     const works = await Work.find({}).sort({ coins_price: 1 })
@@ -33,7 +34,7 @@ export const buyWork = async (req, res) => {
       return res.status(400).json({ error: "You can buy only a next work!" })
 
     //  Проверка что хватает респекта
-    if (work?.respect_required > user?.respect)
+    if (work?.respect_required > (user?.respect + await calcRespectFromClothes(userId)))
       return res
         .status(400)
         .json({ error: "Not enough respect to buy this work!" })

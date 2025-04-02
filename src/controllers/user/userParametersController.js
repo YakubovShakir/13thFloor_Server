@@ -74,7 +74,7 @@ const gamecenterLevelMap = {
   "4325070": 35
 }
 
-const calcRespectFromClothes = async (userId) => {
+export const calcRespectFromClothes = async (userId) => {
   try {
     // Fetch user's current clothing and shelf items
     const currentClothesDoc = await UserClothing.findOne(
