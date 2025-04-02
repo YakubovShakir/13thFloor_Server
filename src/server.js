@@ -435,22 +435,9 @@ async function deleteUserInventories() {
 }
 
 async function deleteAndInsertClothing() {
-  const ids = ClothingItems.map(item => item.id);
-  const duplicates = ids.filter((id, index) => ids.indexOf(id) !== index);
-  if (duplicates.length > 0) {
-    logger.error('Duplicate clothing IDs found', { duplicates });
-    throw new Error(`Duplicate clothing IDs: ${duplicates}`);
-  }
-
   await Clothing.deleteMany({})
   await mongoose.syncIndexes()
   
-  // Verify collection is empty
-  const count = await Clothing.countDocuments();
-  if (count > 0) {
-    logger.warn('Clothing collection not fully emptied', { count });
-  }
-
   await Promise.all(
     ClothingItems.map(async (item) => {
       const clothes = new Clothing({ ...item, effect: {} })
