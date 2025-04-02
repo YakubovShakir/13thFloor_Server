@@ -452,16 +452,16 @@ async function deleteUserClothing() {
 
 async function deleteUsers() {
   await User.deleteMany({})
-  await User.syncIndexes()
+  await mongoose.syncIndexes()
   await UserParameters.deleteMany({})
-  await User.syncIndexes()
+  await mongoose.syncIndexes()
   await UserSkill.deleteMany({})
   await mongoose.syncIndexes()
 }
 
 async function deleteConstantEffects() {
   await ConstantEffects.deleteMany({})
-  await ConstantEffects.syncIndexes()
+  await mongoose.syncIndexes()
   await Promise.all(
     constantEffects.map(async (effect) => {
       const e = new ConstantEffects(effect)
