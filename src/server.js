@@ -338,27 +338,36 @@ app.listen(PORT, () => {
 })
 
 async function main() {
-  for (const promise of [
-    deleteUserParameters(),
-    deleteUserInventories(),
-    deleteUsers(),
-    deleteUserProcesses(),
-    deleteUserInvestments(),
-    deleteUserTasks(),
-    deleteUserBoosts(),
-    deleteAndInsertClothing(),
-    deleteAndInsertWork(),
-    deleteAndInsertFood(),
-    deleteAndInsertSkill(),
-    deleteAndInsertBoost(),
-    deleteAndInsertLevels(),
-    deleteAndInsertTraining(),
-    deleteShelfItems(),
-    deleteInvestments(),
-    deleteTasks(),
-    deleteConstantEffects(),
-  ]) {
-    await promise()
+  const migrations = [
+    deleteUserParameters,
+    deleteUserInventories,
+    deleteUsers,
+    deleteUserProcesses,
+    deleteUserInvestments,
+    deleteUserTasks,
+    deleteUserBoosts,
+    deleteAndInsertClothing,
+    deleteAndInsertWork,
+    deleteAndInsertFood,
+    deleteAndInsertSkill,
+    deleteAndInsertBoost,
+    deleteAndInsertLevels,
+    deleteAndInsertTraining,
+    deleteShelfItems,
+    deleteInvestments,
+    deleteTasks,
+    deleteConstantEffects,
+  ];
+
+  for (const migration of migrations) {
+    try {
+      logger.info(`Executing ${migration.name}`);
+      await migration();
+      logger.info(`Completed ${migration.name}`);
+    } catch (error) {
+      logger.error(`Failed ${migration.name}`, { error });
+      throw error; // Re-throw to stop execution and debug
+    }
   }
 }
 
