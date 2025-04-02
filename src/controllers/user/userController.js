@@ -295,7 +295,9 @@ export const getShopItems = async (req, res) => {
     const shelfClean = (await ShelfItemModel.find({}, { _id: false })).filter(
       (item) => {
         const alreadyHasIt = !shelf.map((c) => c.id).includes(item.id)
-        const canBuy = item.cost ? !(item.cost?.coins === 0 && item.cost?.stars === 0 ) : true
+        const canBuy = item.cost
+          ? !(item.cost?.coins === 0 && item.cost?.stars === 0)
+          : true
 
         return !(alreadyHasIt || canBuy)
       }
@@ -377,8 +379,6 @@ export const getCurrentClothes = async (req, res) => {
           userClothing.accessories.includes(el.clothing_id)
         ),
       }
-
-      console.log(reponse)
 
       return res.status(200).json(response)
     }
@@ -463,14 +463,14 @@ export const handleClothesUnequip = async (req, res) => {
       if (doesUserHaveIt) {
         const shelfItem = await ShelfItems.findOne({ id: clothing_id })
         const userParam = await UserParameters.findOne({ id: userId })
-        
+
         userParam.respect -= shelfItem?.respect ? shelfItem?.respect : 0
-        
-        console.log('Shelf item', shelfItem.respect)
+
+        console.log("Shelf item", shelfItem.respect)
 
         const currentUser = await User.findOne({ id: userId })
         const currentShelf = { ...currentUser.shelf, [type]: null }
-        
+
         await userParam.save()
         await User.updateOne({ id: userId }, { $set: { shelf: currentShelf } })
       }
@@ -496,21 +496,6 @@ export const handleClothesEquip = async (req, res) => {
       console.log(userId, clothing_id, type)
 
       if (isClothingReal && doesUserHaveIt) {
-        let userParams = await UserParameters.findOne({ id: userId })
-        console.log(userParams)
-        const currentClothingId = (
-          await UserClothing.findOne({ user_id: userId })
-        )[type.toLowerCase()]
-        const currentClothing = currentClothingId
-          ? await Clothing.findOne(
-              { clothing_id: currentClothingId },
-              { respect: 1 }
-            )
-          : null
-        const currentClothingRespect = currentClothing?.respect || 0
-        userParams.respect =
-          userParams.respect - currentClothingRespect + isClothingReal.respect
-        await userParams.save()
         await UserClothing.updateOne(
           { user_id: userId },
           {
@@ -531,18 +516,8 @@ export const handleClothesEquip = async (req, res) => {
       console.log(clothing_id, productType, doesUserHaveIt)
 
       if (doesUserHaveIt) {
-        const shelfItem = await ShelfItems.findOne({ id: clothing_id })
         const userParam = await UserParameters.findOne({ id: userId })
         const currentUser = await User.findOne({ id: userId })
-        const shelf = currentUser.shelf
-
-        if(shelf[shelfItem.type]) {
-          const equippedShelfItem = await ShelfItems.findOne({ id: clothing_id })
-          userParam.respect = Math.max(0, userParam.respect - equippedShelfItem.respect)
-          
-        } 
-        
-        userParam.respect = shelfItem.respect ? shelfItem.respect : 0
 
         const currentShelf = { ...currentUser.shelf, [type]: clothing_id }
 
@@ -660,7 +635,7 @@ export const buyItemsForCoins = async (req, res) => {
       if (product) {
         const { coins, stars } = product.cost
 
-        if(coins === 0 && stars === 0) {
+        if (coins === 0 && stars === 0) {
           return res.status(403).json({
             ok: false,
             reason: "Play the game to earn this item <3!",
@@ -750,7 +725,7 @@ export const requestStarsPaymentLink = async (req, res) => {
     const autoclaimDurationToPrice = {
       6: 10,
       10: 50,
-      18: 100
+      18: 100,
     }
 
     if (productType === "autoclaim") {
@@ -780,7 +755,7 @@ export const requestStarsPaymentLink = async (req, res) => {
         productName: name,
         description,
         userId,
-        durationHours
+        durationHours,
       }),
     })
       .then((res) => res.json())

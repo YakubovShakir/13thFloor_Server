@@ -74,6 +74,74 @@ const gamecenterLevelMap = {
   "4325070": 35
 }
 
+const calcRespectFromClothes = async (userId) => {
+  try {
+    // Fetch user's current clothing and shelf items
+    const currentClothesDoc = await UserClothing.findOne(
+      { user_id: userId }, // Changed 'id' to 'user_id' to match schema
+      { hat: 1, top: 1, accessories: 1, pants: 1, shoes: 1 }
+    );
+    const currentUserDoc = await User.findOne(
+      { id: userId },
+      { shelf: 1 }
+    );
+
+    if (!currentClothesDoc || !currentUserDoc) {
+      throw new Error("User clothing or shelf data not found");
+    }
+
+    // Extract equipped clothing IDs
+    const clothingIds = [
+      currentClothesDoc.hat,
+      currentClothesDoc.top,
+      currentClothesDoc.pants,
+      currentClothesDoc.shoes,
+      currentClothesDoc.accessories,
+    ].filter(id => id !== null); // Remove null values
+
+    // Extract shelf item IDs
+    const shelfIds = [
+      currentUserDoc.shelf.flower,
+      currentUserDoc.shelf.award,
+      currentUserDoc.shelf.event,
+      currentUserDoc.shelf.neko,
+      currentUserDoc.shelf.flag,
+      currentUserDoc.shelf.star,
+    ].filter(id => id !== null);
+
+    // Fetch respect values for clothing items
+    const clothingItems = await Clothing.find(
+      { clothing_id: { $in: clothingIds } },
+      { clothing_id: 1, respect: 1 }
+    );
+    const respectClothes = clothingItems.reduce((sum, item) => sum + (item.respect || 0), 0);
+
+    // Fetch shelf items and calculate respect
+    const shelfItems = await ShelfItemModel.find(
+      { id: { $in: shelfIds } },
+      { id: 1, respect: 1, type: 1, rarity: 1 }
+    );
+    const respectShelf = shelfItems.reduce((sum, item) => {
+      let itemRespect = item.respect;
+      
+      // Special case for Neko items: use rarity map if respect is null
+      if (item.type === ShelfItemTypes.Neko && itemRespect === null && item.rarity) {
+        itemRespect = nekoRarityToRespectMap[item.rarity] || 0;
+      }
+      
+      return sum + (itemRespect || 0);
+    }, 0);
+
+    // Total respect
+    const totalRespect = respectClothes + respectShelf;
+
+    return totalRespect
+  } catch (error) {
+    console.error("Error calculating respect:", error);
+    throw error;
+  }
+};
+
 export const getUserParameters = async (req, res) => {
   try {
     const userId = parseInt(req.params.id);
@@ -221,7 +289,8 @@ export const getUserParameters = async (req, res) => {
       first_name: user.first_name,
       last_name: user.last_name,
       photo_url: user.photo_url,
-      is_withdrawing: user.is_withdrawing
+      is_withdrawing: user.is_withdrawing,
+      respect: parameters.respect + await calcRespectFromClothes(userId)
     }
     
     return res.status(200).json({
