@@ -454,6 +454,7 @@ async function deleteUsers() {
   await User.deleteMany({})
   await User.syncIndexes()
   await UserParameters.deleteMany({})
+  await User.syncIndexes()
   await UserSkill.deleteMany({})
   await mongoose.syncIndexes()
 }
