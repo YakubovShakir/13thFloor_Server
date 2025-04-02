@@ -52,6 +52,7 @@ import StarsTransactions from "./models/tx/starsTransactionModel.mjs"
 import { ElasticsearchTransport as Elasticsearch } from "winston-elasticsearch"
 import { Client } from "@elastic/elasticsearch"
 import mongoose, { syncIndexes } from "mongoose"
+import UserCompletedTask from "./models/user/userCompletedTaskModel.js"
 
 dotenv.config()
 
@@ -343,6 +344,11 @@ async function deleteInvestments() {
       throw error;
     }
   }
+}
+
+async function deleteUserTasks() {
+  await UserCompletedTask.deleteMany({});
+  await mongoose.syncIndexes();
 }
 
 async function deleteAndInsertWork() {
