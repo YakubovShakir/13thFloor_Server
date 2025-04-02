@@ -11,11 +11,10 @@ import getMinutesAndSeconds from "../../../utils/getMinutesAndSeconds.js";
 
 const buySkill = async (userId, skillId, sub_type, session) => {
   try {
-    const result = await withTransaction(async (session) => {
-      const user = await UserParameters.findOne({ id: userId }).session(session);
+      const user = await UserParameters.findOne({ id: userId })
       const skill = sub_type
-        ? await ConstantEffects.findOne({ id: skillId }).session(session)
-        : await Skill.findOne({ skill_id: skillId }).session(session);
+        ? await ConstantEffects.findOne({ id: skillId })
+        : await Skill.findOne({ skill_id: skillId })
       console.log(skill, sub_type);
       if (!user || !skill) {
         return { status: 404, data: { error: "User or skill not found by given id!" } };
@@ -26,7 +25,7 @@ const buySkill = async (userId, skillId, sub_type, session) => {
         const userHaveSkill = await UserSkill.findOne({
           id: userId,
           skill_id: skillId,
-        }).session(session);
+        })
         if (userHaveSkill) {
           return { status: 400, data: { error: "Skill already exists" } };
         }
@@ -38,7 +37,7 @@ const buySkill = async (userId, skillId, sub_type, session) => {
         type: "skill",
         skill_id: skillId,
         sub_type,
-      }).session(session);
+      })
       if (processExist) {
         return { status: 400, data: { error: "in Learning!" } };
       }
@@ -47,7 +46,7 @@ const buySkill = async (userId, skillId, sub_type, session) => {
       if (!sub_type && skill?.skill_id_required) {
         const userRequiredSkill = await UserSkill.findOne({
           skill_id: skill?.skill_id_required,
-        }).session(session);
+        })
         if (!userRequiredSkill) {
           return { status: 400, data: { error: "Need Required Skill!" } };
         }
@@ -76,15 +75,12 @@ const buySkill = async (userId, skillId, sub_type, session) => {
           base_duration_in_seconds: baseDuration,
           target_duration_in_seconds: null, // Increased through boost logic
           sub_type,
-        },
-        session
+        }
       );
 
       await user.save({ session });
       return { status: 200, data: { status: "ok" } };
-    }, session); // Pass session to withTransaction if already in a transaction
 
-    return result;
   } catch (e) {
     console.log("Error in buySkill - ", e);
     return { status: 500, data: { error: "Internal server error" } };
