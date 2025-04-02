@@ -279,8 +279,7 @@ app.listen(PORT, () => {
 })
 
 async function main() {
-  await mongoose.syncIndexes()
-  await Promise.all([
+  for (const promise of [
     //! PROGRESS
     deleteUserParameters(),
     deleteUserInventories(),
@@ -301,7 +300,9 @@ async function main() {
     deleteInvestments(),
     deleteTasks(),
     deleteConstantEffects(),
-  ])
+  ]) {
+    await promise()
+  }
 }
 
 async function deleteTasks() {
