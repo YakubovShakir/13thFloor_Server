@@ -1,9 +1,9 @@
 import { config } from 'dotenv';
 import mongoose from 'mongoose';
 import { Queue, Worker } from 'bullmq';
-import { withdrawAffiliateEarnings } from '../services/paymentService.js'
+import { withdrawAffiliateEarnings } from './paymentService.js'
 import IORedis from 'ioredis';
-import winston from 'winston/lib/winston/config/index.js';
+
 config();
 
 // Log environment variables
