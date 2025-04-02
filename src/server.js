@@ -457,6 +457,21 @@ async function deleteUserInventories() {
   await mongoose.syncIndexes()
 }
 
+async function deleteShelfItems() {
+  await ShelfItemModel.deleteMany({});
+  await mongoose.syncIndexes();
+
+  for (const item of ShelfItems) {
+    try {
+      const shelfItem = new ShelfItemModel({ ...item });
+      await shelfItem.save();
+    } catch (error) {
+      console.error(`Failed to insert shelf item with id ${item.id}:`, error);
+      throw error;
+    }
+  }
+}
+
 async function deleteAndInsertClothing() {
   await Clothing.deleteMany({});
   await mongoose.syncIndexes();
