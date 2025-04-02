@@ -7,7 +7,7 @@ import { withTransaction } from "../utils/dbUtils.js";
 import { Address, internal, beginCell, toNano, SendMode } from "@ton/ton";
 import { openWallet } from "../routes/user/userRoutes.js";
 import axios from "axios";
-import { logger } from "../gameTimer/gameTimer.js";
+import { log as logger } from "../gameTimer/gameTimer.js";
 
 // TON Center API configuration
 const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY;

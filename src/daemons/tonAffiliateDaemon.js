@@ -14,25 +14,26 @@ console.log('REDIS_HOST loaded:', process.env.REDIS_HOST);
 console.log('REDIS_PORT loaded:', process.env.REDIS_PORT);
 console.log('REDIS_PASSWORD loaded:', process.env.REDIS_PASSWORD);
 
-const redisConfig = {
-  host: process.env.REDIS_HOST || 'redis-test',
-  port: parseInt(process.env.REDIS_PORT || '6379', 10),
-  password: process.env.REDIS_PASSWORD || 'redis_password',
-  maxRetriesPerRequest: null
-};
-
-// Log the config
-console.log('Redis Config:', JSON.stringify(redisConfig));
-
-// Create an ioredis instance for BullMQ
-const redisConnection = new IORedis(redisConfig);
-redisConnection.on('connect', () => {
-  console.log('IORedis connected to:', redisConfig.host);
+// Redis setup
+const redis = new IORedis({
+  host: process.env.REDIS_HOST || "redis-test",
+  port: parseInt(process.env.REDIS_PORT || "6379", 10),
+  password: process.env.REDIS_PASSWORD || "redis_password",
 });
-redisConnection.on('error', (err) => {
-  console.error('IORedis error:', err);
-});
+redis.on("connect", () => console.log("Redis connected for middleware"));
+redis.on("error", (err) => console.error("Redis error in middleware:", err));
 
+// Logger setup
+const logger = winston.createLogger({
+  level: "info",
+  format: winston.format.combine(
+    winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+    winston.format.printf(({ timestamp, level, message, ...meta }) => {
+      return `${timestamp} [${level}]: ${message} ${Object.keys(meta).length ? JSON.stringify(meta) : ""}`;
+    })
+  ),
+  transports: [new winston.transports.Console()],
+});
 // Test the connection
 redisConnection.ping().then((result) => {
   console.log('IORedis PING result:', result);
@@ -119,3 +120,5 @@ process.on('SIGINT', async () => {
   await redisConnection.quit();
   process.exit(0);
 });
+
+export { logger }
