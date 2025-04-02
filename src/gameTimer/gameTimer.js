@@ -1150,8 +1150,8 @@ export const autoclaimProcessConfig = {
       }
 
       await processInBatches(usersWithAutoclaim, 50, async (autoclaim) => {
-        const userId = autoclaim.userId;
-        const investmentType = autoclaim.investmentType;
+        const userId = autoclaim.user_id;
+        const investmentType = autoclaim.investment_type;
 
         // Enqueue the claim operation
         await queueDbUpdate(
