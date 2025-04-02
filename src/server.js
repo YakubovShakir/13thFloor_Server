@@ -51,6 +51,7 @@ import { UserSpins } from "./models/user/userSpinsModel.js"
 import StarsTransactions from "./models/tx/starsTransactionModel.mjs"
 import { ElasticsearchTransport as Elasticsearch } from "winston-elasticsearch"
 import { Client } from "@elastic/elasticsearch"
+import mongoose from "mongoose"
 
 dotenv.config()
 
@@ -261,15 +262,6 @@ app.use(requestLogger)
 
 connectDB().then(() => {
   if (process.env.NODE_ENV === "test") main()
-  new StarsTransactions({
-    user_id: 790629329,
-    amount: 5000,
-    currency: "XTR",
-    status: "complete",
-    affiliate_id: 790629329,
-    product_type: "autoclaim",
-    product_id: "game_center",
-  }).save()
 })
 
 app.use("/api/process/", processRouter)
@@ -287,6 +279,7 @@ app.listen(PORT, () => {
 })
 
 async function main() {
+  await mongoose.syncIndexes()
   await Promise.all([
     //! PROGRESS
     deleteUserParameters(),
@@ -309,7 +302,6 @@ async function main() {
     deleteInvestments(),
     deleteTasks(),
     deleteConstantEffects(),
-    // addSpins(),
   ])
 }
 
