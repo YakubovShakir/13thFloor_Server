@@ -306,7 +306,7 @@ async function main() {
 }
 
 async function deleteTasks() {
-  await Tasks..deleteMany({})
+  await Tasks.deleteMany({})
   await mongoose.syncIndexes()
   await Promise.all(
     TasksMigration.map(async (item) => {
@@ -317,12 +317,12 @@ async function deleteTasks() {
 }
 
 async function deleteUserTasks() {
-  await CompletedTasks..deleteMany({})
+  await CompletedTasks.deleteMany({})
   await mongoose.syncIndexes()
 }
 
 async function deleteInvestments() {
-  await Investments..deleteMany({})
+  await Investments.deleteMany({})
   await mongoose.syncIndexes()
   await Promise.all(
     InvestmentsMigration.map(async (item) => {
@@ -333,17 +333,17 @@ async function deleteInvestments() {
 }
 
 async function deleteUserInvestments() {
-  await UserLaunchedInvestments..deleteMany({})
+  await UserLaunchedInvestments.deleteMany({})
   await mongoose.syncIndexes()
 }
 
 async function deleteUserProcesses() {
-  await UserProcess..deleteMany({})
+  await UserProcess.deleteMany({})
   await mongoose.syncIndexes()
 }
 
 async function deleteShelfItems() {
-  await ShelfItemModel..deleteMany({})
+  await ShelfItemModel.deleteMany({})
   await mongoose.syncIndexes()
   await Promise.all(
     ShelfItems.map(async (item) => {
@@ -354,7 +354,7 @@ async function deleteShelfItems() {
 }
 
 async function deleteAndInsertClothing() {
-  await Clothing..deleteMany({})
+  await Clothing.deleteMany({})
   await mongoose.syncIndexes()
   await Promise.all(
     ClothingItems.map(async (item) => {
@@ -376,7 +376,7 @@ async function deleteAndInsertWork() {
 }
 
 async function deleteAndInsertFood() {
-  await Food..deleteMany({})
+  await Food.deleteMany({})
   await mongoose.syncIndexes()
   await Promise.all(
     FoodItems.map(async (item) => {
@@ -398,12 +398,12 @@ async function deleteAndInsertSkill() {
 }
 
 async function deleteUserBoosts() {
-  await UserBoost..deleteMany({})
+  await UserBoost.deleteMany({})
   await mongoose.syncIndexes()
 }
 
 async function deleteAndInsertBoost() {
-  await Boost..deleteMany({})
+  await Boost.deleteMany({})
   await mongoose.syncIndexes()
   await Promise.all(
     BoostItems.map(async (item) => {
@@ -414,7 +414,7 @@ async function deleteAndInsertBoost() {
 }
 
 async function deleteAndInsertLevels() {
-  await LevelsParameters..deleteMany({})
+  await LevelsParameters.deleteMany({})
   await mongoose.syncIndexes()
   await Promise.all(
     LevelItems.map(async (item) => {
@@ -425,7 +425,7 @@ async function deleteAndInsertLevels() {
 }
 
 async function deleteAndInsertTraining() {
-  await TrainingParameters..deleteMany({})
+  await TrainingParameters.deleteMany({})
   await mongoose.syncIndexes()
   await Promise.all(
     TrainingItems.map(async (item) => {
@@ -436,30 +436,30 @@ async function deleteAndInsertTraining() {
 }
 
 async function deleteUserParameters() {
-  await UserParameters..deleteMany({})
+  await UserParameters.deleteMany({})
   await mongoose.syncIndexes()
 }
 
 async function deleteUserInventories() {
-  await UserCurrentInventory..deleteMany({})
+  await UserCurrentInventory.deleteMany({})
   await mongoose.syncIndexes()
 }
 
 async function deleteUserClothing() {
-  await UserClothing..deleteMany({})
+  await UserClothing.deleteMany({})
   await mongoose.syncIndexes()
 }
 
 async function deleteUsers() {
-  await User..deleteMany({})
+  await User.deleteMany({})
   await User.syncIndexes()
-  await UserParameters..deleteMany({})
-  await UserSkill..deleteMany({})
+  await UserParameters.deleteMany({})
+  await UserSkill.deleteMany({})
   await mongoose.syncIndexes()
 }
 
 async function deleteConstantEffects() {
-  await ConstantEffects..deleteMany({})
+  await ConstantEffects.deleteMany({})
   await Promise.all(
     constantEffects.map(async (effect) => {
       const e = new ConstantEffects(effect)
