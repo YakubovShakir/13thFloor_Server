@@ -10,7 +10,7 @@ import skillsRouter from "./routes/skill/skillRoutes.js";
 import processRouter from "./routes/process/processRoutes.js";
 import levelsRouter from "./routes/level/levelRoutes.js";
 import dotenv from "dotenv";
-import crypto from "crypto"
+import { createHash, createHmac } from "crypto";
 import IORedis from "ioredis";
 import winston from "winston";
 import mongoose from "mongoose";
@@ -66,92 +66,84 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Global middleware to validate Telegram initData and attach user.id
 const validateTelegramInitData = async (req, res, next) => {
-  const initData = req.headers.authorization
+  const initData = req.headers.authorization;
 
   if (!initData || !initData.startsWith("Bearer ")) {
-    return res
-      .status(401)
-      .json({ error: "Authorization header missing or invalid" })
+    return res.status(401).json({ error: "Authorization header missing or invalid" });
   }
 
-  const token = initData.replace("Bearer ", "")
-  const cacheKey = `tg:initData:${crypto
-    .createHash("sha256")
-    .update(token)
-    .digest("hex")}`
-  const TTL = 30 * 60 // 30 minutes in seconds
+  const token = initData.replace("Bearer ", "");
+  const cacheKey = `tg:initData:${createHash("sha256").update(token).digest("hex")}`;
+  const TTL = 30 * 60; // 30 minutes in seconds
 
   try {
-    const cached = await redis.get(cacheKey)
+    const cached = await redis.get(cacheKey);
     if (cached) {
-      const [validity, userId] = cached.split(":")
+      const [validity, userId] = cached.split(":");
       if (validity === "valid") {
-        logger.info("Cached valid initData", { cacheKey })
-        req.userId = parseInt(userId, 10)
-        return next()
+        logger.info("Cached valid initData", { cacheKey });
+        req.userId = parseInt(userId, 10);
+        return next();
       }
     }
 
-    const params = new URLSearchParams(token)
-    const authDate = parseInt(params.get("auth_date"), 10)
-    const hash = params.get("hash")
-    const userRaw = params.get("user")
+    const params = new URLSearchParams(token);
+    const authDate = parseInt(params.get("auth_date"), 10);
+    const hash = params.get("hash");
+    const userRaw = params.get("user");
 
     if (!authDate || !hash || !userRaw) {
-      return res.status(401).json({ error: "Invalid initData format" })
+      return res.status(401).json({ error: "Invalid initData format" });
     }
 
-    let user
+    let user;
     try {
-      user = JSON.parse(userRaw)
-      if (!user.id) throw new Error("User ID missing")
+      user = JSON.parse(userRaw);
+      if (!user.id) throw new Error("User ID missing");
     } catch (e) {
-      return res.status(401).json({ error: "Invalid user data in initData" })
+      return res.status(401).json({ error: "Invalid user data in initData" });
     }
-    const userId = user.id
+    const userId = user.id;
 
-    const now = Math.floor(Date.now() / 1000)
+    const now = Math.floor(Date.now() / 1000);
     if (now - authDate > TTL) {
-      return res.status(401).json({ error: "initData expired" })
+      return res.status(401).json({ error: "initData expired" });
     }
 
-    params.delete("hash")
-    const botToken = process.env.TELEGRAM_BOT_TOKEN
+    params.delete("hash");
+    const botToken = process.env.TELEGRAM_BOT_TOKEN;
     if (!botToken) {
-      throw new Error("TELEGRAM_BOT_TOKEN not set in environment")
+      throw new Error("TELEGRAM_BOT_TOKEN not set in environment");
     }
 
     const dataCheckString = Array.from(params.entries())
       .sort()
       .map(([key, value]) => `${key}=${value}`)
-      .join("\n")
-    const secretKey = crypto
-      .createHmac("sha256", "WebAppData")
+      .join("\n");
+    const secretKey = createHmac("sha256", "WebAppData")
       .update(botToken)
-      .digest()
-    const computedHash = crypto
-      .createHmac("sha256", secretKey)
+      .digest();
+    const computedHash = createHmac("sha256", secretKey)
       .update(dataCheckString)
-      .digest("hex")
+      .digest("hex");
 
     if (computedHash !== hash) {
-      return res.status(401).json({ error: "Invalid initData hash" })
+      return res.status(401).json({ error: "Invalid initData hash" });
     }
 
-    await redis.set(cacheKey, `valid:${userId}`, "EX", TTL)
-    logger.info("Validated and cached initData", { cacheKey, userId })
-    req.userId = userId
-    next()
+    await redis.set(cacheKey, `valid:${userId}`, "EX", TTL);
+    logger.info("Validated and cached initData", { cacheKey, userId });
+    req.userId = userId;
+    next();
   } catch (error) {
     logger.error("Error validating initData", {
       error: error.message,
       stack: error.stack,
-    })
-    res.status(500).json({ error: "Internal server error" })
+    });
+    res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
 if (process.env.USE_AUTH !== "false") {
   app.use(validateTelegramInitData)
