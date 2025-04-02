@@ -294,12 +294,12 @@ export const getShopItems = async (req, res) => {
     ).filter((item) => !clothes.map((c) => c.id).includes(item.clothing_id))
     const shelfClean = (await ShelfItemModel.find({}, { _id: false })).filter(
       (item) => {
-        const alreadyHasIt = !shelf.map((c) => c.id).includes(item.id)
+        const alreadyHasIt = shelf.map((c) => c.id).includes(item.id)
         const canBuy = item.cost
           ? !(item.cost?.coins === 0 && item.cost?.stars === 0)
           : true
 
-        return !(alreadyHasIt || canBuy)
+        return !alreadyHasIt && canBuy
       }
     )
 
