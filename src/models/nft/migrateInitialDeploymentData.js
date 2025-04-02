@@ -1,6 +1,8 @@
 import mongoose from "mongoose"
 import ShelfItems from "./shelfItems.js"
 import NFTItems from "./nftItemModel.js"
+import { config } from "dotenv"
+config()
 
 const deploymentInfo = {
   wallet: "EQAyMah6BUuxR7D8HXt3hr0r2kbUgZ_kCOigjRnQj402W1v8",
@@ -11532,11 +11534,68 @@ const nameToMetadataMap = {
     "Meowhale": "30.json",
     "Purrfect Launch": "31.json"
   };
+
+  const tonAddresses = [
+    "EQDXk8iyINUQnuFJqIsiQ4DI9Ppsfi3ptlOU0lhx2oyxqafn",
+    "EQDtW8b2uTJiY1j8YQRuu75Koss5HK81A3XVj_7Y7-MNp0e7",
+    "EQBByi-j1EgtQpeXdE_sumWtBfBLPVAzO_xSmIKrkKiVYJFE",
+    "EQDSJypay6wNGUGTg3ww8N5_IMsXu-2bTx0RGWOpehduGX7E",
+    "EQBhVH8WLo-ypniESFmr77s3XWvUYEEopsBTzQ8eACOyL6SL",
+    "EQDHpXzcJWHqdAkC3PwGVDBTpDyILT2uS5ZPH7U48LiFFcRR",
+    "EQBCt_pp4p19UKx8q8XfVTh-CdqqSKCiwTzKXIP6OLClJF3P",
+    "EQAh48coi1BFPsW9Q64yAnpUArufb5d3A5P8mZkZe-JwSnSh",
+    "EQDiELbM8TI9HV3JNAA53IYoCOqN2Ul1pZO-JTN2R1Zd1h4i",
+    "EQB9XAO3U7K2jrv_DY6PKgCpgTGdO6_UHVYW_mPuI26Igyt3",
+    "EQAx_iwr87WvpARZibhTjjpmHF8OEJ4Ie25npRaVu-lmOOAo",
+    "EQAbkbl4dYwTGMfUyNEX4zSQRuFJyg9FdqXwwMBwlnUANFcW",
+    "EQBEZj6NwLKueeqqbZlJru604kE8FogBEARorX93i7UXvnNv",
+    "EQBgurfCDpLnt2KUWMCV7AmUy13jZ8aoxOy5JJX_Npi8nGfi",
+    "EQAqNGfvbmMfpjxk5A8yNt-lx67iZdLp0rKyk1g1y7XrQzDA",
+    "EQALnV6vFL5kx6iH676QwzZ7_MbhYwObjyl_9ZBVPR4wt9BC",
+    "EQBOu-wNZ-zs7mKKbZSfLxNzN-mnP5hVhfKJTla1a4kpVPsB",
+    "EQCqZa9VvarH_nAgDYJam3iNVlgar90rsd9JPv9MRXNx_ZSy",
+    "EQDLKZEYny1-gvP18oJVwzdkSz8bSBwKQPAU2ta7ook8jl3x",
+    "EQAUVs-5LDtI3ziFeXjIT6rt1AdyP5hcDadL_rxtyjqcYU0Q",
+    "EQDYBF6EIcExMyR2NSIeXVVDOMysDagGIfdIhGzZ6p-_JOdN",
+    "EQCOGkIUC7CSsnKHUyo0z69sSwhsbfp6QZyhaLVAorIpA6wW",
+    "EQC83XNGZA4yNp7Ln3srKSMQwTFmvO6k-lv4_IfGDg1vdspV",
+    "EQBGxhKDXxtaBlUU2OWizkijI9R3VvC7FxOQa0zFZRhi65ls",
+    "EQAl86VhxHU0WJKc8nmtvbBe3zHeizADnM0VaqtWBXMW8cFG",
+    "EQCp3i72l3iMDX-gWc8igaSBSPEYngdEZ2xWQVlTUwunA7Im",
+    "EQBP-obn0adLWLlgyCf7QZWD7QUoS_ZcU1ox0kdgWj7cmpex",
+    "EQDcl7kE3Pdz15VYRIdFFK9QJNZlduZo9YsI6mmdCsRkbGAd",
+    "EQBNNMFYzFrFO0xe6SA0yYwTFZwtwsAz0NUCTUhXv5JX44zk",
+    "EQCLAAMr0_aURoCLH3SEfMSKs6D0IxDDwFEJxXA7eGsVCjOK",
+    "EQBffXKb49LIXYeZnqKi2JGKvZt1tciCe_MS8DyM7CqOiiru",
+    "EQCCmEBXv8KIVprbxTyR-77uzvAy0mUDwdF_esl4qzaBUhbO",
+    "EQATdRieYSumA_3t1BQQnP3szlxl9NrfoQ6q2GzpJyoGOC3j",
+    "EQCCINcelvERVhU5UcyUWz-DITpQpn-Ys2RzXQ5adHvHj_VH",
+    "EQAcemlhCDHncV_Lp695IOHWPMfdj1QUrueSnTQaM2XwSdkX",
+    "EQByDgqd2GjgvCSumwjW-2vCxtf7l7nFHDO1RvDw21-VaUXc",
+    "EQCaloIpISy6PQaxXVxzphm37GNf8syJA-ee5Jdu1E4ozvVc",
+    "EQCca6lh0_9emPKu6MLOmQ7tKAtvkW3Dl2tHIAjLxDXKdN1u",
+    "EQAfE6KnaHubt5e7NaBO8UuGqs-G1olrLy4EIwoLwIxTL6Av",
+    "EQALU9_xv66w4Vb8VqkJytTTyaZUKQDX3QF8rBb7VvuQbk6u",
+    "EQB6LgNNpSH7uY5kYtMZxksRQUCJO7xi6jy7ojWhUC0g2hYG",
+    "EQDIfOCqpC0aHYfWkXVR6d5JGQmINYZ5O-fsLXVc_ZdW3IIt",
+    "EQAnPWUKyKkQR5p4Wzg_bIMRybAcniNxhNKW7c_irnZCBYPg",
+    "EQB0p5gY6gDqOgfj2Eo513BfuLXSsRBaP2fYYRTtqgEhNbRd",
+    "EQCSMO7w65sU4U4_XO7vvayiox06B3CqO_mszfbMSuKQRL5P",
+    "EQBiHn5r9DgymKxXh2qbY5XKwABmSNCkJNuP-_EA89kIISB3",
+    "EQAirj0QC2KAdCl98T7oCdmbRPONUdJS9afGtp12h8FHbgZh",
+    "EQDkMNfrsxFmkxF-u3rRG_ehsEU10KdAPl1z6enXgvMzfuPO",
+    "EQA7Bv8H3bPzD4R1NuUuVlRaFKimRp3oBFY3nHlLQow6f3LG",
+    "EQBPMnW_zZ2NDkTrP-CDOOjZn8pWPeli17txb2skQkm8L7pi",
+    "EQACemPxcFFZbBhYf4HGHCK2SOlBm4L6zt_oWP-s0gqPNLnH",
+    "EQCboDyaVY88SzI06AIAPWJey_sf_YMlw4v10fCER0UwZFJd",
+    "EQBd1tBO38Nc0gCDP1taFKwEMlvm1RKSwovJrYEdEQT4MA4Z",
+    "EQDJpzjub9KICSEDTaM9f5AZxKR4nFi9v_v3BmfAoczvcuSQ",
+  ];
   
   export async function populateDB() {
     try {
-      // mongoose.connect("mongodb://databaseTest:27017/Floor?replicaSet=rs0")
-      // await mongoose.syncIndexes()
+      mongoose.connect(process.env.MONGO_URI)
+      await mongoose.syncIndexes()
       console.log("Connected to MongoDB");
       
       const anyItems = await NFTItems.countDocuments()
@@ -11555,19 +11614,32 @@ const nameToMetadataMap = {
           continue;
         }
   
-        const price = item.cost.ton_price || 1.0; // Default to 1 TON if not specified
         deploymentItem.copies.forEach(copy => {
           if(copy.deploymentStatus === 'completed') {
-            nftItemsToInsert.push({
-              itemId: item.id,
-              index: copy.index,
-              address: copy.address,
-              status: "available",
-              memo: null,
-              lockedAt: null,
-              owner: null,
-              price: item.ton_price
-            });
+            if(tonAddresses.includes(copy.address)) {
+              nftItemsToInsert.push({
+                itemId: item.id,
+                index: copy.index,
+                address: copy.address,
+                status: "sold",
+                memo: null,
+                lockedAt: null,
+                owner: null,
+                price: item.ton_price
+              });
+            } else {
+              nftItemsToInsert.push({
+                itemId: item.id,
+                index: copy.index,
+                address: copy.address,
+                status: "available",
+                memo: null,
+                lockedAt: null,
+                owner: null,
+                price: item.ton_price
+              });
+            }
+            
           }
         });
       }

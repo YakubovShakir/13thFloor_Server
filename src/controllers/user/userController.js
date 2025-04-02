@@ -528,9 +528,17 @@ export const handleClothesEquip = async (req, res) => {
       if (doesUserHaveIt) {
         const shelfItem = await ShelfItems.findOne({ id: clothing_id })
         const userParam = await UserParameters.findOne({ id: userId })
-        userParam.respect +=
-          shelfItem && shelfItem.respect ? shelfItem.respect : 0
         const currentUser = await User.findOne({ id: userId })
+        const shelf = currentUser.shelf
+
+        if(shelf[shelfItem.type]) {
+          const equippedShelfItem = await ShelfItems.findOne({ id: clothing_id })
+          userParam.respect = Math.max(0, userParam.respect - equippedShelfItem.respect)
+          
+        } 
+        
+        userParam.respect = shelfItem.respect ? shelfItem.respect : 0
+
         const currentShelf = { ...currentUser.shelf, [type]: clothing_id }
 
         await User.updateOne({ id: userId }, { $set: { shelf: currentShelf } })
