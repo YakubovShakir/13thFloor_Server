@@ -163,7 +163,7 @@ export const prebuildInitialInventory = async (user_id) => {
 
 export const getUser = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
 
     if (userId) {
       const user = await User.findOne({ id: userId })
@@ -185,7 +185,7 @@ export const getUser = async (req, res) => {
 export const createUserPersonage = async (req, res) => {
   try {
     //
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     const { race, gender } = req.body
 
     if (!userId) {
@@ -283,7 +283,7 @@ export const createUserPersonage = async (req, res) => {
 export const getShopItems = async (req, res) => {
   // TODO: boosters
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     const userInventory = await UserCurrentInventory.findOne({
       user_id: userId,
     })
@@ -314,7 +314,7 @@ export const getShopItems = async (req, res) => {
 
 export const getInventoryItems = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     let userInventory = await UserCurrentInventory.findOne({ user_id: userId })
 
     if (!userInventory) {
@@ -346,7 +346,7 @@ export const getInventoryItems = async (req, res) => {
 
 export const getCurrentClothes = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     if (userId) {
       const userClothing = await UserClothing.findOne({ user_id: id })
 
@@ -390,7 +390,7 @@ export const getCurrentClothes = async (req, res) => {
 
 export const updateUserPrestart = async (req, res) => {
   try {
-    const userId = req.params.id
+    const userId = req.userId
     const refCount = await Referal.countDocuments({ refer_id: userId })
     if (refCount < 5)
       return res.status(400).json({ message: "Not enough referrals" })
@@ -433,7 +433,7 @@ export const getLevelsParameters = async (req, res) => {
 
 export const handleClothesUnequip = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     const { clothing_id, type, productType } = req.body
 
     console.log(clothing_id, type, productType)
@@ -484,7 +484,7 @@ export const handleClothesUnequip = async (req, res) => {
 
 export const handleClothesEquip = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     const { clothing_id, type, productType } = req.body
 
     if (productType === "clothes") {
@@ -534,7 +534,7 @@ export const handleClothesEquip = async (req, res) => {
 }
 
 export const handleShelfEquip = async (req, res) => {
-  const userId = parseInt(req.params.id)
+  const userId = parseInt(req.userId)
   const { type, id } = req.body
 
   try {
@@ -567,7 +567,7 @@ export const handleShelfEquip = async (req, res) => {
 }
 
 export const handleShelfUnequip = async (req, res) => {
-  const userId = parseInt(req.params.id)
+  const userId = parseInt(req.userId)
   const { type } = req.body
 
   try {
@@ -596,7 +596,7 @@ export const handleShelfUnequip = async (req, res) => {
 
 export const buyItemsForCoins = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     const { productType, id } = req.body
 
     const user = await UserParameters.findOne({ id: userId })
@@ -770,7 +770,7 @@ export const requestStarsPaymentLink = async (req, res) => {
 
 export const getUserInvestments = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     const user = await User.findOne(
       { id: userId },
       { investment_levels: 1, has_autoclaim: 1 }
@@ -931,7 +931,7 @@ export const getUserInvestments = async (req, res) => {
 
 export const buyInvestmentLevel = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     const { investment_type } = req.body
 
     if (!Object.values(InvestmentTypes).includes(investment_type)) {
@@ -1009,7 +1009,7 @@ export const buyInvestmentLevel = async (req, res) => {
 
 export const startInvestment = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     const { investment_type } = req.body
 
     if (!Object.values(InvestmentTypes).includes(investment_type)) {
@@ -1054,7 +1054,7 @@ export const startInvestment = async (req, res) => {
 
 export const claimInvestment = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     const { investment_type } = req.body
 
     if (!Object.values(InvestmentTypes).includes(investment_type)) {
@@ -1114,7 +1114,7 @@ export const claimInvestment = async (req, res) => {
 
 export const getUserTasks = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
 
     const tasks = await Tasks.find()
     const userParam = await UserParameters.findOne({ id: userId })
@@ -1141,7 +1141,7 @@ export const getUserTasks = async (req, res) => {
 
 export const saveProfileData = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     const {
       photo_url = null,
       first_name = null,
@@ -1246,7 +1246,7 @@ export const addUserSubscriptionStatus = async (
 
 export const claimUserTask = async (req, res) => {
   try {
-    const userId = parseInt(req.params.id)
+    const userId = parseInt(req.userId)
     const { id } = req.body
 
     const task = await Tasks.findOne({ id: id })
