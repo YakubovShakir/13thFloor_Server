@@ -9,6 +9,8 @@ import axios from "axios";
 import { mnemonicToPrivateKey } from "ton-crypto";
 import winston from "winston";
 import IORedis from 'ioredis'
+import { config } from "dotenv";
+config()
 
 // TON Center API configuration
 const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY;
