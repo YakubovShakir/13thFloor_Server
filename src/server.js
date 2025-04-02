@@ -168,7 +168,7 @@ if (process.env.USE_AUTH !== "false") {
 
 // Elasticsearch client setup
 const esClient = new Client({
-  node: process.env.ELASTICSEARCH_URL || "http://localhost:9200",
+  node: process.env.ELASTICSEARCH_URL || "http://elasticsearch:9200",
   // Optional: Add authentication if needed
   // auth: {
   //   username: "elastic",
