@@ -467,15 +467,18 @@ async function deleteUserInventories() {
 }
 
 async function deleteAndInsertClothing() {
-  await Clothing.deleteMany({})
-  await mongoose.syncIndexes()
-  
-  await Promise.all(
-    ClothingItems.map(async (item) => {
-      const clothes = new Clothing({ ...item, effect: {} })
-      await clothes.save()
-    })
-  )
+  await Clothing.deleteMany({});
+  await mongoose.syncIndexes();
+
+  for (const item of ClothingItems) {
+    try {
+      const clothes = new Clothing({ ...item, effect: {} });
+      await clothes.save();
+    } catch (error) {
+      console.error(`Failed to insert clothing item with id ${item.id}:`, error);
+      throw error;
+    }
+  }
 }
 
 async function deleteUsers() {
