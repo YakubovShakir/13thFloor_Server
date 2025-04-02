@@ -267,7 +267,6 @@ connectDB().then(() => {
 async function migrateCollection(Model, Items, collectionName, transform = item => item) {
   logger.info(`Starting ${collectionName} migration`);
 
-  // Validate migration data
   const ids = Items.map(item => item.id);
   const validIds = ids.filter(id => id !== null && id !== undefined);
   const duplicates = validIds.filter((id, index) => validIds.indexOf(id) !== index);
@@ -281,11 +280,9 @@ async function migrateCollection(Model, Items, collectionName, transform = item 
     throw new Error(`All ${collectionName} must have valid IDs for migration`);
   }
 
-  // Ensure indexes
   await Model.ensureIndexes();
   logger.info(`${collectionName} indexes verified`);
 
-  // Prepare bulk operations
   const operations = Items.map(item => ({
     replaceOne: {
       filter: { id: item.id },
@@ -294,7 +291,6 @@ async function migrateCollection(Model, Items, collectionName, transform = item 
     }
   }));
 
-  // Process in batches with controlled concurrency
   const BATCH_SIZE = 1000;
   const batches = [];
   for (let i = 0; i < operations.length; i += BATCH_SIZE) {
@@ -315,7 +311,6 @@ async function migrateCollection(Model, Items, collectionName, transform = item 
     await Promise.all(activePromises);
   }
 
-  // Remove documents not in migration data
   const itemIds = Items.map(item => item.id);
   await Model.deleteMany({ id: { $nin: itemIds } });
   logger.info(`Removed extra documents from ${collectionName}`);
@@ -377,7 +372,6 @@ async function deleteTasks() {
 
 async function deleteUserTasks() {
   logger.info('Starting user tasks deletion');
-
   try {
     await UserCompletedTask.collection.drop();
     logger.info('UserCompletedTask collection dropped');
@@ -388,7 +382,6 @@ async function deleteUserTasks() {
     }
     logger.info('UserCompletedTask collection didn’t exist, proceeding');
   }
-
   await UserCompletedTask.ensureIndexes();
   logger.info('UserCompletedTask indexes recreated');
 }
@@ -397,9 +390,24 @@ async function deleteInvestments() {
   await migrateCollection(Investments, InvestmentsMigration, 'investments');
 }
 
+async function deleteUserInvestments() {
+  logger.info('Starting user investments deletion');
+  try {
+    await UserLaunchedInvestments.collection.drop();
+    logger.info('UserLaunchedInvestments collection dropped');
+  } catch (err) {
+    if (err.codeName !== 'NamespaceNotFound') {
+      logger.error('Failed to drop UserLaunchedInvestments collection:', { error: err });
+      throw err;
+    }
+    logger.info('UserLaunchedInvestments collection didn’t exist, proceeding');
+  }
+  await UserLaunchedInvestments.ensureIndexes();
+  logger.info('UserLaunchedInvestments indexes recreated');
+}
+
 async function deleteUserProcesses() {
   logger.info('Starting user processes deletion');
-
   try {
     await UserProcess.collection.drop();
     logger.info('UserProcess collection dropped');
@@ -410,7 +418,6 @@ async function deleteUserProcesses() {
     }
     logger.info('UserProcess collection didn’t exist, proceeding');
   }
-
   await UserProcess.ensureIndexes();
   logger.info('UserProcess indexes recreated');
 }
@@ -431,14 +438,12 @@ async function deleteAndInsertFood() {
   await migrateCollection(Food, FoodItems, 'food', item => ({ ...item, effect: {} }));
 }
 
-
 async function deleteAndInsertSkill() {
   await migrateCollection(Skill, SkillItems, 'skill', item => ({ ...item, effect: {} }));
 }
 
 async function deleteUserBoosts() {
   logger.info('Starting user boosts deletion');
-
   try {
     await UserBoost.collection.drop();
     logger.info('UserBoost collection dropped');
@@ -449,7 +454,6 @@ async function deleteUserBoosts() {
     }
     logger.info('UserBoost collection didn’t exist, proceeding');
   }
-
   await UserBoost.ensureIndexes();
   logger.info('UserBoost indexes recreated');
 }
@@ -468,7 +472,6 @@ async function deleteAndInsertTraining() {
 
 async function deleteUserParameters() {
   logger.info('Starting user parameters deletion');
-
   try {
     await UserParameters.collection.drop();
     logger.info('UserParameters collection dropped');
@@ -479,14 +482,12 @@ async function deleteUserParameters() {
     }
     logger.info('UserParameters collection didn’t exist, proceeding');
   }
-
   await UserParameters.ensureIndexes();
   logger.info('UserParameters indexes recreated');
 }
 
 async function deleteUserInventories() {
   logger.info('Starting user inventories deletion');
-
   try {
     await UserCurrentInventory.collection.drop();
     logger.info('UserCurrentInventory collection dropped');
@@ -497,14 +498,12 @@ async function deleteUserInventories() {
     }
     logger.info('UserCurrentInventory collection didn’t exist, proceeding');
   }
-
   await UserCurrentInventory.ensureIndexes();
   logger.info('UserCurrentInventory indexes recreated');
 }
 
 async function deleteUsers() {
   logger.info('Starting users deletion');
-
   try {
     await User.collection.drop();
     logger.info('User collection dropped');
