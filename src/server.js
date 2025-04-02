@@ -306,17 +306,6 @@ async function main() {
 }
 
 async function deleteTasks() {
-  await Tasks.deleteMany({})
-  await mongoose.syncIndexes()
-  await Promise.all(
-    TasksMigration.map(async (item) => {
-      const task = new Tasks(item)
-      await task.save()
-    })
-  )
-}
-
-async function deleteTasks() {
   await Tasks.deleteMany({});
   await mongoose.syncIndexes();
 
