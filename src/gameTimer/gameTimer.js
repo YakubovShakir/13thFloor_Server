@@ -716,7 +716,7 @@ const operationMap = {
 
   processAutoclaim: async (params, session) => {
     const { investmentType, userId } = params;
-  
+    console.log(investmentType, userId)
     const currentInvestment = await UserLaunchedInvestments.findOne({
       user_id: userId,
       investment_type: investmentType,
@@ -1152,7 +1152,7 @@ export const autoclaimProcessConfig = {
       await processInBatches(usersWithAutoclaim, 50, async (autoclaim) => {
         const userId = autoclaim.user_id;
         const investmentType = autoclaim.investment_type;
-
+        console.log('Queuing transaction for autoclaim')
         // Enqueue the claim operation
         await queueDbUpdate(
           "processAutoclaim",
