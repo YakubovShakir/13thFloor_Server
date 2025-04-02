@@ -2073,7 +2073,7 @@ export const getAutoclaimStatus = async (userId) => {
 }
 
 router.get("/:id/affiliate-data", async (req, res) => {
-  const userId = parseInt(req.userId)
+  const userId = req.userId
   try {
     const data = await getAffiliateEarningsData(userId)
     const refsCount = await Referal.countDocuments({ refer_id: userId })

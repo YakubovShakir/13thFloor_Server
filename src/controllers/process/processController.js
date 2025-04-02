@@ -144,6 +144,7 @@ export const checkCanStop = async (req, res) => {
 
 export const getUserActiveProcess = async (req, res) => {
   try {
+    console.log(req.userId)
     let user = await User.findOne({ id: req.userId });
     if (!user) {
       user = await withTransaction(async (session) => {
