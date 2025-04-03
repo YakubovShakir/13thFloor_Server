@@ -338,7 +338,7 @@ async function main() {
     deleteInvestments,
     deleteTasks,
     deleteConstantEffects,
-    populateDB
+    // populateDB
   ];
 
   for (const migration of migrations) {
