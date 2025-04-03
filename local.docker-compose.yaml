@@ -55,17 +55,6 @@ services:
       - default
     restart: unless-stopped
 
-  game-timer:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: node ./src/gameTimer/gameTimer.js
-    environment:
-      - REDIS_HOST=redis
-    networks:
-      - default
-    restart: unless-stopped
-
 volumes:
   db-floor:
   redis-data:
