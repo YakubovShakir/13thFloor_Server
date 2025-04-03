@@ -1,0 +1,147 @@
+version: '3.8'
+
+networks:
+  app-network:
+    driver: bridge
+  default:
+
+services:
+  app-test:
+    build:
+      context: ./frontend
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    ports:
+      - "4026:80"
+    networks:
+      - app-network
+
+  backend-test:
+    build:
+      context: ./backend
+    environment:
+      - MONGO_URI=mongodb://database-test:27017/Floor?replicaSet=rs0&directConnection=true
+    ports:
+      - "3026:3000"
+    depends_on:
+      database-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  game-timer-test:
+    build:
+      context: ./backend
+    environment:
+      - MONGO_URI=mongodb://database-test:27017/Floor?replicaSet=rs0&directConnection=true
+    command: ["npm", "run", "gameTimer"]
+    depends_on:
+      database-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  database-test:
+    image: mongo:5
+    volumes:
+      - db-floor-tests:/data/db
+      - ./restore-folder:/data/restore
+    ports:
+      - "127.0.0.1:27018:27017"
+    command: mongod --replSet rs0 --bind_ip 0.0.0.0
+    healthcheck:
+      test: ["CMD", "mongo", "--eval", "db.runCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+
+  bot-test:
+    build:
+      context: ./bot
+    ports:
+      - "127.0.0.1:4444:4444"
+    networks:
+      - app-network
+    environment:
+      - MONGO_URI=mongodb://database-test:27017/Floor?replicaSet=rs0&directConnection=true
+
+  portainer-test:
+    image: portainer/portainer-ce:latest
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - portainer_data:/data
+    networks:
+      - app-network
+      - default
+
+  portainer-agent-test:
+    image: portainer/agent:2.21.5
+    container_name: portainer_agent_test
+    restart: always
+    ports:
+      - "127.0.0.1:9001:9001"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+      - /:/host
+    networks:
+      - app-network
+
+  mongo-init-replica-test:
+    image: mongo:5
+    depends_on:
+      database-test:
+        condition: service_healthy
+    networks:
+      - app-network
+    command: >
+      bash -c "for i in {1..30}; do
+        sleep 5 &&
+        mongo --host database-test:27017 --eval 'rs.initiate({_id: \"rs0\", members: [{_id: 0, host: \"database-test:27017\"}]})' &&
+        break ||
+        echo 'Attempt $i: Replica set initialization failed, retrying...';
+      done || echo 'Failed to initialize replica set after 30 attempts';"
+    restart: on-failure
+
+  tx-daemon-test:
+    build:
+      context: ./backend
+    environment:
+      - MONGO_URI=mongodb://database-test:27017/Floor?replicaSet=rs0&directConnection=true
+    command: ["node", "./src/daemons/tonAffiliateDaemon.js"]
+    depends_on:
+      database-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  redis-test:
+    image: redis:7
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass redis_password --bind 0.0.0.0
+    healthcheck:
+      test: ["CMD", "redis-cli", "-h", "localhost", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - app-network
+    restart: unless-stopped
+
+volumes:
+  db-floor-tests:
+  portainer_data:
+  redis-data:
