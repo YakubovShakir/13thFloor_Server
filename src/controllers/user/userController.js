@@ -1301,11 +1301,11 @@ export const handleTonWalletDisconnect = async (req, res) => {
 
 export const getLeaderboard = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1
-    const limit = parseInt(req.query.limit) || 20
-    const skip = (page - 1) * limit
-    const userId = req.query.userId ? parseInt(req.query.userId) : null // Ensure userId is parsed
-
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+    const userId = req.query.userId ? parseInt(req.query.userId) : null; // Ensure userId is parsed
+    
     const leaderboardPipeline = [
       {
         $lookup: {
@@ -1319,6 +1319,12 @@ export const getLeaderboard = async (req, res) => {
         $unwind: {
           path: "$user_info",
           preserveNullAndEmptyArrays: true,
+        },
+      },
+      // Filter out users where user_info.personage.gender is not set
+      {
+        $match: {
+          "user_info.personage.gender": { $exists: true, $ne: null },
         },
       },
       {
@@ -1348,16 +1354,16 @@ export const getLeaderboard = async (req, res) => {
           includeArrayIndex: "rank",
         },
       },
-    ]
-
-    const fullList = await UserParameters.aggregate([...leaderboardPipeline])
+    ];
+    
+    const fullList = await UserParameters.aggregate([...leaderboardPipeline]);
     const rankedUsers = fullList.map((doc) => ({
       user_id: doc.allUsers.user_info.id,
       name:
         doc.allUsers.user_info.personage.name ||
         doc.allUsers.user_info.username ||
         "Unknown",
-      gender: doc.allUsers.user_info.personage.gender || "unknown",
+      gender: doc.allUsers.user_info.personage.gender, // No default "unknown" here since we filtered
       username: doc.allUsers.user_info.username,
       first_name: doc.allUsers.user_info.first_name,
       last_name: doc.allUsers.user_info.last_name,
@@ -1365,9 +1371,9 @@ export const getLeaderboard = async (req, res) => {
       respect: doc.allUsers.respect,
       total_earned: doc.allUsers.total_earned,
       rank: doc.rank + 1,
-    }))
-
-    // Find current user's entry
+    }));
+    
+    // Find current user's entry (allow even if gender is missing for currentUser)
     const currentUser = rankedUsers.find((user) => user.user_id === userId) || {
       user_id: userId,
       name: "Unknown",
@@ -1379,17 +1385,18 @@ export const getLeaderboard = async (req, res) => {
       respect: 0,
       total_earned: 0,
       rank: "N/A",
-    }
-
+    };
+    
     // Paginate the leaderboard
-    const leaderboard = rankedUsers.slice(skip, skip + limit)
-
+    const leaderboard = rankedUsers.slice(skip, skip + limit);
+    
     const response = {
       leaderboard,
       currentUser,
-    }
-
-    return res.status(200).json(response)
+      totalUsers: rankedUsers.length, // Add totalUsers for frontend pagination
+    };
+    
+    return res.status(200).json(response);
   } catch (err) {
     console.error("Error in getLeaderboard:", err)
     res.status(500).json({ error: true })
