@@ -117,6 +117,7 @@ services:
       - NODE_ENV=production
       - MONGO_URI=mongodb://database-prod:27017/${MONGO_DB_NAME}?replicaSet=rs0&directConnection=true
       - REDIS_PORT=6379
+      - REDIS_HOST=redis-prod
       - REDIS_PASSWORD=redis_password_prod
     command: ["node", "./src/daemons/tonAffiliateDaemon.js"]
     depends_on:

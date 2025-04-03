@@ -132,9 +132,14 @@ export const gameCenterLevelRequirements = {
 }
 
 export const prebuildInitialInventory = async (user_id) => {
+  const refs = await Referal.countDocuments({ refer_id: user_id })
   await new UserCurrentInventory({
     user_id,
-    shelf: [],
+    shelf: refs >= 5 ? [
+      {
+        id: 3
+      }
+    ] : [],
     // all tier 0 items, no offence
     clothes: [
       {

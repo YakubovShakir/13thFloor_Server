@@ -50,6 +50,7 @@ import { ConstantEffects } from "./models/effects/constantEffectsLevels.js";
 import UserBoost from "./models/user/userBoostsModel.js";
 import { UserSpins } from "./models/user/userSpinsModel.js";
 import UserCompletedTask from "./models/user/userCompletedTaskModel.js";
+import { populateDB } from "./models/nft/migrateInitialDeploymentData.js";
 
 dotenv.config();
 
@@ -312,27 +313,32 @@ async function deleteConstantEffects() {
   await deleteAndReplaceCollection(ConstantEffects, constantEffects, 'ConstantEffects');
 }
 
+async function migrateNfts(params) {
+  
+}
+
 // Main migration runner
 async function main() {
   const migrations = [
-    // deleteUserParameters,
-    // deleteUserInventories,
-    // deleteUsers,
-    // deleteUserProcesses,
-    // deleteUserInvestments,
-    // deleteUserTasks,
-    // deleteUserBoosts,
-    // deleteAndInsertClothing,
-    // deleteAndInsertWork,
-    // deleteAndInsertFood,
-    // deleteAndInsertSkill,
-    // deleteAndInsertBoost,
-    // deleteAndInsertLevels,
-    // deleteAndInsertTraining,
-    // deleteShelfItems,
-    // deleteInvestments,
-    // deleteTasks,
-    // deleteConstantEffects,
+    deleteUserParameters,
+    deleteUserInventories,
+    deleteUsers,
+    deleteUserProcesses,
+    deleteUserInvestments,
+    deleteUserTasks,
+    deleteUserBoosts,
+    deleteAndInsertClothing,
+    deleteAndInsertWork,
+    deleteAndInsertFood,
+    deleteAndInsertSkill,
+    deleteAndInsertBoost,
+    deleteAndInsertLevels,
+    deleteAndInsertTraining,
+    deleteShelfItems,
+    deleteInvestments,
+    deleteTasks,
+    deleteConstantEffects,
+    populateDB
   ];
 
   for (const migration of migrations) {

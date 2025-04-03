@@ -11594,11 +11594,6 @@ const nameToMetadataMap = {
   
   export async function populateDB() {
     try {
-      mongoose.connect(process.env.MONGO_URI)
-      await mongoose.syncIndexes()
-      console.log("Connected to MongoDB");
-      
-      const anyItems = await NFTItems.countDocuments()
       await NFTItems.deleteMany({});
       console.log("Cleared existing NFTItems");
   
