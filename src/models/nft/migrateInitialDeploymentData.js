@@ -11594,11 +11594,6 @@ const nameToMetadataMap = {
   
   export async function populateDB() {
     try {
-      mongoose.connect(process.env.MONGO_URI)
-      await mongoose.syncIndexes()
-      console.log("Connected to MongoDB");
-      
-      const anyItems = await NFTItems.countDocuments()
       await NFTItems.deleteMany({});
       console.log("Cleared existing NFTItems");
   
@@ -11674,9 +11669,6 @@ const nameToMetadataMap = {
       console.log("Database populated successfully with", nftItemsToInsert.length, "atomic NFTs");
     } catch (error) {
       console.error("Error populating database:", error);
-    } finally {
-      await mongoose.connection.close();
-      console.log("MongoDB connection closed");
     }
   }
   

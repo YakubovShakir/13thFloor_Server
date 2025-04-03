@@ -312,6 +312,10 @@ async function deleteConstantEffects() {
   await deleteAndReplaceCollection(ConstantEffects, constantEffects, 'ConstantEffects');
 }
 
+async function migrateNfts(params) {
+  
+}
+
 // Main migration runner
 async function main() {
   const migrations = [
@@ -333,6 +337,7 @@ async function main() {
     // deleteInvestments,
     // deleteTasks,
     // deleteConstantEffects,
+    // populateDB
   ];
 
   for (const migration of migrations) {
@@ -350,7 +355,7 @@ async function main() {
 
 // App setup
 connectDB().then(() => {
-  if (process.env.NODE_ENV === "test") main();
+  main();
 });
 
 app.use("/api/process/", processRouter);
