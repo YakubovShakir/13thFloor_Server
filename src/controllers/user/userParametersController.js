@@ -11,7 +11,6 @@ import UserParameters from "../../models/user/userParametersModel.js"
 import { prebuildInitialInventory } from "./userController.js"
 import UserLaunchedInvestments from '../../models/investments/userLaunchedInvestments.js'
 import { ConstantEffects, ConstantEffectTypes } from "../../models/effects/constantEffectsLevels.js"
-import { Bot } from "grammy"
 import { ActiveEffectsModel, ActiveEffectTypes } from "../../models/effects/activeEffectsModel.js"
 
 

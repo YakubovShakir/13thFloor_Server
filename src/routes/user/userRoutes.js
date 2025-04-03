@@ -296,8 +296,7 @@ export const getNekoBoostMultiplier = async (userId, session) => {
   return boost ? 1 + getBoostPercentageFromType(boost.type) / 100 : 1;
 };
 
-const TELEGRAM_BOT_TOKEN = "7775483956:AAHc14xqGCeNQ7DVsqABf0qAa8gdqwMWE6w"
-const bot = new Bot(TELEGRAM_BOT_TOKEN)
+const bot = new Bot(process.env.BOT_TOKEN)
 
 // Ensure the bot does not start polling (to avoid conflicts with getUpdates)
 bot.stop() // Explicitly stop any polling (just in case)
