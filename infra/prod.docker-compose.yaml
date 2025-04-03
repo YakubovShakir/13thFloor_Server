@@ -1,5 +1,3 @@
-version: '3.8'
-
 networks:
   prod-network:
     driver: bridge
@@ -20,7 +18,7 @@ services:
       context: ./backend
     environment:
       - NODE_ENV=production
-      - MONGO_URI=mongodb://database-prod:27017/Floor?replicaSet=rs0&directConnection=true
+      - MONGO_URI=mongodb://database-prod:27017/${MONGO_DB_NAME}?replicaSet=rs0&directConnection=true
       - REDIS_HOST=redis-prod
       - REDIS_PASSWORD=redis_password_prod
       - ELASTICSEARCH_HOSTS=http://elasticsearch-prod:9200
@@ -41,7 +39,8 @@ services:
       context: ./backend
     environment:
       - NODE_ENV=production
-      - MONGO_URI=mongodb://database-prod:27017/Floor?replicaSet=rs0&directConnection=true
+      - MONGO_URI=mongodb://database-prod:27017/${MONGO_DB_NAME}?replicaSet=rs0&directConnection=true
+      - REDIS_PORT=6379
       - REDIS_HOST=redis-prod
       - REDIS_PASSWORD=redis_password_prod
     command: ["npm", "run", "gameTimer"]
@@ -59,33 +58,43 @@ services:
       - db-floor-prod:/data/db
       - ./restore-folder:/data/restore
     ports:
-      - "127.0.0.1:27019:27017"
+      - "127.0.0.1:27017:27017"
     command: mongod --replSet rs0 --bind_ip 0.0.0.0
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DB_NAME}
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.runCommand('ping').ok"]
+      test: ["CMD", "mongo", "--host", "localhost", "--port", "27017", "--eval", "db.runCommand('ping').ok"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
     networks:
       - prod-network
 
   bot-prod:
     build:
       context: ./bot
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://database-prod:27017/${MONGO_DB_NAME}?replicaSet=rs0&directConnection=true
     ports:
       - "127.0.0.1:4445:4444"
+    depends_on:
+      database-prod:
+        condition: service_healthy
     networks:
       - prod-network
 
   portainer-prod:
     image: portainer/portainer-ce:latest
     ports:
-      - "127.0.0.1:9002:9000"
-      - "127.0.0.1:8001:8000"
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:8000:8000"
     volumes:
       - portainer_data_prod:/data
     networks:
       - prod-network
+      - default
 
   portainer-agent-prod:
     image: portainer/agent:2.21.5
@@ -99,24 +108,14 @@ services:
       - /:/host
     networks:
       - prod-network
-
-  mongo-init-replica-prod:
-    image: mongo:5
-    depends_on:
-      database-prod:
-        condition: service_healthy
-    networks:
-      - prod-network
-    command: >
-      bash -c "sleep 10 && mongo --host database-prod:27017 --eval 'rs.initiate({_id: \"rs0\", members: [{_id: 0, host: \"database-prod:27017\"}]})' || echo 'Replica set already initialized'"
-    restart: on-failure
+      - default
 
   tx-daemon-prod:
     build:
       context: ./backend
     environment:
       - NODE_ENV=production
-      - MONGO_URI=mongodb://database-prod:27017/Floor?replicaSet=rs0&directConnection=true
+      - MONGO_URI=mongodb://database-prod:27017/${MONGO_DB_NAME}?replicaSet=rs0&directConnection=true
       - REDIS_PORT=6379
       - REDIS_PASSWORD=redis_password_prod
     command: ["node", "./src/daemons/tonAffiliateDaemon.js"]
@@ -181,22 +180,6 @@ services:
       - "127.0.0.1:3003:80"
     networks:
       - prod-network
-
-  mongo-export-prod:
-    image: mongo:5
-    volumes:
-      - ./mongo-export-prod:/export
-    depends_on:
-      database-prod:
-        condition: service_healthy
-    networks:
-      - prod-network
-    command: >
-      bash -c "while true; do
-        mongoexport --host database-prod:27017 --db Floor --out /export/floor_export_$$(date +%Y%m%d_%H%M%S).json;
-        sleep 1800;
-      done"
-    restart: unless-stopped
 
 volumes:
   db-floor-prod:

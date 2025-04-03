@@ -234,7 +234,7 @@ const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) => {
 
 // Centralized queue for all DB updates
 const dbUpdateQueue = new Queue('db-updates', {
-  redis: { host: process.env.REDIS_HOST || 'redis-test', port: 6379, password: 'redis_password' }, // Adjust Redis config
+  redis: { host: process.env.REDIS_HOST || 'redis-test', port: process.env.REDIS_PORT, password: process.env.REDIS_PASSWORD }, // Adjust Redis config
   defaultJobOptions: {
     attempts: 3, // Retry on transient failures
     backoff: { type: 'exponential', delay: 100 }, // Exponential backoff
