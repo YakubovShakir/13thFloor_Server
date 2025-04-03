@@ -18,6 +18,8 @@ import CompletedTasks from "../../models/tasks/completedTask.js"
 import { Bot } from "grammy"
 import Work from "../../models/work/workModel.js"
 import fs from "fs/promises"
+import { config } from "dotenv"
+config()
 
 import { upUserExperience } from "../../utils/userParameters/upUserBalance.js"
 import { recalcValuesByParameters } from "../../utils/parametersDepMath.js"
@@ -1167,7 +1169,7 @@ export const saveProfileData = async (req, res) => {
   }
 }
 
-const bot = new Bot("7866433891:AAHAh-4Lc0Dvr80URgOQMJrIKB_1bfxc0KM")
+const bot = new Bot(process.env.BOT_TOKEN)
 
 // stats forming step 1
 export const collectRefStatsFromDb = async () => {
