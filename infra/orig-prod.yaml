@@ -1,0 +1,44 @@
+networks:
+  default:
+    driver: bridge
+services:
+  website: 
+    build: 
+      context: ./website
+    restart: always
+    ports: 
+      - 127.0.0.1:3003:80
+  prestart: 
+    build: 
+      context: ./prestart
+    restart: always
+    ports: 
+      - 127.0.0.1:3000:80
+    env_file:
+      - ./prestart/.env
+  bot:
+    build: 
+      context: ./bot
+    restart: always
+    env_file:
+      - ./bot/.env
+  database:
+    image: mongo:6
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+        MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+    volumes: 
+     - database:/data/db
+     - /home/shakir/mongodump/:/dump
+    ports:
+      - 127.0.0.1:27017:27017
+  backend:
+    build:
+      context: ./server
+    restart: always
+    env_file:
+      - ./server/.env
+    ports:
+      - 127.0.0.1:4000:4000
+volumes:
+  database:

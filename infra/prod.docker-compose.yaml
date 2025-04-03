@@ -173,6 +173,31 @@ services:
     networks:
       - prod-network
 
+  website:
+    build:
+      context: ./website
+    restart: always
+    ports:
+      - "127.0.0.1:3003:80"
+    networks:
+      - prod-network
+
+  mongo-export-prod:
+    image: mongo:5
+    volumes:
+      - ./mongo-export-prod:/export
+    depends_on:
+      database-prod:
+        condition: service_healthy
+    networks:
+      - prod-network
+    command: >
+      bash -c "while true; do
+        mongoexport --host database-prod:27017 --db Floor --out /export/floor_export_$$(date +%Y%m%d_%H%M%S).json;
+        sleep 1800;
+      done"
+    restart: unless-stopped
+
 volumes:
   db-floor-prod:
   portainer_data_prod:

@@ -141,6 +141,22 @@ services:
       - app-network
     restart: unless-stopped
 
+  mongo-export-test:
+    image: mongo:5
+    volumes:
+      - ./mongo-export-test:/export
+    depends_on:
+      database-test:
+        condition: service_healthy
+    networks:
+      - app-network
+    command: >
+      bash -c "while true; do
+        mongoexport --host database-test:27017 --db Floor --out /export/floor_export_$$(date +%Y%m%d_%H%M%S).json;
+        sleep 1800;
+      done"
+    restart: unless-stopped
+
 volumes:
   db-floor-tests:
   portainer_data:
