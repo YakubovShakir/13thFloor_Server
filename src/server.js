@@ -112,7 +112,7 @@ const validateTelegramInitData = async (req, res, next) => {
     }
 
     params.delete("hash");
-    const botToken = process.env.TELEGRAM_BOT_TOKEN;
+    const botToken = process.env.BOT_TOKEN;
     if (!botToken) {
       throw new Error("TELEGRAM_BOT_TOKEN not set in environment");
     }
