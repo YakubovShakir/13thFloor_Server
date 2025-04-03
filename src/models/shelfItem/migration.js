@@ -63,7 +63,7 @@ export const ShelfItems = [
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2FRetroConsole.png",
     shelf_link:
-      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2FChselfRetroConsole.png",
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Shelf%2Fconsole.gif",
     type: ShelfItemTypes.Award,
     respect: 2000,
     effects: {
