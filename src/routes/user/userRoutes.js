@@ -261,6 +261,12 @@ export const getAffiliateEarningsData = async (affiliateId) => {
     { lockedTON: 0, pendingTON: 0 }
   );
 
+  const user = await User.findOne({ id: affiliateId })
+  const refsCount = await Referal.countDocuments({ refer_id: affiliateId })
+  const gameCenterLevel = user?.investment_levels?.game_center || 0
+  const currentLevelRefsRequired = gameCenterLevelRequirements[gameCenterLevel] || 0
+  const nextLevelRefsRequired = gameCenterLevelRequirements[gameCenterLevel + 1] || currentLevelRefsRequired
+
   const earningsData = {
     totalStarsLocked: parseFloat(starsResult.lockedStars.toFixed(2)),
     totalStarsPendingWithdrawal: parseFloat(starsResult.pendingStars.toFixed(2)),
@@ -268,6 +274,10 @@ export const getAffiliateEarningsData = async (affiliateId) => {
     totalStarsPendingInTON,
     totalTONLocked: parseFloat(tonResult.lockedTON.toFixed(2)),
     totalTONPendingWithdrawal: parseFloat(tonResult.pendingTON.toFixed(2)),
+    currentLevelRefsRequired,
+    refsCount,
+    nextLevelRefsRequired,
+    gameCenterLevel
   };
 
   logger.info({ message: "Earnings data retrieved", affiliateId, data: earningsData });

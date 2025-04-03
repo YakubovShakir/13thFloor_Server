@@ -149,7 +149,7 @@ if (process.env.USE_AUTH !== "false") {
   app.use(validateTelegramInitData)
 } else {
   app.use((req, res, next) => {
-    req.userId = process.env.DEV_ID || "790629329"
+    req.userId = process.env.DEV_ID || "6390374875"
     next()
   })
 }

@@ -11,6 +11,8 @@ import winston from "winston";
 import IORedis from 'ioredis'
 import { config } from "dotenv";
 import colors from 'ansi-colors'
+import UserParameters from "../models/user/userParametersModel.js";
+import Referal from "../models/referral/referralModel.js";
 config()
 
 // TON Center API configuration
@@ -50,6 +52,44 @@ const logger = winston.createLogger({
   ),
   transports: [new winston.transports.Console()],
 });
+
+export const gameCenterLevelRequirements = {
+  1: 1,
+  2: 5,
+  3: 10,
+  4: 25,
+  5: 40,
+  6: 60,
+  7: 90,
+  8: 200,
+  9: 300,
+  10: 450,
+  11: 500,
+  12: 750,
+  13: 1000,
+  14: 1500,
+  15: 2250,
+  16: 2500,
+  17: 3750,
+  18: 5500,
+  19: 8250,
+  20: 10000,
+  21: 15000,
+  22: 22500,
+  23: 33750,
+  24: 50000,
+  25: 75000,
+  26: 112500,
+  27: 168750,
+  28: 253130,
+  29: 379700,
+  30: 569550,
+  31: 854330,
+  32: 1281500,
+  33: 1922250,
+  34: 2883380,
+  35: 4325070,
+}
 
 export const withTransaction = async (operation, maxRetries = 3, retryDelay = 500) => {
   let retryCount = 0;
@@ -394,6 +434,12 @@ export const getAffiliateEarningsData = async (affiliateId) => {
     { lockedTON: 0, pendingTON: 0 }
   );
 
+  const user = await User.findOne({ id: affiliateId })
+  const refsCount = await Referal.countDocuments({ refer_id: affiliateId })
+  const gameCenterLevel = user?.investment_levels?.game_center || 0
+  const currentLevelRefsRequired = gameCenterLevelRequirements[gameCenterLevel] || 0
+  const nextLevelRefsRequired = gameCenterLevelRequirements[gameCenterLevel + 1] || currentLevelRefsRequired
+
   const earningsData = {
     totalStarsLocked: parseFloat(starsResult.lockedStars.toFixed(2)),
     totalStarsPendingWithdrawal: parseFloat(starsResult.pendingStars.toFixed(2)),
@@ -401,6 +447,9 @@ export const getAffiliateEarningsData = async (affiliateId) => {
     totalStarsPendingInTON,
     totalTONLocked: parseFloat(tonResult.lockedTON.toFixed(2)),
     totalTONPendingWithdrawal: parseFloat(tonResult.pendingTON.toFixed(2)),
+    currentLevelRefsRequired,
+    refsCount,
+    nextLevelRefsRequired,
   };
 
   logger.info({ message: "Earnings data retrieved", affiliateId, data: earningsData });

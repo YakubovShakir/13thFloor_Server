@@ -229,16 +229,6 @@ export const createUserPersonage = async (req, res) => {
     await userParam.save()
 
     if (gameCenterLevel > 0) {
-      const investment = await Investments.findOne({
-        type: "game_center",
-        level: gameCenterLevel,
-      })
-      await new UserLaunchedInvestments({
-        user_id: userId,
-        investment_id: investment.id,
-        to_claim: investment.coins_per_hour,
-      }).save()
-      userParam.respect += investment.respect
       await userParam.save()
     }
 
@@ -266,17 +256,6 @@ export const createUserPersonage = async (req, res) => {
     }
     if (!(await UserCurrentInventory.findOne({ user_id: userId })))
       await prebuildInitialInventory(userId)
-
-    const sumRespect = (
-      await Clothing.find({
-        clothing_id: { $in: [5, 6, 7, getInitialHatByRace(race)] },
-      })
-    ).reduce((acc, cur) => {
-      acc += cur.respect
-      return acc
-    }, 0)
-    userParam.respect += sumRespect
-    await userParam.save()
 
     await new UserSpins({ user_id: userId, type: "daily" }).save()
 
