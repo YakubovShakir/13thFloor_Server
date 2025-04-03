@@ -973,7 +973,6 @@ export const buyInvestmentLevel = async (req, res) => {
           (currentInvestment?.respect || 0) +
           nextLevelInvestment.respect
         userParams.coins = userParams.coins - nextLevelInvestment.price
-        await upUserExperience(userId, nextLevelInvestment.experience_reward)
         await user.save()
         await userParams.save()
 
@@ -1208,26 +1207,35 @@ export const claimUserTask = async (req, res) => {
     }
 
     if (task) {
+      let isComplete = false
       if (task.is_tg) {
         try {
-          await bot.api.getChatMember(task.channel_id, userId)
-          console.log("Task complete")
+          const member = await bot.api.getChatMember(task.channel_id, userId)
+          console.log(member)
+          if(member?.status !== 'left') {
+            isComplete = true
+          }
         } catch (err) {
-          return res.status(403).json({ error: true })
+          return res.status(500).json({ error: true })
         }
       } else {
+        isComplete = true
         console.log("Link task - skipping")
       }
 
-      await new CompletedTasks({ user_id: userId, task_id: task.id }).save()
-      const work = await Work.findOne({ id: userParam.work_id })
-      const coinsReward =
-        task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
+      if(isComplete) {
+        await new CompletedTasks({ user_id: userId, task_id: task.id }).save()
+        const work = await Work.findOne({ id: userParam.work_id })
+        const coinsReward =
+          task.fixed + (work ? work.coins_in_hour * task.multiplier : 0)
 
-      await recalcValuesByParameters(userParam, { coinsReward })
-      await upUserExperience(userId, task.experience_reward)
+        await recalcValuesByParameters(userParam, { coinsReward })
+        await upUserExperience(userId, task.experience_reward)
 
-      await userParam.save()
+        await userParam.save()
+      } else {
+        return res.status(403).json({ ok: true })  
+      }
     } else {
       return res.status(404).json({ ok: true })
     }
