@@ -50,7 +50,6 @@ import { ConstantEffects } from "./models/effects/constantEffectsLevels.js";
 import UserBoost from "./models/user/userBoostsModel.js";
 import { UserSpins } from "./models/user/userSpinsModel.js";
 import UserCompletedTask from "./models/user/userCompletedTaskModel.js";
-import { populateDB } from "./models/nft/migrateInitialDeploymentData.js";
 
 dotenv.config();
 
@@ -356,7 +355,7 @@ async function main() {
 
 // App setup
 connectDB().then(() => {
-  if (process.env.NODE_ENV === "test") main();
+  main();
 });
 
 app.use("/api/process/", processRouter);
