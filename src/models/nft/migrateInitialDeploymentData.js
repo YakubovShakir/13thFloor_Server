@@ -11669,9 +11669,6 @@ const nameToMetadataMap = {
       console.log("Database populated successfully with", nftItemsToInsert.length, "atomic NFTs");
     } catch (error) {
       console.error("Error populating database:", error);
-    } finally {
-      await mongoose.connection.close();
-      console.log("MongoDB connection closed");
     }
   }
   
