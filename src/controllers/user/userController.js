@@ -709,7 +709,7 @@ export const requestStarsPaymentLink = async (req, res) => {
     }
 
     const autoclaimDurationToPrice = {
-      6: 10,
+      6: 35,
       10: 50,
       18: 100,
     }
