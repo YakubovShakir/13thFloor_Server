@@ -22,6 +22,7 @@ services:
       - REDIS_HOST=redis-prod
       - REDIS_PASSWORD=redis_password_prod
       - ELASTICSEARCH_HOSTS=http://elasticsearch-prod:9200
+
     ports:
       - "127.0.0.1:3026:3000"
     depends_on:
@@ -43,6 +44,7 @@ services:
       - REDIS_PORT=6379
       - REDIS_HOST=redis-prod
       - REDIS_PASSWORD=redis_password_prod
+      - BOT_TOKEN=7866433891:AAHAh-4Lc0Dvr80URgOQMJrIKB_1bfxc0KM
     command: ["npm", "run", "gameTimer"]
     depends_on:
       database-prod:

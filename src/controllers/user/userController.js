@@ -1174,7 +1174,7 @@ export const saveProfileData = async (req, res) => {
   }
 }
 
-const bot = new Bot(process.env.BOT_TOKEN)
+const bot = new Bot("7866433891:AAHAh-4Lc0Dvr80URgOQMJrIKB_1bfxc0KM")
 
 // stats forming step 1
 export const collectRefStatsFromDb = async () => {
@@ -1213,42 +1213,6 @@ export const collectRefStatsFromDb = async () => {
       },
     },
   ])
-}
-
-// stats forming step 2
-export const addUserSubscriptionStatus = async (
-  refsAggregationResult,
-  channelId
-) => {
-  const results = []
-  const chunkSize = 15
-
-  const processChunk = async (chunk) => {
-    const chunkResults = await Promise.all(
-      chunk.map(async (userStat) => {
-        const result = { ...userStat, subscribed: false }
-        try {
-          await bot.api.getChatMember(channelId, result.referer_id)
-          result.subscribed = true
-        } catch (err) {
-          // not subscribed
-        }
-        return result
-      })
-    )
-    return chunkResults
-  }
-
-  for (let i = 0; i < refsAggregationResult.length; i += chunkSize) {
-    const chunk = refsAggregationResult.slice(i, i + chunkSize)
-    const chunkResults = await processChunk(chunk)
-    results.push(...chunkResults)
-  }
-
-  await fs.writeFile(
-    "./refs-weekly-stats.json",
-    JSON.stringify(results, null, 2)
-  )
 }
 
 export const claimUserTask = async (req, res) => {
