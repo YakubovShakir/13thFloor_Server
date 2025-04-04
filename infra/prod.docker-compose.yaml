@@ -110,25 +110,6 @@ services:
       - prod-network
       - default
 
-  # New service for MongoDB backups
-  mongo-backup-prod:
-    image: mongo:5
-    volumes:
-      - ./prod_dumps:/dumps
-    environment:
-      - MONGO_HOST=database-prod
-      - MONGO_PORT=27017
-      - MONGO_DB_NAME=Floor
-    entrypoint: ["/bin/sh", "-c"]
-    command:
-      - |
-        echo "0,30 * * * * mongodump --host $${MONGO_HOST} --port $${MONGO_PORT} --db $${MONGO_DB_NAME} --out /dumps/$$(date +'%Y-%m-%d_%H-%M-%S') && find /dumps -type d -mtime +7 -exec rm -rf {} \\;" > /etc/crontabs/root && crond -f -l 8
-    depends_on:
-      database-prod:
-        condition: service_healthy
-    networks:
-      - prod-network
-
   tx-daemon-prod:
     build:
       context: ./backend

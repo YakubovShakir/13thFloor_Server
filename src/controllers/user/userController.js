@@ -27,6 +27,7 @@ import UserSkill from "../../models/user/userSkillModel.js"
 import { UserSpins } from "../../models/user/userSpinsModel.js"
 import { withTransaction } from "../../utils/dbUtils.js"
 import e from "express"
+import { logger } from "../../server.js"
 
 export function calculateGamecenterLevel(refsCount) {
   const levels = Object.keys(gamecenterLevelMap)
@@ -1263,15 +1264,15 @@ export const handleTonWalletDisconnect = async (req, res) => {
 
   return res.status(400).json({ error: false })
 }
-
 export const getLeaderboard = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1
-    const limit = parseInt(req.query.limit) || 20
-    const skip = (page - 1) * limit
-    const userId = req.query.userId ? parseInt(req.query.userId) : null // Ensure userId is parsed
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+    const userId = req.query.userId ? parseInt(req.query.userId) : null;
 
     const leaderboardPipeline = [
+      // Join with users collection for username, personage, and shelf
       {
         $lookup: {
           from: "users",
@@ -1286,16 +1287,185 @@ export const getLeaderboard = async (req, res) => {
           preserveNullAndEmptyArrays: true,
         },
       },
-      // Filter out users where user_info.personage.gender is not set
+      // Filter out users without gender
       {
         $match: {
           "user_info.personage.gender": { $exists: true, $ne: null },
         },
       },
+      // Join with user_clothings for equipped clothes
+      {
+        $lookup: {
+          from: "user_clothings",
+          localField: "id",
+          foreignField: "user_id",
+          as: "clothing_info",
+        },
+      },
+      {
+        $unwind: {
+          path: "$clothing_info",
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+      // Lookup clothing items for respect values
+      {
+        $lookup: {
+          from: "clothing",
+          let: {
+            clothingIds: [
+              "$clothing_info.hat",
+              "$clothing_info.top",
+              "$clothing_info.pants",
+              "$clothing_info.shoes",
+              "$clothing_info.accessories",
+            ],
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ["$clothing_id", "$$clothingIds"] },
+              },
+            },
+            {
+              $project: { respect: 1 },
+            },
+          ],
+          as: "clothing_items",
+        },
+      },
+      // Lookup shelf_items for respect values
+      {
+        $lookup: {
+          from: "shelf_items",
+          let: {
+            shelfIds: [
+              "$user_info.shelf.flower",
+              "$user_info.shelf.award",
+              "$user_info.shelf.event",
+              "$user_info.shelf.neko",
+              "$user_info.shelf.flag",
+              "$user_info.shelf.star",
+            ],
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $in: ["$id", "$$shelfIds"] },
+              },
+            },
+            {
+              $project: { respect: 1 },
+            },
+          ],
+          as: "shelf_items",
+        },
+      },
+      // Calculate total respect and final score
       {
         $addFields: {
-          score: {
-            $add: ["$total_earned", "$respect"],
+          // Respect from equipped clothes
+          respectFromClothes: {
+            $ifNull: [
+              {
+                $sum: {
+                  $map: {
+                    input: { $ifNull: ["$clothing_items", []] },
+                    as: "item",
+                    in: { $ifNull: ["$$item.respect", 0] },
+                  },
+                },
+              },
+              0,
+            ],
+          },
+          // Respect from shelf items
+          respectFromShelf: {
+            $ifNull: [
+              {
+                $sum: {
+                  $map: {
+                    input: { $ifNull: ["$shelf_items", []] },
+                    as: "item",
+                    in: { $ifNull: ["$$item.respect", 0] },
+                  },
+                },
+              },
+              0,
+            ],
+          },
+          // Total respect: base + clothes + shelf
+          totalRespect: {
+            $add: [
+              { $ifNull: ["$respect", 0] },
+              {
+                $ifNull: [
+                  {
+                    $sum: {
+                      $map: {
+                        input: { $ifNull: ["$clothing_items", []] },
+                        as: "item",
+                        in: { $ifNull: ["$$item.respect", 0] },
+                      },
+                    },
+                  },
+                  0,
+                ],
+              },
+              {
+                $ifNull: [
+                  {
+                    $sum: {
+                      $map: {
+                        input: { $ifNull: ["$shelf_items", []] },
+                        as: "item",
+                        in: { $ifNull: ["$$item.respect", 0] },
+                      },
+                    },
+                  },
+                  0,
+                ],
+              },
+            ],
+          },
+          // Final score: total_earned + totalRespect
+          finalScore: {
+            $add: [
+              { $ifNull: ["$total_earned", 0] },
+              {
+                $add: [
+                  { $ifNull: ["$respect", 0] },
+                  {
+                    $ifNull: [
+                      {
+                        $sum: {
+                          $map: {
+                            input: { $ifNull: ["$clothing_items", []] },
+                            as: "item",
+                            in: { $ifNull: ["$$item.respect", 0] },
+                          },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                  {
+                    $ifNull: [
+                      {
+                        $sum: {
+                          $map: {
+                            input: { $ifNull: ["$shelf_items", []] },
+                            as: "item",
+                            in: { $ifNull: ["$$item.respect", 0] },
+                          },
+                        },
+                      },
+                      0,
+                    ],
+                  },
+                ],
+              },
+            ],
           },
           "user_info.personage": { $ifNull: ["$user_info.personage", {}] },
           "user_info.username": { $ifNull: ["$user_info.username", "Unknown"] },
@@ -1304,9 +1474,11 @@ export const getLeaderboard = async (req, res) => {
           "user_info.photo_url": { $ifNull: ["$user_info.photo_url", null] },
         },
       },
+      // Sort by finalScore (total_earned + totalRespect)
       {
-        $sort: { score: -1 },
+        $sort: { finalScore: -1 },
       },
+      // Group and assign ranks
       {
         $group: {
           _id: null,
@@ -1319,26 +1491,31 @@ export const getLeaderboard = async (req, res) => {
           includeArrayIndex: "rank",
         },
       },
-    ]
+    ];
 
-    const fullList = await UserParameters.aggregate([...leaderboardPipeline])
-    const rankedUsers = fullList.map((doc) => ({
-      user_id: doc.allUsers.user_info.id,
-      name:
-        doc.allUsers.user_info.personage.name ||
-        doc.allUsers.user_info.username ||
-        "Unknown",
-      gender: doc.allUsers.user_info.personage.gender, // No default "unknown" here since we filtered
-      username: doc.allUsers.user_info.username,
-      first_name: doc.allUsers.user_info.first_name,
-      last_name: doc.allUsers.user_info.last_name,
-      photo_url: doc.allUsers.user_info.photo_url,
-      respect: doc.allUsers.respect,
-      total_earned: doc.allUsers.total_earned,
-      rank: doc.rank + 1,
-    }))
+    const fullList = await UserParameters.aggregate([...leaderboardPipeline]);
+    logger.info("Leaderboard fullList", { fullList });
 
-    // Find current user's entry (allow even if gender is missing for currentUser)
+    const rankedUsers = fullList.map((doc) => {
+      const totalRespect = doc.allUsers.totalRespect || 0; // Ensure respect is never null
+      return {
+        user_id: doc.allUsers.user_info.id,
+        name:
+          doc.allUsers.user_info.personage.name ||
+          doc.allUsers.user_info.username ||
+          "Unknown",
+        gender: doc.allUsers.user_info.personage.gender,
+        username: doc.allUsers.user_info.username,
+        first_name: doc.allUsers.user_info.first_name,
+        last_name: doc.allUsers.user_info.last_name,
+        photo_url: doc.allUsers.user_info.photo_url,
+        respect: totalRespect, // Use computed totalRespect
+        total_earned: doc.allUsers.total_earned || 0,
+        rank: doc.rank + 1,
+      };
+    });
+
+    // Find current user's entry (allow even if gender is missing)
     const currentUser = rankedUsers.find((user) => user.user_id === userId) || {
       user_id: userId,
       name: "Unknown",
@@ -1350,20 +1527,21 @@ export const getLeaderboard = async (req, res) => {
       respect: 0,
       total_earned: 0,
       rank: "N/A",
-    }
+    };
 
-    // Paginate the leaderboard
-    const leaderboard = rankedUsers.slice(skip, skip + limit)
+    // Paginate
+    const leaderboard = rankedUsers.slice(skip, skip + limit);
 
     const response = {
       leaderboard,
       currentUser,
-      totalUsers: rankedUsers.length, // Add totalUsers for frontend pagination
-    }
+      totalUsers: rankedUsers.length,
+    };
 
-    return res.status(200).json(response)
+    logger.info("Leaderboard response", { response });
+    return res.status(200).json(response);
   } catch (err) {
-    console.error("Error in getLeaderboard:", err)
-    res.status(500).json({ error: true })
+    console.error("Error in getLeaderboard:", err);
+    res.status(500).json({ error: true });
   }
-}
+};

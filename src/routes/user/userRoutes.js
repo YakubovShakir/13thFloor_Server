@@ -1425,7 +1425,7 @@ export const interactWithNeko = async (userId, targetUserId) => {
   
       const coinReward = getCoinRewardByUserLevel(user.level)
       const respectReward = getRespectRewardByNekoRarity(neko.rarity)
-      console.log(neko, neko.rarity, respectReward)
+
       // Log the interaction
       const now = new Date()
       const newAction = new ActionLogModel({
@@ -1930,8 +1930,7 @@ export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
         mappedLanguage: userLanguage,
       })
     } catch (error) {
-      log(
-        "warning",
+      logger.warn(
         "Failed to fetch user language via getChatMember, defaulting to English",
         {
           userId: targetUserId,
