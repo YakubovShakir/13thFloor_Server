@@ -324,7 +324,7 @@ async function main() {
     // deleteUsers,
     // deleteUserProcesses,
     // deleteUserInvestments,
-    deleteUserTasks,
+    // deleteUserTasks,
     // deleteUserBoosts,
     // deleteAndInsertClothing,
     // deleteAndInsertWork,

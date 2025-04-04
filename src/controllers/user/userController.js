@@ -25,6 +25,7 @@ import { upUserExperience } from "../../utils/userParameters/upUserBalance.js"
 import { recalcValuesByParameters } from "../../utils/parametersDepMath.js"
 import UserSkill from "../../models/user/userSkillModel.js"
 import { UserSpins } from "../../models/user/userSpinsModel.js"
+import { withTransaction } from "../../utils/dbUtils.js"
 
 export function calculateGamecenterLevel(refsCount) {
   const levels = Object.keys(gamecenterLevelMap)
@@ -135,11 +136,14 @@ export const prebuildInitialInventory = async (user_id) => {
   const refs = await Referal.countDocuments({ refer_id: user_id })
   await new UserCurrentInventory({
     user_id,
-    shelf: refs >= 5 ? [
-      {
-        id: 3
-      }
-    ] : [],
+    shelf:
+      refs >= 5
+        ? [
+            {
+              id: 3,
+            },
+          ]
+        : [],
     // all tier 0 items, no offence
     clothes: [
       {
@@ -917,80 +921,100 @@ export const getUserInvestments = async (req, res) => {
 
 export const buyInvestmentLevel = async (req, res) => {
   try {
-    const userId = parseInt(req.userId)
-    const { investment_type } = req.body
+    const result = await withTransaction(async (session) => {
+      const userId = parseInt(req.userId);
+      const { investment_type } = req.body;
 
-    if (!Object.values(InvestmentTypes).includes(investment_type)) {
-      return res.status(400).json({ error: true })
-    }
-
-    const user = await User.findOne({ id: userId }, { investment_levels: 1 })
-    const userParams = await UserParameters.findOne({ id: userId })
-    const userSkills = await UserSkill.find({ user_id: userId })
-    const userInvestmentLevel = user.investment_levels[investment_type]
-
-    const currentInvestment = await Investments.findOne(
-      { type: investment_type, level: userInvestmentLevel },
-      { respect: 1 }
-    )
-    const nextLevelInvestment = await Investments.findOne({
-      type: investment_type,
-      level: userInvestmentLevel + 1,
-    })
-
-    if (!nextLevelInvestment) {
-      console.log("Error in buyInvestmentLevel - nowhere to upgrade")
-      return res.status(404).json({ error: true })
-    }
-
-    // Check requirements (skip for Game Center)
-    if (investment_type !== InvestmentTypes.GameCenter) {
-      const hasRequiredSkill = nextLevelInvestment.skill_id_required
-        ? userSkills.some(
-            (skill) => skill.skill_id === nextLevelInvestment.skill_id_required
-          )
-        : true
-      const meetsLevelRequirement =
-        userParams.level >= (nextLevelInvestment.level_required || 0)
-
-      if (!hasRequiredSkill) {
-        return res
-          .status(403)
-          .json({ error: true, message: "Required skill not learned" })
+      if (!Object.values(InvestmentTypes).includes(investment_type)) {
+        throw new Error("Invalid investment type");
       }
-      if (!meetsLevelRequirement) {
-        return res
-          .status(403)
-          .json({ error: true, message: "Level requirement not met" })
-      }
-    }
 
-    if (userParams.coins >= nextLevelInvestment.price) {
+      const user = await User.findOne(
+        { id: userId },
+        { investment_levels: 1 },
+        { session }
+      );
+      if (!user) throw new Error("User not found");
+
+      const userParams = await UserParameters.findOne(
+        { id: userId },
+        null,
+        { session }
+      );
+      if (!userParams) throw new Error("User parameters not found");
+
+      const userSkills = await UserSkill.find(
+        { user_id: userId },
+        null, // No projection needed
+        { session } // Correctly passed as options
+      );
+
+      const userInvestmentLevel = user.investment_levels[investment_type];
+      const nextLevelInvestment = await Investments.findOne(
+        { type: investment_type, level: userInvestmentLevel + 1 },
+        null,
+        { session }
+      );
+
+      if (!nextLevelInvestment) {
+        console.log("Error in buyInvestmentLevel - nowhere to upgrade");
+        throw new Error("No next level investment found");
+      }
+
+      // Check requirements (skip for Game Center)
       if (investment_type !== InvestmentTypes.GameCenter) {
-        user.investment_levels[investment_type] += 1
-        userParams.respect =
-          userParams.respect -
-          (currentInvestment?.respect || 0) +
-          nextLevelInvestment.respect
-        userParams.coins = userParams.coins - nextLevelInvestment.price
-        await user.save()
-        await userParams.save()
+        const hasRequiredSkill = nextLevelInvestment.skill_id_required
+          ? userSkills.some(
+              (skill) => skill.skill_id === nextLevelInvestment.skill_id_required
+            )
+          : true;
+        const meetsLevelRequirement =
+          userParams.level >= (nextLevelInvestment.level_required || 0);
 
-        return res.status(200).json({ ok: true })
+        if (!hasRequiredSkill) {
+          throw new Error("Required skill not learned");
+        }
+        if (!meetsLevelRequirement) {
+          throw new Error("Level requirement not met");
+        }
       }
 
-      // Cannot buy Game Center directly (requires friends)
-      return res.status(400).json({ error: true })
-    }
+      if (userParams.coins >= nextLevelInvestment.price) {
+        if (investment_type !== InvestmentTypes.GameCenter) {
+          user.investment_levels[investment_type] += 1;
+          userParams.coins = Math.max(0, userParams.coins - nextLevelInvestment.price);
+          await user.save({ session });
+          await userParams.save({ session });
+          return { success: true };
+        }
+        throw new Error("Cannot buy Game Center directly (requires friends)");
+      }
+      throw new Error("Insufficient balance");
+    });
 
-    return res
-      .status(403)
-      .json({ error: true, message: "Insufficient balance" })
+    // Send response after transaction succeeds
+    return res.status(200).json(result);
   } catch (err) {
-    console.log("Error in investment upgrade", err)
-    return res.status(500).json({ error: true })
+    console.log("Error in investment upgrade", err);
+    if (err.message === "Invalid investment type") {
+      return res.status(400).json({ error: true, message: err.message });
+    }
+    if (err.message === "No next level investment found") {
+      return res.status(404).json({ error: true, message: err.message });
+    }
+    if (
+      err.message === "Required skill not learned" ||
+      err.message === "Level requirement not met" ||
+      err.message === "Cannot buy Game Center directly (requires friends)"
+    ) {
+      return res.status(403).json({ error: true, message: err.message });
+    }
+    if (err.message === "Insufficient balance") {
+      return res.status(403).json({ error: true, message: err.message });
+    }
+    return res.status(500).json({ error: true, message: "Internal server error" });
   }
-}
+};
 
 export const startInvestment = async (req, res) => {
   try {
@@ -1212,7 +1236,7 @@ export const claimUserTask = async (req, res) => {
         try {
           const member = await bot.api.getChatMember(task.channel_id, userId)
           console.log(member)
-          if(member?.status !== 'left') {
+          if (member?.status !== "left") {
             isComplete = true
           }
         } catch (err) {
@@ -1223,7 +1247,7 @@ export const claimUserTask = async (req, res) => {
         console.log("Link task - skipping")
       }
 
-      if(isComplete) {
+      if (isComplete) {
         await new CompletedTasks({ user_id: userId, task_id: task.id }).save()
         const work = await Work.findOne({ id: userParam.work_id })
         const coinsReward =
@@ -1234,7 +1258,7 @@ export const claimUserTask = async (req, res) => {
 
         await userParam.save()
       } else {
-        return res.status(403).json({ ok: true })  
+        return res.status(403).json({ ok: true })
       }
     } else {
       return res.status(404).json({ ok: true })
@@ -1288,11 +1312,11 @@ export const handleTonWalletDisconnect = async (req, res) => {
 
 export const getLeaderboard = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-    const skip = (page - 1) * limit;
-    const userId = req.query.userId ? parseInt(req.query.userId) : null; // Ensure userId is parsed
-    
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 20
+    const skip = (page - 1) * limit
+    const userId = req.query.userId ? parseInt(req.query.userId) : null // Ensure userId is parsed
+
     const leaderboardPipeline = [
       {
         $lookup: {
@@ -1341,9 +1365,9 @@ export const getLeaderboard = async (req, res) => {
           includeArrayIndex: "rank",
         },
       },
-    ];
-    
-    const fullList = await UserParameters.aggregate([...leaderboardPipeline]);
+    ]
+
+    const fullList = await UserParameters.aggregate([...leaderboardPipeline])
     const rankedUsers = fullList.map((doc) => ({
       user_id: doc.allUsers.user_info.id,
       name:
@@ -1358,8 +1382,8 @@ export const getLeaderboard = async (req, res) => {
       respect: doc.allUsers.respect,
       total_earned: doc.allUsers.total_earned,
       rank: doc.rank + 1,
-    }));
-    
+    }))
+
     // Find current user's entry (allow even if gender is missing for currentUser)
     const currentUser = rankedUsers.find((user) => user.user_id === userId) || {
       user_id: userId,
@@ -1372,18 +1396,18 @@ export const getLeaderboard = async (req, res) => {
       respect: 0,
       total_earned: 0,
       rank: "N/A",
-    };
-    
+    }
+
     // Paginate the leaderboard
-    const leaderboard = rankedUsers.slice(skip, skip + limit);
-    
+    const leaderboard = rankedUsers.slice(skip, skip + limit)
+
     const response = {
       leaderboard,
       currentUser,
       totalUsers: rankedUsers.length, // Add totalUsers for frontend pagination
-    };
-    
-    return res.status(200).json(response);
+    }
+
+    return res.status(200).json(response)
   } catch (err) {
     console.error("Error in getLeaderboard:", err)
     res.status(500).json({ error: true })

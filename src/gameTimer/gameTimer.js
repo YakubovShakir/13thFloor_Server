@@ -37,9 +37,54 @@ import Queue from 'bull';
 import winston from "winston";
 import Autoclaims from "../models/investments/autoclaimsModel.js";
 
+export const withTransaction = async (operation, session, maxRetries = 3, retryDelay = 500) => {
+  let retryCount = 0;
+
+  while (retryCount < maxRetries) {
+    try {
+      const result = await operation(session);
+
+      await session.commitTransaction();
+      return result; // Return whatever the operation returns
+    } catch (error) {
+      if (session) {
+        await session.abortTransaction();
+      }
+
+      if (error.name === "MongoServerError" && error.code === 112) {
+        retryCount++;
+        if (retryCount < maxRetries) {
+          log(
+            "warn",
+            colors.yellow(`WriteConflict detected, retrying (${retryCount}/${maxRetries})`),
+            { error: error.message }
+          );
+          await new Promise((resolve) => setTimeout(resolve, retryDelay * retryCount)); // Exponential delay
+          continue;
+        } else {
+          log(
+            "error",
+            colors.red(`Max retries (${maxRetries}) reached for WriteConflict`),
+            { error: error.message, stack: error.stack }
+          );
+          throw new Error(`Failed after ${maxRetries} retries due to WriteConflict: ${error.message}`);
+        }
+      } else {
+        log(
+          "error",
+          colors.red(`Transaction failed`),
+          { error: error.message, stack: error.stack }
+        );
+        throw error;
+      }
+    }
+  }
+};
+
 export const recalcValuesByParameters = async (
   userParameters,
-  { coinsReward = 0, moodProfit = 0 }
+  { coinsReward = 0, moodProfit = 0 },
+  session
 ) => {
   console.log(`[recalcValuesByParameters] hit by user ${userParameters.id}`);
 
@@ -77,13 +122,13 @@ export const recalcValuesByParameters = async (
     }
 
     if (adjustedCoinsReward !== 0) {
-      await upUserBalance(userParameters.id, adjustedCoinsReward); // Already uses withTransaction
+      await operationMap.updateUserBalance({ id: userParameters.id, amount: adjustedCoinsReward}, session); // Already uses withTransaction
       console.log(`[recalcValuesByParameters] balance updated with amount ${adjustedCoinsReward}`);
     }
 
     log("debug", colors.cyan(`Completed recalcValuesByParameters for user ${userParameters.id}`));
     return { mood: user.mood, coins: user.coins }; // Return updated values
-  });
+  }, session);
 };
 
 // Redis setup

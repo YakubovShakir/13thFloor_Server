@@ -190,22 +190,6 @@ export const getUserParameters = async (req, res) => {
           throw err;
         }
       }
-
-      // Handle game center investment if needed
-      if (gameCenterLevel > 0) {
-        const investment = await Investments.findOne({ 
-          type: 'game_center', 
-          level: gameCenterLevel 
-        });
-        
-        if (investment) {
-          await UserLaunchedInvestments.create({
-            user_id: userId,
-            investment_id: investment.id,
-            to_claim: investment.coins_per_hour,
-          });
-        }
-      }
     }
 
     // Get or create user parameters
