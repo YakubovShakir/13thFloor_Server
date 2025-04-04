@@ -26,6 +26,7 @@ import { recalcValuesByParameters } from "../../utils/parametersDepMath.js"
 import UserSkill from "../../models/user/userSkillModel.js"
 import { UserSpins } from "../../models/user/userSpinsModel.js"
 import { withTransaction } from "../../utils/dbUtils.js"
+import e from "express"
 
 export function calculateGamecenterLevel(refsCount) {
   const levels = Object.keys(gamecenterLevelMap)
@@ -193,6 +194,16 @@ export const getUser = async (req, res) => {
   }
 }
 
+const getInitialHatByRace = (race) => {
+  const map = {
+    white: 2,
+    black: 4,
+    asian: 4,
+  }
+
+  return map[race]
+}
+
 export const createUserPersonage = async (req, res) => {
   try {
     //
@@ -202,9 +213,6 @@ export const createUserPersonage = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ error: true })
     }
-
-    const refs = await Referal.countDocuments({ refer_id: userId })
-    const gameCenterLevel = refs > 0 ? calculateGamecenterLevel(refs) : 0
 
     await User.updateOne(
       {
@@ -216,52 +224,13 @@ export const createUserPersonage = async (req, res) => {
             race,
             gender,
           },
-          investment_levels: {
-            game_center: gameCenterLevel,
-            coffee_shop: 0,
-            zoo_shop: 0,
-          },
         },
       }
     )
-    let userParam = await UserParameters.findOne({ id: userId })
-    if (userParam) {
-      userParam.work_id = 1
-    } else {
-      userParam = new UserParameters({ id: userId })
-    }
-    await userParam.save()
 
-    if (gameCenterLevel > 0) {
-      await userParam.save()
-    }
-
-    const getInitialHatByRace = (race) => {
-      const map = {
-        white: 2,
-        black: 4,
-        asian: 4,
-      }
-
-      return map[race]
-    }
-
-    let userClothing = await UserClothing.findOne({ user_id: userId })
-    if (!userClothing) {
-      userClothing = new UserClothing({
-        user_id: userId,
-        hat: getInitialHatByRace(race),
-        top: 5,
-        pants: 6,
-        shoes: 7,
-        accessories: null,
-      })
-      await userClothing.save()
-    }
-    if (!(await UserCurrentInventory.findOne({ user_id: userId })))
-      await prebuildInitialInventory(userId)
-
-    await new UserSpins({ user_id: userId, type: "daily" }).save()
+    const userClothing = await UserClothing.findOne({ user_id: userId })
+    userClothing.hat = getInitialHatByRace(race)
+    await userClothing.save()
 
     return res.status(200).json({})
   } catch (e) {
@@ -451,17 +420,8 @@ export const handleClothesUnequip = async (req, res) => {
       console.log(doesUserHaveIt)
 
       if (doesUserHaveIt) {
-        const shelfItem = await ShelfItems.findOne({ id: clothing_id })
-        const userParam = await UserParameters.findOne({ id: userId })
-
-        userParam.respect -= shelfItem?.respect ? shelfItem?.respect : 0
-
-        console.log("Shelf item", shelfItem.respect)
-
         const currentUser = await User.findOne({ id: userId })
         const currentShelf = { ...currentUser.shelf, [type]: null }
-
-        await userParam.save()
         await User.updateOne({ id: userId }, { $set: { shelf: currentShelf } })
       }
     }
@@ -482,8 +442,6 @@ export const handleClothesEquip = async (req, res) => {
       const doesUserHaveIt = (
         await UserCurrentInventory.findOne({ user_id: userId })
       ).clothes.find((c) => c.id == clothing_id)
-
-      console.log(userId, clothing_id, type)
 
       if (isClothingReal && doesUserHaveIt) {
         await UserClothing.updateOne(
@@ -529,7 +487,6 @@ export const handleShelfEquip = async (req, res) => {
 
   try {
     const shelfItem = await ShelfItemModel.findOne({ id, type })
-    const userParams = await UserParameters.findOne({ id: userId })
 
     if (!shelfItem) {
       return res.status(400).json({ error: true })
@@ -549,7 +506,6 @@ export const handleShelfEquip = async (req, res) => {
       },
       { upsert: true }
     )
-    userParams.respect += shelfItem.respect
   } catch (err) {
     console.log("Error in handleShelfEquip", e)
     return res.status(500).json({ error: true })
@@ -568,16 +524,7 @@ export const handleShelfUnequip = async (req, res) => {
       return res.status(403).json({ error: true })
     }
 
-    const shelfItem = await ShelfItemModel.findOne({
-      id: currentShelfItemIdByType,
-      type,
-    })
-    const userParams = await UserParameters.findOne({ id: userId })
-    console.log(shelfItem)
     await User.updateOne({ id: userId }, { $set: { [`shelf.${type}`]: null } })
-
-    userParams.respect -= shelfItem.respect
-    await userParams.save()
   } catch (err) {
     console.log("Error in handleShelfEquip", e)
     return res.status(500).json({ error: true })
@@ -841,6 +788,7 @@ export const getUserInvestments = async (req, res) => {
       : null
 
     const learnedSkillIds = userSkills.map((skill) => skill.skill_id)
+    console.log("learned skill", learnedSkillIds)
 
     const response = {
       tz: moment.tz.guess(),
@@ -922,99 +870,103 @@ export const getUserInvestments = async (req, res) => {
 export const buyInvestmentLevel = async (req, res) => {
   try {
     const result = await withTransaction(async (session) => {
-      const userId = parseInt(req.userId);
-      const { investment_type } = req.body;
+      const userId = parseInt(req.userId)
+      const { investment_type } = req.body
 
       if (!Object.values(InvestmentTypes).includes(investment_type)) {
-        throw new Error("Invalid investment type");
+        throw new Error("Invalid investment type")
       }
 
       const user = await User.findOne(
         { id: userId },
         { investment_levels: 1 },
         { session }
-      );
-      if (!user) throw new Error("User not found");
+      )
+      if (!user) throw new Error("User not found")
 
-      const userParams = await UserParameters.findOne(
-        { id: userId },
-        null,
-        { session }
-      );
-      if (!userParams) throw new Error("User parameters not found");
+      const userParams = await UserParameters.findOne({ id: userId }, null, {
+        session,
+      })
+      if (!userParams) throw new Error("User parameters not found")
 
       const userSkills = await UserSkill.find(
         { user_id: userId },
         null, // No projection needed
         { session } // Correctly passed as options
-      );
+      )
 
-      const userInvestmentLevel = user.investment_levels[investment_type];
+      const userInvestmentLevel = user.investment_levels[investment_type]
       const nextLevelInvestment = await Investments.findOne(
         { type: investment_type, level: userInvestmentLevel + 1 },
         null,
         { session }
-      );
+      )
 
       if (!nextLevelInvestment) {
-        console.log("Error in buyInvestmentLevel - nowhere to upgrade");
-        throw new Error("No next level investment found");
+        console.log("Error in buyInvestmentLevel - nowhere to upgrade")
+        throw new Error("No next level investment found")
       }
 
       // Check requirements (skip for Game Center)
       if (investment_type !== InvestmentTypes.GameCenter) {
         const hasRequiredSkill = nextLevelInvestment.skill_id_required
           ? userSkills.some(
-              (skill) => skill.skill_id === nextLevelInvestment.skill_id_required
+              (skill) =>
+                skill.skill_id === nextLevelInvestment.skill_id_required
             )
-          : true;
+          : true
         const meetsLevelRequirement =
-          userParams.level >= (nextLevelInvestment.level_required || 0);
+          userParams.level >= (nextLevelInvestment.level_required || 0)
 
         if (!hasRequiredSkill) {
-          throw new Error("Required skill not learned");
+          throw new Error("Required skill not learned")
         }
         if (!meetsLevelRequirement) {
-          throw new Error("Level requirement not met");
+          throw new Error("Level requirement not met")
         }
       }
 
       if (userParams.coins >= nextLevelInvestment.price) {
         if (investment_type !== InvestmentTypes.GameCenter) {
-          user.investment_levels[investment_type] += 1;
-          userParams.coins = Math.max(0, userParams.coins - nextLevelInvestment.price);
-          await user.save({ session });
-          await userParams.save({ session });
-          return { success: true };
+          user.investment_levels[investment_type] += 1
+          userParams.coins = Math.max(
+            0,
+            userParams.coins - nextLevelInvestment.price
+          )
+          await user.save({ session })
+          await userParams.save({ session })
+          return { success: true }
         }
-        throw new Error("Cannot buy Game Center directly (requires friends)");
+        throw new Error("Cannot buy Game Center directly (requires friends)")
       }
-      throw new Error("Insufficient balance");
-    });
+      throw new Error("Insufficient balance")
+    })
 
     // Send response after transaction succeeds
-    return res.status(200).json(result);
+    return res.status(200).json(result)
   } catch (err) {
-    console.log("Error in investment upgrade", err);
+    console.log("Error in investment upgrade", err)
     if (err.message === "Invalid investment type") {
-      return res.status(400).json({ error: true, message: err.message });
+      return res.status(400).json({ error: true, message: err.message })
     }
     if (err.message === "No next level investment found") {
-      return res.status(404).json({ error: true, message: err.message });
+      return res.status(404).json({ error: true, message: err.message })
     }
     if (
       err.message === "Required skill not learned" ||
       err.message === "Level requirement not met" ||
       err.message === "Cannot buy Game Center directly (requires friends)"
     ) {
-      return res.status(403).json({ error: true, message: err.message });
+      return res.status(403).json({ error: true, message: err.message })
     }
     if (err.message === "Insufficient balance") {
-      return res.status(403).json({ error: true, message: err.message });
+      return res.status(403).json({ error: true, message: err.message })
     }
-    return res.status(500).json({ error: true, message: "Internal server error" });
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal server error" })
   }
-};
+}
 
 export const startInvestment = async (req, res) => {
   try {
@@ -1156,6 +1108,7 @@ export const saveProfileData = async (req, res) => {
       first_name = null,
       last_name = null,
       username = null,
+      tz = 'Europe/Moscow'
     } = req.body
 
     const setBlock = {}
@@ -1164,6 +1117,7 @@ export const saveProfileData = async (req, res) => {
     if (first_name) setBlock.first_name = first_name
     if (last_name) setBlock.last_name = last_name
     if (username) setBlock.username = username
+    if (tz) setBlock.tz = tz
 
     if (JSON.stringify(setBlock) !== JSON.stringify({})) {
       await User.updateOne({ id: userId }, { $set: setBlock })

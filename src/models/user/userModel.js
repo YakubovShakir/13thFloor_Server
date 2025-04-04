@@ -56,7 +56,8 @@ const schema = new mongoose.Schema(
       zoo_shop: { type: Boolean, default: false },
     },
     tonWalletAddress: { type: String, default: null, trim: true },
-    is_withdrawing: { type: Boolean, default: false }
+    is_withdrawing: { type: Boolean, default: false },
+    tz: { type: String, default: null, trim: true },
   },
   { timestamps: true }
 )

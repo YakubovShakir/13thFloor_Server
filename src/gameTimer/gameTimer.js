@@ -36,6 +36,7 @@ import NFTItems from "../models/nft/nftItemModel.js";
 import Queue from 'bull';
 import winston from "winston";
 import Autoclaims from "../models/investments/autoclaimsModel.js";
+import { UserSpins } from "../models/user/userSpinsModel.js";
 
 export const withTransaction = async (operation, session, maxRetries = 3, retryDelay = 500) => {
   let retryCount = 0;
@@ -669,7 +670,7 @@ const operationMap = {
 
     const now = moment();
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
-    const totalDurationSeconds = skill.base_duration_in_seconds || 60; // Default to 1 minute if missing
+    const totalDurationSeconds = process.target_duration_in_seconds || process.base_duration_in_seconds || 60; // Default to 1 minute if missing
     const actualDurationSeconds = calculateDuration(totalDurationSeconds / 60, 0); // No decrease for simplicity
 
     if (processDurationSeconds >= actualDurationSeconds) {
@@ -1397,6 +1398,31 @@ const nftScanConfig = {
   getTypeSpecificParams: () => ({}),
 };
 
+const spinScanConfig = {
+  processType: "nft_scan",
+  cronSchedule: "*10 * * * * *",
+  durationFunction: async () => {
+    try {
+      const users = await User.find({}, { id: 1, tz: 1 })
+
+      await processInBatches(users, 50, async (user) => {
+        const spin = await UserSpins.findOne({ id: user.id, type: 'daily' }, null, { createdAt: 'DESC' })
+        const now = moment().tz(user.tz || moment.tz.guess());
+        const created = moment(spin.createdAt).tz(user.tz || moment.tz.guess());
+        const isNewDay = now.startOf('day').isAfter(created.startOf('day'));
+        
+        if (isNewDay) {
+          const spin = new UserSpins({ user_id: user.id, type: 'daily'})
+          await spin.save()
+        }
+      });
+      log.info("NFT-scanner process scheduler finished iteration", { totalUsers: usersWithWallets.length });
+    } catch(err) {
+      log.error('Error processing spin giveaways')
+    }
+  }
+}
+
 async function openWallet(mnemonic, testnet) {
   const keyPair = await mnemonicToPrivateKey(mnemonic);
   const toncenterBaseEndpoint = testnet ? "https://testnet.toncenter.com" : "https://toncenter.com";
@@ -1592,7 +1618,7 @@ export const AutoclaimProccess = processIndependentScheduler("autoclaim", autocl
 export const NftScanProcess = processIndependentScheduler("nft_scan", nftScanConfig);
 export const TxScanProcess = processIndependentScheduler("TX_SCANNER", txScanConfig);
 export const RefsRecalsProcess = processIndependentScheduler("investment_level_checks", investmentLevelsProcessConfig);
-
+export const SpinScanProcess = processIndependentScheduler("spin_scan_process", spinScanConfig)
 // Utility to format memory usage in MB
 const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 
