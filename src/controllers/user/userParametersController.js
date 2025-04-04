@@ -159,7 +159,7 @@ export const calcRespectFromClothes = async (userId) => {
 export const getUserParameters = async (req, res) => {
   let user, parameters, userClothing, inventory
   try {
-    const userId = parseInt(req.userId)
+    const userId = parseInt(req.params.id)
     if (!userId) {
       return res.status(400).json({ error: "bad request" })
     }
