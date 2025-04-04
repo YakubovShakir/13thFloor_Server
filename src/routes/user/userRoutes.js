@@ -52,7 +52,7 @@ import Bottleneck from "bottleneck"
 import crypto from "crypto"
 import { canApplyConstantEffects } from "../../utils/parametersDepMath.js"
 import UserParameters from "../../models/user/userParametersModel.js"
-import { Bot } from "grammy"
+import { Bot, session } from "grammy"
 import TONTransactions from "../../models/tx/tonTransactionModel.js"
 import NFTItems from "../../models/nft/nftItemModel.js"
 import mongoose from "mongoose"
@@ -68,7 +68,7 @@ import { queueAffiliateWithdrawal } from "../../daemons/utils/affiliateTxsUtils.
 import Investments from "../../models/investments/investmentModel.js"
 const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON
 import { logger } from '../../server.js'
-import { openWallet } from "../../services/paymentService.js"
+import { openWallet, withTransaction } from "../../services/paymentService.js"
 import StarsTransactions from '../../models/tx/starsTransactionModel.mjs'
 import AffiliateTransaction from '../../models/tx/affiliateTransactionModel.js'
 import Autoclaims from "../../models/investments/autoclaimsModel.js"
@@ -1376,113 +1376,118 @@ export const getNekoInteractionState = async (userId, targetUserId) => {
 // Interact with a neko
 export const interactWithNeko = async (userId, targetUserId) => {
   try {
-    if (userId === targetUserId || !targetUserId) {
-      throw new Error("Cannot interact with yourself or nobody")
-    }
-
-    // Check neko cooldown (per target user)
-    const interactionState = await getNekoInteractionState(userId, targetUserId)
-    if (!interactionState.canClick) {
-      throw new Error(
-        "This user's neko is still on cooldown from being clicked"
+    await withTransaction(async (session) => {
+      if (userId === targetUserId || !targetUserId) {
+        throw new Error("Cannot interact with yourself or nobody")
+      }
+  
+      // Check neko cooldown (per target user)
+      const interactionState = await getNekoInteractionState(userId, targetUserId)
+      if (!interactionState.canClick) {
+        throw new Error(
+          "This user's neko is still on cooldown from being clicked"
+        )
+      }
+  
+      // Fetch the target user's neko
+      const targetUser = await User.findOne(
+        { id: targetUserId },
+        { "shelf.neko": 1 },
+        { session }
       )
-    }
-
-    // Fetch the target user's neko
-    const targetUser = await User.findOne(
-      { id: targetUserId },
-      { "shelf.neko": 1 }
-    )
-    const targetUserParams = await UserParameters.findOne(
-      {
-        id: targetUserId,
-      },
-      { respect: 1 }
-    )
-    const user = await UserParameters.findOne(
-      {
-        id: userId,
-      },
-      { level: 1, respect: 1 }
-    )
-
-    if (!targetUser) {
-      throw new Error("Target user not found")
-    }
-    const nekoId = targetUser?.shelf?.neko || null
-    if (!nekoId) {
-      throw new Error("Target user has no neko")
-    }
-
-    const neko = await ShelfItemModel.findOne({ id: nekoId })
-
-    const activeEffectType = getActiveEffectTypeByNekoId(nekoId)
-    const boostPercentage = getBoostPercentageFromType(activeEffectType)
-
-    const coinReward = getCoinRewardByUserLevel(user.level)
-    const respectReward = getRespectRewardByNekoRarity(neko.rarity)
-    console.log(neko, neko.rarity, respectReward)
-    // Log the interaction
-    const now = new Date()
-    const newAction = new ActionLogModel({
-      user_id: targetUserId, // Target whose neko was clicked
-      action_type: ActionTypes.NekoInteract,
-      action_timestamp: now,
-      metadata: {
-        nekoId,
-        boostPercentage,
-        activeEffectType,
-        coinReward,
-        clickedBy: userId,
-      },
-      triggered_by: userId,
-    })
-    await newAction.save()
-
-    // Apply boost to the owner (targetUserId)
-    if (activeEffectType && boostPercentage > 0) {
-      const userEffect = new ActiveEffectsModel({
-        user_id: targetUserId, // Only the owner gets the effect
-        type: activeEffectType,
-        valid_until: new Date(now.getTime() + EFFECT_DURATION_MS),
+      const targetUserParams = await UserParameters.findOne(
+        {
+          id: targetUserId,
+        },
+        { respect: 1 },
+        { session }
+      )
+      const user = await UserParameters.findOne(
+        {
+          id: userId,
+        },
+        { level: 1, respect: 1 },
+        { session }
+      )
+  
+      if (!targetUser) {
+        throw new Error("Target user not found")
+      }
+      const nekoId = targetUser?.shelf?.neko || null
+      if (!nekoId) {
+        throw new Error("Target user has no neko")
+      }
+  
+      const neko = await ShelfItemModel.findOne({ id: nekoId })
+  
+      const activeEffectType = getActiveEffectTypeByNekoId(nekoId)
+      const boostPercentage = getBoostPercentageFromType(activeEffectType)
+  
+      const coinReward = getCoinRewardByUserLevel(user.level)
+      const respectReward = getRespectRewardByNekoRarity(neko.rarity)
+      console.log(neko, neko.rarity, respectReward)
+      // Log the interaction
+      const now = new Date()
+      const newAction = new ActionLogModel({
+        user_id: targetUserId, // Target whose neko was clicked
+        action_type: ActionTypes.NekoInteract,
+        action_timestamp: now,
+        metadata: {
+          nekoId,
+          boostPercentage,
+          activeEffectType,
+          coinReward,
+          clickedBy: userId,
+        },
         triggered_by: userId,
       })
-
-      await userEffect.save()
-      logger.info( "Effect applied to owner", {
-        userId: targetUserId,
-        effectType: activeEffectType,
+      await newAction.save({ session })
+  
+      // Apply boost to the owner (targetUserId)
+      if (activeEffectType && boostPercentage > 0) {
+        const userEffect = new ActiveEffectsModel({
+          user_id: targetUserId, // Only the owner gets the effect
+          type: activeEffectType,
+          valid_until: new Date(now.getTime() + EFFECT_DURATION_MS),
+          triggered_by: userId,
+        })
+  
+        await userEffect.save({ session })
+        logger.info( "Effect applied to owner", {
+          userId: targetUserId,
+          effectType: activeEffectType,
+        })
+        await sendNekoBoostMessage(targetUserId, boostPercentage)
+  
+        targetUserParams.respect += respectReward
+        await targetUserParams.save({ session })
+        logger.info(
+          `Added ${respectReward} respect to user ${targetUserId}`
+        )
+      }
+  
+      // Add coins to the clicker (userId)
+      if (coinReward > 0) {
+        await upUserBalance(userId, coinReward, session)
+        logger.info( "Coins added to clicker", { userId, coinReward })
+      }
+  
+      logger.info( "Neko interacted", {
+        userId,
+        targetUserId,
+        nekoId,
+        boostPercentage,
+        boostType: activeEffectType,
+        coinReward,
+        cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
       })
-      await sendNekoBoostMessage(targetUserId, boostPercentage)
-
-      targetUserParams.respect += respectReward
-      await targetUserParams.save()
-      logger.info(
-        `Added ${respectReward} respect to user ${targetUserId}`
-      )
-    }
-
-    // Add coins to the clicker (userId)
-    if (coinReward > 0) {
-      await upUserBalance(userId, coinReward)
-      logger.info( "Coins added to clicker", { userId, coinReward })
-    }
-
-    logger.info( "Neko interacted", {
-      userId,
-      targetUserId,
-      nekoId,
-      boostPercentage,
-      boostType: activeEffectType,
-      coinReward,
-      cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
+  
+      return {
+        cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
+        received_coins: coinReward,
+        owners_boost: boostPercentage,
+      }
     })
-
-    return {
-      cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
-      received_coins: coinReward,
-      owners_boost: boostPercentage,
-    }
   } catch (error) {
     console.error(
       `Error interacting with neko for user ${userId} on target ${targetUserId}:`,
