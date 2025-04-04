@@ -934,7 +934,7 @@ export default [
       en: "Cafeteria"
     },
     skill_id_required: 49,
-    level_required: 7
+    level_required: 8
   },
   {
     id: 68,
@@ -949,7 +949,7 @@ export default [
       en: "Cafeteria"
     },
     skill_id_required: 49,
-    level_required: 7
+    level_required: 8
   },
   {
     id: 69,
@@ -964,7 +964,7 @@ export default [
       en: "Cafeteria"
     },
     skill_id_required: 49,
-    level_required: 7
+    level_required: 8
   },
   {
     id: 70,
@@ -979,7 +979,7 @@ export default [
       en: "Cafeteria"
     },
     skill_id_required: 49,
-    level_required: 7
+    level_required: 8
   },
   {
     id: 71,
@@ -994,8 +994,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 50,
-    level_required: 8
+    skill_id_required: 47,
+    level_required: 6
   },
   {
     id: 72,
@@ -1009,8 +1009,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 50,
-    level_required: 8
+    skill_id_required: 47,
+    level_required: 6
   },
   {
     id: 73,
@@ -1024,8 +1024,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 50,
-    level_required: 8
+    skill_id_required: 47,
+    level_required: 6
   },
   {
     id: 74,
@@ -1039,8 +1039,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 50,
-    level_required: 8
+    skill_id_required: 48,
+    level_required: 7
   },
   {
     id: 75,
@@ -1054,8 +1054,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 50,
-    level_required: 8
+    skill_id_required: 48,
+    level_required: 7
   },
   {
     id: 76,
@@ -1069,7 +1069,7 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 50,
+    skill_id_required: 48,
     level_required: 8
   },
   {
@@ -1084,7 +1084,7 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 50,
+    skill_id_required: 48,
     level_required: 8
   },
   {
@@ -1099,8 +1099,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 51,
-    level_required: 12
+    skill_id_required: 49,
+    level_required: 8
   },
   {
     id: 79,
@@ -1114,8 +1114,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 51,
-    level_required: 12
+    skill_id_required: 49,
+    level_required: 8
   },
   {
     id: 80,
@@ -1129,8 +1129,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 51,
-    level_required: 12
+    skill_id_required: 49,
+    level_required: 8
   },
   {
     id: 81,
@@ -1144,8 +1144,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 51,
-    level_required: 12
+    skill_id_required: 49,
+    level_required: 9
   },
   {
     id: 82,
@@ -1159,8 +1159,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 51,
-    level_required: 12
+    skill_id_required: 50,
+    level_required: 10
   },
   {
     id: 83,
@@ -1174,8 +1174,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 51,
-    level_required: 12
+    skill_id_required: 50,
+    level_required: 10
   },
   {
     id: 84,
@@ -1189,8 +1189,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 51,
-    level_required: 12
+    skill_id_required: 50,
+    level_required: 10
   },
   {
     id: 85,
@@ -1204,8 +1204,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 51,
-    level_required: 12
+    skill_id_required: 50,
+    level_required: 11
   },
   {
     id: 86,
@@ -1219,8 +1219,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 51,
-    level_required: 12
+    skill_id_required: 50,
+    level_required: 11
   },
   {
     id: 87,
@@ -1234,8 +1234,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 51,
-    level_required: 12
+    skill_id_required: 50,
+    level_required: 11
   },
   {
     id: 88,
@@ -1264,8 +1264,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 52,
-    level_required: 14
+    skill_id_required: 51,
+    level_required: 12
   },
   {
     id: 90,
@@ -1279,8 +1279,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 52,
-    level_required: 14
+    skill_id_required: 51,
+    level_required: 12
   },
   {
     id: 91,
@@ -1294,8 +1294,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 52,
-    level_required: 14
+    skill_id_required: 51,
+    level_required: 13
   },
   {
     id: 92,
@@ -1384,8 +1384,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 53,
-    level_required: 16
+    skill_id_required: 52,
+    level_required: 15
   },
   {
     id: 98,
@@ -1399,8 +1399,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 53,
-    level_required: 16
+    skill_id_required: 52,
+    level_required: 15
   },
   {
     id: 99,
@@ -1414,8 +1414,8 @@ export default [
       ru: "Зоомагазин",
       en: "Pet Store"
     },
-    skill_id_required: 53,
-    level_required: 16
+    skill_id_required: 52,
+    level_required: 15
   },
   {
     id: 100,

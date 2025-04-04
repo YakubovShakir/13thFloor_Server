@@ -105,7 +105,7 @@ export default [
     respect_required: 66,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FSecretary.webp",
     duration: 30,
-    experience_reward: 1140
+    experience_reward: 1000
   },
   {
     work_id: 7,
@@ -123,7 +123,7 @@ export default [
     respect_required: 105,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FOffice%20Manager.webp",
     duration: 45,
-    experience_reward: 1890
+    experience_reward: 1300
   },
   {
     work_id: 8,
@@ -141,7 +141,7 @@ export default [
     respect_required: 185,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FSales%20Manager.webp",
     duration: 50,
-    experience_reward: 2300
+    experience_reward: 1800
   },
   {
     work_id: 9,
@@ -159,7 +159,7 @@ export default [
     respect_required: 210,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FPurchasing-Manager.webp",
     duration: 55,
-    experience_reward: 3025
+    experience_reward: 2500
   },
   {
     work_id: 10,
@@ -177,7 +177,7 @@ export default [
     respect_required: 260,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FCopywriter.webp",
     duration: 60,
-    experience_reward: 3600
+    experience_reward: 3000
   },
   {
     work_id: 11,
@@ -195,7 +195,7 @@ export default [
     respect_required: 300,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FMarketer.webp",
     duration: 70,
-    experience_reward: 4760
+    experience_reward: 3760
   },
   {
     work_id: 12,
@@ -213,7 +213,7 @@ export default [
     respect_required: 400,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FBrand-Manager.webp",
     duration: 75,
-    experience_reward: 5625
+    experience_reward: 4625
   },
   {
     work_id: 13,
@@ -231,7 +231,7 @@ export default [
     respect_required: 450,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FHR.webp",
     duration: 85,
-    experience_reward: 7225
+    experience_reward: 5225
   },
   {
     work_id: 14,
@@ -249,7 +249,7 @@ export default [
     respect_required: 500,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FProject%20Manager.webp",
     duration: 95,
-    experience_reward: 9025
+    experience_reward: 6025
   },
   {
     work_id: 15,
@@ -267,7 +267,7 @@ export default [
     respect_required: 550,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FteamLid.webp",
     duration: 110,
-    experience_reward: 13200
+    experience_reward: 8200
   },
   {
     work_id: 16,
@@ -285,7 +285,7 @@ export default [
     respect_required: 6000,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FDeputy-Director.webp",
     duration: 125,
-    experience_reward: 17500
+    experience_reward: 10500
   },
   {
     work_id: 17,
@@ -303,7 +303,7 @@ export default [
     respect_required: 700,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FExecutive.webp",
     duration: 140,
-    experience_reward: 22400
+    experience_reward: 12400
   },
   {
     work_id: 18,
@@ -321,7 +321,7 @@ export default [
     respect_required: 800,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FPartner.webp",
     duration: 155,
-    experience_reward: 27900
+    experience_reward: 14900
   },
   {
     work_id: 19,
@@ -339,7 +339,7 @@ export default [
     respect_required: 900,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FCEO.webp",
     duration: 170,
-    experience_reward: 34000
+    experience_reward: 18000
   },
   {
     work_id: 20,
@@ -357,6 +357,6 @@ export default [
     respect_required: 1250,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FMillionaire.webp",
     duration: 185,
-    experience_reward: 46250
+    experience_reward: 22250
   }
 ]

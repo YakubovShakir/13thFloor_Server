@@ -900,7 +900,7 @@ export default [
       ru: "Искусство паниковать с умом",
       en: "The Art of Panicking Smartly"
     },
-    coins_price: 2500,
+    coins_price: 3500,
     experience_reward: 0,
     requiredLevel: 4,
     description: 
@@ -920,7 +920,7 @@ export default [
       ru: "Технический анализ",
       en: "Technical Analysis"
     },
-    coins_price: 6000,
+    coins_price: 8000,
     experience_reward: 0,
     requiredLevel: 5,
     description: 
@@ -940,7 +940,7 @@ export default [
       ru: "Фундаментальный анализ",
       en: "Fundamental Analysis"
     },
-    coins_price: 10000,
+    coins_price: 12000,
     experience_reward: 0,
     requiredLevel: 6,
     description: 
@@ -960,7 +960,7 @@ export default [
       ru: "Управление портфелем",
       en: "Portfolio Management"
     },
-    coins_price: 20000,
+    coins_price: 30000,
     experience_reward: 0,
     requiredLevel: 8,
     description: 
@@ -980,7 +980,7 @@ export default [
       ru: "Макроэкономика",
       en: "Macroeconomics"
     },
-    coins_price: 40000,
+    coins_price: 50000,
     experience_reward: 0,
     requiredLevel: 10,
     description: 
@@ -1000,7 +1000,7 @@ export default [
       ru: "Переговоры",
       en: "Negotiations"
     },
-    coins_price: 60000,
+    coins_price: 80000,
     experience_reward: 0,
     requiredLevel: 12,
     description: 
@@ -1020,7 +1020,7 @@ export default [
       ru: "Краудфандинг",
       en: "Crowdfunding"
     },
-    coins_price: 90000,
+    coins_price: 120000,
     experience_reward: 0,
     requiredLevel: 14,
     description: 
@@ -1040,7 +1040,7 @@ export default [
       ru: "Налоговое планирование",
       en: "Tax Planning"
     },
-    coins_price: 120000,
+    coins_price: 180000,
     experience_reward: 0,
     requiredLevel: 16,
     description: 
@@ -1060,7 +1060,7 @@ export default [
       ru: "Психология инвестора",
       en: "Investor Psychology"
     },
-    coins_price: 190000,
+    coins_price: 250000,
     experience_reward: 0,
     requiredLevel: 18,
     description: 
