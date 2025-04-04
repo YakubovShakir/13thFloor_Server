@@ -1,7 +1,5 @@
 import Clothing from "../../models/clothing/clothingModel.js"
-import Investments from "../../models/investments/investmentModel.js"
 import Referal from "../../models/referral/referralModel.js"
-import { ShelfItems } from "../../models/shelfItem/migration.js"
 import ShelfItemModel, {
   ShelfItemTypes,
 } from "../../models/shelfItem/shelfItemModel.js"
@@ -11,7 +9,6 @@ import User from "../../models/user/userModel.js"
 import Users from "../../models/user/userModel.js"
 import UserParameters from "../../models/user/userParametersModel.js"
 import { prebuildInitialInventory } from "./userController.js"
-import UserLaunchedInvestments from "../../models/investments/userLaunchedInvestments.js"
 import {
   ConstantEffects,
   ConstantEffectTypes,
@@ -173,7 +170,6 @@ export const getUserParameters = async (req, res) => {
     const refs = await Referal.countDocuments({ refer_id: userId })
 
     if (!user || !parameters || !userClothing || !inventory) {
-      console.log("Registering user with ID", userId)
       const gameCenterLevel = gamecenterLevelMap[refs.toString()] || 0
 
       userClothing = await UserClothing.findOne({ user_id: userId })
@@ -190,6 +186,7 @@ export const getUserParameters = async (req, res) => {
       }
 
       if (!user) {
+        logger.info('Registering new user', { userId: req.userId })
         // Create user document
         const userData = {
           id: userId,
@@ -216,14 +213,13 @@ export const getUserParameters = async (req, res) => {
         }
 
         user = await Users.create(userData) // Use create instead of new...save()
+        await UserSpins.create({ user_id: userId, type: "daily" })
       }
 
       inventory = await UserCurrentInventory.findOne({ user_id: userId })
       if (!inventory) {
         await prebuildInitialInventory(userId)
       }
-
-      await new UserSpins({ user_id: userId, type: "daily" }).save()
 
       if (!parameters) {
         parameters = await UserParameters.create({

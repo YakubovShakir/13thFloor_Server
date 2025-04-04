@@ -1399,26 +1399,46 @@ const nftScanConfig = {
 };
 
 const spinScanConfig = {
-  processType: "nft_scan",
-  cronSchedule: "*10 * * * * *",
+  processType: "spin_scan",
+  cronSchedule: "*/10 * * * * *",
   durationFunction: async () => {
     try {
-      const users = await User.find({}, { id: 1, tz: 1 })
-
+      const users = await User.find({}, { id: 1, tz: 1 });
+      let totalUsersAwarded = 0;
+  
       await processInBatches(users, 50, async (user) => {
-        const spin = await UserSpins.findOne({ id: user.id, type: 'daily' }, null, { createdAt: 'DESC' })
-        const now = moment().tz(user.tz || moment.tz.guess());
-        const created = moment(spin.createdAt).tz(user.tz || moment.tz.guess());
-        const isNewDay = now.startOf('day').isAfter(created.startOf('day'));
-        
-        if (isNewDay) {
-          const spin = new UserSpins({ user_id: user.id, type: 'daily'})
-          await spin.save()
+        const userTz = user.tz || moment.tz.guess(); // Fallback to guessed timezone
+        const midnightTodayInTz = moment.tz(userTz).startOf("day"); // Midnight today in user's timezone
+  
+        // Find the most recent daily spin for this user
+        const latestSpin = await UserSpins.findOne(
+          { user_id: user.id, type: "daily" },
+          null,
+          { sort: { createdAt: -1 } } // Ensure latest spin is fetched
+        );
+  
+        let shouldAwardSpin = false;
+  
+        if (!latestSpin) {
+          // No previous spin, award one
+          shouldAwardSpin = true;
+        } else {
+          // Check if the last spin was before midnight today in the user's timezone
+          const lastSpinTimeInTz = moment.tz(latestSpin.createdAt, userTz);
+          shouldAwardSpin = lastSpinTimeInTz.isBefore(midnightTodayInTz);
+        }
+  
+        if (shouldAwardSpin) {
+          const newSpin = new UserSpins({ user_id: user.id, type: "daily" });
+          await newSpin.save();
+          totalUsersAwarded += 1;
+          log.info("Awarded daily spin", { userId: user.id, timezone: userTz });
         }
       });
-      log.info("NFT-scanner process scheduler finished iteration", { totalUsers: usersWithWallets.length });
-    } catch(err) {
-      log.error('Error processing spin giveaways')
+  
+      log.info("Spin checker process scheduler finished iteration", { totalUsersAwarded });
+    } catch (err) {
+      log.error("Error processing spin giveaways", { error: err.message, stack: err.stack });
     }
   }
 }
@@ -1618,7 +1638,7 @@ export const AutoclaimProccess = processIndependentScheduler("autoclaim", autocl
 export const NftScanProcess = processIndependentScheduler("nft_scan", nftScanConfig);
 export const TxScanProcess = processIndependentScheduler("TX_SCANNER", txScanConfig);
 export const RefsRecalsProcess = processIndependentScheduler("investment_level_checks", investmentLevelsProcessConfig);
-export const SpinScanProcess = processIndependentScheduler("spin_scan_process", spinScanConfig)
+export const SpinScanProcess = processIndependentScheduler("spin_scan", spinScanConfig)
 // Utility to format memory usage in MB
 const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 
@@ -1633,6 +1653,7 @@ const gameTimer = {
   RefsRecalsProcess,
   NftScanProcess,
   TxScanProcess,
+  SpinScanProcess,
   stopAll() {
     Object.values(this).forEach((scheduler) => {
       if (scheduler && typeof scheduler.stop === "function") {
