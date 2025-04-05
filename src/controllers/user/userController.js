@@ -891,7 +891,7 @@ export const buyInvestmentLevel = async (req, res) => {
       if (!userParams) throw new Error("User parameters not found")
 
       const userSkills = await UserSkill.find(
-        { user_id: userId },
+        { id: userId },
         null, // No projection needed
         { session } // Correctly passed as options
       )
@@ -1264,12 +1264,13 @@ export const handleTonWalletDisconnect = async (req, res) => {
 
   return res.status(400).json({ error: false })
 }
+
 export const getLeaderboard = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
     const skip = (page - 1) * limit;
-    const userId = req.query.userId ? parseInt(req.query.userId) : null;
+    const userId = req.userId;
 
     const leaderboardPipeline = [
       // Join with users collection for username, personage, and shelf
@@ -1311,7 +1312,7 @@ export const getLeaderboard = async (req, res) => {
       // Lookup clothing items for respect values
       {
         $lookup: {
-          from: "clothing",
+          from: "clothings",
           let: {
             clothingIds: [
               "$clothing_info.hat",
