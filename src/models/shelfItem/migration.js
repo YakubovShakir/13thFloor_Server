@@ -157,8 +157,8 @@ export const ShelfItems = [
       en: "Neko-cat",
     },
     description: {
-      ru: "Каждый час вы можете получить бонус к доходу, если на вашего кота нажмет другой игрок",
-      en: "Every hour you can get an income bonus if another player clicks on your cat",
+      ru: "Каждый час вы можете получить бонус к доходу +5%, если на вашего кота нажмет другой игрок",
+      en: "Every hour you can get an income bonus +5%, if another player clicks on your cat",
     },
     cost: {
       coins: 0,
