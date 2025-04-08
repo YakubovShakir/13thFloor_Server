@@ -358,5 +358,23 @@ export default [
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FMillionaire.webp",
     duration: 185,
     experience_reward: 22250
+  },
+  {
+    work_id: 21,
+    name: {
+      ru: "Ночной охранник",
+      en: "Night Guard"
+    },
+    requiredLevel: 3,
+    coins_price: 10000,
+    coins_in_hour: 600,
+    energy_cost_per_minute: 500/60,
+    mood_cost_per_minute: 6/60,
+    hungry_cost_per_minute: 10/60,
+    skill_id_required: 57,
+    respect_required: 300,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FNightSecurity.webp",
+    duration: 180,
+    experience_reward: 400
   }
 ]
