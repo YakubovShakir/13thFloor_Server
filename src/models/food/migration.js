@@ -139,11 +139,11 @@ export default [
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
-      value: 35,
+      value: 25,
       percent: true,
     },
     long_hungry_restore: {
-      value: 20,
+      value: 10,
       percent: true,
     },
     instant_mood_restore:  null,
@@ -166,17 +166,17 @@ export default [
     instant_energy_restore: null,
     long_energy_restore: null,
     instant_hungry_restore: {
-      value: 25,
+      value: 35,
       percent: true,
     },
     long_hungry_restore: {
-      value: 10,
+      value: 20,
       percent: true,
     },
     instant_mood_restore: null,
     
     long_mood_restore: null,
-    coins_price: 600,
+    coins_price: 800,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Food%2FPizza.webp",
     food_id: 7,
   },
