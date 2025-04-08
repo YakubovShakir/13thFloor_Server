@@ -5,6 +5,10 @@ export default [
       ru: "Уборщик",
       en: "Janitor"
     },
+    description: {
+      ru: "Не самая престижная работа, но позор длится около 1 минуты",
+      en: "Not the most prestigious job, but the shame lasts about 1 minute",
+    },
     requiredLevel: 1,
     coins_price: 1,
     coins_in_hour: 900,
@@ -22,6 +26,10 @@ export default [
     name: {
       ru: "Курьер",
       en: "Courier"
+    },
+    description: {
+      ru: "5 минут в шкуре курьера и ты с кедами на ногах и яблоками в кармане, а стыд уже забыт!",
+      en: "5 minutes as a courier nd you’ve got sneakers on your feet, apples in your pocket, and the shame’s already a memory!",
     },
     requiredLevel: 2,
     coins_price: 23,
@@ -41,6 +49,10 @@ export default [
       ru: "Мойщик тарелок",
       en: "Plate washer"
     },
+    description: {
+      ru: "8 минут в роли мойщика тарелок и ты выжил в пенной битве с грязью!",
+      en: "8 minutes as a plate washer and you’ve survived the foamy battle with grime!",
+    },
     requiredLevel: 3,
     coins_price: 60,
     coins_in_hour: 1500,
@@ -58,6 +70,10 @@ export default [
     name: {
       ru: "Официант",
       en: "Waiter"
+    },
+    description: {
+      ru: "12 минут разносишь заказы и держишь улыбку на лице",
+      en: "12 minutes of carrying orders and keeping a smile on your face",
     },
     requiredLevel: 4,
     coins_price: 250,
@@ -77,6 +93,10 @@ export default [
       ru: "Администратор",
       en: "Manager"
     },
+    description: {
+      ru: "20 минут управляешь хаосом заказов и сажаешь гостей за лучшие столики",
+      en: "20 minutes of managing order chaos and seating guests at the best tables",
+    },
     requiredLevel: 5,
     coins_price: 2000,
     coins_in_hour: 1920,
@@ -94,6 +114,10 @@ export default [
     name: {
       ru: "Секретарь",
       en: "Secretary"
+    },
+    description: {
+      ru: "30 минут отвечаешь на звонки и держишь расписание в железном порядке",
+      en: "30 minutes of answering calls and keeping the schedule in ironclad order",
     },
     requiredLevel: 6,
     coins_price: 5760,
@@ -113,6 +137,10 @@ export default [
       ru: "Офис-менеджер",
       en: "Office Manager"
     },
+    description: {
+      ru: "45 минут заказываешь канцелярию, как будто комплектуешь выезд в экспедицию",
+      en: "45 minutes of ordering office supplies like you’re prepping for an expedition",
+    },
     requiredLevel: 7,
     coins_price: 7980,
     coins_in_hour: 2520,
@@ -130,6 +158,10 @@ export default [
     name: {
       ru: "Менеджер по продажам",
       en: "Sales Manager"
+    },
+    description: {
+      ru: "50 минут убеждаешь людей купить то, чего им не нужно, но очень хочется",
+      en: "50 minutes of convincing people to buy what they don’t need but suddenly want",
     },
     requiredLevel: 8,
     coins_price: 11340,
@@ -149,6 +181,10 @@ export default [
       ru: "Менеджер по закупкам",
       en: "Purchasing Manager"
     },
+    description: {
+      ru: "50 минут убеждаешь людей купить то, чего им не нужно, но очень хочется",
+      en: "50 minutes of convincing people to buy what they don’t need but suddenly want",
+    },
     requiredLevel: 9,
     coins_price: 20700,
     coins_in_hour: 3300,
@@ -166,6 +202,10 @@ export default [
     name: {
       ru: "Копирайтер",
       en: "Copywriter"
+    },
+    description: {
+      ru: "Час пишешь текст, который никто не прочитает, но все за него заплатят",
+      en: "An hour spent writing a text nobody will read, but everyone will pay for",
     },
     requiredLevel: 10,
     coins_price: 26400,
@@ -185,6 +225,10 @@ export default [
       ru: "Маркетолог",
       en: "Marketer"
     },
+    description: {
+      ru: "1 час 10 минут создаешь стратегию, которой никто не будет следовать",
+      en: "1 hour 10 minutes spent creating a strategy nobody will follow",
+    },
     requiredLevel: 11,
     coins_price: 41400,
     coins_in_hour: 4080,
@@ -202,6 +246,10 @@ export default [
     name: {
       ru: "Бренд-менеджер",
       en: "Brand Manager"
+    },
+    description: {
+      ru: "1 час 15 минут придумываешь историю, которая делает логотип важнее продукта",
+      en: "1 hour 15 minutes spent crafting a story that makes the logo more important than the product",
     },
     requiredLevel: 12,
     coins_price: 44880,
@@ -221,6 +269,10 @@ export default [
       ru: "HR",
       en: "HR"
     },
+    description: {
+      ru: "1 час 25 минут пытаешься найти идеального кандидата, который не существует",
+      en: "1 hour 25 minutes spent searching for the perfect candidate who doesn’t exist",
+    },
     requiredLevel: 13,
     coins_price: 56250,
     coins_in_hour: 5100,
@@ -238,6 +290,10 @@ export default [
     name: {
       ru: "Менеджер проекта",
       en: "Project Manager"
+    },
+    description: {
+      ru: "1 час 35 минут координируешь людей, которые не помнят, что им нужно делать",
+      en: "1 hour 35 minutes coordinating people who forget what they’re supposed to do",
     },
     requiredLevel: 14,
     coins_price: 102000,
@@ -257,6 +313,10 @@ export default [
       ru: "Тимлид",
       en: "Team Lead"
     },
+    description: {
+      ru: "1 час 50 минут решаешь проблемы, о которых никто не просил",
+      en: "1 hour 50 minutes solving problems nobody asked for",
+    },
     requiredLevel: 15,
     coins_price: 128250,
     coins_in_hour: 7200,
@@ -274,6 +334,10 @@ export default [
     name: {
       ru: "Зам директора",
       en: "Deputy Director"
+    },
+    description: {
+      ru: "2 часа пытаешься выглядеть занятым, не делая при этом ничего важного",
+      en: "2 hours pretending to be busy without actually doing anything important",
     },
     requiredLevel: 16,
     coins_price: 216000,
@@ -293,6 +357,10 @@ export default [
       ru: "Директор",
       en: "Executive"
     },
+    description: {
+      ru: "2 часа 20 минут принимаешь решения, которые никто не заметит, но все будут обсуждать",
+      en: "2 hours 20 minutes making decisions nobody will notice, but everyone will talk about",
+    },
     requiredLevel: 17,
     coins_price: 273000,
     coins_in_hour: 9600,
@@ -310,6 +378,10 @@ export default [
     name: {
       ru: "Партнер",
       en: "Partner"
+    },
+    description: {
+      ru: "2 часа 35 минут делаешь вид, что твое мнение решающее, хотя все уже давно решили",
+      en: "2 hours 35 minutes pretending your opinion is final, even though everything's already decided",
     },
     requiredLevel: 18,
     coins_price: 360000,
@@ -329,6 +401,10 @@ export default [
       ru: "CEO",
       en: "CEO"
     },
+    description: {
+      ru: "2 часа 50 минут говоришь умные вещи, а потом решаешь, какие картинки вставить в презентацию",
+      en: "2 hours 50 minutes saying wise things, then deciding which pictures to put in the presentation",
+    },
     requiredLevel: 19,
     coins_price: 486000,
     coins_in_hour: 12000,
@@ -344,8 +420,12 @@ export default [
   {
     work_id: 20,
     name: {
-      ru: "Миллионер",
-      en: "Millionaire"
+      ru: "Магнат",
+      en: "Magnate"
+    },
+    description: {
+      ru: "3 часа управляешь состоянием, которое ты сам же и создал",
+      en: "3 hours managing the fortune you created yourself",
     },
     requiredLevel: 20,
     coins_price: 660000,
@@ -364,6 +444,10 @@ export default [
     name: {
       ru: "Ночной охранник",
       en: "Night Guard"
+    },
+    description: {
+      ru: "3 часа охраняешь тишину, в которой ничего не происходит",
+      en: "3 hours guarding silence, where nothing ever happens",
     },
     requiredLevel: 3,
     coins_price: 10000,
