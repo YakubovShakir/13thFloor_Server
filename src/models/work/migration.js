@@ -17,7 +17,7 @@ export default [
     hungry_cost_per_minute: 6/60,
     skill_id_required: null,
     respect_required: 0,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FJanitor.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FCleaner_job.webp",
     duration: 1,
     experience_reward: 15
   },
@@ -39,7 +39,7 @@ export default [
     hungry_cost_per_minute: 9/60,
     skill_id_required: 1,
     respect_required: 5,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FCourier.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FCourier_job.webp",
     duration: 5,
     experience_reward: 100
   },
@@ -61,7 +61,7 @@ export default [
     hungry_cost_per_minute: 12/60,
     skill_id_required: 3,
     respect_required: 15,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FPlate%20washer.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FJob_Dishwasher.webp",
     duration: 8,
     experience_reward: 200
   },
@@ -83,7 +83,7 @@ export default [
     hungry_cost_per_minute: 15/60,
     skill_id_required: 5,
     respect_required: 30,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FWaiter.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FWaiter_job.webp",
     duration: 12,
     experience_reward: 360
   },
@@ -105,7 +105,7 @@ export default [
     hungry_cost_per_minute: 18/60,
     skill_id_required: 8,
     respect_required: 45,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FManager.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FAdministrator_job.webp",
     duration: 20,
     experience_reward: 640
   },
@@ -127,7 +127,7 @@ export default [
     hungry_cost_per_minute: 21/60,
     skill_id_required: 11,
     respect_required: 66,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FSecretary.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2Ftoelzbbge5c7grzdc95d.webp",
     duration: 30,
     experience_reward: 1000
   },
@@ -149,7 +149,7 @@ export default [
     hungry_cost_per_minute: 24/60,
     skill_id_required: 13,
     respect_required: 105,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FOffice%20Manager.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FOffice_manager_job.webp",
     duration: 45,
     experience_reward: 1300
   },
@@ -171,7 +171,7 @@ export default [
     hungry_cost_per_minute: 27/60,
     skill_id_required: 16,
     respect_required: 185,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FSales%20Manager.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FSales_manager_job.webp",
     duration: 50,
     experience_reward: 1800
   },
@@ -193,7 +193,7 @@ export default [
     hungry_cost_per_minute: 30/60,
     skill_id_required: 19,
     respect_required: 210,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FPurchasing-Manager.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FPurchasing_manager_job.webp",
     duration: 55,
     experience_reward: 2500
   },
@@ -215,7 +215,7 @@ export default [
     hungry_cost_per_minute: 33/60,
     skill_id_required: 22,
     respect_required: 260,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FCopywriter.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FCopywriter_job.webp",
     duration: 60,
     experience_reward: 3000
   },
@@ -237,7 +237,7 @@ export default [
     hungry_cost_per_minute: 36/60,
     skill_id_required: 25,
     respect_required: 300,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FMarketer.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FMarketer_job.webp",
     duration: 70,
     experience_reward: 3760
   },
@@ -259,7 +259,7 @@ export default [
     hungry_cost_per_minute: 39/60,
     skill_id_required: 28,
     respect_required: 400,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FBrand-Manager.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FBrand_manager_job.webp",
     duration: 75,
     experience_reward: 4625
   },
@@ -281,7 +281,7 @@ export default [
     hungry_cost_per_minute: 42/60,
     skill_id_required: 30,
     respect_required: 450,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FHR.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FHR_job.webp",
     duration: 85,
     experience_reward: 5225
   },
@@ -303,7 +303,7 @@ export default [
     hungry_cost_per_minute: 45/60,
     skill_id_required: 32,
     respect_required: 500,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FProject%20Manager.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FProject_manager_job.webp",
     duration: 95,
     experience_reward: 6025
   },
@@ -325,7 +325,7 @@ export default [
     hungry_cost_per_minute: 48/60,
     skill_id_required: 34,
     respect_required: 550,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FteamLid.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FTeam_lead_job.webp",
     duration: 110,
     experience_reward: 8200
   },
@@ -369,7 +369,7 @@ export default [
     hungry_cost_per_minute: 54/60,
     skill_id_required: 38,
     respect_required: 700,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FExecutive.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FDirector_job.webp",
     duration: 140,
     experience_reward: 12400
   },
@@ -391,7 +391,7 @@ export default [
     hungry_cost_per_minute: 57/60,
     skill_id_required: 40,
     respect_required: 800,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FPartner.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FPartner_job.webp",
     duration: 155,
     experience_reward: 14900
   },
@@ -413,7 +413,7 @@ export default [
     hungry_cost_per_minute: 60/60,
     skill_id_required: 42,
     respect_required: 900,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FCEO.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FSeo_job.webp",
     duration: 170,
     experience_reward: 18000
   },
@@ -435,7 +435,7 @@ export default [
     hungry_cost_per_minute: 63/60,
     skill_id_required: 43,
     respect_required: 1250,
-    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2FMillionaire.webp",
+    link: "hhttps://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FMillionaire_job.webp",
     duration: 185,
     experience_reward: 22250
   },
