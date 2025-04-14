@@ -435,7 +435,7 @@ export default [
     hungry_cost_per_minute: 63/60,
     skill_id_required: 43,
     respect_required: 1250,
-    link: "hhttps://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FMillionaire_job.webp",
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Work%2F%D0%A1%D0%B6%D0%B0%D1%82%D1%8B%D0%B5%2FMillionaire_job.webp",
     duration: 185,
     experience_reward: 22250
   },
