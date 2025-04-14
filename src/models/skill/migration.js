@@ -1073,4 +1073,67 @@ export default [
     type: null,
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2Finvest%20skills%2FTax-Planning.png",
   },
+  {
+    skill_id: 55,
+    
+    name: {
+      ru: "Мастерство стратегического дремания",
+      en: "Strategic Napping Mastery"
+    },
+    coins_price: 1500,
+    experience_reward: 0,
+    description: 
+    {
+      ru: "Спи так, чтобы камеры думали, что ты просто моргнул",
+      en: "Nap so the cameras think you just blinked"
+    },
+    
+    duration: 240,
+    requiredLevel: 3,
+    skill_id_required: null,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FVigilanceImitation.webp",
+  },
+  {
+    skill_id: 56,
+    
+    name: {
+      ru: "Секреты сыщика из сериалов",
+      en: "Detective Secrets from TV Shows"
+    },
+    coins_price: 4500,
+    experience_reward: 0,
+    description: 
+    {
+      ru: "Учись ловить преступников, пока смотришь 15-й сезон Ментов",
+      en: "Learn to catch criminals while bingeing the 6th season of The Rookie"
+    },
+    
+    duration: 120,
+    requiredLevel: 3,
+    skill_id_required: 55,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FDetectiveSecrets.webp",
+  },
+  {
+    skill_id: 57,
+    
+    name: {
+      ru: "Поиск теней в темноте",
+      en: "Shadow Hunting in the Dark"
+    },
+    coins_price: 10000,
+    experience_reward: 0,
+    description: 
+    {
+      ru: "Убеди себя, что тень в углу — это грабитель, а не кот",
+      en: "Convince yourself that the shadow in the corner is a burglar, not a cat"
+    },
+    
+    duration: 360,
+    requiredLevel: 3,
+    skill_id_required: 56,
+    type: null,
+    link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FShadowHunting.webp",
+  },
 ]

@@ -17,7 +17,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 1%',
             en: 'Training duration decreased by 1%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
        required_level: 3,
         
         experience_reward: 0,
@@ -37,7 +37,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 2%',
             en: 'Training duration decreased by 2%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
        required_level: 4,
         
         experience_reward: 0,
@@ -57,7 +57,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 3%',
             en: 'Training duration decreased by 3%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 5,
         experience_reward: 0,
         duration: 300,
@@ -76,7 +76,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 4%',
             en: 'Training duration decreased by 4%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
        required_level: 6,
         experience_reward: 0,
         duration: 360,
@@ -95,7 +95,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 5%',
             en: 'Training duration decreased by 5%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 7,
         experience_reward: 0,
         duration: 420,
@@ -114,7 +114,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 6%',
             en: 'Training duration decreased by 6%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 8,
         experience_reward: 0,
         duration: 480,
@@ -132,7 +132,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 7%',
             en: 'Training duration decreased by 7%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 9,
         experience_reward: 0,
         duration: 540,
@@ -151,7 +151,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 8%',
             en: 'Training duration decreased by 8%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 10,
         experience_reward: 0,
         duration: 600,
@@ -169,7 +169,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 9%',
             en: 'Training duration decreased by 9%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 11,
         experience_reward: 0,
         duration: 720,
@@ -188,7 +188,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 10%',
             en: 'Training duration decreased by 10%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 12,
         experience_reward: 0,
         duration: 780,
@@ -206,7 +206,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 11%',
             en: 'Training duration decreased by 11%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 13,
         experience_reward: 0,
         duration: 840,
@@ -225,7 +225,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 12%',
             en: 'Training duration decreased by 12%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 14,
         experience_reward: 0,
         duration: 900,
@@ -244,7 +244,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 13%',
             en: 'Training duration decreased by 13%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 15,
         experience_reward: 0,
         duration: 960,
@@ -263,7 +263,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 14%',
             en: 'Training duration decreased by 14%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 16,
         experience_reward: 0,
         duration: 1020,
@@ -282,7 +282,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 15%',
             en: 'Training duration decreased by 15%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 17,
         experience_reward: 0,
         duration: 2100,
@@ -301,7 +301,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 16%',
             en: 'Training duration decreased by 16%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 18,
         experience_reward: 0,
         duration: 2400,
@@ -319,7 +319,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 17%',
             en: 'Training duration decreased by 17%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 2700,
@@ -338,7 +338,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 18%',
             en: 'Training duration decreased by 18%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 3000,
@@ -356,7 +356,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 19%',
             en: 'Training duration decreased by 19%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 3300,
@@ -375,7 +375,7 @@ export default [
             ru: 'Уменьшение времени тренировки на 20%',
             en: 'Training duration decreased by 20%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 3600,
@@ -394,7 +394,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 21%',
     //         en: 'Training duration decreased by 21%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 8,
     //     experience_reward: 1900,
     //     duration: 1333,
@@ -413,7 +413,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 22%',
     //         en: 'Training duration decreased by 22%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 8,
     //     experience_reward: 1900,
     //     duration: 1466,
@@ -431,7 +431,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 23%',
     //         en: 'Training duration decreased by 23%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 8,
     //     experience_reward: 1900,
     //     duration: 1613,
@@ -450,7 +450,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 24%',
     //         en: 'Training duration decreased by 24%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 8,
     //     experience_reward: 1900,
     //     duration: 1774,
@@ -469,7 +469,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 25%',
     //         en: 'Training duration decreased by 25%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 9,
     //     experience_reward: 1900,
     //     duration: 1951,
@@ -488,7 +488,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 26%',
     //         en: 'Training duration decreased by 26%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 9,
     //     experience_reward: 1900,
     //     duration: 2146,
@@ -507,7 +507,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 27%',
     //         en: 'Training duration decreased by 27%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 9,
     //     experience_reward: 1900,
     //     duration: 2361,
@@ -526,7 +526,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 28%',
     //         en: 'Training duration decreased by 28%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 9,
     //     experience_reward: 1900,
     //     duration: 2597,
@@ -545,7 +545,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 29%',
     //         en: 'Training duration decreased by 29%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 10,
     //     experience_reward: 2600,
     //     duration: 2857,
@@ -563,7 +563,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 30%',
     //         en: 'Training duration decreased by 30%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 10,
     //     experience_reward: 2600,
     //     duration: 3143,
@@ -582,7 +582,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 31%',
     //         en: 'Training duration decreased by 31%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 10,
     //     experience_reward: 2600,
     //     duration: 3457,
@@ -600,7 +600,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 32%',
     //         en: 'Training duration decreased by 32%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 10,
     //     experience_reward: 2600,
     //     duration: 3803,
@@ -619,7 +619,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 33%',
     //         en: 'Training duration decreased by 33%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 11,
     //     experience_reward: 3000,
     //     duration: 4183,
@@ -637,7 +637,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 34%',
     //         en: 'Training duration decreased by 34%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 11,
     //     experience_reward: 3000,
     //     duration: 4601,
@@ -656,7 +656,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 35%',
     //         en: 'Training duration decreased by 35%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 11,
     //     experience_reward: 3000,
     //     duration: 5061,
@@ -674,7 +674,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 36%',
     //         en: 'Training duration decreased by 36%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 11,
     //     experience_reward: 3000,
     //     duration: 5567,
@@ -693,7 +693,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 37%',
     //         en: 'Training duration decreased by 37%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 12,
     //     experience_reward: 4000,
     //     duration: 6124,
@@ -711,7 +711,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 38%',
     //         en: 'Training duration decreased by 38%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 12,
     //     experience_reward: 4000,
     //     duration: 6736,
@@ -730,7 +730,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 39%',
     //         en: 'Training duration decreased by 39%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 12,
     //     experience_reward: 4000,
     //     duration: 7410,
@@ -749,7 +749,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 40%',
     //         en: 'Training duration decreased by 40%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 12,
     //     experience_reward: 4000,
     //     duration: 8151,
@@ -768,7 +768,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 41%',
     //         en: 'Training duration decreased by 41%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 13,
     //     experience_reward: 6000,
     //     duration: 8966,
@@ -786,7 +786,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 42%',
     //         en: 'Training duration decreased by 42%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 13,
     //     experience_reward: 6000,
     //     duration: 9863,
@@ -805,7 +805,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 43%',
     //         en: 'Training duration decreased by 43%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 13,
     //     experience_reward: 6000,
     //     duration: 10849,
@@ -823,7 +823,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 44%',
     //         en: 'Training duration decreased by 44%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 13,
     //     experience_reward: 6000,
     //     duration: 11934,
@@ -842,7 +842,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 45%',
     //         en: 'Training duration decreased by 45%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 14,
     //     experience_reward: 8000,
     //     duration: 13127,
@@ -860,7 +860,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 46%',
     //         en: 'Training duration decreased by 46%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 14,
     //     experience_reward: 8000,
     //     duration: 14440,
@@ -879,7 +879,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 47%',
     //         en: 'Training duration decreased by 47%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 14,
     //     experience_reward: 8000,
     //     duration: 15884,
@@ -897,7 +897,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 48%',
     //         en: 'Training duration decreased by 48%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 14,
     //     experience_reward: 8000,
     //     duration: 17472,
@@ -916,7 +916,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 49%',
     //         en: 'Training duration decreased by 49%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 15,
     //     experience_reward: 10000,
     //     duration: 19219,
@@ -934,7 +934,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 50%',
     //         en: 'Training duration decreased by 50%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 15,
     //     experience_reward: 10000,
     //     duration: 21141,
@@ -953,7 +953,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 51%',
     //         en: 'Training duration decreased by 51%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 15,
     //     experience_reward: 10000,
     //     duration: 23255,
@@ -972,7 +972,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 52%',
     //         en: 'Training duration decreased by 52%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 15,
     //     experience_reward: 10000,
     //     duration: 25581,
@@ -991,7 +991,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 53%',
     //         en: 'Training duration decreased by 53%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 16,
     //     experience_reward: 15000,
     //     duration: 28139,
@@ -1009,7 +1009,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 54%',
     //         en: 'Training duration decreased by 54%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 16,
     //     experience_reward: 15000,
     //     duration: 30953,
@@ -1028,7 +1028,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 55%',
     //         en: 'Training duration decreased by 55%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 16,
     //     experience_reward: 15000,
     //     duration: 34048,
@@ -1046,7 +1046,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 56%',
     //         en: 'Training duration decreased by 56%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 16,
     //     experience_reward: 15000,
     //     duration: 37453,
@@ -1065,7 +1065,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 57%',
     //         en: 'Training duration decreased by 57%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 17,
     //     experience_reward: 20000,
     //     duration: 41198,
@@ -1083,7 +1083,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 58%',
     //         en: 'Training duration decreased by 58%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 17,
     //     experience_reward: 20000,
     //     duration: 45318,
@@ -1102,7 +1102,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 59%',
     //         en: 'Training duration decreased by 59%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 17,
     //     experience_reward: 20000,
     //     duration: 49850,
@@ -1120,7 +1120,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 60%',
     //         en: 'Training duration decreased by 60%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 17,
     //     experience_reward: 20000,
     //     duration: 54835,
@@ -1139,7 +1139,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 61%',
     //         en: 'Training duration decreased by 61%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 18,
     //     experience_reward: 24000,
     //     duration: 60319,
@@ -1157,7 +1157,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 62%',
     //         en: 'Training duration decreased by 62%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 18,
     //     experience_reward: 24000,
     //     duration: 66351,
@@ -1176,7 +1176,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 63%',
     //         en: 'Training duration decreased by 63%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 18,
     //     experience_reward: 24000,
     //     duration: 72986,
@@ -1195,7 +1195,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 64%',
     //         en: 'Training duration decreased by 64%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 18,
     //     experience_reward: 24000,
     //     duration: 80285,
@@ -1214,7 +1214,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 65%',
     //         en: 'Training duration decreased by 65%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 19,
     //     experience_reward: 24000,
     //     duration: 88314,
@@ -1232,7 +1232,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 66%',
     //         en: 'Training duration decreased by 66%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 19,
     //     experience_reward: 24000,
     //     duration: 97145,
@@ -1251,7 +1251,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 67%',
     //         en: 'Training duration decreased by 67%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 19,
     //     experience_reward: 24000,
     //     duration: 106860,
@@ -1269,7 +1269,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 68%',
     //         en: 'Training duration decreased by 68%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 20,
     //     experience_reward: 54000,
     //     duration: 117546,
@@ -1288,7 +1288,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 69%',
     //         en: 'Training duration decreased by 69%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 20,
     //     experience_reward: 54000,
     //     duration: 129301,
@@ -1306,7 +1306,7 @@ export default [
     //         ru: 'Уменьшение времени тренировки на 70%',
     //         en: 'Training duration decreased by 70%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%90%D0%BA%D1%82%D0%B8%D0%B2%D0%BD%D0%B0%D1%8F-%D1%82%D1%80%D0%B5%D0%BD%D0%B8%D1%80%D0%BE%D0%B2%D0%BA%D0%B0.webp',
     //     required_level: 20,
     //     experience_reward: 54000,
     //     duration: 142231,
@@ -1330,7 +1330,7 @@ export default [
             ru: 'Уменьшение времени сна на 1%',
             en: 'Sleep duration decreased by 1%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
        required_level: 3,
         experience_reward: 0,
         duration: 180,
@@ -1349,7 +1349,7 @@ export default [
             ru: 'Уменьшение времени сна на 2%',
             en: 'Sleep duration decreased by 2%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
        required_level: 4,
         experience_reward: 0,
         duration: 240,
@@ -1368,7 +1368,7 @@ export default [
             ru: 'Уменьшение времени сна на 3%',
             en: 'Sleep duration decreased by 3%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
        required_level: 5,
         experience_reward: 0,
         duration: 300,
@@ -1387,7 +1387,7 @@ export default [
             ru: 'Уменьшение времени сна на 4%',
             en: 'Sleep duration decreased by 4%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
        required_level: 6,
         experience_reward: 0,
         duration: 360,
@@ -1406,7 +1406,7 @@ export default [
             ru: 'Уменьшение времени сна на 5%',
             en: 'Sleep duration decreased by 5%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 7,
         experience_reward: 0,
         duration: 420,
@@ -1425,7 +1425,7 @@ export default [
             ru: 'Уменьшение времени сна на 6%',
             en: 'Sleep duration decreased by 6%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 8,
         experience_reward: 0,
         duration: 480,
@@ -1443,7 +1443,7 @@ export default [
             ru: 'Уменьшение времени сна на 7%',
             en: 'Sleep duration decreased by 7%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 9,
         experience_reward: 0,
         duration: 540,
@@ -1462,7 +1462,7 @@ export default [
             ru: 'Уменьшение времени сна на 8%',
             en: 'Sleep duration decreased by 8%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 10,
         experience_reward: 0,
         duration: 600,
@@ -1480,7 +1480,7 @@ export default [
             ru: 'Уменьшение времени сна на 9%',
             en: 'Sleep duration decreased by 9%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 11,
         experience_reward: 0,
         duration: 720,
@@ -1499,7 +1499,7 @@ export default [
             ru: 'Уменьшение времени сна на 10%',
             en: 'Sleep duration decreased by 10%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 12,
         experience_reward: 0,
         duration: 780,
@@ -1517,7 +1517,7 @@ export default [
             ru: 'Уменьшение времени сна на 11%',
             en: 'Sleep duration decreased by 11%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 13,
         experience_reward: 0,
         duration: 840,
@@ -1536,7 +1536,7 @@ export default [
             ru: 'Уменьшение времени сна на 12%',
             en: 'Sleep duration decreased by 12%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 14,
         experience_reward: 0,
         duration: 900,
@@ -1555,7 +1555,7 @@ export default [
             ru: 'Уменьшение времени сна на 13%',
             en: 'Sleep duration decreased by 13%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 15,
         experience_reward: 0,
         duration: 960,
@@ -1574,7 +1574,7 @@ export default [
             ru: 'Уменьшение времени сна на 14%',
             en: 'Sleep duration decreased by 14%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 6,
         experience_reward: 0,
         duration: 1020,
@@ -1593,7 +1593,7 @@ export default [
             ru: 'Уменьшение времени сна на 15%',
             en: 'Sleep duration decreased by 15%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 16,
         experience_reward: 0,
         duration: 2100,
@@ -1612,7 +1612,7 @@ export default [
             ru: 'Уменьшение времени сна на 16%',
             en: 'Sleep duration decreased by 16%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 17,
         experience_reward: 0,
         duration: 2400,
@@ -1630,7 +1630,7 @@ export default [
             ru: 'Уменьшение времени сна на 17%',
             en: 'Sleep duration decreased by 17%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 18,
         experience_reward: 0,
         duration: 2700,
@@ -1649,7 +1649,7 @@ export default [
             ru: 'Уменьшение времени сна на 18%',
             en: 'Sleep duration decreased by 18%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 3000,
@@ -1667,7 +1667,7 @@ export default [
             ru: 'Уменьшение времени сна на 19%',
             en: 'Sleep duration decreased by 19%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 3300,
@@ -1686,7 +1686,7 @@ export default [
             ru: 'Уменьшение времени сна на 20%',
             en: 'Sleep duration decreased by 20%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 3600,
@@ -1705,7 +1705,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 21%',
     //         en: 'Sleep duration decreased by 21%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 8,
     //     experience_reward: 1900,
     //     duration: 1333,
@@ -1724,7 +1724,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 22%',
     //         en: 'Sleep duration decreased by 22%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 8,
     //     experience_reward: 1900,
     //     duration: 1466,
@@ -1742,7 +1742,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 23%',
     //         en: 'Sleep duration decreased by 23%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 8,
     //     experience_reward: 1900,
     //     duration: 1613,
@@ -1761,7 +1761,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 24%',
     //         en: 'Sleep duration decreased by 24%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 8,
     //     experience_reward: 1900,
     //     duration: 1774,
@@ -1780,7 +1780,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 25%',
     //         en: 'Sleep duration decreased by 25%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 9,
     //     experience_reward: 1900,
     //     duration: 1951,
@@ -1799,7 +1799,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 26%',
     //         en: 'Sleep duration decreased by 26%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 9,
     //     experience_reward: 1900,
     //     duration: 2146,
@@ -1818,7 +1818,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 27%',
     //         en: 'Sleep duration decreased by 27%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 9,
     //     experience_reward: 1900,
     //     duration: 2361,
@@ -1837,7 +1837,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 28%',
     //         en: 'Sleep duration decreased by 28%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 9,
     //     experience_reward: 1900,
     //     duration: 2597,
@@ -1856,7 +1856,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 29%',
     //         en: 'Sleep duration decreased by 29%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 10,
     //     experience_reward: 2600,
     //     duration: 2857,
@@ -1874,7 +1874,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 30%',
     //         en: 'Sleep duration decreased by 30%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 10,
     //     experience_reward: 2600,
     //     duration: 3143,
@@ -1893,7 +1893,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 31%',
     //         en: 'Sleep duration decreased by 31%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 10,
     //     experience_reward: 2600,
     //     duration: 3457,
@@ -1911,7 +1911,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 32%',
     //         en: 'Sleep duration decreased by 32%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 10,
     //     experience_reward: 2600,
     //     duration: 3803,
@@ -1930,7 +1930,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 33%',
     //         en: 'Sleep duration decreased by 33%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 11,
     //     experience_reward: 3000,
     //     duration: 4183,
@@ -1948,7 +1948,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 34%',
     //         en: 'Sleep duration decreased by 34%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 11,
     //     experience_reward: 3000,
     //     duration: 4601,
@@ -1967,7 +1967,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 35%',
     //         en: 'Sleep duration decreased by 35%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 11,
     //     experience_reward: 3000,
     //     duration: 5061,
@@ -1985,7 +1985,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 36%',
     //         en: 'Sleep duration decreased by 36%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 11,
     //     experience_reward: 3000,
     //     duration: 5567,
@@ -2004,7 +2004,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 37%',
     //         en: 'Sleep duration decreased by 37%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 12,
     //     experience_reward: 4000,
     //     duration: 6124,
@@ -2022,7 +2022,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 38%',
     //         en: 'Sleep duration decreased by 38%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 12,
     //     experience_reward: 4000,
     //     duration: 6736,
@@ -2041,7 +2041,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 39%',
     //         en: 'Sleep duration decreased by 39%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 12,
     //     experience_reward: 4000,
     //     duration: 7410,
@@ -2060,7 +2060,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 40%',
     //         en: 'Sleep duration decreased by 40%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 12,
     //     experience_reward: 4000,
     //     duration: 8151,
@@ -2079,7 +2079,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 41%',
     //         en: 'Sleep duration decreased by 41%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 13,
     //     experience_reward: 6000,
     //     duration: 8966,
@@ -2097,7 +2097,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 42%',
     //         en: 'Sleep duration decreased by 42%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 13,
     //     experience_reward: 6000,
     //     duration: 9863,
@@ -2116,7 +2116,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 43%',
     //         en: 'Sleep duration decreased by 43%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 13,
     //     experience_reward: 6000,
     //     duration: 10849,
@@ -2134,7 +2134,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 44%',
     //         en: 'Sleep duration decreased by 44%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 13,
     //     experience_reward: 6000,
     //     duration: 11934,
@@ -2153,7 +2153,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 45%',
     //         en: 'Sleep duration decreased by 45%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 14,
     //     experience_reward: 8000,
     //     duration: 13127,
@@ -2171,7 +2171,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 46%',
     //         en: 'Sleep duration decreased by 46%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 14,
     //     experience_reward: 8000,
     //     duration: 14440,
@@ -2190,7 +2190,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 47%',
     //         en: 'Sleep duration decreased by 47%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 14,
     //     experience_reward: 8000,
     //     duration: 15884,
@@ -2208,7 +2208,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 48%',
     //         en: 'Sleep duration decreased by 48%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 14,
     //     experience_reward: 8000,
     //     duration: 17472,
@@ -2227,7 +2227,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 49%',
     //         en: 'Sleep duration decreased by 49%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 15,
     //     experience_reward: 10000,
     //     duration: 19219,
@@ -2245,7 +2245,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 50%',
     //         en: 'Sleep duration decreased by 50%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 15,
     //     experience_reward: 10000,
     //     duration: 21141,
@@ -2264,7 +2264,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 51%',
     //         en: 'Sleep duration decreased by 51%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 15,
     //     experience_reward: 10000,
     //     duration: 23255,
@@ -2283,7 +2283,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 52%',
     //         en: 'Sleep duration decreased by 52%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 15,
     //     experience_reward: 10000,
     //     duration: 25581,
@@ -2302,7 +2302,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 53%',
     //         en: 'Sleep duration decreased by 53%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 16,
     //     experience_reward: 15000,
     //     duration: 28139,
@@ -2320,7 +2320,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 54%',
     //         en: 'Sleep duration decreased by 54%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 16,
     //     experience_reward: 15000,
     //     duration: 30953,
@@ -2339,7 +2339,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 55%',
     //         en: 'Sleep duration decreased by 55%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 16,
     //     experience_reward: 15000,
     //     duration: 34048,
@@ -2357,7 +2357,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 56%',
     //         en: 'Sleep duration decreased by 56%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 16,
     //     experience_reward: 15000,
     //     duration: 37453,
@@ -2376,7 +2376,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 57%',
     //         en: 'Sleep duration decreased by 57%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 17,
     //     experience_reward: 20000,
     //     duration: 41198,
@@ -2394,7 +2394,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 58%',
     //         en: 'Sleep duration decreased by 58%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 17,
     //     experience_reward: 20000,
     //     duration: 45318,
@@ -2413,7 +2413,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 59%',
     //         en: 'Sleep duration decreased by 59%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 17,
     //     experience_reward: 20000,
     //     duration: 49850,
@@ -2431,7 +2431,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 60%',
     //         en: 'Sleep duration decreased by 60%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 17,
     //     experience_reward: 20000,
     //     duration: 54835,
@@ -2450,7 +2450,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 61%',
     //         en: 'Sleep duration decreased by 61%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 18,
     //     experience_reward: 24000,
     //     duration: 60319,
@@ -2468,7 +2468,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 62%',
     //         en: 'Sleep duration decreased by 62%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 18,
     //     experience_reward: 24000,
     //     duration: 66351,
@@ -2487,7 +2487,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 63%',
     //         en: 'Sleep duration decreased by 63%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 18,
     //     experience_reward: 24000,
     //     duration: 72986,
@@ -2506,7 +2506,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 64%',
     //         en: 'Sleep duration decreased by 64%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 18,
     //     experience_reward: 24000,
     //     duration: 80285,
@@ -2525,7 +2525,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 65%',
     //         en: 'Sleep duration decreased by 65%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 19,
     //     experience_reward: 24000,
     //     duration: 88314,
@@ -2543,7 +2543,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 66%',
     //         en: 'Sleep duration decreased by 66%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 19,
     //     experience_reward: 24000,
     //     duration: 97145,
@@ -2562,7 +2562,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 67%',
     //         en: 'Sleep duration decreased by 67%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 19,
     //     experience_reward: 24000,
     //     duration: 106860,
@@ -2580,7 +2580,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 68%',
     //         en: 'Sleep duration decreased by 68%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 20,
     //     experience_reward: 54000,
     //     duration: 117546,
@@ -2599,7 +2599,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 69%',
     //         en: 'Sleep duration decreased by 69%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 20,
     //     experience_reward: 54000,
     //     duration: 129301,
@@ -2617,7 +2617,7 @@ export default [
     //         ru: 'Уменьшение времени сна на 70%',
     //         en: 'Sleep duration decreased by 70%'
     //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.png',
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%91%D1%83%D0%B4%D0%B8%D0%BB%D1%8C%D0%BD%D0%B8%D0%BA.webp',
     //     required_level: 20,
     //     experience_reward: 54000,
     //     duration: 142231,
@@ -2637,7 +2637,7 @@ export default [
             ru: 'Уменьшение длительности работы на 1%',
             en: 'Work duration decreased by 1%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 3,
         duration: 180
     },
@@ -2655,7 +2655,7 @@ export default [
             ru: 'Уменьшение длительности работы на 2%',
             en: 'Work duration decreased by 2%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 4,
         duration: 240
     },{
@@ -2672,7 +2672,7 @@ export default [
             ru: 'Уменьшение длительности работы на 3%',
             en: 'Work duration decreased by 3%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
        required_level: 5,
         experience_reward: 0,
         duration: 300
@@ -2690,7 +2690,7 @@ export default [
             ru: 'Уменьшение длительности работы на 4%',
             en: 'Work duration decreased by 4%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
        required_level: 6,
         experience_reward: 0,
         duration: 360
@@ -2708,7 +2708,7 @@ export default [
             ru: 'Уменьшение длительности работы на 5%',
             en: 'Work duration decreased by 5%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 7,
         experience_reward: 0,
         duration: 420
@@ -2726,7 +2726,7 @@ export default [
             ru: 'Уменьшение длительности работы на 6%',
             en: 'Work duration decreased by 6%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 8,
         experience_reward: 0,
         duration: 480
@@ -2744,7 +2744,7 @@ export default [
             ru: 'Уменьшение длительности работы на 7%',
             en: 'Work duration decreased by 7%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 9,
         experience_reward: 0,
         duration: 540
@@ -2762,7 +2762,7 @@ export default [
             ru: 'Уменьшение длительности работы на 8%',
             en: 'Work duration decreased by 8%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 10,
         experience_reward: 0,
         duration: 600
@@ -2780,7 +2780,7 @@ export default [
             ru: 'Уменьшение длительности работы на 9%',
             en: 'Work duration decreased by 9%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 11,
         duration: 720
     },{
@@ -2797,7 +2797,7 @@ export default [
             ru: 'Уменьшение длительности работы на 10%',
             en: 'Work duration decreased by 10%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 12,
         experience_reward: 0,
         duration: 780
@@ -2815,7 +2815,7 @@ export default [
             ru: 'Уменьшение длительности работы на 11%',
             en: 'Work duration decreased by 11%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 13,
         experience_reward: 0,
         duration: 840
@@ -2833,7 +2833,7 @@ export default [
             ru: 'Уменьшение длительности работы на 12%',
             en: 'Work duration decreased by 12%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 14,
         experience_reward: 0,
         duration: 900
@@ -2851,7 +2851,7 @@ export default [
             ru: 'Уменьшение длительности работы на 13%',
             en: 'Work duration decreased by 13%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 15,
         experience_reward: 0,
         duration: 960
@@ -2869,7 +2869,7 @@ export default [
             ru: 'Уменьшение длительности работы на 14%',
             en: 'Work duration decreased by 14%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 16,
         experience_reward: 0,
         duration: 1020
@@ -2887,7 +2887,7 @@ export default [
             ru: 'Уменьшение длительности работы на 15%',
             en: 'Work duration decreased by 15%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 17,
         experience_reward: 0,
         duration: 2100
@@ -2905,7 +2905,7 @@ export default [
             ru: 'Уменьшение длительности работы на 16%',
             en: 'Work duration decreased by 16%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 18,
         experience_reward: 0,
         duration: 2400
@@ -2923,7 +2923,7 @@ export default [
             ru: 'Уменьшение длительности работы на 17%',
             en: 'Work duration decreased by 17%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 2700
@@ -2941,7 +2941,7 @@ export default [
             ru: 'Уменьшение длительности работы на 18%',
             en: 'Work duration decreased by 18%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 3000
@@ -2959,7 +2959,7 @@ export default [
             ru: 'Уменьшение длительности работы на 19%',
             en: 'Work duration decreased by 19%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 3300
@@ -2977,7 +2977,7 @@ export default [
             ru: 'Уменьшение длительности работы на 20%',
             en: 'Work duration decreased by 20%'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%A2%D0%B0%D0%B9%D0%BC-%D0%BC%D0%B5%D0%BD%D0%B5%D0%B4%D0%B6%D0%BC%D0%B5%D0%BD%D1%82.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 3600
@@ -3000,7 +3000,7 @@ export default [
             ru: 'Дополнительный доход + 60/час',
             en: 'Additional income + 60/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 2,
         duration: 180
     },
@@ -3018,7 +3018,7 @@ export default [
             ru: 'Дополнительный доход + 240/час',
             en: 'Additional income + 240/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
        required_level: 3,
         experience_reward: 0,
         duration: 240
@@ -3037,7 +3037,7 @@ export default [
             ru: 'Дополнительный доход + 360/час',
             en: 'Additional income + 360/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 4,
         experience_reward: 0,
         duration: 300
@@ -3056,7 +3056,7 @@ export default [
             ru: 'Дополнительный доход + 540/час',
             en: 'Additional income + 540/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 5,
         experience_reward: 0,
         duration: 360
@@ -3075,7 +3075,7 @@ export default [
             ru: 'Дополнительный доход + 720/час',
             en: 'Additional income + 720/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 6,
         experience_reward: 0,
         duration: 420
@@ -3094,7 +3094,7 @@ export default [
             ru: 'Дополнительный доход + 960/час',
             en: 'Additional income + 960/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 7,
         experience_reward: 0,
         duration: 480
@@ -3113,7 +3113,7 @@ export default [
             ru: 'Дополнительный доход + 1200/час',
             en: 'Additional income + 1200/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 8,
         experience_reward: 0,
         duration: 540
@@ -3132,7 +3132,7 @@ export default [
             ru: 'Дополнительный доход + 1500/час',
             en: 'Additional income + 1500/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 9,
         experience_reward: 0,
         duration: 600
@@ -3151,7 +3151,7 @@ export default [
             ru: 'Дополнительный доход + 1800/час',
             en: 'Additional income + 1800/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 10,
         experience_reward: 0,
         duration: 720
@@ -3170,7 +3170,7 @@ export default [
             ru: 'Дополнительный доход + 2160/час',
             en: 'Additional income + 2160/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 11,
         experience_reward: 0,
         duration: 780
@@ -3189,7 +3189,7 @@ export default [
             ru: 'Дополнительный доход + 2520/час',
             en: 'Additional income + 2520/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 12,
         experience_reward: 0,
         duration: 840
@@ -3208,7 +3208,7 @@ export default [
             ru: 'Дополнительный доход + 2940/час',
             en: 'Additional income + 2940/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 13,
         experience_reward: 0,
         duration: 900
@@ -3227,7 +3227,7 @@ export default [
             ru: 'Дополнительный доход + 3420/час',
             en: 'Additional income + 3420/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 14,
         experience_reward: 0,
         duration: 960
@@ -3246,7 +3246,7 @@ export default [
             ru: 'Дополнительный доход + 3360/час',
             en: 'Additional income + 3360/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 15,
         experience_reward: 0,
         duration: 1020
@@ -3265,7 +3265,7 @@ export default [
             ru: 'Дополнительный доход + 4380/час',
             en: 'Additional income + 4380/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 16,
         experience_reward: 0,
         duration: 2100
@@ -3284,7 +3284,7 @@ export default [
             ru: 'Дополнительный доход + 4920/час',
             en: 'Additional income + 4920/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 17,
         experience_reward: 0,
         duration: 2400
@@ -3303,7 +3303,7 @@ export default [
             ru: 'Дополнительный доход + 5460/час',
             en: 'Additional income + 5460/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 18,
         experience_reward: 0,
         duration: 2700
@@ -3322,7 +3322,7 @@ export default [
             ru: 'Дополнительный доход + 6000/час',
             en: 'Additional income + 6000/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 19,
         duration: 3000
     },
@@ -3340,7 +3340,7 @@ export default [
             ru: 'Дополнительный доход + 6600/час',
             en: 'Additional income + 6600/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 3300
@@ -3359,7 +3359,7 @@ export default [
             ru: 'Дополнительный доход + 7200/час',
             en: 'Additional income + 7200/hour'
         },
-        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.png',
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2Ficons_%D0%BF%D0%BE%D0%B2%D1%8B%D1%88%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B4%D0%BE%D1%85%D0%BE%D0%B4%D0%B0.webp',
         required_level: 19,
         experience_reward: 0,
         duration: 3600
