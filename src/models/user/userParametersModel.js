@@ -29,6 +29,7 @@ const userParameterSchema = new mongoose.Schema({
     energy: { type: Number, default: 1 },
   },
   work_id: { type: Number, default: 0 },
+  current_work_id: { type: Number, default: 0 },
   constant_effects_levels: {
     // Effects levels
     work_duration_decrease: { type: Number, default: 0 },

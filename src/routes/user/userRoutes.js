@@ -875,115 +875,117 @@ const dailyRewardsPool = [
   },
 ]
 
-// Helper function to get the start of the day in the server's local timezone
-const getStartOfDay = () => {
-  const now = moment() // Uses server's local timezone
-  return now.startOf("day") // 00:00:00 in local timezone
-}
+// Helper function to get the start of the day in the user's timezone
+const getStartOfDay = (userTz) => {
+  const tz = userTz || moment.tz.guess(); // Fallback to guessed timezone
+  return moment.tz(tz).startOf('day'); // 00:00:00 in user's timezone
+};
 
 // Helper function to create a date that MongoDB will store as YYYY-MM-DD 00:00:00.000+00:00
 const createMongoDate = (momentDate) => {
-  const year = momentDate.year()
-  const month = momentDate.month()
-  const day = momentDate.date()
-  return new Date(Date.UTC(year, month, day, 0, 0, 0, 0))
-}
+  const year = momentDate.year();
+  const month = momentDate.month();
+  const day = momentDate.date();
+  return new Date(Date.UTC(year, month, day, 0, 0, 0, 0));
+};
 
-// Claim Reward Endpoint
-router.get("/:id/daily/claim", async (req, res) => {
+// Claim Reward Endpoint (Unchanged)
+router.get('/:id/daily/claim', async (req, res) => {
   try {
-    const userId = req.userId
-    const todayMoment = getStartOfDay()
-    const today = todayMoment.toDate()
+    const userId = req.userId;
+
+    const user = await User.findOne({ id: userId }, { id: 1, tz: 1, personage: 1 });
+    if (!user) {
+      logger.warn(`User not found: ${userId}`);
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const todayMoment = getStartOfDay(user.tz);
+    const today = todayMoment.toDate();
 
     const lastClaim = await UserCheckInsModel.findOne(
       { user_id: userId, is_claimed: true },
       { check_in_date: 1, streak: 1 },
       { sort: { check_in_date: -1 } }
-    )
+    );
 
-    // Log for debugging
-    console.log("Today:", todayMoment.format("YYYY-MM-DD"))
-    console.log("Last claim:", lastClaim ? lastClaim.check_in_date : "None")
+    logger.debug(`Claim attempt - User: ${userId}, Today: ${todayMoment.format('YYYY-MM-DD')}, Timezone: ${user.tz || 'guessed'}, Last claim: ${lastClaim ? lastClaim.check_in_date.toISOString() : 'None'}`);
 
-    if (lastClaim && moment(lastClaim.check_in_date).isSame(today, "day")) {
-      return res.status(403).json({ error: "Reward already claimed today" })
-    }
-
-    let streak = 1
     if (lastClaim) {
-      const lastClaimMoment = moment(lastClaim.check_in_date).startOf("day")
-      const daysDiff = todayMoment.diff(lastClaimMoment, "days")
-      console.log("Days difference:", daysDiff)
-
-      if (daysDiff === 1) {
-        streak = lastClaim.streak + 1
-      } else if (daysDiff > 1) {
-        streak = 1 // Explicit reset on any gap
+      const lastClaimMoment = moment.tz(lastClaim.check_in_date, user.tz || moment.tz.guess()).startOf('day');
+      if (lastClaimMoment.isSame(todayMoment, 'day')) {
+        logger.info(`User ${userId} already claimed reward today`);
+        return res.status(403).json({ error: 'Reward already claimed today' });
       }
     }
-    if (streak > 14) streak = 1
 
-    const selectedItem = dailyRewardsPool.find((item) => item.day === streak)
+    let streak = 1;
+    if (lastClaim) {
+      const lastClaimMoment = moment.tz(lastClaim.check_in_date, user.tz || moment.tz.guess()).startOf('day');
+      const daysDiff = todayMoment.diff(lastClaimMoment, 'days');
+      logger.debug(`Days difference: ${daysDiff}, Last streak: ${lastClaim.streak}`);
+
+      if (daysDiff === 1) {
+        streak = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1;
+      } else if (daysDiff > 1) {
+        streak = 1;
+      }
+    }
+
+    const selectedItem = dailyRewardsPool.find((item) => item.day === streak);
     if (!selectedItem) {
-      return res.status(500).json({ error: "No reward defined for this day" })
+      logger.error(`No reward defined for streak day ${streak}`);
+      return res.status(500).json({ error: 'No reward defined for this day' });
     }
 
-    const user = await User.findOne({ id: userId })
-    if (!user) {
-      return res.status(404).json({ error: "User not found" })
-    }
-
-    let wonItem
+    let wonItem;
     switch (selectedItem.type) {
-      case "coins":
-        wonItem = { ...selectedItem }
-        await upUserBalance(userId, wonItem.amount)
-        break
-      case "boost":
-        const boost = await Boost.findOne({ boost_id: selectedItem.id })
+      case 'coins':
+        wonItem = { ...selectedItem };
+        await upUserBalance(userId, wonItem.amount);
+        break;
+      case 'boost':
+        const boost = await Boost.findOne({ boost_id: selectedItem.id });
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
-          image: boost.link,
-          name: boost.name,
-        }
-        await new UserBoost({ id: userId, boost_id: wonItem.id }).save()
-        break
-      case "clothes":
-        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id })
+          image: boost?.link || 'default.png',
+          name: boost?.name || selectedItem.name,
+        };
+        await new UserBoost({ id: userId, boost_id: wonItem.id }).save();
+        break;
+      case 'clothes':
+        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id });
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
-          image:
-            user.personage.gender === "male"
-              ? clothes.male_icon
-              : clothes.female_icon,
-          name: clothes.name,
-        }
+          image: user.personage.gender === 'male' ? clothes?.male_icon : clothes?.female_icon || 'default.png',
+          name: clothes?.name || selectedItem.name,
+        };
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { clothes: { id: wonItem.id } } }
-        )
-        break
-      case "shelf":
-        const item = await ShelfItemModel.findOne({ id: selectedItem.id })
+        );
+        break;
+      case 'shelf':
+        const item = await ShelfItemModel.findOne({ id: selectedItem.id });
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
-          image: item.link,
-          name: item.name,
-        }
+          image: item?.link || 'default.png',
+          name: item?.name || selectedItem.name,
+        };
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { shelf: { id: wonItem.id } } }
-        )
-        break
+        );
+        break;
       default:
-        return res.status(400).json({ error: "Invalid item type" })
+        logger.error(`Invalid item type: ${selectedItem.type}`);
+        return res.status(400).json({ error: 'Invalid item type' });
     }
 
-    const mongoDate = createMongoDate(todayMoment)
+    const mongoDate = createMongoDate(todayMoment);
 
     const claim = new UserCheckInsModel({
       user_id: userId,
@@ -991,125 +993,152 @@ router.get("/:id/daily/claim", async (req, res) => {
       streak,
       is_claimed: true,
       last_check_in: lastClaim ? lastClaim.check_in_date : null,
-    })
-    await claim.save()
+    });
+    await claim.save();
 
-    console.log("Claim recorded - Streak:", streak)
-    res.status(200).json({ wonItem, streak })
+    logger.info(`Claim recorded - User: ${userId}, Streak: ${streak}, Item: ${selectedItem.type}, Timezone: ${user.tz || 'guessed'}`);
+    res.status(200).json({ wonItem, streak });
   } catch (error) {
-    logger.error( "error in claiming daily reward", error)
-    res.status(500).json({ error: "Internal server error" })
+    logger.error(`Error in claiming daily reward for user ${userId}: ${error.message}`, { error });
+    res.status(500).json({ error: 'Internal server error' });
   }
-})
+});
 
-// Status Endpoint
-router.get("/:id/daily/status", async (req, res) => {
+// Status Endpoint (Updated)
+router.get('/:id/daily/status', async (req, res) => {
   try {
-    const userId = req.userId
-    const todayMoment = getStartOfDay()
-    const today = todayMoment.toDate()
+    const userId = req.userId;
 
-    const lastClaim = await UserCheckInsModel.findOne(
+    const user = await User.findOne({ id: userId }, { id: 1, tz: 1, personage: 1 });
+    if (!user) {
+      logger.warn(`User not found: ${userId}`);
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const todayMoment = getStartOfDay(user.tz);
+    const today = todayMoment.toDate();
+
+    // Fetch the last 7 claims to determine the current cycle
+    const recentClaims = await UserCheckInsModel.find(
       { user_id: userId, is_claimed: true },
       { check_in_date: 1, streak: 1 },
-      { sort: { check_in_date: -1 } }
-    )
+      { sort: { check_in_date: -1 }, limit: 7 }
+    );
 
-    const user = await User.findOne({ id: userId })
-    if (!user) {
-      return res.status(404).json({ error: "User not found" })
+    const lastClaim = recentClaims[0] || null;
+
+    // Determine the start of the current cycle
+    let cycleStartDate = null;
+    if (recentClaims.length > 0) {
+      // Find the most recent streak = 1 after a streak >= 7 or a gap
+      for (let i = 0; i < recentClaims.length - 1; i++) {
+        const currentClaim = recentClaims[i];
+        const prevClaim = recentClaims[i + 1];
+        const currentMoment = moment.tz(currentClaim.check_in_date, user.tz || moment.tz.guess()).startOf('day');
+        const prevMoment = moment.tz(prevClaim.check_in_date, user.tz || moment.tz.guess()).startOf('day');
+        const daysDiff = currentMoment.diff(prevMoment, 'days');
+
+        if (currentClaim.streak === 1 && (prevClaim.streak >= 7 || daysDiff > 1)) {
+          cycleStartDate = currentClaim.check_in_date;
+          break;
+        }
+      }
+      // If no reset found, use the earliest claim if streak < 7
+      if (!cycleStartDate && lastClaim && lastClaim.streak < 7) {
+        cycleStartDate = recentClaims[recentClaims.length - 1].check_in_date;
+      }
     }
+
+    // Get claims in the current cycle
+    const cycleClaims = cycleStartDate
+      ? await UserCheckInsModel.find({
+          user_id: userId,
+          is_claimed: true,
+          check_in_date: { $gte: cycleStartDate },
+        }).sort({ streak: 1 })
+      : [];
 
     const resolvedRewards = await Promise.all(
       dailyRewardsPool.map(async (item) => {
+        let reward;
         switch (item.type) {
-          case "boost":
-            const boost = await Boost.findOne({ boost_id: item.id })
-            return {
+          case 'boost':
+            const boost = await Boost.findOne({ boost_id: item.id });
+            reward = {
               ...item,
-              image: boost?.link || "default.png",
+              image: boost?.link || 'default.png',
               name: boost?.name || item.name,
-            }
-          case "clothes":
-            const clothes = await Clothing.findOne({ clothing_id: item.id })
-            return {
+            };
+            break;
+          case 'clothes':
+            const clothes = await Clothing.findOne({ clothing_id: item.id });
+            reward = {
               ...item,
-              image:
-                user.personage.gender === "male"
-                  ? clothes?.male_icon
-                  : clothes?.female_icon || "default.png",
+              image: user.personage.gender === 'male' ? clothes?.male_icon : clothes?.female_icon || 'default.png',
               name: clothes?.name || item.name,
-            }
-          case "coins":
-            return { ...item }
+            };
+            break;
+          case 'coins':
+            reward = { ...item };
+            break;
+          case 'shelf':
+            const shelf = await ShelfItemModel.findOne({ id: item.id });
+            reward = {
+              ...item,
+              image: shelf?.link || 'default.png',
+              name: shelf?.name || item.name,
+            };
+            break;
           default:
-            return null
+            return null;
         }
+        // Mark as collected if claimed in the current cycle
+        reward.collected = cycleClaims.some((claim) => claim.streak === item.day);
+        return reward;
       })
-    ).then((results) => results.filter(Boolean))
+    ).then((results) => results.filter(Boolean));
 
-    let streak = 0
-    let canClaim = false
-    let nextRewardDay = 1
-    let isStreakBroken = false
+    let streak = 0;
+    let canClaim = true;
+    let nextRewardDay = 1;
+    let isStreakBroken = false;
 
     if (lastClaim) {
-      const lastClaimMoment = moment(lastClaim.check_in_date).startOf("day")
-      const daysDiff = todayMoment.diff(lastClaimMoment, "days")
-
-      console.log("Status - Today:", todayMoment.format("YYYY-MM-DD"))
-      console.log("Status - Last claim:", lastClaimMoment.format("YYYY-MM-DD"))
-      console.log("Status - Days difference:", daysDiff)
+      const lastClaimMoment = moment.tz(lastClaim.check_in_date, user.tz || moment.tz.guess()).startOf('day');
+      const daysDiff = todayMoment.diff(lastClaimMoment, 'days');
+      logger.debug(`Status - User: ${userId}, Today: ${todayMoment.format('YYYY-MM-DD')}, Last claim: ${lastClaimMoment.format('YYYY-MM-DD')}, Days diff: ${daysDiff}, Timezone: ${user.tz || 'guessed'}`);
 
       if (daysDiff === 0) {
-        streak = lastClaim.streak
-        canClaim = false
-        nextRewardDay = streak + 1
+        streak = lastClaim.streak;
+        canClaim = false;
+        nextRewardDay = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1;
       } else if (daysDiff === 1) {
-        streak = lastClaim.streak
-        canClaim = true
-        nextRewardDay = streak + 1
+        streak = lastClaim.streak;
+        canClaim = true;
+        nextRewardDay = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1;
       } else if (daysDiff > 1) {
-        streak = 0
-        canClaim = true
-        nextRewardDay = 1
-        isStreakBroken = true
+        streak = 0;
+        canClaim = true;
+        nextRewardDay = 1;
+        isStreakBroken = true;
       }
-    } else {
-      streak = 0
-      canClaim = true
-      nextRewardDay = 1
     }
 
-    if (nextRewardDay > 14) nextRewardDay = 1
+    const nextReward = resolvedRewards.find((item) => item.day === nextRewardDay) || resolvedRewards[0];
 
-    const nextReward =
-      resolvedRewards.find((item) => item.day === nextRewardDay) ||
-      resolvedRewards[0]
-
-    console.log(
-      "Status - Streak:",
-      streak,
-      "Can claim:",
-      canClaim,
-      "Next day:",
-      nextRewardDay,
-      "Broken:",
-      isStreakBroken
-    )
-
+    logger.info(`Status - User: ${userId}, Streak: ${streak}, Can claim: ${canClaim}, Next day: ${nextRewardDay}, Broken: ${isStreakBroken}, Timezone: ${user.tz || 'guessed'}, Cycle claims: ${cycleClaims.length}`);
     res.status(200).json({
       streak,
       canClaim,
       nextReward,
       rewards: resolvedRewards,
-      isStreakBroken, // Added to make it explicit
-    })
+      isStreakBroken,
+    });
   } catch (error) {
-    logger.error( "error in fetching daily status", error)
-    res.status(500).json({ error: "Internal server error" })
+    logger.error(`Error in fetching daily status for user ${userId}: ${error.message}`, { error });
+    res.status(500).json({ error: 'Internal server error' });
   }
-})
+});
 
 router.get("/:id/effects/current", async (req, res) => {
   try {

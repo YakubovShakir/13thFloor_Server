@@ -16,7 +16,7 @@ const startWork = async (userId) => {
   try {
     // Получение параметров и работы
     const user = await UserParameters.findOne({ id: userId })
-    const work = await Work.findOne({ work_id: user?.work_id })
+    const work = await Work.findOne({ work_id: user?.current_work_id || user?.work_id })
     if (!user || !work)
       return res.status(404).json({ error: "User or work not found" })
 

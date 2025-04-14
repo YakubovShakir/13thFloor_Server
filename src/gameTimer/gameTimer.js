@@ -707,7 +707,7 @@ const operationMap = {
     // Add food-specific logic here if needed (e.g., hungry profit)
     const now = moment();
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
-    const totalDurationSeconds = baseParameters.duration || 60; // Default duration
+    const totalDurationSeconds = baseParameters.duration * 60 || 60; // Default duration
     const actualDurationSeconds = calculateDuration(totalDurationSeconds / 60, 0);
 
     if (processDurationSeconds >= actualDurationSeconds) {
@@ -731,11 +731,14 @@ const operationMap = {
     if (!process || !userParameters || !baseParameters) {
       throw new Error(`Missing data for boost process: ${processId}`);
     }
-
+    log.warn(`${colors.cyanBright('Applied energy restore from tonic-drink')}`, {
+      user_id: userParametersId,
+      baseParameters,
+    });
     const now = moment();
     const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.updatedAt), "seconds");
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
-    const totalDurationSeconds = baseParameters.duration || 60; // Default duration
+    const totalDurationSeconds = baseParameters.duration * 60 || 60; // Default duration
     const actualDurationSeconds = calculateDuration(totalDurationSeconds / 60, 0);
 
     if (baseParameters.type === "tonic-drink") {

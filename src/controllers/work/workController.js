@@ -68,3 +68,30 @@ export const buyWork = async (req, res) => {
     console.log("ERR in buy work controllet - ", e)
   }
 }
+
+export const switchWork = async (req, res) => {
+  try {
+    const userId = req.userId
+    const workId = parseInt(req.query.workId)
+    
+    if (!userId || !workId)
+      return res.status(400).json({ error: "Query Not Valid" })
+    
+    const user = await UserParameters.findOne({ id: userId })
+    const work = await Work.findOne({ work_id: workId })
+    
+    if (!user || !work)
+      return res.status(404).json({ error: "User or work not found" })
+
+    if (user.work_id < workId) {
+      return res.status(401).end()
+    }
+
+    user.current_work_id = workId
+    await user.save()
+
+    return res.status(200).end()
+  } catch(e) {
+    console.log("ERR in switch work controllet - ", e)
+  }
+}
