@@ -6,6 +6,10 @@ const workSchema = new mongoose.Schema({
     ru:  { type: String, required: true },
     en:  { type: String, required: true }
   },
+  description: {
+    ru:  { type: String, required: true },
+    en:  { type: String, required: true }
+  },
   coins_price: { type: Number, required: true },
   coins_in_hour: { type: Number, required: true },
   energy_cost_per_minute: { type: Number, required: true },

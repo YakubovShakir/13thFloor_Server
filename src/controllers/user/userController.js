@@ -801,14 +801,12 @@ export const getUserInvestments = async (req, res) => {
           : false,
         started_at: activeGameCenter?.createdAt,
         has_autoclaim: user.has_autoclaim[InvestmentTypes.GameCenter] || false,
-        upgrade_info: nextLevelGameCenter
-          ? {
-              level: nextLevelGameCenter.level,
-              price: nextLevelGameCenter.price,
-              from: currentGameCenter?.coins_per_hour || 0,
-              to: nextLevelGameCenter.coins_per_hour,
-            }
-          : false,
+        upgrade_info:  {
+          level: nextLevelGameCenter?.level,
+          price: nextLevelGameCenter?.price,
+          from: currentGameCenter?.coins_per_hour || 0,
+          to: nextLevelGameCenter?.coins_per_hour,
+        },
         friends: await Referal.countDocuments({ refer_id: userId }),
         this_level_friends_required:
           gameCenterLevelRequirements[currentGameCenter?.level || 0] || 0,
@@ -823,18 +821,16 @@ export const getUserInvestments = async (req, res) => {
           : false,
         started_at: activeCoffeeShop?.createdAt,
         has_autoclaim: user.has_autoclaim[InvestmentTypes.CoffeeShop] || false,
-        upgrade_info: nextLevelCoffeeShop
-          ? {
-              level: nextLevelCoffeeShop.level,
-              price: nextLevelCoffeeShop.price,
-              from: currentCoffeeShop?.coins_per_hour || 0,
-              to: nextLevelCoffeeShop.coins_per_hour,
-              skill_id_required: nextLevelCoffeeShop.skill_id_required || null,
-              level_required: nextLevelCoffeeShop.level_required || 0,
-              respect_required: nextLevelCoffeeShop.respect_required || 0,
-              stars_price: nextLevelCoffeeShop.stars_price || 0,
-            }
-          : false,
+        upgrade_info: {
+          level: nextLevelCoffeeShop?.level,
+          price: nextLevelCoffeeShop?.price,
+          from: currentCoffeeShop?.coins_per_hour || 0,
+          to: nextLevelCoffeeShop?.coins_per_hour,
+          skill_id_required: nextLevelCoffeeShop?.skill_id_required || null,
+          level_required: nextLevelCoffeeShop?.level_required || 0,
+          respect_required: nextLevelCoffeeShop?.respect_required || 0,
+          stars_price: nextLevelCoffeeShop?.stars_price || 0,
+        }
       },
       zoo_shop: {
         type: InvestmentTypes.ZooShop,
@@ -844,18 +840,16 @@ export const getUserInvestments = async (req, res) => {
           : false,
         started_at: activeZooShop?.createdAt,
         has_autoclaim: user.has_autoclaim[InvestmentTypes.ZooShop] || false,
-        upgrade_info: nextLevelZooShop
-          ? {
-              level: nextLevelZooShop.level,
-              price: nextLevelZooShop.price,
-              from: currentZooShop?.coins_per_hour || 0,
-              to: nextLevelZooShop.coins_per_hour,
-              skill_id_required: nextLevelZooShop.skill_id_required || null,
-              level_required: nextLevelZooShop.level_required || 0,
-              respect_required: nextLevelZooShop.respect_required || 0,
-              stars_price: nextLevelZooShop.stars_price || 0,
-            }
-          : false,
+        upgrade_info: {
+          level: nextLevelZooShop?.level,
+          price: nextLevelZooShop?.price,
+          from: currentZooShop?.coins_per_hour || 0,
+          to: nextLevelZooShop?.coins_per_hour,
+          skill_id_required: nextLevelZooShop?.skill_id_required || null,
+          level_required: nextLevelZooShop?.level_required || 0,
+          respect_required: nextLevelZooShop?.respect_required || 0,
+          stars_price: nextLevelZooShop?.stars_price || 0,
+        },
       },
       user_level: userParams.level,
       user_skills: learnedSkillIds,
