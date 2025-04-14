@@ -27,6 +27,8 @@ const startWork = async (userId) => {
       }
     }
 
+    console.log(work)
+
     const { work_duration_decrease, work_hourly_income_increase } =
       user.constant_effects_levels
 
@@ -51,7 +53,7 @@ const startWork = async (userId) => {
     const nekoBoostMultiplier = await getNekoBoostMultiplier(userId)
     const reward_at_the_end = Math.round((((work.coins_in_hour + (reward_increase?.value_change || 0)) * nekoBoostMultiplier) / 3600 * baseDuration) * 100) / 100
 
-    await addActiveProcess(userId, "work", user?.work_id, duration, seconds, {
+    await addActiveProcess(userId, "work", user?.current_work_id || user?.work_id, duration, seconds, {
       duration_decrease: duration_decrease?.value_change,
       reward_increase: reward_increase?.value_change,
     }, {
@@ -71,8 +73,9 @@ const startWork = async (userId) => {
 export const checkCanStopWork = async (userId) => {
   // Fetch parameters and work process
   const user = await UserParameters.findOne({ id: userId });
-  const work = await Work.findOne({ work_id: user?.work_id });
-  const workProcess = await process.findOne({ id: userId, type_id: work?.work_id }); // Corrected 'process' to 'gameProcess'
+  
+  const workProcess = await process.findOne({ id: userId, type: 'work' });
+  const work = await Work.findOne({ work_id: workProcess.type_id });
 
   if (!user || !work || !workProcess) {
     return { status: 403, data: {} };
