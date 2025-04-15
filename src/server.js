@@ -326,17 +326,17 @@ async function main() {
     // deleteUserInvestments,
     // deleteUserTasks,
     // deleteUserBoosts,
-    // deleteAndInsertClothing,
+    deleteAndInsertClothing,
     deleteAndInsertWork,
     deleteAndInsertFood,
     deleteAndInsertSkill,
     deleteAndInsertBoost,
-    // deleteAndInsertLevels,
-    // deleteAndInsertTraining,
-    // deleteShelfItems,
-    // deleteInvestments,
+    deleteAndInsertLevels,
+    deleteAndInsertTraining,
+    deleteShelfItems,
+    deleteInvestments,
     // deleteTasks,
-    // deleteConstantEffects,
+    deleteConstantEffects,
     // populateDB
   ];
 
