@@ -1448,7 +1448,7 @@ const levelScanConfig = {
   cronSchedule: "*/1 * * * * *",
   durationFunction: async () => {
     const levelParameters = await LevelsParameters.find({})
-    const userParameters = await UserParameters.find({ id: 6390374875 })
+    const userParameters = await UserParameters.find({ })
 
     for(const userParam of userParameters) {
       // Find the highest level where user's experience meets or exceeds the requirement
