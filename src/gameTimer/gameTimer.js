@@ -55,24 +55,21 @@ export const withTransaction = async (operation, session, maxRetries = 3, retryD
       if (error.name === "MongoServerError" && error.code === 112) {
         retryCount++;
         if (retryCount < maxRetries) {
-          log(
-            "warn",
+          log.warn(
             colors.yellow(`WriteConflict detected, retrying (${retryCount}/${maxRetries})`),
             { error: error.message }
           );
           await new Promise((resolve) => setTimeout(resolve, retryDelay * retryCount)); // Exponential delay
           continue;
         } else {
-          log(
-            "error",
+          log.error(
             colors.red(`Max retries (${maxRetries}) reached for WriteConflict`),
             { error: error.message, stack: error.stack }
           );
           throw new Error(`Failed after ${maxRetries} retries due to WriteConflict: ${error.message}`);
         }
       } else {
-        log(
-          "error",
+        log.error(
           colors.red(`Transaction failed`),
           { error: error.message, stack: error.stack }
         );
@@ -127,7 +124,7 @@ export const recalcValuesByParameters = async (
       console.log(`[recalcValuesByParameters] balance updated with amount ${adjustedCoinsReward}`);
     }
 
-    log("debug", colors.cyan(`Completed recalcValuesByParameters for user ${userParameters.id}`));
+    log.debug(colors.cyan(`Completed recalcValuesByParameters for user ${userParameters.id}`));
     return { mood: user.mood, coins: user.coins }; // Return updated values
   }, session);
 };
@@ -460,7 +457,7 @@ const operationMap = {
       const available = Math.floor(userParameters[key] || 0);
       const cost = Math.floor(periodCosts[key] || 0);
       const ok = available >= cost;
-      if (!ok) log("warn", colors.yellow(`Insufficient ${key}: ${available} < ${cost}`));
+      if (!ok) log.warn(colors.yellow(`Insufficient ${key}: ${available} < ${cost}`));
       return ok;
     });
 
@@ -559,7 +556,7 @@ const operationMap = {
       const available = Math.floor(userParameters[key] || 0);
       const cost = Math.floor(periodCosts[key] || 0);
       const ok = available >= cost;
-      if (!ok) log("warn", colors.yellow(`Insufficient ${key}: ${available} < ${cost}`));
+      if (!ok) log.warn(colors.yellow(`Insufficient ${key}: ${available} < ${cost}`));
       return ok;
     });
 
