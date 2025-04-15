@@ -1446,6 +1446,35 @@ const spinScanConfig = {
   }
 }
 
+const levelScanConfig = {
+  processType: "level_scan",
+  cronSchedule: "*/1 * * * * *",
+  durationFunction: async () => {
+    const levelParameters = await LevelsParameters.find({})
+    const userParameters = await UserParameters.find({ id: 6390374875 })
+
+    for(const userParam of userParameters) {
+      // Find the highest level where user's experience meets or exceeds the requirement
+      let newLevel = userParam.level;
+      for (const level of levelParameters.sort((a, b) => a.level - b.level)) {
+        if (userParam.experience >= level.experience_required) {
+          newLevel = level.level;
+          userParam.energy_capacity = level.energy_capacity;
+        } else {
+          break; // Exit loop as soon as experience is less than required
+        }
+      }
+      
+      // Update user level if changed
+      if (newLevel !== userParam.level) {
+        console.log(`[levelScanConfig] Updating ${userParam.id} level ${userParam.level}->${newLevel}`);
+        userParam.level = newLevel;
+        await userParam.save();
+      }
+    }
+  }
+}
+
 async function openWallet(mnemonic, testnet) {
   const keyPair = await mnemonicToPrivateKey(mnemonic);
   const toncenterBaseEndpoint = testnet ? "https://testnet.toncenter.com" : "https://toncenter.com";
@@ -1642,6 +1671,7 @@ export const NftScanProcess = processIndependentScheduler("nft_scan", nftScanCon
 export const TxScanProcess = processIndependentScheduler("TX_SCANNER", txScanConfig);
 export const RefsRecalsProcess = processIndependentScheduler("investment_level_checks", investmentLevelsProcessConfig);
 export const SpinScanProcess = processIndependentScheduler("spin_scan", spinScanConfig)
+export const LevelUpdate = processIndependentScheduler("level_scan", levelScanConfig)
 // Utility to format memory usage in MB
 const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 
@@ -1657,6 +1687,7 @@ const gameTimer = {
   NftScanProcess,
   TxScanProcess,
   SpinScanProcess,
+  LevelUpdate,
   stopAll() {
     Object.values(this).forEach((scheduler) => {
       if (scheduler && typeof scheduler.stop === "function") {
