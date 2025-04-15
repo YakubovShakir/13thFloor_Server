@@ -1687,7 +1687,7 @@ const gameTimer = {
   NftScanProcess,
   TxScanProcess,
   SpinScanProcess,
-  LevelUpdate,
+  // LevelUpdate,
   stopAll() {
     Object.values(this).forEach((scheduler) => {
       if (scheduler && typeof scheduler.stop === "function") {
