@@ -1383,9 +1383,9 @@ const nftScanConfig = {
     isRunning = true;
     try {
       log.info("NFT-scanner process scheduler started iteration");
-      const usersWithWallets = await User.find({});
+      const usersWithWallets = await User.find({ tonWalletAddress: { $ne: null } });
 
-      await processInBatches(usersWithWallets, 50, async (user) => {
+      await processInBatches(usersWithWallets, 1, async (user) => {
         const nftItemIds = user.tonWalletAddress ? await getWhitelistedNftsFromWallet(user.tonWalletAddress) : [];
         await syncShelfInventory(user.id, nftItemIds);
       });
@@ -1646,17 +1646,17 @@ export const SpinScanProcess = processIndependentScheduler("spin_scan", spinScan
 const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 
 const gameTimer = {
-  FoodProccess,
-  SkillProccess,
-  TrainingProccess,
-  WorkProcess,
-  SleepProccess,
-  BoostProccess,
-  AutoclaimProccess,
-  RefsRecalsProcess,
+  // FoodProccess,
+  // SkillProccess,
+  // TrainingProccess,
+  // WorkProcess,
+  // SleepProccess,
+  // BoostProccess,
+  // AutoclaimProccess,
+  // RefsRecalsProcess,
   NftScanProcess,
-  TxScanProcess,
-  SpinScanProcess,
+  // TxScanProcess,
+  // SpinScanProcess,
   stopAll() {
     Object.values(this).forEach((scheduler) => {
       if (scheduler && typeof scheduler.stop === "function") {
