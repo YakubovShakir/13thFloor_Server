@@ -350,6 +350,14 @@ async function main() {
       throw error;
     }
   }
+
+  const users = await User.find({})
+  const boosts = await Boost.find({})
+  for(const user of users) {
+    for (const boost of boosts) {
+      await (new UserBoost({ id: user.id, boost_id: boost.boost_id })).save()
+    }
+  }
   logger.info('All migrations completed successfully');
 }
 
