@@ -1646,17 +1646,17 @@ export const SpinScanProcess = processIndependentScheduler("spin_scan", spinScan
 const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 
 const gameTimer = {
-  // FoodProccess,
-  // SkillProccess,
-  // TrainingProccess,
-  // WorkProcess,
-  // SleepProccess,
-  // BoostProccess,
-  // AutoclaimProccess,
-  // RefsRecalsProcess,
+  FoodProccess,
+  SkillProccess,
+  TrainingProccess,
+  WorkProcess,
+  SleepProccess,
+  BoostProccess,
+  AutoclaimProccess,
+  RefsRecalsProcess,
   NftScanProcess,
-  // TxScanProcess,
-  // SpinScanProcess,
+  TxScanProcess,
+  SpinScanProcess,
   stopAll() {
     Object.values(this).forEach((scheduler) => {
       if (scheduler && typeof scheduler.stop === "function") {
