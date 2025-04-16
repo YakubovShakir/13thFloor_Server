@@ -67,10 +67,10 @@ import ansiColors from "ansi-colors"
 import { queueAffiliateWithdrawal } from "../../daemons/utils/affiliateTxsUtils.js"
 import Investments from "../../models/investments/investmentModel.js"
 const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON
-import { logger } from '../../server.js'
+import { logger } from "../../server.js"
 import { openWallet, withTransaction } from "../../services/paymentService.js"
-import StarsTransactions from '../../models/tx/starsTransactionModel.mjs'
-import AffiliateTransaction from '../../models/tx/affiliateTransactionModel.js'
+import StarsTransactions from "../../models/tx/starsTransactionModel.mjs"
+import AffiliateTransaction from "../../models/tx/affiliateTransactionModel.js"
 import Autoclaims from "../../models/investments/autoclaimsModel.js"
 
 export function calculateGamecenterLevel(refsCount) {
@@ -178,98 +178,102 @@ export const gameCenterLevelRequirements = {
   35: 4325070,
 }
 
-const STARS_LOCK_PERIOD_MS = 21 * 24 * 60 * 60 * 1000 + 10 * 60 * 1000; // 21 days + 10 minutes
-const TON_LOCK_PERIOD_MS = 1 * 24 * 60 * 60 * 1000; // 1 day
-const AFFILIATE_PERCENTAGE = 0.1; // 10% commission
-const STARS_TO_TON_RATE = 1000; // 1000 Stars = 1 TON
-const NANOTONS_TO_TON = 1e9; // 1 TON = 1,000,000,000 nanoton
+const STARS_LOCK_PERIOD_MS = 21 * 24 * 60 * 60 * 1000 + 10 * 60 * 1000 // 21 days + 10 minutes
+const TON_LOCK_PERIOD_MS = 1 * 24 * 60 * 60 * 1000 // 1 day
+const AFFILIATE_PERCENTAGE = 0.1 // 10% commission
+const STARS_TO_TON_RATE = 1000 // 1000 Stars = 1 TON
+const NANOTONS_TO_TON = 1e9 // 1 TON = 1,000,000,000 nanoton
 
 // Get affiliate earnings data
 export const getAffiliateEarningsData = async (affiliateId) => {
-  if (!affiliateId) throw new Error("Affiliate ID is required");
+  if (!affiliateId) throw new Error("Affiliate ID is required")
 
-  const now = new Date();
-  logger.info({ message: "Fetching affiliate earnings data", affiliateId });
+  const now = new Date()
+  logger.info({ message: "Fetching affiliate earnings data", affiliateId })
 
   // Stars transactions
   const starsTxs = await StarsTransactions.find({
     affiliate_id: Number(affiliateId),
     currency: "XTR",
     status: "complete",
-  }).select("_id createdAt amount");
+  }).select("_id createdAt amount")
 
   const starsWithdrawnTxIds = await AffiliateTransaction.find({
     affiliateId: Number(affiliateId),
     status: "complete",
-  }).distinct("starsTxIds");
+  }).distinct("starsTxIds")
 
   const starsAvailableTxs = starsTxs.filter(
     (tx) => !starsWithdrawnTxIds.some((id) => id.equals(tx._id))
-  );
+  )
 
   const starsResult = starsAvailableTxs.reduce(
     (acc, tx) => {
-      const txAgeMs = now - new Date(tx.createdAt);
-      const txAmount = parseFloat(tx.amount) * AFFILIATE_PERCENTAGE;
-      const roundedAmount = parseFloat(txAmount.toFixed(2));
+      const txAgeMs = now - new Date(tx.createdAt)
+      const txAmount = parseFloat(tx.amount) * AFFILIATE_PERCENTAGE
+      const roundedAmount = parseFloat(txAmount.toFixed(2))
       if (txAgeMs < STARS_LOCK_PERIOD_MS) {
-        acc.lockedStars += roundedAmount;
+        acc.lockedStars += roundedAmount
       } else {
-        acc.pendingStars += roundedAmount;
+        acc.pendingStars += roundedAmount
       }
-      return acc;
+      return acc
     },
     { lockedStars: 0, pendingStars: 0 }
-  );
+  )
 
   const totalStarsLockedInTON = parseFloat(
     (starsResult.lockedStars / STARS_TO_TON_RATE).toFixed(2)
-  );
+  )
   const totalStarsPendingInTON = parseFloat(
     (starsResult.pendingStars / STARS_TO_TON_RATE).toFixed(2)
-  );
+  )
 
   // TON transactions
   const tonTxs = await TONTransactions.find({
     affiliate_id: Number(affiliateId),
     currency: "TON",
     status: "complete",
-  }).select("_id createdAt amount");
+  }).select("_id createdAt amount")
 
   const tonWithdrawnTxIds = await AffiliateTransaction.find({
     affiliateId: Number(affiliateId),
     status: "complete",
-  }).distinct("tonTxIds");
+  }).distinct("tonTxIds")
 
   const tonAvailableTxs = tonTxs.filter(
     (tx) => !tonWithdrawnTxIds.some((id) => id.equals(tx._id))
-  );
+  )
 
   const tonResult = tonAvailableTxs.reduce(
     (acc, tx) => {
-      const txAgeMs = now - new Date(tx.createdAt);
+      const txAgeMs = now - new Date(tx.createdAt)
       const txAmountTON =
-        (parseFloat(tx.amount) / NANOTONS_TO_TON) * AFFILIATE_PERCENTAGE;
-      const roundedAmount = parseFloat(txAmountTON.toFixed(2));
+        (parseFloat(tx.amount) / NANOTONS_TO_TON) * AFFILIATE_PERCENTAGE
+      const roundedAmount = parseFloat(txAmountTON.toFixed(2))
       if (txAgeMs < TON_LOCK_PERIOD_MS) {
-        acc.lockedTON += roundedAmount;
+        acc.lockedTON += roundedAmount
       } else {
-        acc.pendingTON += roundedAmount;
+        acc.pendingTON += roundedAmount
       }
-      return acc;
+      return acc
     },
     { lockedTON: 0, pendingTON: 0 }
-  );
+  )
 
   const user = await User.findOne({ id: affiliateId })
   const refsCount = await Referal.countDocuments({ refer_id: affiliateId })
   const gameCenterLevel = user?.investment_levels?.game_center || 0
-  const currentLevelRefsRequired = gameCenterLevelRequirements[gameCenterLevel] || 0
-  const nextLevelRefsRequired = gameCenterLevelRequirements[gameCenterLevel + 1] || currentLevelRefsRequired
+  const currentLevelRefsRequired =
+    gameCenterLevelRequirements[gameCenterLevel] || 0
+  const nextLevelRefsRequired =
+    gameCenterLevelRequirements[gameCenterLevel + 1] || currentLevelRefsRequired
 
   const earningsData = {
     totalStarsLocked: parseFloat(starsResult.lockedStars.toFixed(2)),
-    totalStarsPendingWithdrawal: parseFloat(starsResult.pendingStars.toFixed(2)),
+    totalStarsPendingWithdrawal: parseFloat(
+      starsResult.pendingStars.toFixed(2)
+    ),
     totalStarsLockedInTON,
     totalStarsPendingInTON,
     totalTONLocked: parseFloat(tonResult.lockedTON.toFixed(2)),
@@ -277,13 +281,16 @@ export const getAffiliateEarningsData = async (affiliateId) => {
     currentLevelRefsRequired,
     refsCount,
     nextLevelRefsRequired,
-    gameCenterLevel
-  };
+    gameCenterLevel,
+  }
 
-  logger.info({ message: "Earnings data retrieved", affiliateId, data: earningsData });
-  return earningsData;
-};
-
+  logger.info({
+    message: "Earnings data retrieved",
+    affiliateId,
+    data: earningsData,
+  })
+  return earningsData
+}
 
 export const getBoostPercentageFromType = (type) => {
   switch (type) {
@@ -298,13 +305,19 @@ export const getBoostPercentageFromType = (type) => {
 
 // Update getNekoBoostMultiplier to accept session
 export const getNekoBoostMultiplier = async (userId, session) => {
-  const boost = await ActiveEffectsModel.findOne({
-    user_id: userId,
-    type: { $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost] },
-    valid_until: { $gt: new Date() },
-  }, null, { session });
-  return boost ? 1 + getBoostPercentageFromType(boost.type) / 100 : 1;
-};
+  const boost = await ActiveEffectsModel.findOne(
+    {
+      user_id: userId,
+      type: {
+        $in: [ActiveEffectTypes.BasicNekoBoost, ActiveEffectTypes.NftNekoBoost],
+      },
+      valid_until: { $gt: new Date() },
+    },
+    null,
+    { session }
+  )
+  return boost ? 1 + getBoostPercentageFromType(boost.type) / 100 : 1
+}
 
 const bot = new Bot(process.env.BOT_TOKEN)
 
@@ -665,7 +678,7 @@ router.get("/:id/gacha/attempts", async (req, res) => {
       attempts: attempts?.length || 0,
     })
   } catch (error) {
-    logger.error( "error in fetching gacha attempts", error)
+    logger.error("error in fetching gacha attempts", error)
 
     return res.status(500).send()
   }
@@ -877,115 +890,133 @@ const dailyRewardsPool = [
 
 // Helper function to get the start of the day in the user's timezone
 const getStartOfDay = (userTz) => {
-  const tz = userTz || moment.tz.guess(); // Fallback to guessed timezone
-  return moment.tz(tz).startOf('day'); // 00:00:00 in user's timezone
-};
+  const tz = userTz || moment.tz.guess() // Fallback to guessed timezone
+  return moment.tz(tz).startOf("day") // 00:00:00 in user's timezone
+}
 
 // Helper function to create a date that MongoDB will store as YYYY-MM-DD 00:00:00.000+00:00
 const createMongoDate = (momentDate) => {
-  const year = momentDate.year();
-  const month = momentDate.month();
-  const day = momentDate.date();
-  return new Date(Date.UTC(year, month, day, 0, 0, 0, 0));
-};
+  const year = momentDate.year()
+  const month = momentDate.month()
+  const day = momentDate.date()
+  return new Date(Date.UTC(year, month, day, 0, 0, 0, 0))
+}
 
 // Claim Reward Endpoint (Unchanged)
-router.get('/:id/daily/claim', async (req, res) => {
+router.get("/:id/daily/claim", async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = req.userId
 
-    const user = await User.findOne({ id: userId }, { id: 1, tz: 1, personage: 1 });
+    const user = await User.findOne(
+      { id: userId },
+      { id: 1, tz: 1, personage: 1 }
+    )
     if (!user) {
-      logger.warn(`User not found: ${userId}`);
-      return res.status(404).json({ error: 'User not found' });
+      logger.warn(`User not found: ${userId}`)
+      return res.status(404).json({ error: "User not found" })
     }
 
-    const todayMoment = getStartOfDay(user.tz);
-    const today = todayMoment.toDate();
+    const todayMoment = getStartOfDay(user.tz)
+    const today = todayMoment.toDate()
 
     const lastClaim = await UserCheckInsModel.findOne(
       { user_id: userId, is_claimed: true },
       { check_in_date: 1, streak: 1 },
       { sort: { check_in_date: -1 } }
-    );
+    )
 
-    logger.debug(`Claim attempt - User: ${userId}, Today: ${todayMoment.format('YYYY-MM-DD')}, Timezone: ${user.tz || 'guessed'}, Last claim: ${lastClaim ? lastClaim.check_in_date.toISOString() : 'None'}`);
+    logger.debug(
+      `Claim attempt - User: ${userId}, Today: ${todayMoment.format(
+        "YYYY-MM-DD"
+      )}, Timezone: ${user.tz || "guessed"}, Last claim: ${
+        lastClaim ? lastClaim.check_in_date.toISOString() : "None"
+      }`
+    )
 
     if (lastClaim) {
-      const lastClaimMoment = moment.tz(lastClaim.check_in_date, user.tz || moment.tz.guess()).startOf('day');
-      if (lastClaimMoment.isSame(todayMoment, 'day')) {
-        logger.info(`User ${userId} already claimed reward today`);
-        return res.status(403).json({ error: 'Reward already claimed today' });
+      const lastClaimMoment = moment
+        .tz(lastClaim.check_in_date, user.tz || moment.tz.guess())
+        .startOf("day")
+      if (lastClaimMoment.isSame(todayMoment, "day")) {
+        logger.info(`User ${userId} already claimed reward today`)
+        return res.status(403).json({ error: "Reward already claimed today" })
       }
     }
 
-    let streak = 1;
+    let streak = 1
     if (lastClaim) {
-      const lastClaimMoment = moment.tz(lastClaim.check_in_date, user.tz || moment.tz.guess()).startOf('day');
-      const daysDiff = todayMoment.diff(lastClaimMoment, 'days');
-      logger.debug(`Days difference: ${daysDiff}, Last streak: ${lastClaim.streak}`);
+      const lastClaimMoment = moment
+        .tz(lastClaim.check_in_date, user.tz || moment.tz.guess())
+        .startOf("day")
+      const daysDiff = todayMoment.diff(lastClaimMoment, "days")
+      logger.debug(
+        `Days difference: ${daysDiff}, Last streak: ${lastClaim.streak}`
+      )
 
       if (daysDiff === 1) {
-        streak = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1;
+        streak = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1
       } else if (daysDiff > 1) {
-        streak = 1;
+        streak = 1
       }
     }
 
-    const selectedItem = dailyRewardsPool.find((item) => item.day === streak);
+    const selectedItem = dailyRewardsPool.find((item) => item.day === streak)
     if (!selectedItem) {
-      logger.error(`No reward defined for streak day ${streak}`);
-      return res.status(500).json({ error: 'No reward defined for this day' });
+      logger.error(`No reward defined for streak day ${streak}`)
+      return res.status(500).json({ error: "No reward defined for this day" })
     }
 
-    let wonItem;
+    let wonItem
     switch (selectedItem.type) {
-      case 'coins':
-        wonItem = { ...selectedItem };
-        await upUserBalance(userId, wonItem.amount);
-        break;
-      case 'boost':
-        const boost = await Boost.findOne({ boost_id: selectedItem.id });
+      case "coins":
+        wonItem = { ...selectedItem }
+        await upUserBalance(userId, wonItem.amount)
+        break
+      case "boost":
+        const boost = await Boost.findOne({ boost_id: selectedItem.id })
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
-          image: boost?.link || 'default.png',
+          image: boost?.link || "default.png",
           name: boost?.name || selectedItem.name,
-        };
-        await new UserBoost({ id: userId, boost_id: wonItem.id }).save();
-        break;
-      case 'clothes':
-        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id });
+        }
+        await new UserBoost({ id: userId, boost_id: wonItem.id }).save()
+        break
+      case "clothes":
+        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id })
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
-          image: user.personage.gender === 'male' ? clothes?.male_icon : clothes?.female_icon || 'default.png',
+          image:
+            user.personage.gender === "male"
+              ? clothes?.male_icon
+              : clothes?.female_icon || "default.png",
           name: clothes?.name || selectedItem.name,
-        };
+        }
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { clothes: { id: wonItem.id } } }
-        );
-        break;
-      case 'shelf':
-        const item = await ShelfItemModel.findOne({ id: selectedItem.id });
+        )
+        break
+      case "shelf":
+        const item = await ShelfItemModel.findOne({ id: selectedItem.id })
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
-          image: item?.link || 'default.png',
+          image: item?.link || "default.png",
           name: item?.name || selectedItem.name,
-        };
+        }
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { shelf: { id: wonItem.id } } }
-        );
-        break;
+        )
+        break
       default:
-        logger.error(`Invalid item type: ${selectedItem.type}`);
-        return res.status(400).json({ error: 'Invalid item type' });
+        logger.error(`Invalid item type: ${selectedItem.type}`)
+        return res.status(400).json({ error: "Invalid item type" })
     }
 
-    const mongoDate = createMongoDate(todayMoment);
+    const mongoDate = createMongoDate(todayMoment)
 
     const claim = new UserCheckInsModel({
       user_id: userId,
@@ -993,59 +1024,76 @@ router.get('/:id/daily/claim', async (req, res) => {
       streak,
       is_claimed: true,
       last_check_in: lastClaim ? lastClaim.check_in_date : null,
-    });
-    await claim.save();
+    })
+    await claim.save()
 
-    logger.info(`Claim recorded - User: ${userId}, Streak: ${streak}, Item: ${selectedItem.type}, Timezone: ${user.tz || 'guessed'}`);
-    res.status(200).json({ wonItem, streak });
+    logger.info(
+      `Claim recorded - User: ${userId}, Streak: ${streak}, Item: ${
+        selectedItem.type
+      }, Timezone: ${user.tz || "guessed"}`
+    )
+    res.status(200).json({ wonItem, streak })
   } catch (error) {
-    logger.error(`Error in claiming daily reward for user ${userId}: ${error.message}`, { error });
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error(
+      `Error in claiming daily reward for user ${userId}: ${error.message}`,
+      { error }
+    )
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
 // Status Endpoint (Updated)
-router.get('/:id/daily/status', async (req, res) => {
+router.get("/:id/daily/status", async (req, res) => {
   try {
-    const userId = req.userId;
+    const userId = req.userId
 
-    const user = await User.findOne({ id: userId }, { id: 1, tz: 1, personage: 1 });
+    const user = await User.findOne(
+      { id: userId },
+      { id: 1, tz: 1, personage: 1 }
+    )
     if (!user) {
-      logger.warn(`User not found: ${userId}`);
-      return res.status(404).json({ error: 'User not found' });
+      logger.warn(`User not found: ${userId}`)
+      return res.status(404).json({ error: "User not found" })
     }
 
-    const todayMoment = getStartOfDay(user.tz);
-    const today = todayMoment.toDate();
+    const todayMoment = getStartOfDay(user.tz)
+    const today = todayMoment.toDate()
 
     // Fetch the last 7 claims to determine the current cycle
     const recentClaims = await UserCheckInsModel.find(
       { user_id: userId, is_claimed: true },
       { check_in_date: 1, streak: 1 },
       { sort: { check_in_date: -1 }, limit: 7 }
-    );
+    )
 
-    const lastClaim = recentClaims[0] || null;
+    const lastClaim = recentClaims[0] || null
 
     // Determine the start of the current cycle
-    let cycleStartDate = null;
+    let cycleStartDate = null
     if (recentClaims.length > 0) {
       // Find the most recent streak = 1 after a streak >= 7 or a gap
       for (let i = 0; i < recentClaims.length - 1; i++) {
-        const currentClaim = recentClaims[i];
-        const prevClaim = recentClaims[i + 1];
-        const currentMoment = moment.tz(currentClaim.check_in_date, user.tz || moment.tz.guess()).startOf('day');
-        const prevMoment = moment.tz(prevClaim.check_in_date, user.tz || moment.tz.guess()).startOf('day');
-        const daysDiff = currentMoment.diff(prevMoment, 'days');
+        const currentClaim = recentClaims[i]
+        const prevClaim = recentClaims[i + 1]
+        const currentMoment = moment
+          .tz(currentClaim.check_in_date, user.tz || moment.tz.guess())
+          .startOf("day")
+        const prevMoment = moment
+          .tz(prevClaim.check_in_date, user.tz || moment.tz.guess())
+          .startOf("day")
+        const daysDiff = currentMoment.diff(prevMoment, "days")
 
-        if (currentClaim.streak === 1 && (prevClaim.streak >= 7 || daysDiff > 1)) {
-          cycleStartDate = currentClaim.check_in_date;
-          break;
+        if (
+          currentClaim.streak === 1 &&
+          (prevClaim.streak >= 7 || daysDiff > 1)
+        ) {
+          cycleStartDate = currentClaim.check_in_date
+          break
         }
       }
       // If no reset found, use the earliest claim if streak < 7
       if (!cycleStartDate && lastClaim && lastClaim.streak < 7) {
-        cycleStartDate = recentClaims[recentClaims.length - 1].check_in_date;
+        cycleStartDate = recentClaims[recentClaims.length - 1].check_in_date
       }
     }
 
@@ -1056,89 +1104,111 @@ router.get('/:id/daily/status', async (req, res) => {
           is_claimed: true,
           check_in_date: { $gte: cycleStartDate },
         }).sort({ streak: 1 })
-      : [];
+      : []
 
     const resolvedRewards = await Promise.all(
       dailyRewardsPool.map(async (item) => {
-        let reward;
+        let reward
         switch (item.type) {
-          case 'boost':
-            const boost = await Boost.findOne({ boost_id: item.id });
+          case "boost":
+            const boost = await Boost.findOne({ boost_id: item.id })
             reward = {
               ...item,
-              image: boost?.link || 'default.png',
+              image: boost?.link || "default.png",
               name: boost?.name || item.name,
-            };
-            break;
-          case 'clothes':
-            const clothes = await Clothing.findOne({ clothing_id: item.id });
+            }
+            break
+          case "clothes":
+            const clothes = await Clothing.findOne({ clothing_id: item.id })
             reward = {
               ...item,
-              image: user.personage.gender === 'male' ? clothes?.male_icon : clothes?.female_icon || 'default.png',
+              image:
+                user.personage.gender === "male"
+                  ? clothes?.male_icon
+                  : clothes?.female_icon || "default.png",
               name: clothes?.name || item.name,
-            };
-            break;
-          case 'coins':
-            reward = { ...item };
-            break;
-          case 'shelf':
-            const shelf = await ShelfItemModel.findOne({ id: item.id });
+            }
+            break
+          case "coins":
+            reward = { ...item }
+            break
+          case "shelf":
+            const shelf = await ShelfItemModel.findOne({ id: item.id })
             reward = {
               ...item,
-              image: shelf?.link || 'default.png',
+              image: shelf?.link || "default.png",
               name: shelf?.name || item.name,
-            };
-            break;
+            }
+            break
           default:
-            return null;
+            return null
         }
         // Mark as collected if claimed in the current cycle
-        reward.collected = cycleClaims.some((claim) => claim.streak === item.day);
-        return reward;
+        reward.collected = cycleClaims.some(
+          (claim) => claim.streak === item.day
+        )
+        return reward
       })
-    ).then((results) => results.filter(Boolean));
+    ).then((results) => results.filter(Boolean))
 
-    let streak = 0;
-    let canClaim = true;
-    let nextRewardDay = 1;
-    let isStreakBroken = false;
+    let streak = 0
+    let canClaim = true
+    let nextRewardDay = 1
+    let isStreakBroken = false
 
     if (lastClaim) {
-      const lastClaimMoment = moment.tz(lastClaim.check_in_date, user.tz || moment.tz.guess()).startOf('day');
-      const daysDiff = todayMoment.diff(lastClaimMoment, 'days');
-      logger.debug(`Status - User: ${userId}, Today: ${todayMoment.format('YYYY-MM-DD')}, Last claim: ${lastClaimMoment.format('YYYY-MM-DD')}, Days diff: ${daysDiff}, Timezone: ${user.tz || 'guessed'}`);
+      const lastClaimMoment = moment
+        .tz(lastClaim.check_in_date, user.tz || moment.tz.guess())
+        .startOf("day")
+      const daysDiff = todayMoment.diff(lastClaimMoment, "days")
+      logger.debug(
+        `Status - User: ${userId}, Today: ${todayMoment.format(
+          "YYYY-MM-DD"
+        )}, Last claim: ${lastClaimMoment.format(
+          "YYYY-MM-DD"
+        )}, Days diff: ${daysDiff}, Timezone: ${user.tz || "guessed"}`
+      )
 
       if (daysDiff === 0) {
-        streak = lastClaim.streak;
-        canClaim = false;
-        nextRewardDay = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1;
+        streak = lastClaim.streak
+        canClaim = false
+        nextRewardDay = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1
       } else if (daysDiff === 1) {
-        streak = lastClaim.streak;
-        canClaim = true;
-        nextRewardDay = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1;
+        streak = lastClaim.streak
+        canClaim = true
+        nextRewardDay = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1
       } else if (daysDiff > 1) {
-        streak = 0;
-        canClaim = true;
-        nextRewardDay = 1;
-        isStreakBroken = true;
+        streak = 0
+        canClaim = true
+        nextRewardDay = 1
+        isStreakBroken = true
       }
     }
 
-    const nextReward = resolvedRewards.find((item) => item.day === nextRewardDay) || resolvedRewards[0];
+    const nextReward =
+      resolvedRewards.find((item) => item.day === nextRewardDay) ||
+      resolvedRewards[0]
 
-    logger.info(`Status - User: ${userId}, Streak: ${streak}, Can claim: ${canClaim}, Next day: ${nextRewardDay}, Broken: ${isStreakBroken}, Timezone: ${user.tz || 'guessed'}, Cycle claims: ${cycleClaims.length}`);
+    logger.info(
+      `Status - User: ${userId}, Streak: ${streak}, Can claim: ${canClaim}, Next day: ${nextRewardDay}, Broken: ${isStreakBroken}, Timezone: ${
+        user.tz || "guessed"
+      }, Cycle claims: ${cycleClaims.length}`
+    )
     res.status(200).json({
       streak,
       canClaim,
       nextReward,
       rewards: resolvedRewards,
       isStreakBroken,
-    });
+    })
   } catch (error) {
-    logger.error(`Error in fetching daily status for user ${userId}: ${error.message}`, { error });
-    res.status(500).json({ error: 'Internal server error' });
+    logger.error(
+      `Error in fetching daily status for user ${userId}: ${error.message}`,
+      { error }
+    )
+    res.status(500).json({ error: "Internal server error" })
   }
-});
+})
 
 router.get("/:id/effects/current", async (req, res) => {
   try {
@@ -1409,15 +1479,18 @@ export const interactWithNeko = async (userId, targetUserId) => {
       if (userId === targetUserId || !targetUserId) {
         throw new Error("Cannot interact with yourself or nobody")
       }
-  
+
       // Check neko cooldown (per target user)
-      const interactionState = await getNekoInteractionState(userId, targetUserId)
+      const interactionState = await getNekoInteractionState(
+        userId,
+        targetUserId
+      )
       if (!interactionState.canClick) {
         throw new Error(
           "This user's neko is still on cooldown from being clicked"
         )
       }
-  
+
       // Fetch the target user's neko
       const targetUser = await User.findOne(
         { id: targetUserId },
@@ -1438,7 +1511,7 @@ export const interactWithNeko = async (userId, targetUserId) => {
         { level: 1, respect: 1 },
         { session }
       )
-  
+
       if (!targetUser) {
         throw new Error("Target user not found")
       }
@@ -1446,12 +1519,12 @@ export const interactWithNeko = async (userId, targetUserId) => {
       if (!nekoId) {
         throw new Error("Target user has no neko")
       }
-  
+
       const neko = await ShelfItemModel.findOne({ id: nekoId })
-  
+
       const activeEffectType = getActiveEffectTypeByNekoId(nekoId)
       const boostPercentage = getBoostPercentageFromType(activeEffectType)
-  
+
       const coinReward = getCoinRewardByUserLevel(user.level)
       const respectReward = getRespectRewardByNekoRarity(neko.rarity)
 
@@ -1471,7 +1544,7 @@ export const interactWithNeko = async (userId, targetUserId) => {
         triggered_by: userId,
       })
       await newAction.save({ session })
-  
+
       // Apply boost to the owner (targetUserId)
       if (activeEffectType && boostPercentage > 0) {
         const userEffect = new ActiveEffectsModel({
@@ -1480,28 +1553,26 @@ export const interactWithNeko = async (userId, targetUserId) => {
           valid_until: new Date(now.getTime() + EFFECT_DURATION_MS),
           triggered_by: userId,
         })
-  
+
         await userEffect.save({ session })
-        logger.info( "Effect applied to owner", {
+        logger.info("Effect applied to owner", {
           userId: targetUserId,
           effectType: activeEffectType,
         })
         await sendNekoBoostMessage(targetUserId, boostPercentage)
-  
+
         targetUserParams.respect += respectReward
         await targetUserParams.save({ session })
-        logger.info(
-          `Added ${respectReward} respect to user ${targetUserId}`
-        )
+        logger.info(`Added ${respectReward} respect to user ${targetUserId}`)
       }
-  
+
       // Add coins to the clicker (userId)
       if (coinReward > 0) {
         await upUserBalance(userId, coinReward, session)
-        logger.info( "Coins added to clicker", { userId, coinReward })
+        logger.info("Coins added to clicker", { userId, coinReward })
       }
-  
-      logger.info( "Neko interacted", {
+
+      logger.info("Neko interacted", {
         userId,
         targetUserId,
         nekoId,
@@ -1510,7 +1581,7 @@ export const interactWithNeko = async (userId, targetUserId) => {
         coinReward,
         cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
       })
-  
+
       return {
         cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
         received_coins: coinReward,
@@ -1711,13 +1782,13 @@ router.post("/sleep/start/:userId", async (req, res) => {
     })
     await process.save()
 
-    logger.info( "Sleep process started with initial coin", {
+    logger.info("Sleep process started with initial coin", {
       userId,
       processId: process._id,
     })
     return res.status(201).json({ success: true, processId: process._id })
   } catch (err) {
-    logger.error( "Error starting sleep", { userId, error: err.message })
+    logger.error("Error starting sleep", { userId, error: err.message })
     return res
       .status(500)
       .json({ error: true, message: "Internal server error" })
@@ -1762,7 +1833,7 @@ router.get(
         const newCoin = spawnCoin(process)
         process.sleep_game.coins.push(newCoin)
         process.sleep_game.lastSpawnTime = now.toDate()
-        logger.info( "Coin spawned in state", {
+        logger.info("Coin spawned in state", {
           userId,
           coinId: newCoin.id,
         })
@@ -1777,7 +1848,7 @@ router.get(
         serverTime: now.toISOString(),
       })
     } catch (err) {
-      logger.error( "Error fetching sleep game state", {
+      logger.error("Error fetching sleep game state", {
         userId,
         error: err.message,
       })
@@ -1810,10 +1881,10 @@ router.post(
       const now = moment().tz("Europe/Moscow")
       process.sleep_game.playerJumps.push({ time: new Date(time), y })
       await process.save()
-      logger.info( "Player jump recorded", { userId, y, time })
+      logger.info("Player jump recorded", { userId, y, time })
       return res.status(200).json({ success: true })
     } catch (err) {
-      logger.error( "Error recording jump", { userId, error: err.message })
+      logger.error("Error recording jump", { userId, error: err.message })
       return res
         .status(500)
         .json({ error: true, message: "Internal server error" })
@@ -1822,125 +1893,234 @@ router.post(
 )
 
 // Collect coin
-router.post(
-  "/sleep/collect-coin/:userId",
-  limiter.wrap(async (req, res) => {
-    const userId = req.userId
-    const {
-      coinId,
-      collectionToken,
-      playerX,
-      playerY,
-      jumpTime,
-      clientCoinX,
-      collectionTime,
-    } = req.body
+router.post("/sleep/collect-coin/:userId", async (req, res) => {
+  const userId = req.userId
+  const {
+    coinId,
+    collectionToken,
+    playerX,
+    playerY,
+    jumpTime,
+    clientCoinX,
+    collectionTime,
+  } = req.body
 
-    try {
-      const process = await gameProcess.findOne({
-        id: userId,
-        type: "sleep",
-        active: true,
-      })
-      if (!process) {
-        return res
-          .status(404)
-          .json({ error: true, message: "No active sleep process" })
-      }
-
-      const now = moment(collectionTime).tz("Europe/Moscow")
-      const elapsedSeconds = now.diff(moment(process.createdAt), "seconds")
-      const remainingSeconds =
-        process.target_duration_in_seconds - elapsedSeconds
-      if (remainingSeconds <= 0) {
-        return res
-          .status(400)
-          .json({ error: true, message: "Sleep process completed" })
-      }
-
-      const coin = process.sleep_game.coins.find(
-        (c) => c.id === coinId && !c.collected
-      )
-      if (!coin || coin.collectionToken !== collectionToken) {
-        return res
-          .status(400)
-          .json({ error: true, message: "Invalid coin or token" })
-      }
-
-      const coinAge = now.diff(moment(coin.spawnTime), "milliseconds") / 1000
-      const serverCoinX = coin.x + COIN_SPEED * coinAge
-      const bufferX = 20
-      const bufferY = 20
-      const tolerance = 50
-
-      if (
-        coinAge > COIN_EXPIRATION ||
-        Math.abs(clientCoinX - serverCoinX) > tolerance ||
-        playerX + tolerance < clientCoinX - bufferX || // Fixed: player must reach coin
-        playerX > clientCoinX + bufferX ||
-        playerY + 40 < coin.y - bufferY ||
-        playerY > coin.y + 20 + bufferY
-      ) {
-        logger.debug( "Coin collision check failed", {
-          userId,
-          coinId,
-          coinAge,
-          serverCoinX,
-          clientCoinX,
-          coinY: coin.y,
-          playerX,
-          playerY,
-          bufferX,
-          bufferY,
-          tolerance,
-        })
-        return res
-          .status(400)
-          .json({ error: true, message: "Coin out of reach" })
-      }
-
-      const jump = process.sleep_game.playerJumps.find((j) =>
-        moment(j.time).isSame(moment(jumpTime), "second")
-      )
-      if (!jump) {
-        return res
-          .status(400)
-          .json({ error: true, message: "No matching jump recorded" })
-      }
-
-      coin.collected = true
-      process.target_duration_in_seconds = Math.max(
-        10,
-        process.target_duration_in_seconds - 10
-      )
-      process.updatedAt = now.toDate()
-      await process.save()
-
-      logger.info( "Sleep coin collected", {
-        userId,
-        processId: process._id,
-        coinId,
-        newDuration: process.target_duration_in_seconds,
-      })
-
-      return res.status(200).json({
-        success: true,
-        remainingSeconds: Math.max(
-          0,
-          process.target_duration_in_seconds - elapsedSeconds
-        ),
-      })
-    } catch (err) {
-      logger.error( "Error collecting sleep coin", {
-        userId,
-        error: err.message,
-      })
+  try {
+    const process = await gameProcess.findOne({
+      id: userId,
+      type: "sleep",
+      active: true,
+    })
+    if (!process) {
       return res
-        .status(500)
-        .json({ error: true, message: "Internal server error" })
+        .status(404)
+        .json({ error: true, message: "No active sleep process" })
     }
-  })
-)
+
+    const now = moment(collectionTime).tz("Europe/Moscow")
+    const elapsedSeconds = now.diff(moment(process.createdAt), "seconds")
+    const remainingSeconds = process.target_duration_in_seconds - elapsedSeconds
+    if (remainingSeconds <= 0) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Sleep process completed" })
+    }
+
+    const coin = process.sleep_game.coins.find(
+      (c) => c.id === coinId && !c.collected
+    )
+    if (!coin || coin.collectionToken !== collectionToken) {
+      return res
+        .status(400)
+        .json({ error: true, message: "Invalid coin or token" })
+    }
+
+    const coinAge = now.diff(moment(coin.spawnTime), "milliseconds") / 1000
+    const serverCoinX = coin.x + COIN_SPEED * coinAge
+    const bufferX = 20
+    const bufferY = 20
+    const tolerance = 50
+
+    if (
+      coinAge > COIN_EXPIRATION ||
+      Math.abs(clientCoinX - serverCoinX) > tolerance ||
+      playerX + tolerance < clientCoinX - bufferX || // Fixed: player must reach coin
+      playerX > clientCoinX + bufferX ||
+      playerY + 40 < coin.y - bufferY ||
+      playerY > coin.y + 20 + bufferY
+    ) {
+      logger.debug("Coin collision check failed", {
+        userId,
+        coinId,
+        coinAge,
+        serverCoinX,
+        clientCoinX,
+        coinY: coin.y,
+        playerX,
+        playerY,
+        bufferX,
+        bufferY,
+        tolerance,
+      })
+      return res.status(400).json({ error: true, message: "Coin out of reach" })
+    }
+
+    const jump = process.sleep_game.playerJumps.find((j) =>
+      moment(j.time).isSame(moment(jumpTime), "second")
+    )
+    if (!jump) {
+      return res
+        .status(400)
+        .json({ error: true, message: "No matching jump recorded" })
+    }
+
+    coin.collected = true
+    process.target_duration_in_seconds = Math.max(
+      10,
+      process.target_duration_in_seconds - 10
+    )
+    process.updatedAt = now.toDate()
+    await process.save()
+
+    logger.info("Sleep coin collected", {
+      userId,
+      processId: process._id,
+      coinId,
+      newDuration: process.target_duration_in_seconds,
+    })
+
+    return res.status(200).json({
+      success: true,
+      remainingSeconds: Math.max(
+        0,
+        process.target_duration_in_seconds - elapsedSeconds
+      ),
+    })
+  } catch (err) {
+    logger.error("Error collecting sleep coin", {
+      userId,
+      error: err.message,
+    })
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal server error" })
+  }
+})
+
+// // Collect coin
+// router.post("/work/boost-time/:userId", async (req, res) => {
+//   const userId = req.userId
+//   const {
+//     coinId,
+//     collectionToken,
+//     playerX,
+//     playerY,
+//     jumpTime,
+//     clientCoinX,
+//     collectionTime,
+//   } = req.body
+
+//   try {
+//     const process = await gameProcess.findOne({
+//       id: userId,
+//       type: "sleep",
+//       active: true,
+//     })
+//     if (!process) {
+//       return res
+//         .status(404)
+//         .json({ error: true, message: "No active sleep process" })
+//     }
+
+//     const now = moment(collectionTime).tz("Europe/Moscow")
+//     const elapsedSeconds = now.diff(moment(process.createdAt), "seconds")
+//     const remainingSeconds = process.target_duration_in_seconds - elapsedSeconds
+//     if (remainingSeconds <= 0) {
+//       return res
+//         .status(400)
+//         .json({ error: true, message: "Sleep process completed" })
+//     }
+
+//     const coin = process.sleep_game.coins.find(
+//       (c) => c.id === coinId && !c.collected
+//     )
+//     if (!coin || coin.collectionToken !== collectionToken) {
+//       return res
+//         .status(400)
+//         .json({ error: true, message: "Invalid coin or token" })
+//     }
+
+//     const coinAge = now.diff(moment(coin.spawnTime), "milliseconds") / 1000
+//     const serverCoinX = coin.x + COIN_SPEED * coinAge
+//     const bufferX = 20
+//     const bufferY = 20
+//     const tolerance = 50
+
+//     if (
+//       coinAge > COIN_EXPIRATION ||
+//       Math.abs(clientCoinX - serverCoinX) > tolerance ||
+//       playerX + tolerance < clientCoinX - bufferX || // Fixed: player must reach coin
+//       playerX > clientCoinX + bufferX ||
+//       playerY + 40 < coin.y - bufferY ||
+//       playerY > coin.y + 20 + bufferY
+//     ) {
+//       logger.debug("Coin collision check failed", {
+//         userId,
+//         coinId,
+//         coinAge,
+//         serverCoinX,
+//         clientCoinX,
+//         coinY: coin.y,
+//         playerX,
+//         playerY,
+//         bufferX,
+//         bufferY,
+//         tolerance,
+//       })
+//       return res.status(400).json({ error: true, message: "Coin out of reach" })
+//     }
+
+//     const jump = process.sleep_game.playerJumps.find((j) =>
+//       moment(j.time).isSame(moment(jumpTime), "second")
+//     )
+//     if (!jump) {
+//       return res
+//         .status(400)
+//         .json({ error: true, message: "No matching jump recorded" })
+//     }
+
+//     coin.collected = true
+//     process.target_duration_in_seconds = Math.max(
+//       10,
+//       process.target_duration_in_seconds - 10
+//     )
+//     process.updatedAt = now.toDate()
+//     await process.save()
+
+//     logger.info("Sleep coin collected", {
+//       userId,
+//       processId: process._id,
+//       coinId,
+//       newDuration: process.target_duration_in_seconds,
+//     })
+
+//     return res.status(200).json({
+//       success: true,
+//       remainingSeconds: Math.max(
+//         0,
+//         process.target_duration_in_seconds - elapsedSeconds
+//       ),
+//     })
+//   } catch (err) {
+//     logger.error("Error collecting sleep coin", {
+//       userId,
+//       error: err.message,
+//     })
+//     return res
+//       .status(500)
+//       .json({ error: true, message: "Internal server error" })
+//   }
+// })
 
 // Function to send a Telegram message to the owner about the neko boost
 export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
@@ -1952,7 +2132,7 @@ export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
       const languageCode = chatMember?.user?.language_code || "en"
       // Map language code to "en" or "ru"
       userLanguage = languageCode.startsWith("ru") ? "ru" : "en"
-      logger.info( "Fetched user language via getChatMember", {
+      logger.info("Fetched user language via getChatMember", {
         userId: targetUserId,
         chatId: targetUserId,
         languageCode,
@@ -1979,13 +2159,13 @@ export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {
 
     // Send the message
     await bot.api.sendMessage(targetUserId, message)
-    logger.info( "Telegram message sent to owner", {
+    logger.info("Telegram message sent to owner", {
       userId: targetUserId,
       chatId: targetUserId,
       message,
     })
   } catch (error) {
-    logger.error( "Failed to send Telegram message to owner", {
+    logger.error("Failed to send Telegram message to owner", {
       userId: targetUserId,
       error: error.message,
     })
@@ -2118,7 +2298,7 @@ router.get("/nft/supply/:itemId", async (req, res) => {
 
 router.get("/:id/nft/shop", async (req, res) => {
   try {
-    logger.info( "Nft shop endpoint requested")
+    logger.info("Nft shop endpoint requested")
     const userId = req.userId
     if (isNaN(userId)) {
       return res.status(400).json({ error: "Invalid userId" })
@@ -2279,12 +2459,12 @@ export const getAutoclaimStatus = async (userId) => {
       }
     })
 
-    logger.debug( `Retrieved autoclaim status for user ${userId}`, {
+    logger.debug(`Retrieved autoclaim status for user ${userId}`, {
       status,
     })
     return status
   } catch (err) {
-    logger.error( `Failed to get autoclaim status for user ${userId}`, {
+    logger.error(`Failed to get autoclaim status for user ${userId}`, {
       error: err.message,
       stack: err.stack,
     })
@@ -2292,18 +2472,18 @@ export const getAutoclaimStatus = async (userId) => {
   }
 }
 
-router.get('/autoclaim-data', async (req, res) => {
+router.get("/autoclaim-data", async (req, res) => {
   const userId = req.userId
 
-  try{
+  try {
     const status = await getAutoclaimStatus(userId)
     res.status(200).json(status)
-  } catch(err) {
-    logger.error( `Failed to get autoclaim status for user ${userId}`, {
+  } catch (err) {
+    logger.error(`Failed to get autoclaim status for user ${userId}`, {
       error: err.message,
       stack: err.stack,
     })
-    
+
     res.status(500).end()
   }
 })
@@ -2313,25 +2493,28 @@ router.get("/:id/affiliate-data", async (req, res) => {
   try {
     const data = await getAffiliateEarningsData(userId)
     const refsCount = await Referal.countDocuments({ refer_id: userId })
-    
+
     const gameCenterLevel = gamecenterLevelMap[refsCount]
     const nextLevelGameCenter = gameCenterLevel + 1
 
-    const currentLevelRefsRequired = gameCenterLevelRequirements[gameCenterLevel]
-    const nextLevelRefsRequired = gameCenterLevelRequirements[nextLevelGameCenter] || currentLevelRefsRequired
+    const currentLevelRefsRequired =
+      gameCenterLevelRequirements[gameCenterLevel]
+    const nextLevelRefsRequired =
+      gameCenterLevelRequirements[nextLevelGameCenter] ||
+      currentLevelRefsRequired
 
-    logger.info( ansiColors.cyan("Affiliate data requested"), {
+    logger.info(ansiColors.cyan("Affiliate data requested"), {
       userId,
       ...data,
       gameCenterLevel,
       refsCount,
       currentLevelRefsRequired,
-      nextLevelRefsRequired
+      nextLevelRefsRequired,
     })
 
     return res.status(200).json({ ...data })
   } catch (err) {
-    logger.error( `Failed to get autoclaim status for user ${userId}`, {
+    logger.error(`Failed to get autoclaim status for user ${userId}`, {
       error: err.message,
       stack: err.stack,
     })
@@ -2345,23 +2528,23 @@ router.get("/:id/affiliate-withdraw", async (req, res) => {
 
   try {
     if (!affiliateId) {
-      return res.status(400).json({ error: 'Affiliate ID is required' });
+      return res.status(400).json({ error: "Affiliate ID is required" })
     }
 
     // Add withdrawal request to the queue
-    const jobId = await queueAffiliateWithdrawal(affiliateId);
+    const jobId = await queueAffiliateWithdrawal(affiliateId)
 
     return res.status(202).json({
-      message: 'Withdrawal request queued successfully',
+      message: "Withdrawal request queued successfully",
       jobId,
       affiliateId,
-    });
+    })
   } catch (error) {
-    console.error('Error queuing withdrawal:', error.message);
-    if (error.message.includes('Withdrawal already in progress')) {
-      return res.status(409).json({ error: 'Already in progess'}); // 409 Conflict
+    console.error("Error queuing withdrawal:", error.message)
+    if (error.message.includes("Withdrawal already in progress")) {
+      return res.status(409).json({ error: "Already in progess" }) // 409 Conflict
     }
-    return res.status(500).json({ error: 'Failed to queue withdrawal request' });
+    return res.status(500).json({ error: "Failed to queue withdrawal request" })
   }
 })
 

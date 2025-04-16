@@ -1295,6 +1295,7 @@ const getWhitelistedNftsFromWallet = async (walletAddress) => {
       allNfts = allNfts.concat(nftItems.map(nft => normalizeAddress(nft.address)));
       offset += limit;
       hasMore = nftItems.length === limit;
+      await new Promise((resolve) => setTimeout(resolve, 250))
     }
 
     return [...new Set(allNfts.filter(address => nftMap[address] !== undefined).map(address => nftMap[address]))];
@@ -1382,10 +1383,12 @@ const nftScanConfig = {
       log.info("NFT-scanner process scheduler started iteration");
       const usersWithWallets = await User.find({ tonWalletAddress: { $ne: null } });
 
-      await processInBatches(usersWithWallets, 1, async (user) => {
+      for(const user of usersWithWallets) {
         const nftItemIds = user.tonWalletAddress ? await getWhitelistedNftsFromWallet(user.tonWalletAddress) : [];
         await syncShelfInventory(user.id, nftItemIds);
-      });
+        
+        await new Promise((resolve) => setTimeout(() => resolve(), 1000))
+      }
 
       log.info("NFT-scanner process scheduler finished iteration", { totalUsers: usersWithWallets.length });
     } catch (e) {
