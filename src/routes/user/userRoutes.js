@@ -2092,7 +2092,7 @@ router.post("/work/boost-time/:userId", async (req, res) => {
     const elapsedSecondsSinceLastBoost = process.lastBoostedTime ? now.diff(moment(process.lastBoostedTime), "seconds") : 30
     
     if(elapsedSecondsSinceLastBoost >= 30 - 5) {
-      process.target_duration_in_seconds = Math.max(0, process.target_duration_in_seconds - 10); 
+      process.target_duration_in_seconds = Math.max(0, (process.target_duration_in_seconds || process.target_duration_in_seconds) - 10); 
       process.work_game?.clicks?.push({ clickedAt: now.toDate() })
       process.lastBoostedTime = now.toDate()
       await process.save()
@@ -2101,14 +2101,14 @@ router.post("/work/boost-time/:userId", async (req, res) => {
     logger.info("Work boost pressed", {
       userId,
       processId: process._id,
-      newDuration: process.target_duration_in_seconds,
+      newDuration: process.target_duration_in_seconds || process.base_duration_in_seconds,
     })
 
     return res.status(200).json({
       success: true,
       remainingSeconds: Math.max(
         0,
-        process.target_duration_in_seconds - elapsedSeconds
+        (process.target_duration_in_seconds || process.base_duration_in_seconds) - elapsedSeconds
       ),
     })
   } catch (err) {
