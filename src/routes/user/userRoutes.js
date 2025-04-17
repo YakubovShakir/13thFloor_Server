@@ -1472,130 +1472,161 @@ export const getNekoInteractionState = async (userId, targetUserId) => {
   }
 }
 
-// Interact with a neko
 export const interactWithNeko = async (userId, targetUserId) => {
+  const session = await mongoose.startSession();
   try {
-    await withTransaction(async (session) => {
-      if (userId === targetUserId || !targetUserId) {
-        throw new Error("Cannot interact with yourself or nobody")
-      }
+    session.startTransaction();
 
-      // Check neko cooldown (per target user)
-      const interactionState = await getNekoInteractionState(
-        userId,
-        targetUserId
-      )
-      if (!interactionState.canClick) {
-        throw new Error(
-          "This user's neko is still on cooldown from being clicked"
-        )
-      }
+    // Prevent self-interaction or invalid target
+    if (userId === targetUserId || !targetUserId) {
+      throw new Error('Cannot interact with yourself or nobody');
+    }
 
-      // Fetch the target user's neko
-      const targetUser = await User.findOne(
-        { id: targetUserId },
-        { "shelf.neko": 1 },
-        { session }
-      )
-      const targetUserParams = await UserParameters.findOne(
-        {
-          id: targetUserId,
-        },
-        { respect: 1 },
-        { session }
-      )
-      const user = await UserParameters.findOne(
-        {
-          id: userId,
-        },
-        { level: 1, respect: 1 },
-        { session }
-      )
+    // Check neko cooldown (per target user)
+    const interactionState = await getNekoInteractionState(userId, targetUserId);
+    if (!interactionState.canClick) {
+      throw new Error('This user\'s neko is still on cooldown from being clicked');
+    }
 
-      if (!targetUser) {
-        throw new Error("Target user not found")
-      }
-      const nekoId = targetUser?.shelf?.neko || null
-      if (!nekoId) {
-        throw new Error("Target user has no neko")
-      }
+    // Fetch target user's neko and relevant data
+    const targetUser = await User.findOne(
+      { id: targetUserId },
+      { 'shelf.neko': 1 },
+      { session }
+    );
+    const targetUserParams = await UserParameters.findOne(
+      { id: targetUserId },
+      { respect: 1 },
+      { session }
+    );
+    const user = await UserParameters.findOne(
+      { id: userId },
+      { level: 1, respect: 1 },
+      { session }
+    );
 
-      const neko = await ShelfItemModel.findOne({ id: nekoId })
+    if (!targetUser) {
+      throw new Error('Target user not found');
+    }
+    const nekoId = targetUser?.shelf?.neko || null;
+    if (!nekoId) {
+      throw new Error('Target user has no neko');
+    }
 
-      const activeEffectType = getActiveEffectTypeByNekoId(nekoId)
-      const boostPercentage = getBoostPercentageFromType(activeEffectType)
+    const neko = await ShelfItemModel.findOne({ id: nekoId }, null, { session });
+    if (!neko) {
+      throw new Error('Neko not found');
+    }
 
-      const coinReward = getCoinRewardByUserLevel(user.level)
-      const respectReward = getRespectRewardByNekoRarity(neko.rarity)
+    const activeEffectType = getActiveEffectTypeByNekoId(nekoId);
+    const boostPercentage = getBoostPercentageFromType(activeEffectType);
+    const coinReward = getCoinRewardByUserLevel(user.level);
+    const respectReward = getRespectRewardByNekoRarity(neko.rarity);
 
-      // Log the interaction
-      const now = new Date()
-      const newAction = new ActionLogModel({
-        user_id: targetUserId, // Target whose neko was clicked
+    // Log the interaction
+    const now = new Date();
+    const actionLogExists = await ActionLogModel.findOne(
+      {
+        user_id: targetUserId,
         action_type: ActionTypes.NekoInteract,
-        action_timestamp: now,
-        metadata: {
-          nekoId,
-          boostPercentage,
-          activeEffectType,
-          coinReward,
-          clickedBy: userId,
-        },
-        triggered_by: userId,
-      })
-      await newAction.save({ session })
+        'metadata.nekoId': nekoId,
+        'metadata.clickedBy': userId,
+        action_timestamp: { $gte: new Date(now.getTime() - 1000) }, // Prevent duplicate logs within 1 second
+      },
+      null,
+      { session }
+    );
 
-      // Apply boost to the owner (targetUserId)
-      if (activeEffectType && boostPercentage > 0) {
+    if (actionLogExists) {
+      throw new Error('Interaction already logged recently');
+    }
+
+    const newAction = new ActionLogModel({
+      user_id: targetUserId,
+      action_type: ActionTypes.NekoInteract,
+      action_timestamp: now,
+      metadata: {
+        nekoId,
+        boostPercentage,
+        activeEffectType,
+        coinReward,
+        clickedBy: userId,
+      },
+      triggered_by: userId,
+    });
+    await newAction.save({ session });
+
+    // Apply boost to the owner (targetUserId)
+    if (activeEffectType && boostPercentage > 0) {
+      // Check for existing active effect to prevent duplicates
+      const existingEffect = await ActiveEffectsModel.findOne(
+        {
+          user_id: targetUserId,
+          type: activeEffectType,
+          valid_until: { $gt: now },
+        },
+        null,
+        { session }
+      );
+
+      if (!existingEffect) {
         const userEffect = new ActiveEffectsModel({
-          user_id: targetUserId, // Only the owner gets the effect
+          user_id: targetUserId,
           type: activeEffectType,
           valid_until: new Date(now.getTime() + EFFECT_DURATION_MS),
           triggered_by: userId,
-        })
+        });
+        await userEffect.save({ session });
 
-        await userEffect.save({ session })
-        logger.info("Effect applied to owner", {
+        // Update respect
+        targetUserParams.respect += respectReward;
+        await targetUserParams.save({ session });
+
+        // Send boost message (ensure it runs only once)
+        await sendNekoBoostMessage(targetUserId, boostPercentage);
+
+        logger.info('Effect applied to owner', {
           userId: targetUserId,
           effectType: activeEffectType,
-        })
-        await sendNekoBoostMessage(targetUserId, boostPercentage)
-
-        targetUserParams.respect += respectReward
-        await targetUserParams.save({ session })
-        logger.info(`Added ${respectReward} respect to user ${targetUserId}`)
+        });
+        logger.info(`Added ${respectReward} respect to user ${targetUserId}`);
       }
+    }
 
-      // Add coins to the clicker (userId)
-      if (coinReward > 0) {
-        await upUserBalance(userId, coinReward, session)
-        logger.info("Coins added to clicker", { userId, coinReward })
-      }
+    // Add coins to the clicker (userId)
+    if (coinReward > 0) {
+      await upUserBalance(userId, coinReward, session);
+      logger.info('Coins added to clicker', { userId, coinReward });
+    }
 
-      logger.info("Neko interacted", {
-        userId,
-        targetUserId,
-        nekoId,
-        boostPercentage,
-        boostType: activeEffectType,
-        coinReward,
-        cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
-      })
+    logger.info('Neko interacted', {
+      userId,
+      targetUserId,
+      nekoId,
+      boostPercentage,
+      boostType: activeEffectType,
+      coinReward,
+      cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
+    });
 
-      return {
-        cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
-        received_coins: coinReward,
-        owners_boost: boostPercentage,
-      }
-    })
+    await session.commitTransaction();
+
+    return {
+      cooldownUntil: new Date(now.getTime() + COOLDOWN_MS),
+      received_coins: coinReward,
+      owners_boost: boostPercentage,
+    };
   } catch (error) {
-    console.error(
+    await session.abortTransaction();
+    logger.error(
       `Error interacting with neko for user ${userId} on target ${targetUserId}:`,
       error
-    )
-    throw error
+    );
+    throw error;
+  } finally {
+    session.endSession();
   }
-}
+};
 
 // Generic function to log any action
 export const logAction = async (userId, actionType, metadata = {}) => {
@@ -2007,120 +2038,53 @@ router.post("/sleep/collect-coin/:userId", async (req, res) => {
   }
 })
 
-// // Collect coin
-// router.post("/work/boost-time/:userId", async (req, res) => {
-//   const userId = req.userId
-//   const {
-//     coinId,
-//     collectionToken,
-//     playerX,
-//     playerY,
-//     jumpTime,
-//     clientCoinX,
-//     collectionTime,
-//   } = req.body
+// Collect coin
+router.post("/work/boost-time/:userId", async (req, res) => {
+  const userId = req.userId
 
-//   try {
-//     const process = await gameProcess.findOne({
-//       id: userId,
-//       type: "sleep",
-//       active: true,
-//     })
-//     if (!process) {
-//       return res
-//         .status(404)
-//         .json({ error: true, message: "No active sleep process" })
-//     }
+  try {
+    const process = await gameProcess.findOne({
+      id: userId,
+      type: "work",
+    })
+    if (!process) {
+      return res
+        .status(404)
+        .json({ error: true, message: "No active sleep process" })
+    }
 
-//     const now = moment(collectionTime).tz("Europe/Moscow")
-//     const elapsedSeconds = now.diff(moment(process.createdAt), "seconds")
-//     const remainingSeconds = process.target_duration_in_seconds - elapsedSeconds
-//     if (remainingSeconds <= 0) {
-//       return res
-//         .status(400)
-//         .json({ error: true, message: "Sleep process completed" })
-//     }
+    const now = moment()
+    const elapsedSeconds = now.diff(moment(process.createdAt), 'seconds')
+    const elapsedSecondsSinceLastBoost = process.lastBoostedTime ? now.diff(moment(process.lastBoostedTime), "seconds") : 30
+    
+    if(elapsedSecondsSinceLastBoost >= 30 - 5) {
+      process.target_duration_in_seconds = Math.max(0, process.target_duration_in_seconds - 10); 
+      await process.save()
+    }
 
-//     const coin = process.sleep_game.coins.find(
-//       (c) => c.id === coinId && !c.collected
-//     )
-//     if (!coin || coin.collectionToken !== collectionToken) {
-//       return res
-//         .status(400)
-//         .json({ error: true, message: "Invalid coin or token" })
-//     }
+    logger.info("Work boost pressed", {
+      userId,
+      processId: process._id,
+      newDuration: process.target_duration_in_seconds,
+    })
 
-//     const coinAge = now.diff(moment(coin.spawnTime), "milliseconds") / 1000
-//     const serverCoinX = coin.x + COIN_SPEED * coinAge
-//     const bufferX = 20
-//     const bufferY = 20
-//     const tolerance = 50
-
-//     if (
-//       coinAge > COIN_EXPIRATION ||
-//       Math.abs(clientCoinX - serverCoinX) > tolerance ||
-//       playerX + tolerance < clientCoinX - bufferX || // Fixed: player must reach coin
-//       playerX > clientCoinX + bufferX ||
-//       playerY + 40 < coin.y - bufferY ||
-//       playerY > coin.y + 20 + bufferY
-//     ) {
-//       logger.debug("Coin collision check failed", {
-//         userId,
-//         coinId,
-//         coinAge,
-//         serverCoinX,
-//         clientCoinX,
-//         coinY: coin.y,
-//         playerX,
-//         playerY,
-//         bufferX,
-//         bufferY,
-//         tolerance,
-//       })
-//       return res.status(400).json({ error: true, message: "Coin out of reach" })
-//     }
-
-//     const jump = process.sleep_game.playerJumps.find((j) =>
-//       moment(j.time).isSame(moment(jumpTime), "second")
-//     )
-//     if (!jump) {
-//       return res
-//         .status(400)
-//         .json({ error: true, message: "No matching jump recorded" })
-//     }
-
-//     coin.collected = true
-//     process.target_duration_in_seconds = Math.max(
-//       10,
-//       process.target_duration_in_seconds - 10
-//     )
-//     process.updatedAt = now.toDate()
-//     await process.save()
-
-//     logger.info("Sleep coin collected", {
-//       userId,
-//       processId: process._id,
-//       coinId,
-//       newDuration: process.target_duration_in_seconds,
-//     })
-
-//     return res.status(200).json({
-//       success: true,
-//       remainingSeconds: Math.max(
-//         0,
-//         process.target_duration_in_seconds - elapsedSeconds
-//       ),
-//     })
-//   } catch (err) {
-//     logger.error("Error collecting sleep coin", {
-//       userId,
-//       error: err.message,
-//     })
-//     return res
-//       .status(500)
-//       .json({ error: true, message: "Internal server error" })
-//   }
-// })
+    return res.status(200).json({
+      success: true,
+      remainingSeconds: Math.max(
+        0,
+        process.target_duration_in_seconds - elapsedSeconds
+      ),
+    })
+  } catch (err) {
+    logger.error("Error boosting work", {
+      userId,
+      error: err.message,
+    })
+    return res
+      .status(500)
+      .json({ error: true, message: "Internal server error" })
+  }
+})
 
 // Function to send a Telegram message to the owner about the neko boost
 export const sendNekoBoostMessage = async (targetUserId, boostPercentage) => {

@@ -25,6 +25,12 @@ const schema = new mongoose.Schema(
     target_duration_in_seconds: { type: Number, default: null },
     reward_at_the_end: { type: Number, default: null },
     user_parameters_updated_at: { type: Date, default: null },
+    lastBoostedTime: { type: Date, default: null },
+    work_game: {
+      clicks: [
+        { clickedAt: Date }
+      ]
+    },
     sleep_game: {
       coins: [{
         id: { type: String, required: true },
