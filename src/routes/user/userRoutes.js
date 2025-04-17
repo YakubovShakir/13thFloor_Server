@@ -2038,6 +2038,40 @@ router.post("/sleep/collect-coin/:userId", async (req, res) => {
   }
 })
 
+router.get("/work/last-click/:userId", async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const process = await gameProcess.findOne(
+      { id: parseInt(userId), "work_game.clicks.0": { $exists: true }, type: 'work' },
+      { "work_game.clicks": 1 }
+    ).sort({ "work_game.clicks.clickedAt": -1 });
+
+    if(!process) {
+      return res.status(404).end()
+    }
+
+    if (!process.work_game.clicks.length) {
+      return res.json({ lastClickedAt: null, remainingCooldown: 0 });
+    }
+
+    const lastClick = process.work_game.clicks[0].clickedAt;
+    const COOLDOWN_MS = 30000; // 30 seconds
+    const now = moment.tz(new Date(), "UTC"); // Server timezone (UTC for consistency)
+    const lastClickMoment = moment.tz(lastClick, "UTC");
+    const elapsedMs = now.diff(lastClickMoment);
+    const remainingCooldown = Math.max(0, COOLDOWN_MS - elapsedMs);
+
+    res.json({
+      lastClickedAt: lastClick.toISOString(),
+      remainingCooldown, // In milliseconds
+    });
+  } catch (error) {
+    console.error(`Error fetching last click for user ${userId}:`, error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 // Collect coin
 router.post("/work/boost-time/:userId", async (req, res) => {
   const userId = req.userId
@@ -2060,6 +2094,7 @@ router.post("/work/boost-time/:userId", async (req, res) => {
     if(elapsedSecondsSinceLastBoost >= 30 - 5) {
       process.target_duration_in_seconds = Math.max(0, process.target_duration_in_seconds - 10); 
       process.work_game?.clicks?.push({ clickedAt: now.toDate() })
+      process.lastBoostedTime = now.toDate()
       await process.save()
     }
 
