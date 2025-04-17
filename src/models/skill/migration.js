@@ -1080,7 +1080,7 @@ export default [
       ru: "Мастерство стратегического дремания",
       en: "Strategic Napping Mastery"
     },
-    coins_price: 1500,
+    coins_price: 600,
     experience_reward: 0,
     description: 
     {
@@ -1101,7 +1101,7 @@ export default [
       ru: "Секреты сыщика из сериалов",
       en: "Detective Secrets from TV Shows"
     },
-    coins_price: 4500,
+    coins_price: 1200,
     experience_reward: 0,
     description: 
     {
@@ -1122,7 +1122,7 @@ export default [
       ru: "Поиск теней в темноте",
       en: "Shadow Hunting in the Dark"
     },
-    coins_price: 10000,
+    coins_price: 1800,
     experience_reward: 0,
     description: 
     {
