@@ -2059,6 +2059,7 @@ router.post("/work/boost-time/:userId", async (req, res) => {
     
     if(elapsedSecondsSinceLastBoost >= 30 - 5) {
       process.target_duration_in_seconds = Math.max(0, process.target_duration_in_seconds - 10); 
+      process.work_game?.clicks?.push({ clickedAt: now.toDate() })
       await process.save()
     }
 
