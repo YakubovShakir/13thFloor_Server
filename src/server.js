@@ -50,6 +50,7 @@ import { ConstantEffects } from "./models/effects/constantEffectsLevels.js";
 import UserBoost from "./models/user/userBoostsModel.js";
 import { UserSpins } from "./models/user/userSpinsModel.js";
 import UserCompletedTask from "./models/user/userCompletedTaskModel.js";
+import { UserWorks } from "./models/user/userWorksModel.js";
 
 dotenv.config();
 
@@ -348,6 +349,20 @@ async function main() {
     } catch (error) {
       logger.error(`Failed ${migration.name}`, { error: error.message, stack: error.stack });
       throw error;
+    }
+  }
+  const users = await UserParameters.find({})
+  for (const user of users) {
+    for (let work_id = 0; work_id <= user.work_id; work_id++) {      
+      // Check if entry already exists to avoid duplicates
+      const existingEntry = await UserWorks.findOne({
+        id: user.id,
+        work_id,
+      });
+      if (!existingEntry) {
+        await new UserWorks({ id: user.id, work_id }).save();
+        console.log(`✅ Created UserWorks for user ${user.id}, work_id ${work_id}`);
+      }
     }
   }
 

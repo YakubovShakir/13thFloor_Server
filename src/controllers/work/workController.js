@@ -3,6 +3,7 @@ import UserParameters from "../../models/user/userParametersModel.js"
 import UserSkill from "../../models/user/userSkillModel.js"
 import process from "../../models/process/processModel.js"
 import { calcRespectFromClothes } from "../user/userParametersController.js"
+import { UserWorks } from "../../models/user/userWorksModel.js"
 export const getWorks = async (req, res) => {
   try {
     const works = await Work.find({}).sort({ coins_price: 1 })
@@ -47,11 +48,12 @@ export const buyWork = async (req, res) => {
     else {
       user.coins -= work?.coins_price
       user.work_id = workId
-      const currentWork = await process.findOne({ id: userId, type: "work" })
-      if (currentWork) {
-        currentWork.type_id = workId
-        await currentWork.save()
-      }
+      // const currentWork = await process.findOne({ id: userId, type: "work" })
+      // if (currentWork) {
+      //   currentWork.type_id = workId
+      //   await currentWork.save()
+      // }
+      await new UserWorks({ id: userId, work_id: workId }).save()
     }
 
     await user.save()
@@ -72,11 +74,12 @@ export const switchWork = async (req, res) => {
     
     const user = await UserParameters.findOne({ id: userId })
     const work = await Work.findOne({ work_id: workId })
+    const doesUserHaveIt = await UserWorks.findOne({ id: userId, work_id: workId })
     
     if (!user || !work)
       return res.status(404).json({ error: "User or work not found" })
 
-    if (user.work_id < workId) {
+    if (!doesUserHaveIt) {
       return res.status(401).end()
     }
 
