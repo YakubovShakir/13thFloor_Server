@@ -38,6 +38,22 @@ import winston from "winston";
 import Autoclaims from "../models/investments/autoclaimsModel.js";
 import { UserSpins } from "../models/user/userSpinsModel.js";
 
+// Global flags to prevent cron overlaps
+const schedulerFlags = {
+  work: false,
+  training: false,
+  sleep: false,
+  skill: false,
+  food: false,
+  boost: false,
+  autoclaim: false,
+  nft_scan: false,
+  TX_SCANNER: false,
+  investment_level_checks: false,
+  spin_scan: false,
+  level_scan: false,
+};
+
 export const withTransaction = async (operation, session, maxRetries = 3, retryDelay = 500) => {
   let retryCount = 0;
 
@@ -1403,25 +1419,46 @@ const nftScanConfig = {
 
 const spinScanConfig = {
   processType: "spin_scan",
-  cronSchedule: "*/10 * * * * *",
+  cronSchedule: "*/10 * * * * *", // Runs every 10 seconds
   durationFunction: async () => {
     try {
       const users = await User.find({}, { id: 1, tz: 1 });
       let totalUsersAwarded = 0;
-  
+
       await processInBatches(users, 50, async (user) => {
         const userTz = user.tz || moment.tz.guess(); // Fallback to guessed timezone
         const midnightTodayInTz = moment.tz(userTz).startOf("day"); // Midnight today in user's timezone
-  
+
+        // Find all unused daily spins for this user
+        const unusedSpins = await UserSpins.find({
+          user_id: user.id,
+          type: "daily",
+          is_used: false,
+        });
+
+        // Mark spins created before midnight today as used
+        for (const spin of unusedSpins) {
+          const spinTimeInTz = moment.tz(spin.createdAt, userTz);
+          if (spinTimeInTz.isBefore(midnightTodayInTz)) {
+            spin.is_used = true;
+            await spin.save();
+            log.info("Marked daily spin as used", {
+              userId: user.id,
+              spinId: spin._id,
+              timezone: userTz,
+            });
+          }
+        }
+
         // Find the most recent daily spin for this user
         const latestSpin = await UserSpins.findOne(
           { user_id: user.id, type: "daily" },
           null,
           { sort: { createdAt: -1 } } // Ensure latest spin is fetched
         );
-  
+
         let shouldAwardSpin = false;
-  
+
         if (!latestSpin) {
           // No previous spin, award one
           shouldAwardSpin = true;
@@ -1430,21 +1467,25 @@ const spinScanConfig = {
           const lastSpinTimeInTz = moment.tz(latestSpin.createdAt, userTz);
           shouldAwardSpin = lastSpinTimeInTz.isBefore(midnightTodayInTz);
         }
-  
+
         if (shouldAwardSpin) {
-          const newSpin = new UserSpins({ user_id: user.id, type: "daily" });
+          const newSpin = new UserSpins({
+            user_id: user.id,
+            type: "daily",
+            is_used: false,
+          });
           await newSpin.save();
           totalUsersAwarded += 1;
           log.info("Awarded daily spin", { userId: user.id, timezone: userTz });
         }
       });
-  
+
       log.info("Spin checker process scheduler finished iteration", { totalUsersAwarded });
     } catch (err) {
       log.error("Error processing spin giveaways", { error: err.message, stack: err.stack });
     }
-  }
-}
+  },
+};
 
 const levelScanConfig = {
   processType: "level_scan",
