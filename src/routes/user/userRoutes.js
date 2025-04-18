@@ -2043,7 +2043,7 @@ router.get("/work/last-click/:userId", async (req, res) => {
 
   try {
     const process = await gameProcess.findOne(
-      { id: parseInt(userId), "work_game.clicks.0": { $exists: true }, type: 'work' },
+      { id: parseInt(userId), type: 'work' },
       { "work_game.clicks": 1 }
     ).sort({ "work_game.clicks.clickedAt": -1 });
 
@@ -2055,7 +2055,7 @@ router.get("/work/last-click/:userId", async (req, res) => {
       return res.json({ lastClickedAt: null, remainingCooldown: 0 });
     }
 
-    const lastClick = process.work_game.clicks[0].clickedAt;
+    const lastClick = process.work_game?.clicks[0]?.clickedAt || 30;
     const COOLDOWN_MS = 30000; // 30 seconds
     const now = moment.tz(new Date(), "UTC"); // Server timezone (UTC for consistency)
     const lastClickMoment = moment.tz(lastClick, "UTC");
