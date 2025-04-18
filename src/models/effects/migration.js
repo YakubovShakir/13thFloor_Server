@@ -3387,7 +3387,7 @@ export default [
     // {
     //     id: 182,
     //     level: 2,
-    //     price: 1500,
+    //     price: 15000,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
@@ -3405,7 +3405,7 @@ export default [
     // {
     //     id: 183,
     //     level: 3,
-    //     price: 3000,
+    //     price: 40000,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
@@ -3423,7 +3423,7 @@ export default [
     // {
     //     id: 184,
     //     level: 4,
-    //     price: 4500,
+    //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
@@ -3441,7 +3441,7 @@ export default [
     // {
     //     id: 185,
     //     level: 5,
-    //     price: 8000,
+    //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
@@ -3459,7 +3459,7 @@ export default [
     // {
     //     id: 186,
     //     level: 6,
-    //     price: 12000,
+    //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
@@ -3477,7 +3477,7 @@ export default [
     // {
     //     id: 187,
     //     level: 7,
-    //     price: 18000,
+    //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
@@ -3495,7 +3495,7 @@ export default [
     // {
     //     id: 188,
     //     level: 8,
-    //     price: 22000,
+    //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
@@ -3532,7 +3532,7 @@ export default [
     // {
     //     id: 190,
     //     level: 2,
-    //     price: 1200,
+    //     price: 2500,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
@@ -3550,7 +3550,7 @@ export default [
     // {
     //     id: 191,
     //     level: 3,
-    //     price: 1900,
+    //     price: 10000,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
@@ -3568,7 +3568,7 @@ export default [
     // {
     //     id: 192,
     //     level: 4,
-    //     price: 2800,
+    //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
@@ -3586,7 +3586,7 @@ export default [
     // {
     //     id: 193,
     //     level: 5,
-    //     price: 5000,
+    //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
@@ -3604,7 +3604,7 @@ export default [
     // {
     //     id: 194,
     //     level: 7,
-    //     price: 12000,
+    //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
     //     value_change: 60,
     //     name: {
