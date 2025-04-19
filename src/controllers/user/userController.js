@@ -851,8 +851,8 @@ export const getUserInvestments = async (req, res) => {
           stars_price: nextLevelZooShop?.stars_price || 0,
         },
       },
-      user_level: userParams.level,
-      user_skills: learnedSkillIds,
+      userLevel: userParams.level,
+      userSkills: learnedSkillIds,
     }
 
     return res.status(200).json(response)
