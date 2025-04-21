@@ -19,6 +19,7 @@ import {
 } from "../../models/effects/activeEffectsModel.js"
 import { UserSpins } from "../../models/user/userSpinsModel.js"
 import { logger } from "../../server.js"
+import { UserWorks } from "../../models/user/userWorksModel.js"
 
 export const getBoostPercentageFromType = (type) => {
   switch (type) {
@@ -167,6 +168,7 @@ export const getUserParameters = async (req, res) => {
     // First get or create user
     user = await Users.findOne({ id: userId })
     parameters = await UserParameters.findOne({ id: userId })
+    const works = (await UserWorks.find({ id: userId }) || []).map(item => item.work_id)
     const refs = await Referal.countDocuments({ refer_id: userId })
 
     if (!user || !parameters || !userClothing || !inventory) {
@@ -320,6 +322,7 @@ export const getUserParameters = async (req, res) => {
       training_duration_decrease,
       sleeping_duration_decrease,
       neko_boost_percentage,
+      works
     }
 
     logger.info('User requested params', params.id)
