@@ -3371,7 +3371,7 @@ export default [
     //     level: 1,
     //     price: 700,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 10,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3389,7 +3389,7 @@ export default [
     //     level: 2,
     //     price: 15000,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 5,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3407,7 +3407,7 @@ export default [
     //     level: 3,
     //     price: 40000,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 3,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3425,7 +3425,7 @@ export default [
     //     level: 4,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 2,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3443,7 +3443,7 @@ export default [
     //     level: 5,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 2,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3461,7 +3461,7 @@ export default [
     //     level: 6,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 2,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3479,7 +3479,7 @@ export default [
     //     level: 7,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 2,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3497,7 +3497,7 @@ export default [
     //     level: 8,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 2,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3516,7 +3516,7 @@ export default [
     //     level: 1,
     //     price: 700,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 10,
     //     name: {
     //         ru: 'Мастер над временем',
     //         en: 'Master of Time'
@@ -3534,7 +3534,7 @@ export default [
     //     level: 2,
     //     price: 2500,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 10,
     //     name: {
     //         ru: 'Мастер над временем',
     //         en: 'Master of Time'
@@ -3552,7 +3552,7 @@ export default [
     //     level: 3,
     //     price: 10000,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 10,
     //     name: {
     //         ru: 'Мастер над временем',
     //         en: 'Master of Time'
@@ -3570,7 +3570,7 @@ export default [
     //     level: 4,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 10,
     //     name: {
     //         ru: 'Мастер над временем',
     //         en: 'Master of Time'
@@ -3588,7 +3588,7 @@ export default [
     //     level: 5,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 10,
     //     name: {
     //         ru: 'Мастер над временем',
     //         en: 'Master of Time'
@@ -3606,7 +3606,7 @@ export default [
     //     level: 7,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
+    //     value_change: 10,
     //     name: {
     //         ru: 'Мастер над временем',
     //         en: 'Master of Time'
