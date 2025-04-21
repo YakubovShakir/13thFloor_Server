@@ -3389,7 +3389,7 @@ export default [
     //     level: 2,
     //     price: 15000,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 5,
+    //     value_change: 15,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3407,7 +3407,7 @@ export default [
     //     level: 3,
     //     price: 40000,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 3,
+    //     value_change: 18,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3425,7 +3425,7 @@ export default [
     //     level: 4,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 2,
+    //     value_change: 20,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3443,7 +3443,7 @@ export default [
     //     level: 5,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 2,
+    //     value_change: 22,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3461,7 +3461,7 @@ export default [
     //     level: 6,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 2,
+    //     value_change: 24,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3479,7 +3479,7 @@ export default [
     //     level: 7,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 2,
+    //     value_change: 26,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3497,7 +3497,7 @@ export default [
     //     level: 8,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 2,
+    //     value_change: 28,
     //     name: {
     //         ru: 'Жми на полную',
     //         en: 'Click rush'
@@ -3510,9 +3510,26 @@ export default [
     //     required_level: 2,
     //     duration: 1440
     // },
-
-    // {
+ // {
     //     id: 189,
+    //     level: 9,
+    //     price: STARS,
+    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
+    //     value_change: 30,
+    //     name: {
+    //         ru: 'Жми на полную',
+    //         en: 'Click rush'
+    //     },
+    //     description: {
+    //         ru: 'Сокращает время обратного отсчета в мини игре во время работы на 2 секунды',
+    //         en: 'Reduces the countdown time in the mini game while running by 2 seconds'
+    //     },
+    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
+    //     required_level: 2,
+    //     duration: 1440
+    // },
+    // {
+    //     id: 190,
     //     level: 1,
     //     price: 700,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
@@ -3530,11 +3547,11 @@ export default [
     //     duration: 30
     // },
     // {
-    //     id: 190,
+    //     id: 191,
     //     level: 2,
     //     price: 2500,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 10,
+    //     value_change: 20,
     //     name: {
     //         ru: 'Мастер над временем',
     //         en: 'Master of Time'
@@ -3548,11 +3565,11 @@ export default [
     //     duration: 60
     // },
     // {
-    //     id: 191,
+    //     id: 192,
     //     level: 3,
     //     price: 10000,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 10,
+    //     value_change: 30,
     //     name: {
     //         ru: 'Мастер над временем',
     //         en: 'Master of Time'
@@ -3566,11 +3583,11 @@ export default [
     //     duration: 120
     // },
     // {
-    //     id: 192,
+    //     id: 193,
     //     level: 4,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 10,
+    //     value_change: 40,
     //     name: {
     //         ru: 'Мастер над временем',
     //         en: 'Master of Time'
@@ -3584,11 +3601,11 @@ export default [
     //     duration: 180
     // },
     // {
-    //     id: 193,
+    //     id: 194,
     //     level: 5,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 10,
+    //     value_change: 60,
     //     name: {
     //         ru: 'Мастер над временем',
     //         en: 'Master of Time'
@@ -3602,11 +3619,11 @@ export default [
     //     duration: 240
     // },
     // {
-    //     id: 194,
+    //     id: 195,
     //     level: 7,
     //     price: STARS,
     //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 10,
+    //     value_change: 60,
     //     name: {
     //         ru: 'Мастер над временем',
     //         en: 'Master of Time'
