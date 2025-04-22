@@ -412,7 +412,7 @@ const itemsPoolRaw = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins2.webp",
     name: { ru: "150 Монет", en: "150 Coins" },
     chance_premium: 2,
-    chance_daily: 4,
+    chance_daily: 40,
   },
   {
     id: 4,
@@ -423,7 +423,7 @@ const itemsPoolRaw = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins2.webp",
     name: { ru: "250 Монет", en: "250 Coins" },
     chance_premium: 8,
-    chance_daily: 9,
+    chance_daily: 19,
   },
   {
     id: 5,
@@ -440,7 +440,7 @@ const itemsPoolRaw = [
     id: 49,
     type: "clothes",
     chance_premium: 15,
-    chance_daily: 10,
+    chance_daily: 0,
     prize_equivalent: {
       type: "coins",
       amount: 1000,
@@ -486,7 +486,7 @@ const itemsPoolRaw = [
     chance_daily: 20,
     prize_equivalent: {
       type: "coins",
-      amount: 3000,
+      amount: 2000,
     },
   },
   {
@@ -509,7 +509,7 @@ const itemsPoolRaw = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins2.webp",
     name: { ru: "900 Монет", en: "900 Coins" },
     chance_premium: 35,
-    chance_daily: 25,
+    chance_daily: 0,
   },
   {
     id: 11,
@@ -537,7 +537,7 @@ const itemsPoolRaw = [
     id: 51,
     type: "clothes",
     chance_premium: 20,
-    chance_daily: 15,
+    chance_daily: 0,
     prize_equivalent: {
       type: "coins",
       amount: 1000,
@@ -585,7 +585,7 @@ const itemsPoolRaw = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp",
     name: { ru: "1000 Монет", en: "1000 Coins" },
     chance_premium: 18,
-    chance_daily: 27,
+    chance_daily: 0,
   },
   {
     id: 8,
@@ -860,15 +860,16 @@ const dailyRewardsPool = [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins2.webp",
     name: { ru: "100 Монет", en: "100 Coins" },
   },
+  { day: 3, type: "boost", id: 1, name: { en: "Boost" } },
   {
-    day: 3,
+    day: 4,
     type: "coins",
     amount: 300,
     image:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins3.webp",
     name: { ru: "300 Монет", en: "300 Coins" },
   },
-  { day: 4, type: "boost", id: 2, name: { en: "Boost" } },
+  
   {
     day: 5,
     type: "coins",
@@ -881,11 +882,162 @@ const dailyRewardsPool = [
   {
     day: 7,
     type: "coins",
+    amount: 3000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "3000 Монет", en: "3000 Coins" },
+  },
+  {
+    day: 8,
+    type: "coins",
+    amount: 4000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "4000 Монет", en: "4000 Coins" },
+  },
+  {
+    day: 9,type: "boost", id: 8, name: { en: "Boost" }
+  },
+  {
+    day: 10,
+    type: "coins",
     amount: 5000,
     image:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
     name: { ru: "5000 Монет", en: "5000 Coins" },
   },
+  {
+    day: 11,
+    type: "coins",
+    amount: 8000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "8000 Монет", en: "8000 Coins" },
+  },
+  {
+    day: 12,type: "boost", id: 2, name: { en: "Boost" }
+  },
+  {
+    day: 13,
+    type: "coins",
+    amount: 12000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "12000 Монет", en: "12000 Coins" },
+  },
+  {
+    day: 14,
+    type: "coins",
+    amount: 15000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "15000 Монет", en: "15000 Coins" },
+  },
+  {
+    day: 15,
+    type: "coins",
+    amount: 19000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "19000 Монет", en: "19000 Coins" },
+  },
+  {
+    day: 16,type: "boost", id: 3, name: { en: "Boost" }
+  },
+  {
+    day: 17,
+    type: "coins",
+    amount: 22000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "22000 Монет", en: "22000 Coins" },
+  },
+  {
+    day: 18,
+    type: "coins",
+    amount: 25000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "25000 Монет", en: "25000 Coins" },
+  },
+  {
+    day: 19,type: "boost", id: 7, name: { en: "Boost" }
+  },
+  {
+    day: 20,
+    type: "coins",
+    amount: 31000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "31000 Монет", en: "31000 Coins" },
+  },
+  {
+    day: 21,
+    type: "coins",
+    amount: 40000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "40000 Монет", en: "40000 Coins" },
+  },
+  {
+    day: 22,type: "boost", id: 1, name: { en: "Boost" }
+  },
+  {
+    day: 23,
+    type: "coins",
+    amount: 48000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "48000 Монет", en: "48000 Coins" },
+  },
+  {
+    day: 24,
+    type: "coins",
+    amount: 55000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "55000 Монет", en: "55000 Coins" },
+  },
+  {
+    day: 25,
+    type: "coins",
+    amount: 69000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "69000 Монет", en: "69000 Coins" },
+  },
+  {
+    day: 26,
+    type: "coins",
+    amount: 75000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "75000 Монет", en: "75000 Coins" },
+  },
+  {
+    day: 27,type: "boost", id: 4, name: { en: "Boost" }
+  },
+  {
+    day: 28,
+    type: "coins",
+    amount: 95000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "95000 Монет", en: "95000 Coins" },
+  },
+  {
+    day: 29,
+    type: "coins",
+    amount: 100000,
+    image:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/Coins%2FCoins5.webp",
+    name: { ru: "100000 Монет", en: "100000 Coins" },
+  },
+  {
+    day: 27,type: "boost", id: 8, name: { en: "Boost" }
+  },
+  
+  
 ]
 
 // Helper function to get the start of the day in the user's timezone
