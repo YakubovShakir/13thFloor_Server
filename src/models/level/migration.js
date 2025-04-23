@@ -44,32 +44,32 @@ export default [
   {
     level: 8,
     energy_capacity: 4000,
-    experience_required: 232300,
+    experience_required: 295000,
     sleep_duration: 120,
   },
   {
     level: 9,
     energy_capacity: 4500,
-    experience_required: 395500,
+    experience_required: 690500,
     sleep_duration: 180,
   },
   {
     level: 10,
     energy_capacity: 5000,
-    experience_required: 464000,
+    experience_required: 1154500,
     sleep_duration: 210,
   },
 
   {
     level: 11,
     energy_capacity: 5500,
-    experience_required: 696800,
+    experience_required: 1851300,
     sleep_duration: 260,
   },
   {
     level: 12,
     energy_capacity: 6000,
-    experience_required: 838560,
+    experience_required: 2689860,
     sleep_duration: 300,
   },
   {
@@ -81,43 +81,43 @@ export default [
   {
     level: 14,
     energy_capacity: 7000,
-    experience_required: 2428000,
+    experience_required: 4477360,
     sleep_duration: 360,
   },
   {
     level: 15,
     energy_capacity: 7500,
-    experience_required: 3795500,
+    experience_required: 8272860,
     sleep_duration: 390,
   },
   {
     level: 16,
     energy_capacity: 8000,
-    experience_required: 5456000,
+    experience_required: 13728860,
     sleep_duration: 420,
   },
    {
     level: 17,
     energy_capacity: 8500,
-    experience_required: 9368000,
+    experience_required: 23096860,
     sleep_duration: 450,
   },
   {
     level: 18,
     energy_capacity: 9000,
-    experience_required: 12480000,
+    experience_required: 35576860,
     sleep_duration: 480,
   },
   {
     level: 19,
     energy_capacity: 9500,
-    experience_required: 28748000,
+    experience_required: 64324860,
     sleep_duration: 510,
   },
   {
     level: 20,
     energy_capacity: 10000,
-    experience_required: 63200000,
+    experience_required: 127524860,
     sleep_duration: 540,
   },
  
