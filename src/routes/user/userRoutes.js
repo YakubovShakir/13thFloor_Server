@@ -385,15 +385,7 @@ const itemsPoolRaw = [
     chance_premium: 1,
     chance_daily: 3,
   },
-  {
-    id: 48,
-    type: "clothes",
-    chance_premium: 10,
-    chance_daily: 15,
-    prize_equivalent: {
-      type: "coins",
-      amount: 1000,
-    },
+  
     // prize_equivalent: {
     //   type: "boost",
     //   amount: 100
@@ -402,7 +394,7 @@ const itemsPoolRaw = [
     //   type: "spin",
     //   amount: 100
     // }
-  },
+  
   {
     id: 3,
     type: "coins",
@@ -436,16 +428,7 @@ const itemsPoolRaw = [
     chance_premium: 15,
     chance_daily: 15,
   },
-  {
-    id: 49,
-    type: "clothes",
-    chance_premium: 15,
-    chance_daily: 0,
-    prize_equivalent: {
-      type: "coins",
-      amount: 1000,
-    },
-  },
+  
   {
     id: 6,
     type: "coins",
@@ -479,16 +462,7 @@ const itemsPoolRaw = [
     chance_premium: 0,
     chance_daily: 0,
   },
-  {
-    id: 50,
-    type: "clothes",
-    chance_premium: 25,
-    chance_daily: 20,
-    prize_equivalent: {
-      type: "coins",
-      amount: 2000,
-    },
-  },
+ 
   {
     id: 9,
     type: "coins",
@@ -533,16 +507,7 @@ const itemsPoolRaw = [
     chance_premium: 8,
     chance_daily: 12,
   },
-  {
-    id: 51,
-    type: "clothes",
-    chance_premium: 20,
-    chance_daily: 0,
-    prize_equivalent: {
-      type: "coins",
-      amount: 1000,
-    },
-  },
+ 
   {
     id: 13,
     type: "coins",
@@ -595,6 +560,56 @@ const itemsPoolRaw = [
     prize_equivalent: {
       type: "coins",
       amount: 10000,
+    },
+  },
+  {
+    id: 55,
+    type: "clothes",
+    chance_premium: 15,
+    chance_daily: 0,
+    prize_equivalent: {
+      type: "coins",
+      amount: 1000,
+    },
+  },
+  {
+    id: 56,
+    type: "clothes",
+    chance_premium: 15,
+    chance_daily: 0,
+    prize_equivalent: {
+      type: "coins",
+      amount: 1000,
+    },
+  },
+  {
+    id: 57,
+    type: "clothes",
+    chance_premium: 15,
+    chance_daily: 0,
+    prize_equivalent: {
+      type: "coins",
+      amount: 1000,
+    },
+  },
+  {
+    id: 58,
+    type: "clothes",
+    chance_premium: 15,
+    chance_daily: 0,
+    prize_equivalent: {
+      type: "coins",
+      amount: 1000,
+    },
+  },
+  {
+    id: 59,
+    type: "clothes",
+    chance_premium: 15,
+    chance_daily: 0,
+    prize_equivalent: {
+      type: "coins",
+      amount: 1000,
     },
   },
 ]
