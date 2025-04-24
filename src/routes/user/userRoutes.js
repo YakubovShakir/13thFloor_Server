@@ -1049,7 +1049,7 @@ const dailyRewardsPool = [
     name: { ru: "100000 Монет", en: "100000 Coins" },
   },
   {
-    day: 300,type: "boost", id: 8, name: { en: "Boost" }
+    day: 30,type: "boost", id: 8, name: { en: "Boost" }
   },
   
   
