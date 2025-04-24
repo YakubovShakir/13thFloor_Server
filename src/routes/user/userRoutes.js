@@ -1049,7 +1049,7 @@ const dailyRewardsPool = [
     name: { ru: "100000 Монет", en: "100000 Coins" },
   },
   {
-    day: 27,type: "boost", id: 8, name: { en: "Boost" }
+    day: 300,type: "boost", id: 8, name: { en: "Boost" }
   },
   
   
@@ -1252,14 +1252,14 @@ router.get("/:id/daily/status", async (req, res) => {
 
         if (
           currentClaim.streak === 1 &&
-          (prevClaim.streak >= 7 || daysDiff > 1)
+          (prevClaim.streak >= 30 || daysDiff > 1)
         ) {
           cycleStartDate = currentClaim.check_in_date
           break
         }
       }
-      // If no reset found, use the earliest claim if streak < 7
-      if (!cycleStartDate && lastClaim && lastClaim.streak < 7) {
+      // If no reset found, use the earliest claim if streak < 30
+      if (!cycleStartDate && lastClaim && lastClaim.streak < 30) {
         cycleStartDate = recentClaims[recentClaims.length - 1].check_in_date
       }
     }
