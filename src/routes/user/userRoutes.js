@@ -65,10 +65,8 @@ import { InvestmentTypes } from "../../models/investments/userLaunchedInvestment
 import Referal from "../../models/referral/referralModel.js"
 import ansiColors from "ansi-colors"
 import { queueAffiliateWithdrawal } from "../../daemons/utils/affiliateTxsUtils.js"
-import Investments from "../../models/investments/investmentModel.js"
-const { TonClient, WalletContractV4, toNano, Address, NFTItem } = TON
+const { toNano } = TON
 import { logger } from "../../server.js"
-import { openWallet, withTransaction } from "../../services/paymentService.js"
 import StarsTransactions from "../../models/tx/starsTransactionModel.mjs"
 import AffiliateTransaction from "../../models/tx/affiliateTransactionModel.js"
 import Autoclaims from "../../models/investments/autoclaimsModel.js"

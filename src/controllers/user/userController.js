@@ -28,6 +28,8 @@ import { UserSpins } from "../../models/user/userSpinsModel.js"
 import { withTransaction } from "../../utils/dbUtils.js"
 import e from "express"
 import { logger } from "../../server.js"
+import { ConstantEffects } from "../../models/effects/constantEffectsLevels.js"
+import Skill from "../../models/skill/skillModel.js"
 
 export function calculateGamecenterLevel(refsCount) {
   const levels = Object.keys(gamecenterLevelMap)
@@ -618,7 +620,7 @@ export const buyItemsForCoins = async (req, res) => {
 
 export const requestStarsPaymentLink = async (req, res) => {
   try {
-    const { productType, id, lang = "en", userId, durationHours } = req.body
+    const { productType, id, lang = "en", userId, durationHours, subType } = req.body
 
     let product, name, description, amount, title
 
@@ -680,6 +682,20 @@ export const requestStarsPaymentLink = async (req, res) => {
       amount = autoclaimDurationToPrice[durationHours]
     }
 
+    if (productType === "skill") {
+      let product
+      if(subType) {
+        product = await ConstantEffects.findOne({ id })
+      } else {
+        product = await Skill.findOne({ skill_id: id })
+      }
+
+      name = product.name[lang]
+      description = product.description[lang]
+      title = name
+      amount = product.price_stars || 1
+    }
+
     const invoiceLink = await _fetch(`${process.env.BOT_ADDR}payment-create`, {
       method: "POST",
       headers: {
@@ -694,6 +710,7 @@ export const requestStarsPaymentLink = async (req, res) => {
         description,
         userId,
         durationHours,
+        subType
       }),
     })
       .then((res) => res.json())
