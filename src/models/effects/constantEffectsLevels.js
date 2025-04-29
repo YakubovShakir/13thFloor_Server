@@ -5,13 +5,15 @@ export const ConstantEffectTypes = {
     WorkDurationDecrease: 'work_duration_decrease',
     TrainingDurationDecrease: 'training_duration_decrease',
     SleepingDurationDecrease: 'sleeping_duration_decrease',
-    WorkHourlyIncomeIncrease: 'work_hourly_income_increase'
+    WorkHourlyIncomeIncrease: 'work_hourly_income_increase',
+    GameWorkCooldownDecrease: 'game_work_cooldown_decrease',
+    GameWorkProcessDurationDecrease: 'game_work_process_duration_decrease'
 }
 
 const constantEffectsLevelsSchema = new mongoose.Schema({
   id: { type: Number, required: true, unique: true },
   level: { type: Number, required: true },
-  price: { type: Number, required: true },
+  price: { type: Number, default: null},
   type: { type: String, required: true, enum: Object.values(ConstantEffectTypes) },
   // Can be percent or fixed, decided by type in handlers
   value_change: { type: Number, required: true },
@@ -26,7 +28,8 @@ const constantEffectsLevelsSchema = new mongoose.Schema({
   link: { type: String },
   required_level: { type: Number, default: 0},
   duration: { type: Number, default: 0 },
-  experience_reward: { type: Number, default: 0 }
+  experience_reward: { type: Number, default: 0 },
+  price_stars: { type: Number, default: 0 }
 })
 
 export const ConstantEffects = mongoose.model("constant_effects_levels", constantEffectsLevelsSchema)

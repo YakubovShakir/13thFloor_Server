@@ -3366,276 +3366,276 @@ export default [
     },
    
 
-    // {
-    //     id: 181,
-    //     level: 1,
-    //     price: 700,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 10,
-    //     name: {
-    //         ru: 'Жми на полную',
-    //         en: 'Click rush'
-    //     },
-    //     description: {
-    //         ru: 'Сокращает время обратного отсчета в мини игре во время работы на 10 секунды',
-    //         en: 'Reduces the countdown time in the mini game while running by 10 seconds'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
-    //     required_level: 2,
-    //     duration: 30
-    // },
-    // {
-    //     id: 182,
-    //     level: 2,
-    //     price: 15000,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 15,
-    //     name: {
-    //         ru: 'Жми на полную',
-    //         en: 'Click rush'
-    //     },
-    //     description: {
-    //         ru: 'Сокращает время обратного отсчета в мини игре во время работы на 15 секунды',
-    //         en: 'Reduces the countdown time in the mini game while running by 15 seconds'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
-    //     required_level: 2,
-    //     duration: 60
-    // },
-    // {
-    //     id: 183,
-    //     level: 3,
-    //     price: 40000,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 18,
-    //     name: {
-    //         ru: 'Жми на полную',
-    //         en: 'Click rush'
-    //     },
-    //     description: {
-    //         ru: 'Сокращает время обратного отсчета в мини игре во время работы на 18 секунд',
-    //         en: 'Reduces the countdown time in the mini game while running by 18 seconds'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
-    //     required_level: 2,
-    //     duration: 120
-    // },
-    // {
-    //     id: 184,
-    //     level: 4,
-    //     price: STARS,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 20,
-    //     name: {
-    //         ru: 'Жми на полную',
-    //         en: 'Click rush'
-    //     },
-    //     description: {
-    //         ru: 'Сокращает время обратного отсчета в мини игре во время работы на 20 секунд',
-    //         en: 'Reduces the countdown time in the mini game while running by 20 seconds'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
-    //     required_level: 2,
-    //     duration: 120
-    // },
-    // {
-    //     id: 185,
-    //     level: 5,
-    //     price: STARS,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 22,
-    //     name: {
-    //         ru: 'Жми на полную',
-    //         en: 'Click rush'
-    //     },
-    //     description: {
-    //         ru: 'Сокращает время обратного отсчета в мини игре во время работы на 22 секунды',
-    //         en: 'Reduces the countdown time in the mini game while running by 22 seconds'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
-    //     required_level: 2,
-    //     duration: 240
-    // },
-    // {
-    //     id: 186,
-    //     level: 6,
-    //     price: STARS,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 24,
-    //     name: {
-    //         ru: 'Жми на полную',
-    //         en: 'Click rush'
-    //     },
-    //     description: {
-    //         ru: 'Сокращает время обратного отсчета в мини игре во время работы на 24 секунды',
-    //         en: 'Reduces the countdown time in the mini game while running by 24 seconds'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
-    //     required_level: 2,
-    //     duration: 360
-    // },
-    // {
-    //     id: 187,
-    //     level: 7,
-    //     price: STARS,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 26,
-    //     name: {
-    //         ru: 'Жми на полную',
-    //         en: 'Click rush'
-    //     },
-    //     description: {
-    //         ru: 'Сокращает время обратного отсчета в мини игре во время работы на 26 секунд',
-    //         en: 'Reduces the countdown time in the mini game while running by 26 seconds'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
-    //     required_level: 2,
-    //     duration: 720
-    // },
-    // {
-    //     id: 188,
-    //     level: 8,
-    //     price: STARS,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 28,
-    //     name: {
-    //         ru: 'Жми на полную',
-    //         en: 'Click rush'
-    //     },
-    //     description: {
-    //         ru: 'Сокращает время обратного отсчета в мини игре во время работы на 28 секунд',
-    //         en: 'Reduces the countdown time in the mini game while running by 28 seconds'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
-    //     required_level: 2,
-    //     duration: 1440
-    // },
- // {
-    //     id: 189,
-    //     level: 9,
-    //     price: STARS,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 30,
-    //     name: {
-    //         ru: 'Жми на полную',
-    //         en: 'Click rush'
-    //     },
-    //     description: {
-    //         ru: 'Сокращает время обратного отсчета в мини игре во время работы на 30 секунд',
-    //         en: 'Reduces the countdown time in the mini game while running by 30 seconds'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
-    //     required_level: 2,
-    //     duration: 1440
-    // },
-    // {
-    //     id: 190,
-    //     level: 1,
-    //     price: 700,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 10,
-    //     name: {
-    //         ru: 'Мастер над временем',
-    //         en: 'Master of Time'
-    //     },
-    //     description: {
-    //         ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 10 секунд больше',
-    //         en: 'Successfully completing the mini-game while working reduces the total running time by 10 seconds more'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
-    //     required_level: 2,
-    //     duration: 30
-    // },
-    // {
-    //     id: 191,
-    //     level: 2,
-    //     price: 2500,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 20,
-    //     name: {
-    //         ru: 'Мастер над временем',
-    //         en: 'Master of Time'
-    //     },
-    //     description: {
-    //         ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 20 секунд больше',
-    //         en: 'Successfully completing the mini-game while working reduces the total running time by 20 seconds more'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
-    //     required_level: 2,
-    //     duration: 60
-    // },
-    // {
-    //     id: 192,
-    //     level: 3,
-    //     price: 10000,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 30,
-    //     name: {
-    //         ru: 'Мастер над временем',
-    //         en: 'Master of Time'
-    //     },
-    //     description: {
-    //         ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 30 секунд больше',
-    //         en: 'Successfully completing the mini-game while working reduces the total running time by 30 seconds more'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
-    //     required_level: 2,
-    //     duration: 120
-    // },
-    // {
-    //     id: 193,
-    //     level: 4,
-    //     price: STARS,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 40,
-    //     name: {
-    //         ru: 'Мастер над временем',
-    //         en: 'Master of Time'
-    //     },
-    //     description: {
-    //         ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 40 секунд больше',
-    //         en: 'Successfully completing the mini-game while working reduces the total running time by 40 seconds more'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
-    //     required_level: 2,
-    //     duration: 180
-    // },
-    // {
-    //     id: 194,
-    //     level: 5,
-    //     price: STARS,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
-    //     name: {
-    //         ru: 'Мастер над временем',
-    //         en: 'Master of Time'
-    //     },
-    //     description: {
-    //         ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 50 секунд больше',
-    //         en: 'Successfully completing the mini-game while working reduces the total running time by 50 seconds more'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
-    //     required_level: 2,
-    //     duration: 240
-    // },
-    // {
-    //     id: 195,
-    //     level: 7,
-    //     price: STARS,
-    //     type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
-    //     value_change: 60,
-    //     name: {
-    //         ru: 'Мастер над временем',
-    //         en: 'Master of Time'
-    //     },
-    //     description: {
-    //         ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 60 секунд больше',
-    //         en: 'Successfully completing the mini-game while working reduces the total running time by 60 seconds more'
-    //     },
-    //     link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
-    //     required_level: 2,
-    //     duration: 300
-    // },
+    {
+        id: 181,
+        level: 1,
+        price: 700,
+        type: ConstantEffectTypes.GameWorkCooldownDecrease,
+        value_change: 10,
+        name: {
+            ru: 'Жми на полную',
+            en: 'Click rush'
+        },
+        description: {
+            ru: 'Сокращает время обратного отсчета в мини игре во время работы на 10 секунды',
+            en: 'Reduces the countdown time in the mini game while running by 10 seconds'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
+        required_level: 2,
+        duration: 30
+    },
+    {
+        id: 182,
+        level: 2,
+        price: 15000,
+        type: ConstantEffectTypes.GameWorkCooldownDecrease,
+        value_change: 15,
+        name: {
+            ru: 'Жми на полную',
+            en: 'Click rush'
+        },
+        description: {
+            ru: 'Сокращает время обратного отсчета в мини игре во время работы на 15 секунды',
+            en: 'Reduces the countdown time in the mini game while running by 15 seconds'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
+        required_level: 2,
+        duration: 60
+    },
+    {
+        id: 183,
+        level: 3,
+        price: 40000,
+        type: ConstantEffectTypes.GameWorkCooldownDecrease,
+        value_change: 18,
+        name: {
+            ru: 'Жми на полную',
+            en: 'Click rush'
+        },
+        description: {
+            ru: 'Сокращает время обратного отсчета в мини игре во время работы на 18 секунд',
+            en: 'Reduces the countdown time in the mini game while running by 18 seconds'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
+        required_level: 2,
+        duration: 120
+    },
+    {
+        id: 184,
+        level: 4,
+        price_stars: 10,
+        type: ConstantEffectTypes.GameWorkCooldownDecrease,
+        value_change: 20,
+        name: {
+            ru: 'Жми на полную',
+            en: 'Click rush'
+        },
+        description: {
+            ru: 'Сокращает время обратного отсчета в мини игре во время работы на 20 секунд',
+            en: 'Reduces the countdown time in the mini game while running by 20 seconds'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
+        required_level: 2,
+        duration: 120
+    },
+    {
+        id: 185,
+        level: 5,
+        price_stars: 20,
+        type: ConstantEffectTypes.GameWorkCooldownDecrease,
+        value_change: 22,
+        name: {
+            ru: 'Жми на полную',
+            en: 'Click rush'
+        },
+        description: {
+            ru: 'Сокращает время обратного отсчета в мини игре во время работы на 22 секунды',
+            en: 'Reduces the countdown time in the mini game while running by 22 seconds'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
+        required_level: 2,
+        duration: 240
+    },
+    {
+        id: 186,
+        level: 6,
+        price_stars: 30,
+        type: ConstantEffectTypes.GameWorkCooldownDecrease,
+        value_change: 24,
+        name: {
+            ru: 'Жми на полную',
+            en: 'Click rush'
+        },
+        description: {
+            ru: 'Сокращает время обратного отсчета в мини игре во время работы на 24 секунды',
+            en: 'Reduces the countdown time in the mini game while running by 24 seconds'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
+        required_level: 2,
+        duration: 360
+    },
+    {
+        id: 187,
+        level: 7,
+        price_stars: 40,
+        type: ConstantEffectTypes.GameWorkCooldownDecrease,
+        value_change: 26,
+        name: {
+            ru: 'Жми на полную',
+            en: 'Click rush'
+        },
+        description: {
+            ru: 'Сокращает время обратного отсчета в мини игре во время работы на 26 секунд',
+            en: 'Reduces the countdown time in the mini game while running by 26 seconds'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
+        required_level: 2,
+        duration: 720
+    },
+    {
+        id: 188,
+        level: 8,
+        price_stars: 10,
+        type: ConstantEffectTypes.GameWorkCooldownDecrease,
+        value_change: 28,
+        name: {
+            ru: 'Жми на полную',
+            en: 'Click rush'
+        },
+        description: {
+            ru: 'Сокращает время обратного отсчета в мини игре во время работы на 28 секунд',
+            en: 'Reduces the countdown time in the mini game while running by 28 seconds'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
+        required_level: 2,
+        duration: 1440
+    },
+ {
+        id: 189,
+        level: 9,
+        price_stars: 20,
+        type: ConstantEffectTypes.GameWorkCooldownDecrease,
+        value_change: 30,
+        name: {
+            ru: 'Жми на полную',
+            en: 'Click rush'
+        },
+        description: {
+            ru: 'Сокращает время обратного отсчета в мини игре во время работы на 30 секунд',
+            en: 'Reduces the countdown time in the mini game while running by 30 seconds'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FButtTime.webp',
+        required_level: 2,
+        duration: 1440
+    },
+    {
+        id: 190,
+        level: 1,
+        price: 700,
+        type: ConstantEffectTypes.GameWorkProcessDurationDecrease,
+        value_change: 10,
+        name: {
+            ru: 'Мастер над временем',
+            en: 'Master of Time'
+        },
+        description: {
+            ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 10 секунд больше',
+            en: 'Successfully completing the mini-game while working reduces the total running time by 10 seconds more'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
+        required_level: 2,
+        duration: 30
+    },
+    {
+        id: 191,
+        level: 2,
+        price: 2500,
+        type: ConstantEffectTypes.GameWorkProcessDurationDecrease,
+        value_change: 20,
+        name: {
+            ru: 'Мастер над временем',
+            en: 'Master of Time'
+        },
+        description: {
+            ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 20 секунд больше',
+            en: 'Successfully completing the mini-game while working reduces the total running time by 20 seconds more'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
+        required_level: 2,
+        duration: 60
+    },
+    {
+        id: 192,
+        level: 3,
+        price: 10000,
+        type: ConstantEffectTypes.GameWorkProcessDurationDecrease,
+        value_change: 30,
+        name: {
+            ru: 'Мастер над временем',
+            en: 'Master of Time'
+        },
+        description: {
+            ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 30 секунд больше',
+            en: 'Successfully completing the mini-game while working reduces the total running time by 30 seconds more'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
+        required_level: 2,
+        duration: 120
+    },
+    {
+        id: 193,
+        level: 4,
+        price_stars: 10,
+        type: ConstantEffectTypes.GameWorkProcessDurationDecrease,
+        value_change: 40,
+        name: {
+            ru: 'Мастер над временем',
+            en: 'Master of Time'
+        },
+        description: {
+            ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 40 секунд больше',
+            en: 'Successfully completing the mini-game while working reduces the total running time by 40 seconds more'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
+        required_level: 2,
+        duration: 180
+    },
+    {
+        id: 194,
+        level: 5,
+        price_stars: 20,
+        type: ConstantEffectTypes.GameWorkProcessDurationDecrease,
+        value_change: 60,
+        name: {
+            ru: 'Мастер над временем',
+            en: 'Master of Time'
+        },
+        description: {
+            ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 50 секунд больше',
+            en: 'Successfully completing the mini-game while working reduces the total running time by 50 seconds more'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
+        required_level: 2,
+        duration: 240
+    },
+    {
+        id: 195,
+        level: 7,
+        price_stars: 30,
+        type: ConstantEffectTypes.GameWorkProcessDurationDecrease,
+        value_change: 60,
+        name: {
+            ru: 'Мастер над временем',
+            en: 'Master of Time'
+        },
+        description: {
+            ru: 'Успешное выполнение мини игры во время работы, сокращает общее время работы на 60 секунд больше',
+            en: 'Successfully completing the mini-game while working reduces the total running time by 60 seconds more'
+        },
+        link: 'https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/skills%2FPerks%2FSkip.webp',
+        required_level: 2,
+        duration: 300
+    },
     
     
 ]

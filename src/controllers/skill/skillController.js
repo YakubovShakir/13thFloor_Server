@@ -49,6 +49,14 @@ export const getConstantEffects = async (req, res) => {
         current: await ConstantEffects.findOne({ type: ConstantEffectTypes.WorkHourlyIncomeIncrease, level: userParams.constant_effects_levels.work_hourly_income_increase }),
         next: await ConstantEffects.findOne({ type: ConstantEffectTypes.WorkHourlyIncomeIncrease, level: (userParams.constant_effects_levels.work_hourly_income_increase || 0) + 1 }),
       },
+      [ConstantEffectTypes.GameWorkCooldownDecrease]: {
+        current: await ConstantEffects.findOne({ type: ConstantEffectTypes.GameWorkCooldownDecrease, level: userParams.constant_effects_levels.game_work_cooldown_decrease }),
+        next: await ConstantEffects.findOne({ type: ConstantEffectTypes.GameWorkCooldownDecrease, level: (userParams.constant_effects_levels.game_work_cooldown_decrease || 0) + 1 }),
+      },
+      [ConstantEffectTypes.GameWorkProcessDurationDecrease]: {
+        current: await ConstantEffects.findOne({ type: ConstantEffectTypes.GameWorkProcessDurationDecrease, level: userParams.constant_effects_levels.game_work_process_duration_decrease }),
+        next: await ConstantEffects.findOne({ type: ConstantEffectTypes.GameWorkProcessDurationDecrease, level: (userParams.constant_effects_levels.game_work_process_duration_decrease || 0) + 1 }),
+      }
     };
 
     return res.status(200).json({ constant_effects: response });

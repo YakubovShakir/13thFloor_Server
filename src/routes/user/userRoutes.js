@@ -1072,118 +1072,124 @@ const createMongoDate = (momentDate) => {
 // Claim Reward Endpoint (Unchanged)
 router.get("/:id/daily/claim", async (req, res) => {
   try {
-    const userId = req.userId
+    const userId = req.userId;
 
     const user = await User.findOne(
       { id: userId },
       { id: 1, tz: 1, personage: 1 }
-    )
+    );
     if (!user) {
-      logger.warn(`User not found: ${userId}`)
-      return res.status(404).json({ error: "User not found" })
+      logger.warn(`User not found: ${userId}`);
+      return res.status(404).json({ error: "User not found" });
     }
 
-    const todayMoment = getStartOfDay(user.tz)
-    const today = todayMoment.toDate()
+    // Determine timezone: use user.tz if specified, otherwise fall back to server time
+    const timezone = user.tz || moment.tz.guess() || "UTC";
+    logger.debug(`Using timezone for user ${userId}: ${timezone}`);
 
+    const todayMoment = moment.tz(timezone).startOf("day"); // Start of day in user's timezone
+    const today = todayMoment.toDate(); // Convert to UTC for storage
+
+    // Check for existing claim on the same day
+    const existingClaim = await UserCheckInsModel.findOne({
+      user_id: userId,
+      check_in_date: today,
+      is_claimed: true,
+    });
+
+    if (existingClaim) {
+      logger.info(`User ${userId} already claimed reward today: ${today.toISOString()}`);
+      return res.status(403).json({ error: "Reward already claimed today" });
+    }
+
+    // Fetch the last claim before today
     const lastClaim = await UserCheckInsModel.findOne(
-      { user_id: userId, is_claimed: true },
+      { 
+        user_id: userId, 
+        is_claimed: true,
+        check_in_date: { $lt: today } // Ensure we don't include today's claim
+      },
       { check_in_date: 1, streak: 1 },
       { sort: { check_in_date: -1 } }
-    )
+    );
 
-    logger.debug(
-      `Claim attempt - User: ${userId}, Today: ${todayMoment.format(
-        "YYYY-MM-DD"
-      )}, Timezone: ${user.tz || "guessed"}, Last claim: ${
-        lastClaim ? lastClaim.check_in_date.toISOString() : "None"
-      }`
-    )
-
+    let streak = 1;
     if (lastClaim) {
-      const lastClaimMoment = moment
-        .tz(lastClaim.check_in_date, user.tz || moment.tz.guess())
-        .startOf("day")
-      if (lastClaimMoment.isSame(todayMoment, "day")) {
-        logger.info(`User ${userId} already claimed reward today`)
-        return res.status(403).json({ error: "Reward already claimed today" })
-      }
-    }
-
-    let streak = 1
-    if (lastClaim) {
-      const lastClaimMoment = moment
-        .tz(lastClaim.check_in_date, user.tz || moment.tz.guess())
-        .startOf("day")
-      const daysDiff = todayMoment.diff(lastClaimMoment, "days")
+      const lastClaimMoment = moment.tz(lastClaim.check_in_date, timezone).startOf("day");
+      const todayMomentTz = moment.tz(today, timezone).startOf("day");
+      const daysDiff = todayMomentTz.diff(lastClaimMoment, "days");
       logger.debug(
-        `Days difference: ${daysDiff}, Last streak: ${lastClaim.streak}`
-      )
+        `Claim - User: ${userId}, Today: ${todayMomentTz.format(
+          "YYYY-MM-DD"
+        )}, Last claim: ${lastClaimMoment.format(
+          "YYYY-MM-DD"
+        )}, Days diff: ${daysDiff}, Last streak: ${lastClaim.streak}`
+      );
 
       if (daysDiff === 1) {
-        streak = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1
+        streak = lastClaim.streak >= 30 ? 1 : lastClaim.streak + 1; // Reset after 30 days
       } else if (daysDiff > 1) {
-        streak = 1
+        streak = 1; // Reset streak if a day is missed
       }
     }
 
-    const selectedItem = dailyRewardsPool.find((item) => item.day === streak)
+    const selectedItem = dailyRewardsPool.find((item) => item.day === streak);
     if (!selectedItem) {
-      logger.error(`No reward defined for streak day ${streak}`)
-      return res.status(500).json({ error: "No reward defined for this day" })
+      logger.error(`No reward defined for streak day ${streak}`);
+      return res.status(500).json({ error: "No reward defined for this day" });
     }
 
-    let wonItem
+    let wonItem;
     switch (selectedItem.type) {
       case "coins":
-        wonItem = { ...selectedItem }
-        await upUserBalance(userId, wonItem.amount)
-        break
+        wonItem = { ...selectedItem };
+        await upUserBalance(userId, wonItem.amount);
+        break;
       case "boost":
-        const boost = await Boost.findOne({ boost_id: selectedItem.id })
+        const boost = await Boost.findOne({ boost_id: selectedItem.id });
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
-          image: boost?.link || "default.png",
-          name: boost?.name || selectedItem.name,
-        }
-        await new UserBoost({ id: userId, boost_id: wonItem.id }).save()
-        break
+          image: boost?.link || "https://via.placeholder.com/50?text=Boost",
+          name: boost?.name || selectedItem.name || { en: "Unknown Boost", ru: "Неизвестный буст" },
+        };
+        await new UserBoost({ id: userId, boost_id: wonItem.id }).save();
+        break;
       case "clothes":
-        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id })
+        const clothes = await Clothing.findOne({ clothing_id: selectedItem.id });
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
           image:
             user.personage.gender === "male"
-              ? clothes?.male_icon
-              : clothes?.female_icon || "default.png",
-          name: clothes?.name || selectedItem.name,
-        }
+              ? clothes?.male_icon || "https://via.placeholder.com/50?text=Clothes"
+              : clothes?.female_icon || "https://via.placeholder.com/50?text=Clothes",
+          name: clothes?.name || selectedItem.name || { en: "Unknown Clothes", ru: "Неизвестная одежда" },
+        };
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { clothes: { id: wonItem.id } } }
-        )
-        break
+        );
+        break;
       case "shelf":
-        const item = await ShelfItemModel.findOne({ id: selectedItem.id })
+        const item = await ShelfItemModel.findOne({ id: selectedItem.id });
         wonItem = {
           id: selectedItem.id,
           type: selectedItem.type,
-          image: item?.link || "default.png",
-          name: item?.name || selectedItem.name,
-        }
+          image: item?.link || "https://via.placeholder.com/50?text=Shelf",
+          name: item?.name || selectedItem.name || { en: "Unknown Shelf Item", ru: "Неизвестный предмет" },
+        };
         await UserCurrentInventory.updateOne(
           { user_id: userId },
           { $addToSet: { shelf: { id: wonItem.id } } }
-        )
-        break
+        );
+        break;
       default:
-        logger.error(`Invalid item type: ${selectedItem.type}`)
-        return res.status(400).json({ error: "Invalid item type" })
+        logger.error(`Invalid item type: ${selectedItem.type}`);
+        return res.status(400).json({ error: "Invalid item type" });
     }
 
-    const mongoDate = createMongoDate(todayMoment)
+    const mongoDate = createMongoDate(todayMoment);
 
     const claim = new UserCheckInsModel({
       user_id: userId,
@@ -1191,191 +1197,257 @@ router.get("/:id/daily/claim", async (req, res) => {
       streak,
       is_claimed: true,
       last_check_in: lastClaim ? lastClaim.check_in_date : null,
-    })
-    await claim.save()
+    });
+    await claim.save();
 
     logger.info(
       `Claim recorded - User: ${userId}, Streak: ${streak}, Item: ${
         selectedItem.type
-      }, Timezone: ${user.tz || "guessed"}`
-    )
-    res.status(200).json({ wonItem, streak })
+      }, Timezone: ${timezone}`
+    );
+    res.status(200).json({ wonItem, streak });
   } catch (error) {
     logger.error(
       `Error in claiming daily reward for user ${userId}: ${error.message}`,
       { error }
-    )
-    res.status(500).json({ error: "Internal server error" })
+    );
+    res.status(500).json({ error: "Internal server error" });
   }
-})
+});
 
 // Status Endpoint (Updated)
 router.get("/:id/daily/status", async (req, res) => {
   try {
-    const userId = req.userId
+    const userId = req.userId;
 
     const user = await User.findOne(
       { id: userId },
       { id: 1, tz: 1, personage: 1 }
-    )
+    );
     if (!user) {
-      logger.warn(`User not found: ${userId}`)
-      return res.status(404).json({ error: "User not found" })
+      logger.warn(`User not found: ${userId}`);
+      return res.status(404).json({ error: "User not found" });
     }
 
-    const todayMoment = getStartOfDay(user.tz)
-    const today = todayMoment.toDate()
+    // Determine timezone: use user.tz if specified, otherwise fall back to server time
+    const timezone = user.tz || moment.tz.guess() || "UTC";
+    logger.debug(`Using timezone for user ${userId}: ${timezone}`);
 
-    // Fetch the last 7 claims to determine the current cycle
-    const recentClaims = await UserCheckInsModel.find(
+    const todayMoment = moment.tz(timezone).startOf("day");
+    const today = todayMoment.toDate();
+
+    // Fetch all claims, sort by date (most recent first)
+    const allClaims = await UserCheckInsModel.find(
       { user_id: userId, is_claimed: true },
       { check_in_date: 1, streak: 1 },
-      { sort: { check_in_date: -1 }, limit: 7 }
-    )
+      { sort: { check_in_date: -1 } }
+    );
 
-    const lastClaim = recentClaims[0] || null
+    // Remove duplicates by check_in_date (keep the latest streak for that day)
+    const claimsMap = new Map();
+    allClaims.forEach((claim) => {
+      const dateKey = moment.tz(claim.check_in_date, timezone).startOf("day").format("YYYY-MM-DD");
+      if (!claimsMap.has(dateKey) || claim.check_in_date > claimsMap.get(dateKey).check_in_date) {
+        claimsMap.set(dateKey, claim);
+      }
+    });
+    const recentClaims = Array.from(claimsMap.values()).sort((a, b) => b.check_in_date - a.check_in_date);
 
-    // Determine the start of the current cycle
-    let cycleStartDate = null
+    // Find the last claim before today
+    const lastClaim = recentClaims.find(claim => 
+      moment.tz(claim.check_in_date, timezone).startOf("day").isBefore(todayMoment)
+    ) || null;
+
+    // Check if there's a claim for today
+    const todayClaim = recentClaims.find(claim => 
+      moment.tz(claim.check_in_date, timezone).startOf("day").isSame(todayMoment, "day")
+    );
+
+    // Determine the current streak and cycle claims by walking backwards from the most recent claim
+    let cycleStartDate = null;
+    let currentStreak = 0;
+    let cycleClaimsArray = [];
+
     if (recentClaims.length > 0) {
-      // Find the most recent streak = 1 after a streak >= 7 or a gap
-      for (let i = 0; i < recentClaims.length - 1; i++) {
-        const currentClaim = recentClaims[i]
-        const prevClaim = recentClaims[i + 1]
-        const currentMoment = moment
-          .tz(currentClaim.check_in_date, user.tz || moment.tz.guess())
-          .startOf("day")
-        const prevMoment = moment
-          .tz(prevClaim.check_in_date, user.tz || moment.tz.guess())
-          .startOf("day")
-        const daysDiff = currentMoment.diff(prevMoment, "days")
+      let streak = 1;
+      let previousDate = null;
 
-        if (
-          currentClaim.streak === 1 &&
-          (prevClaim.streak >= 30 || daysDiff > 1)
-        ) {
-          cycleStartDate = currentClaim.check_in_date
-          break
+      // Walk backwards to find the current streak cycle
+      for (let i = 0; i < recentClaims.length; i++) {
+        const claim = recentClaims[i];
+        const claimDate = moment.tz(claim.check_in_date, timezone).startOf("day");
+
+        if (i === 0) {
+          // Most recent claim
+          previousDate = claimDate;
+          cycleClaimsArray.push({ ...claim, computedStreak: streak });
+          cycleStartDate = claim.check_in_date;
+          continue;
         }
+
+        const daysDiff = previousDate.diff(claimDate, "days");
+        if (daysDiff === 1) {
+          // Consecutive day, increment streak
+          streak++;
+          cycleClaimsArray.push({ ...claim, computedStreak: streak });
+          cycleStartDate = claim.check_in_date; // Update cycle start to the earliest claim in the current streak
+        } else {
+          // Break in streak, stop counting
+          break;
+        }
+
+        previousDate = claimDate;
       }
-      // If no reset found, use the earliest claim if streak < 30
-      if (!cycleStartDate && lastClaim && lastClaim.streak < 30) {
-        cycleStartDate = recentClaims[recentClaims.length - 1].check_in_date
-      }
+
+      currentStreak = streak;
+
+      // Reverse cycleClaimsArray to have computedStreak in ascending order (day 1 to current streak)
+      cycleClaimsArray = cycleClaimsArray.reverse();
     }
 
-    // Get claims in the current cycle
-    const cycleClaims = cycleStartDate
-      ? await UserCheckInsModel.find({
-          user_id: userId,
-          is_claimed: true,
-          check_in_date: { $gte: cycleStartDate },
-        }).sort({ streak: 1 })
-      : []
+    const cycleClaims = cycleClaimsArray || [];
+
+    logger.debug(`Cycle claims: ${cycleClaims.length}, Cycle start: ${cycleStartDate ? moment.tz(cycleStartDate, timezone).format("YYYY-MM-DD") : "none"}`);
+    logger.debug(`Cycle claims details: ${JSON.stringify(cycleClaims)}`);
+
+    // Resolve rewards
+    logger.debug(`dailyRewardsPool length: ${dailyRewardsPool.length}`);
+    if (!dailyRewardsPool || dailyRewardsPool.length === 0) {
+      logger.error("dailyRewardsPool is empty or undefined");
+      return res.status(500).json({ error: "Reward pool not configured" });
+    }
 
     const resolvedRewards = await Promise.all(
       dailyRewardsPool.map(async (item) => {
-        let reward
-        switch (item.type) {
-          case "boost":
-            const boost = await Boost.findOne({ boost_id: item.id })
-            reward = {
-              ...item,
-              image: boost?.link || "default.png",
-              name: boost?.name || item.name,
-            }
-            break
-          case "clothes":
-            const clothes = await Clothing.findOne({ clothing_id: item.id })
-            reward = {
-              ...item,
-              image:
-                user.personage.gender === "male"
-                  ? clothes?.male_icon
-                  : clothes?.female_icon || "default.png",
-              name: clothes?.name || item.name,
-            }
-            break
-          case "coins":
-            reward = { ...item }
-            break
-          case "shelf":
-            const shelf = await ShelfItemModel.findOne({ id: item.id })
-            reward = {
-              ...item,
-              image: shelf?.link || "default.png",
-              name: shelf?.name || item.name,
-            }
-            break
-          default:
-            return null
+        try {
+          let reward = { ...item };
+
+          switch (item.type) {
+            case "boost":
+              const boost = await Boost.findOne({ boost_id: item.id });
+              reward = {
+                ...item,
+                image: boost?.link || "https://via.placeholder.com/50?text=Boost",
+                name: boost?.name || item.name || { en: "Unknown Boost", ru: "Неизвестный буст" },
+              };
+              break;
+            case "clothes":
+              const clothes = await Clothing.findOne({ clothing_id: item.id });
+              reward = {
+                ...item,
+                image:
+                  user.personage.gender === "male"
+                    ? clothes?.male_icon || "https://via.placeholder.com/50?text=Clothes"
+                    : clothes?.female_icon || "https://via.placeholder.com/50?text=Clothes",
+                name: clothes?.name || item.name || { en: "Unknown Clothes", ru: "Неизвестная одежда" },
+              };
+              break;
+            case "coins":
+              reward = {
+                ...item,
+                image: item.image || "https://via.placeholder.com/50?text=Coins",
+                name: item.name || { en: `${item.amount} Coins`, ru: `${item.amount} Монет` },
+              };
+              break;
+            case "shelf":
+              const shelf = await ShelfItemModel.findOne({ id: item.id });
+              reward = {
+                ...item,
+                image: shelf?.link || "https://via.placeholder.com/50?text=Shelf",
+                name: shelf?.name || item.name || { en: "Unknown Shelf Item", ru: "Неизвестный предмет" },
+              };
+              break;
+            default:
+              logger.warn(`Unknown item type: ${item.type} for day ${item.day}`);
+              reward = {
+                ...item,
+                image: item.image || "https://via.placeholder.com/50?text=Unknown",
+                name: item.name || { en: "Unknown Reward", ru: "Неизвестная награда" },
+              };
+              break;
+          }
+
+          // Mark as collected only if the day matches a computed streak in the current cycle
+          reward.collected = cycleClaims.some(
+            (claim) => claim.computedStreak === item.day
+          );
+          return reward;
+        } catch (error) {
+          logger.error(`Error resolving reward for day ${item.day}: ${error.message}`);
+          return {
+            ...item,
+            image: item.image || "https://via.placeholder.com/50?text=Error",
+            name: item.name || { en: "Error Reward", ru: "Ошибка награды" },
+            collected: false,
+          };
         }
-        // Mark as collected if claimed in the current cycle
-        reward.collected = cycleClaims.some(
-          (claim) => claim.streak === item.day
-        )
-        return reward
       })
-    ).then((results) => results.filter(Boolean))
+    );
 
-    let streak = 0
-    let canClaim = true
-    let nextRewardDay = 1
-    let isStreakBroken = false
+    logger.debug(`Resolved rewards length: ${resolvedRewards.length}`);
+    logger.debug(`Resolved rewards: ${JSON.stringify(resolvedRewards.map(r => ({ day: r.day, collected: r.collected })))}`);
 
-    if (lastClaim) {
-      const lastClaimMoment = moment
-        .tz(lastClaim.check_in_date, user.tz || moment.tz.guess())
-        .startOf("day")
-      const daysDiff = todayMoment.diff(lastClaimMoment, "days")
+    let streak = currentStreak;
+    let canClaim = true;
+    let nextRewardDay = 1;
+    let isStreakBroken = false;
+
+    if (todayClaim) {
+      streak = currentStreak; // Use computed streak instead of todayClaim.streak
+      canClaim = false;
+      nextRewardDay = streak >= 30 ? 1 : streak + 1;
+      logger.debug(`User ${userId} already claimed today. Streak: ${streak}, Next day: ${nextRewardDay}`);
+    } else if (lastClaim) {
+      const lastClaimMoment = moment.tz(lastClaim.check_in_date, timezone).startOf("day");
+      const todayMomentTz = moment.tz(today, timezone).startOf("day");
+      const daysDiff = todayMomentTz.diff(lastClaimMoment, "days");
       logger.debug(
-        `Status - User: ${userId}, Today: ${todayMoment.format(
+        `Status - User: ${userId}, Today: ${todayMomentTz.format(
           "YYYY-MM-DD"
         )}, Last claim: ${lastClaimMoment.format(
           "YYYY-MM-DD"
-        )}, Days diff: ${daysDiff}, Timezone: ${user.tz || "guessed"}`
-      )
+        )}, Days diff: ${daysDiff}, Last streak: ${lastClaim.streak}`
+      );
 
-      if (daysDiff === 0) {
-        streak = lastClaim.streak
-        canClaim = false
-        nextRewardDay = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1
-      } else if (daysDiff === 1) {
-        streak = lastClaim.streak
-        canClaim = true
-        nextRewardDay = lastClaim.streak >= 7 ? 1 : lastClaim.streak + 1
+      if (daysDiff === 1) {
+        streak = currentStreak; // Use computed streak
+        canClaim = true;
+        nextRewardDay = streak >= 30 ? 1 : streak + 1;
       } else if (daysDiff > 1) {
-        streak = 0
-        canClaim = true
-        nextRewardDay = 1
-        isStreakBroken = true
+        streak = 0;
+        canClaim = true;
+        nextRewardDay = 1;
+        isStreakBroken = true;
       }
+    } else {
+      // No claims yet, streak starts at 0, can claim
+      streak = 0;
+      canClaim = true;
+      nextRewardDay = 1;
     }
 
     const nextReward =
       resolvedRewards.find((item) => item.day === nextRewardDay) ||
-      resolvedRewards[0]
+      resolvedRewards[0];
 
     logger.info(
-      `Status - User: ${userId}, Streak: ${streak}, Can claim: ${canClaim}, Next day: ${nextRewardDay}, Broken: ${isStreakBroken}, Timezone: ${
-        user.tz || "guessed"
-      }, Cycle claims: ${cycleClaims.length}`
-    )
+      `Status - User: ${userId}, Streak: ${streak}, Can claim: ${canClaim}, Next day: ${nextRewardDay}, Broken: ${isStreakBroken}, Timezone: ${timezone}, Cycle claims: ${cycleClaims.length}`
+    );
     res.status(200).json({
       streak,
       canClaim,
       nextReward,
       rewards: resolvedRewards,
       isStreakBroken,
-    })
+    });
   } catch (error) {
     logger.error(
       `Error in fetching daily status for user ${userId}: ${error.message}`,
       { error }
-    )
-    res.status(500).json({ error: "Internal server error" })
+    );
+    res.status(500).json({ error: "Internal server error" });
   }
-})
+});
 
 router.get("/:id/effects/current", async (req, res) => {
   try {

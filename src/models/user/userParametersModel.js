@@ -35,7 +35,9 @@ const userParameterSchema = new mongoose.Schema({
     work_duration_decrease: { type: Number, default: 0 },
     training_duration_decrease: { type: Number, default: 0 },
     sleeping_duration_decrease: { type: Number, default: 0 },
-    work_hourly_income_increase: { type: Number, default: 0 }
+    work_hourly_income_increase: { type: Number, default: 0 },
+    game_work_process_duration_decrease: { type: Number, default: 0 },
+    game_work_cooldown_decrease: { type: Number, default: 0 }
   }
 })
 
