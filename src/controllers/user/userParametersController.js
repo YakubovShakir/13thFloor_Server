@@ -244,6 +244,12 @@ export const getUserParameters = async (req, res) => {
     const sleeping_duration_decrease_level =
       parameters.constant_effects_levels?.sleeping_duration_decrease
 
+    const game_work_cooldown_decrease_level = 
+      parameters.constant_effects_levels?.game_work_cooldown_decrease
+
+    const game_work_process_duration_decrease_level = 
+      parameters.constant_effects_levels?.game_work_process_duration_decrease
+
     const work_duration_decrease_doc = await ConstantEffects.findOne({
       type: ConstantEffectTypes.WorkDurationDecrease,
       level: work_duration_decrease_level,
@@ -251,6 +257,16 @@ export const getUserParameters = async (req, res) => {
     const work_hourly_income_increase_doc = await ConstantEffects.findOne({
       type: ConstantEffectTypes.WorkHourlyIncomeIncrease,
       level: work_hourly_income_increase_level,
+    })
+
+    const game_work_cooldown_decrease_doc = await ConstantEffects.findOne({
+      type: ConstantEffectTypes.GameWorkCooldownDecrease,
+      level: game_work_cooldown_decrease_level,
+    })
+
+    const game_work_process_duration_decrease_doc = await ConstantEffects.findOne({
+      type: ConstantEffectTypes.GameWorkProcessDurationDecrease,
+      level: game_work_process_duration_decrease_level,
     })
 
     const training_duration_decrease_doc = await ConstantEffects.findOne({
@@ -270,6 +286,9 @@ export const getUserParameters = async (req, res) => {
       training_duration_decrease_doc?.value_change || null
     const sleeping_duration_decrease =
       sleeping_duration_decrease_doc?.value_change || null
+
+    const game_work_cooldown_decrease = game_work_cooldown_decrease_doc?.value_change || 0
+    const game_work_process_duration_decrease = game_work_process_duration_decrease_doc?.value_change || 0
 
     const neko_boost_percentage = await getNekoBoostMultiplier(userId)
 
@@ -322,6 +341,8 @@ export const getUserParameters = async (req, res) => {
       training_duration_decrease,
       sleeping_duration_decrease,
       neko_boost_percentage,
+      game_work_cooldown_decrease,
+      game_work_process_duration_decrease,
       works
     }
 
