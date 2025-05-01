@@ -70,6 +70,7 @@ import { logger } from "../../server.js"
 import StarsTransactions from "../../models/tx/starsTransactionModel.mjs"
 import AffiliateTransaction from "../../models/tx/affiliateTransactionModel.js"
 import Autoclaims from "../../models/investments/autoclaimsModel.js"
+import { ConstantEffects, ConstantEffectTypes } from "../../models/effects/constantEffectsLevels.js"
 
 export function calculateGamecenterLevel(refsCount) {
   const levels = Object.keys(gamecenterLevelMap)
@@ -2318,6 +2319,14 @@ router.post("/work/boost-time/:userId", async (req, res) => {
       id: userId,
       type: "work",
     })
+    
+    const userParameters = await UserParameters.findOne({ id: userId })
+    const cooldownDecreaseLevel = userParameters.constant_effects_levels?.game_work_cooldown_decrease
+    const durationDecreaseLevel = userParameters.constant_effects_levels?.game_work_process_duration_decrease
+    
+    const { value_change: cooldownDecrease } = cooldownDecreaseLevel > 0 ? await ConstantEffects.findOne({ type: ConstantEffectTypes.GameWorkCooldownDecrease }) : { value_change: 0 }
+    const { value_change: durationDecrease } = durationDecreaseLevel > 0 ? await ConstantEffects.findOne({ type: ConstantEffectTypes.GameWorkProcessDurationDecrease }) : { value_change: 0 }
+
     if (!process) {
       return res
         .status(404)
@@ -2328,8 +2337,12 @@ router.post("/work/boost-time/:userId", async (req, res) => {
     const elapsedSeconds = now.diff(moment(process.createdAt), 'seconds')
     const elapsedSecondsSinceLastBoost = process.lastBoostedTime ? now.diff(moment(process.lastBoostedTime), "seconds") : 30
     
-    if(elapsedSecondsSinceLastBoost >= 30 - 5) {
-      process.target_duration_in_seconds = Math.max(0, (process.target_duration_in_seconds || process.target_duration_in_seconds) - 10); 
+    const cooldownThreshold = 30 - cooldownDecrease - 2 // 2 secs for drifts
+    const newDuration =  Math.max(0, (process.target_duration_in_seconds || process.base_duration_in_seconds) - (10 + durationDecrease))
+    
+    if(elapsedSecondsSinceLastBoost >= cooldownThreshold) {
+      
+      process.target_duration_in_seconds = newDuration; 
       process.work_game?.clicks?.push({ clickedAt: now.toDate() })
       process.lastBoostedTime = now.toDate()
       await process.save()
@@ -2338,14 +2351,14 @@ router.post("/work/boost-time/:userId", async (req, res) => {
     logger.info("Work boost pressed", {
       userId,
       processId: process._id,
-      newDuration: process.target_duration_in_seconds || process.base_duration_in_seconds,
+      newDuration: newDuration
     })
 
     return res.status(200).json({
       success: true,
       remainingSeconds: Math.max(
         0,
-        (process.target_duration_in_seconds || process.base_duration_in_seconds) - elapsedSeconds
+        newDuration - elapsedSeconds
       ),
     })
   } catch (err) {
