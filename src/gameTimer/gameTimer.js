@@ -156,7 +156,7 @@ redis.on("error", (err) => console.error("Redis error in middleware:", err));
 
 // Logger setup
 const log = winston.createLogger({
-  level: "trace",
+  level: "debug",
   format: winston.format.combine(
     winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     winston.format.printf(({ timestamp, level, message, ...meta }) => {
