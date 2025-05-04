@@ -156,7 +156,7 @@ redis.on("error", (err) => console.error("Redis error in middleware:", err));
 
 // Logger setup
 const log = winston.createLogger({
-  level: "info",
+  level: "trace",
   format: winston.format.combine(
     winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
     winston.format.printf(({ timestamp, level, message, ...meta }) => {
@@ -284,6 +284,16 @@ export const gameCenterLevelRequirements = {
   35: 4325070,
 }
 
+// Redis lock utility
+const acquireLock = async (lockKey, ttlMs = 30000) => {
+  const result = await redis.set(lockKey, 'locked', 'PX', ttlMs, 'NX');
+  return result === 'OK'; // Returns true if lock was acquired
+};
+
+const releaseLock = async (lockKey) => {
+  await redis.del(lockKey);
+};
+
 const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) => {
   const decreaseFactor = durationDecreasePercentage / 100;
   const totalSeconds = baseDurationMinutes * 60;
@@ -293,12 +303,16 @@ const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) => {
 
 // Centralized queue for all DB updates
 const dbUpdateQueue = new Queue('db-updates', {
-  redis: { host: process.env.REDIS_HOST || 'redis-test', port: process.env.REDIS_PORT, password: process.env.REDIS_PASSWORD }, // Adjust Redis config
+  redis: { 
+    host: process.env.REDIS_HOST || 'redis-test', 
+    port: process.env.REDIS_PORT, 
+    password: process.env.REDIS_PASSWORD 
+  },
   defaultJobOptions: {
     attempts: 3, // Retry on transient failures
     backoff: { type: 'exponential', delay: 100 }, // Exponential backoff
-    removeOnComplete: true, // Explicitly remove completed jobs (default behavior)
-    removeOnFail: false, // Keep failed jobs for debugging (optional: set to true to remove them)
+    removeOnComplete: { count: 1000 }, // Keep only the 1000 most recent completed jobs
+    removeOnFail: { count: 1000 }, // Keep only the 1000 most recent failed jobs
   },
 });
 
@@ -899,7 +913,7 @@ export const queueDbUpdate = async (operationType, params, description, userId =
   return job.id;
 };
 
-dbUpdateQueue.process(async (job) => {
+dbUpdateQueue.process(10, async (job) => {
   const { operationType, params, description, userId } = job.data || {};
   const session = await mongoose.startSession();
   try {
@@ -917,7 +931,7 @@ dbUpdateQueue.process(async (job) => {
   } catch (error) {
     await session.abortTransaction();
     log.error(colors.red(`DB update failed: ${description}`), { error: error.message, stack: error.stack });
-    throw error;
+    throw error; // Bull will handle retries based on attempts
   } finally {
     session.endSession();
   }
@@ -1066,36 +1080,41 @@ const customDurationProcessTypes = ["autoclaim", "investment_level_checks", "nft
 
 const genericProcessScheduler = (processType, processConfig) => {
   const { cronSchedule, Model, getTypeSpecificParams } = processConfig;
-  const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`; // e.g., "processSkill"
+  const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`;
+  const lockKey = `lock:${processType}`;
 
   const scheduler = cron.schedule(cronSchedule, async () => {
-    const processes = await gameProcess.find({ type: processType });
+    // Attempt to acquire lock
+    const lockAcquired = await acquireLock(lockKey, 30000); // 30-second lock TTL
+    if (!lockAcquired) {
+      return;
+    }
+
     try {
-      if (processType !== 'autoclaim') {
-        log.info(`${processType} process scheduler started iteration`);
+      log.info(`${processType} process scheduler started iteration`);
 
-
-        await Promise.all(processes.map(async (process) => {
-          const params = {
-            processId: process._id,
-            userParametersId: process.id,
-            baseParametersId: process.type_id,
-            subType: process.sub_type,
-          };
-          await queueDbUpdate(
-            operationName, // e.g., "processSkill"
-            params, // The params object
-            `${processType} full cycle for process ${process._id}`, // Descriptive string
-            process.id // userId
-          );
-        }));
-      } else {
-        await processConfig.durationFunction()
-      }
+      const processes = await gameProcess.find({ type: processType });
+      await Promise.all(processes.map(async (process) => {
+        const params = {
+          processId: process._id,
+          userParametersId: process.id,
+          baseParametersId: process.type_id,
+          subType: process.sub_type,
+        };
+        await queueDbUpdate(
+          operationName,
+          params,
+          `${processType} full cycle for process ${process._id}`,
+          process.id
+        );
+      }));
 
       log.info(`${processType} process scheduler finished iteration`, { processesCount: processes.length });
     } catch (e) {
       log.error(`Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
+    } finally {
+      // Always release the lock
+      await releaseLock(lockKey);
     }
   }, { scheduled: false });
 
@@ -1105,13 +1124,23 @@ const genericProcessScheduler = (processType, processConfig) => {
 
 const processIndependentScheduler = (processType, processConfig) => {
   const { cronSchedule, durationFunction } = processConfig;
+  const lockKey = `lock:${processType}`;
 
   const scheduler = cron.schedule(cronSchedule, async () => {
+    // Attempt to acquire lock
+    const lockAcquired = await acquireLock(lockKey, 30000); // 30-second lock TTL
+    if (!lockAcquired) {
+      return;
+    }
+
     try {
       await durationFunction();
       log.info(`${processType} process scheduler finished iteration`);
     } catch (e) {
       log.error(`Error in ${processType} Process:`, { error: e.message, stack: e.stack });
+    } finally {
+      // Always release the lock
+      await releaseLock(lockKey);
     }
   }, { scheduled: false });
 
@@ -1208,34 +1237,38 @@ const processInBatches = async (items, batchSize, processFn) => {
 
 export const autoclaimProcessConfig = {
   processType: "autoclaim",
-  cronSchedule: "*/1 * * * * *", // Every 1 second (adjust as needed)
-  durationFunction: async () => { // No session here, enqueueing handles it
+  cronSchedule: "*/1 * * * * *",
+  durationFunction: async () => {
+    const lockKey = `lock:autoclaim`;
+    const lockAcquired = await acquireLock(lockKey, 30000); // 30-second lock TTL
+    if (!lockAcquired) {
+      return;
+    }
+
     try {
       log.info(`Autoclaim process scheduler started iteration`);
 
       const now = new Date();
       const usersWithAutoclaim = await Autoclaims.find({
-        expiresAt: { $gt: now }, // Active autoclaims
-      })
-      log.info('Users with autoclaim', usersWithAutoclaim)
+        expiresAt: { $gt: now },
+      });
+      log.info('Users with autoclaim', usersWithAutoclaim);
 
       if (usersWithAutoclaim.length === 0) {
         log.info("No active autoclaims found");
         return;
       }
 
-      await processInBatches(usersWithAutoclaim, 50, async (autoclaim) => {
+      await processInBatches(usersWithAutoclaim, 5, async (autoclaim) => {
         const userId = autoclaim.userId;
         const investmentType = autoclaim.investmentType;
-        console.log('Queuing transaction for autoclaim')
-        // Enqueue the claim operation
+        console.log('Queuing transaction for autoclaim');
         await queueDbUpdate(
           "processAutoclaim",
           { investmentType, userId },
           `Autoclaim claim for ${investmentType}, user ${userId}`,
           userId
         );
-
       });
 
       log.info(`Autoclaim process scheduler finished iteration`, {
@@ -1243,9 +1276,11 @@ export const autoclaimProcessConfig = {
       });
     } catch (e) {
       log.error("Error in autoclaim process", { error: e.message, stack: e.stack });
+    } finally {
+      await releaseLock(lockKey);
     }
   },
-  Model: Autoclaims, // Updated to use new model
+  Model: Autoclaims,
   getTypeSpecificParams: () => ({}),
   start() {
     this.task = cron.schedule(this.cronSchedule, this.durationFunction, { scheduled: false });
@@ -1271,7 +1306,7 @@ const investmentLevelsProcessConfig = {
         { $project: { refer_id: "$_id", referral_count: 1 } },
       ]);
 
-      await processInBatches(usersWithRefs, 50, async (user) => {
+      await processInBatches(usersWithRefs, 5, async (user) => {
         const userDoc = await User.findOne({ id: user.refer_id });
         if (userDoc) {
           const currentLevel = userDoc.investment_levels.game_center;
@@ -1390,30 +1425,30 @@ const nftScanConfig = {
   processType: "nft_scan",
   cronSchedule: "*/10 * * * * *",
   durationFunction: async () => {
-    if (isRunning) {
-      log.info("NFT-scanner iteration skipped - previous run still in progress");
+    const lockKey = `lock:nft_scan`;
+    const lockAcquired = await acquireLock(lockKey, 30000); // 30-second lock TTL
+    if (!lockAcquired) {
       return;
     }
-    isRunning = true;
+
     try {
       log.info("NFT-scanner process scheduler started iteration");
       const usersWithWallets = await User.find({ tonWalletAddress: { $ne: null } });
 
-      for(const user of usersWithWallets) {
+      for (const user of usersWithWallets) {
         const nftItemIds = user.tonWalletAddress ? await getWhitelistedNftsFromWallet(user.tonWalletAddress) : [];
         await syncShelfInventory(user.id, nftItemIds);
-        
-        await new Promise((resolve) => setTimeout(() => resolve(), 1000))
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       }
 
       log.info("NFT-scanner process scheduler finished iteration", { totalUsers: usersWithWallets.length });
     } catch (e) {
       log.error("Error in NFT scan process", { error: e.message, stack: e.stack });
     } finally {
-      isRunning = false;
+      await releaseLock(lockKey);
     }
   },
-  Model: User, // Kept for consistency, though not used in durationFunction
+  Model: User,
   getTypeSpecificParams: () => ({}),
 };
 
@@ -1425,7 +1460,7 @@ const spinScanConfig = {
       const users = await User.find({}, { id: 1, tz: 1 });
       let totalUsersAwarded = 0;
 
-      await processInBatches(users, 50, async (user) => {
+      await processInBatches(users, 5, async (user) => {
         const userTz = user.tz || moment.tz.guess(); // Fallback to guessed timezone
         const midnightTodayInTz = moment.tz(userTz).startOf("day"); // Midnight today in user's timezone
 
@@ -1711,8 +1746,9 @@ export const AutoclaimProccess = processIndependentScheduler("autoclaim", autocl
 export const NftScanProcess = processIndependentScheduler("nft_scan", nftScanConfig);
 export const TxScanProcess = processIndependentScheduler("TX_SCANNER", txScanConfig);
 export const RefsRecalsProcess = processIndependentScheduler("investment_level_checks", investmentLevelsProcessConfig);
-export const SpinScanProcess = processIndependentScheduler("spin_scan", spinScanConfig)
-export const LevelUpdate = processIndependentScheduler("level_scan", levelScanConfig)
+export const SpinScanProcess = processIndependentScheduler("spin_scan", spinScanConfig);
+export const LevelUpdate = processIndependentScheduler("level_scan", levelScanConfig);
+
 // Utility to format memory usage in MB
 const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
 
@@ -1728,7 +1764,7 @@ const gameTimer = {
   NftScanProcess,
   TxScanProcess,
   SpinScanProcess,
-  // LevelUpdate,
+  LevelUpdate,
   stopAll() {
     Object.values(this).forEach((scheduler) => {
       if (scheduler && typeof scheduler.stop === "function") {
@@ -1742,7 +1778,7 @@ const gameTimer = {
 // Function to log memory usage
 const logMemoryUsage = () => {
   const memoryUsage = process.memoryUsage();
-  log.info("Memory Usage Report", {
+  log.warn("Memory Usage Report", {
     rss: formatMemoryUsage(memoryUsage.rss),
     heapTotal: formatMemoryUsage(memoryUsage.heapTotal),
     heapUsed: formatMemoryUsage(memoryUsage.heapUsed),
