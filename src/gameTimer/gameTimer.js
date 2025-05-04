@@ -54,7 +54,7 @@ const schedulerFlags = {
   level_scan: false,
 };
 
-export const withTransaction = async (operation, session, maxRetries = 3, retryDelay = 500) => {
+export const withTransaction = async (operation, session, maxRetries = 1, retryDelay = 1500) => {
   let retryCount = 0;
 
   while (retryCount < maxRetries) {
