@@ -1787,7 +1787,7 @@ const logMemoryUsage = () => {
   });
 };
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor')
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor', { maxPoolSize: 5 })
   .then(() => {
     // Start game process schedulers
     Object.entries(gameTimer).forEach(([name, scheduler]) => {
