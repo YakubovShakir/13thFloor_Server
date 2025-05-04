@@ -384,7 +384,7 @@ const operationMap = {
     const baseParameters = await Work.findOne({ work_id: baseParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters) {
-      throw new Error(`Missing data for work process completion: ${processId}`);
+      return
     }
 
     const nekoBoostMultiplier = await getNekoBoostMultiplier(userParameters.id);
@@ -412,7 +412,7 @@ const operationMap = {
       : await Skill.findOne({ skill_id: skillId }, null, { session });
 
     if (!process || !userParameters || !skill) {
-      throw new Error(`Missing data for skill process completion: ${processId}`);
+     return
     }
 
     if (subType === "constant_effects") {
@@ -438,7 +438,7 @@ const operationMap = {
     const userClothing = await UserClothing.findOne({ user_id: userParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters || !user) {
-      throw new Error(`Missing data for work process: ${processId}`);
+     return
     }
 
     let durationDecreasePercentage = 0;
@@ -539,7 +539,7 @@ const operationMap = {
     const userClothing = await UserClothing.findOne({ user_id: userParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters || !user) {
-      throw new Error(`Missing data for training process: ${processId}`);
+      return
     }
 
     let durationDecreasePercentage = 0;
@@ -631,7 +631,7 @@ const operationMap = {
     const userClothing = await UserClothing.findOne({ user_id: userParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters || !user) {
-      throw new Error(`Missing data for sleep process: ${processId}`);
+     return
     }
 
     let durationDecreasePercentage = 0;
@@ -692,7 +692,7 @@ const operationMap = {
       : await Skill.findOne({ skill_id: baseParametersId }, null, { session });
 
     if (!process || !userParameters || !skill) {
-      throw new Error(`Missing data for skill process: ${processId}`);
+     return
     }
 
     const now = moment();
@@ -728,7 +728,7 @@ const operationMap = {
     const baseParameters = await Food.findOne({ food_id: baseParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters) {
-      throw new Error(`Missing data for food process: ${processId}`);
+      return
     }
 
     // Add food-specific logic here if needed (e.g., hungry profit)
@@ -756,7 +756,7 @@ const operationMap = {
     const baseParameters = await Boost.findOne({ boost_id: baseParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters) {
-      throw new Error(`Missing data for boost process: ${processId}`);
+     return
     }
     log.warn(`${colors.cyanBright('Applied energy restore from tonic-drink')}`, {
       user_id: userParametersId,
