@@ -310,9 +310,9 @@ const dbUpdateQueue = new Queue('db-updates', {
   },
   defaultJobOptions: {
     attempts: 3, // Retry on transient failures
-    backoff: { type: 'exponential', delay: 100 }, // Exponential backoff
-    removeOnComplete: { count: 1000 }, // Keep only the 1000 most recent completed jobs
-    removeOnFail: { count: 1000 }, // Keep only the 1000 most recent failed jobs
+    backoff: { type: 'fixed', delay: 100 }, // Exponential backoff
+    removeOnComplete: { count: 100 }, // Keep only the 1000 most recent completed jobs
+    removeOnFail: { count: 1 }, // Keep only the 1000 most recent failed jobs
   },
 });
 
