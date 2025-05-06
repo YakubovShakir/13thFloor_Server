@@ -182,8 +182,8 @@ export default [
       en: "Purchasing Manager"
     },
     description: {
-      ru: "50 минут убеждаешь людей купить то, чего им не нужно, но очень хочется",
-      en: "50 minutes of convincing people to buy what they don’t need but suddenly want",
+      ru: "55 минут покупаешь тонну бумаги и чувствуешь власть",
+      en: "55 minutes of buying a ton of paper and feeling powerful",
     },
     requiredLevel: 8,
     coins_price: 20700,
