@@ -1283,4 +1283,93 @@ export default [
     tier: 1,
     requiredLevel: 0,
   },
+    {
+    clothing_id: 64,
+    name: {
+      ru: "Зачес",
+      en: "Slickback",
+    },
+    tag: null,
+    type: "Hat",
+    effect: {
+      profit_per_tick_fixed: [{
+        param:  'mood',
+        value: 10, }, 
+      ],},
+    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hm.webp",
+    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hf_icon.webp",
+    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hm.webp",
+    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hf.webp",
+    respect: 1500,
+    price: 15000,
+    tier: 5,
+    requiredLevel: 1,
+  },
+  {
+    clothing_id: 65,
+    name: {
+      ru: "Яппи пиджак",
+      en: "Yuppie Suit",
+    },
+    tag: null,
+    type: "Top",
+    effect: {
+      profit_per_tick_fixed: [{
+        param:  'mood',
+        value: 30, }, 
+      ],},
+    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cm-cion.webp",
+    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cf_iocn.webp",
+    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cm.webp",
+    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cf.webp",
+    respect: 5000,
+    price: 15000,
+    tier: 5,
+    requiredLevel: 1,
+  },
+  {
+    clothing_id: 66,
+    name: {
+      ru: "Полосатые брюки",
+      en: "Striped trousers",
+    },
+    tag: null,
+    type: "Pants",
+    effect: {
+      profit_per_tick_fixed: [{
+        param:  'mood',
+        value: 20, }, 
+      ],},
+    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pm_icon.webp",
+    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pf_icon.webp",
+    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pm.webp",
+    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pf.webp",
+    respect: 3500,
+    price: 15000,
+    tier: 5,
+    requiredLevel: 1,
+  },
+  {
+    clothing_id: 67,
+    name: {
+      ru: "Лакированные туфли",
+      en: "Patent leather shoes",
+    },
+    tag: null,
+    type: "Shoes",
+    effect: {
+      profit_per_tick_fixed: [{
+        param:  'mood',
+        value: 40, }, 
+      ],},
+    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sm_icon.webp",
+    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sf_icon.webp",
+    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sm.webp",
+    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sf.webp",
+    respect: 8000,
+    price: 15000,
+    tier: 5,
+    requiredLevel: 1,
+  },
+  
 ]

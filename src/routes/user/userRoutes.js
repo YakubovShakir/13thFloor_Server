@@ -392,7 +392,7 @@ const itemsPoolRaw = [
     //   type: "spin",
     //   amount: 100
     // }
-  
+ 
   {
     id: 3,
     type: "coins",
@@ -560,8 +560,70 @@ const itemsPoolRaw = [
       amount: 10000,
     },
   },
+   {
+    id: 1,
+    type: "boost",
+     chance_premium: 3,
+    chance_daily: 3,
+    prize_equivalent: {
+      type: "coins",
+      amount: 200,
+    },
+  },
+   {
+    id: 2,
+    type: "boost",
+  chance_premium: 3,
+    chance_daily: 3,
+    prize_equivalent: {
+      type: "coins",
+      amount: 200,
+    },
+  },
+   {
+    id: 3,
+    type: "boost",
+     chance_premium: 3,
+    chance_daily: 3,
+    prize_equivalent: {
+      type: "coins",
+      amount: 200,
+    },
+  },
+   {
+    id: 4,
+    type: "boost",
+   chance_premium: 3,
+    chance_daily: 3,
+    prize_equivalent: {
+      type: "coins",
+      amount: 200,
+    },
+  },
+     {
+    id: 7,
+    type: "boost",
+    chance_premium: 3,
+    chance_daily: 3,
+    prize_equivalent: {
+      type: "coins",
+      amount: 200,
+    },
+  },
+
   {
-    id: 55,
+    id: 64,
+    type: "clothes",
+    chance_premium: 3,
+    chance_daily: 3,
+    prize_equivalent: {
+      type: "coins",
+      amount: 1000,
+    },
+  },
+  
+  {
+    id: 65,
     type: "clothes",
     chance_premium: 15,
     chance_daily: 0,
@@ -571,7 +633,7 @@ const itemsPoolRaw = [
     },
   },
   {
-    id: 56,
+    id: 66,
     type: "clothes",
     chance_premium: 15,
     chance_daily: 0,
@@ -581,7 +643,7 @@ const itemsPoolRaw = [
     },
   },
   {
-    id: 57,
+    id: 67,
     type: "clothes",
     chance_premium: 15,
     chance_daily: 0,
@@ -590,26 +652,7 @@ const itemsPoolRaw = [
       amount: 1000,
     },
   },
-  {
-    id: 58,
-    type: "clothes",
-    chance_premium: 15,
-    chance_daily: 0,
-    prize_equivalent: {
-      type: "coins",
-      amount: 1000,
-    },
-  },
-  {
-    id: 59,
-    type: "clothes",
-    chance_premium: 15,
-    chance_daily: 0,
-    prize_equivalent: {
-      type: "coins",
-      amount: 1000,
-    },
-  },
+ 
 ]
 
 router.get("/:id/gacha/items", async (req, res) => {
