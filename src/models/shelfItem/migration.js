@@ -120,8 +120,10 @@ export const ShelfItems = [
       en: "Sorry, you are cool!",
     },
     cost: {
+      coinsOld: 0,
+      starsOld: 10000,
       coins: 0,
-      stars: 10000,
+      stars: 5000
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/pdtplf.png",
     shelf_link:
@@ -161,8 +163,10 @@ export const ShelfItems = [
       en: "Every hour you can get an income bonus +5%, if another player clicks on your cat",
     },
     cost: {
+      coinsOld: 0,
+      starsOld: 700,
       coins: 0,
-      stars: 700,
+      stars: 500
     },
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/shelf/нфт-исходник.gif",
     shelf_link:

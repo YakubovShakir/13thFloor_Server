@@ -7,6 +7,7 @@ const boostsSchema = new mongoose.Schema({
     en: { type: String }
   },
   stars_price: { type: Number, required: true },
+  stars_price_old: { type: Number, required: null },
   description: {
     ru: { type: String},
     en: { type: String}

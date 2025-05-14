@@ -109,8 +109,8 @@ export const checkCanStopTraining = async (userId) => {
   if (seconds_left === 0) {
     await process.deleteOne({ id: userId, type: 'training' })
 
-    user.energy = Math.max(0, user.energy - energyCost)
-    user.hungry = Math.max(0, user.hungry - hungryCost)
+    // user.energy = Math.max(0, user.energy - energyCost)
+    // user.hungry = Math.max(0, user.hungry - hungryCost)
 
     await recalcValuesByParameters(user, { moodProfit })
 

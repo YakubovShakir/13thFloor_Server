@@ -7,7 +7,7 @@ export default [
     },
     tag: [],
     type: "Hat",
-    
+
     male_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_Ashen_m.png",
     female_link:
@@ -73,7 +73,7 @@ export default [
     },
     tag: [],
     type: "Hat",
-    
+
     male_link:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/0/Head/Windblown_dark_m.png",
     female_link:
@@ -162,19 +162,21 @@ export default [
     tag: "Sport",
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FNew%2FTop%2FCourierUniform%2FCourierUniformM.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FNew%2FTop%2FCourierUniform%2F2CourierUniformF.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FNew%2FTop%2FCourierUniform%2FCourierUniformMIcon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FNew%2FTop%2FCourierUniform%2FCourierUniformFIcon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FNew%2FTop%2FCourierUniform%2FCourierUniformM.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FNew%2FTop%2FCourierUniform%2F2CourierUniformF.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FNew%2FTop%2FCourierUniform%2FCourierUniformMIcon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FNew%2FTop%2FCourierUniform%2FCourierUniformFIcon.png",
     respect: 8,
     price: 10,
     tier: 0,
     requiredLevel: 1,
     effects: {
-      profit_hourly_percent: [
-        { param: "hungry", value: 10 }, 
-      ],
-    }
+      profit_hourly_percent: [{ param: "hungry", value: 10 }],
+    },
   },
   {
     clothing_id: 9,
@@ -185,10 +187,14 @@ export default [
     tag: "Sport",
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Eco-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Eco-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Eco-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Eco-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Eco-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Eco-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Eco-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Eco-f-icon.png",
     respect: 9,
     price: 15,
     tier: 0,
@@ -233,8 +239,8 @@ export default [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FNew%2FTop%2FCheapJeans%2FCheapJeansMIcon.png",
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Legs/SupermarketJeans- f-icon.png",
-      respect: 7,
-      price: 25,
+    respect: 7,
+    price: 25,
     tier: 0,
     requiredLevel: 2,
   },
@@ -247,10 +253,14 @@ export default [
     tag: "Casual",
     type: "Pants",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/DenimShorts-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/DenimShorts-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/DenimShorts-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/DenimShorts-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/DenimShorts-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/DenimShorts-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/DenimShorts-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/DenimShorts-f-icon.png",
     respect: 7,
     price: 26,
     tier: 0,
@@ -265,12 +275,16 @@ export default [
     tag: "Casual",
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20Vest%2FOliveUniform.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20Vest%2FOliveUniform-f.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20Vest%2FOliveUniformIconM.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20Vest%2FOliveUniformIconF.webp",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20Vest%2FOliveUniform.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20Vest%2FOliveUniform-f.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20Vest%2FOliveUniformIconM.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20Vest%2FOliveUniformIconF.webp",
     respect: 24,
-    price: 75 ,
+    price: 75,
     tier: 1,
     requiredLevel: 3,
   },
@@ -291,8 +305,8 @@ export default [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FWaitersTshirt%2FWaitersTshirt-m-icon.webp",
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FWaitersTshirt%2FWaitersTshirt-f-icon.webp",
-      respect: 23,
-      price: 75,
+    respect: 23,
+    price: 75,
     tier: 1,
     requiredLevel: 3,
   },
@@ -313,8 +327,8 @@ export default [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Head/SharpFinishBlondie-m-icon.png",
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Head/SharpFinishBlondie-f-icon.png",
-      respect: 18,
-      price: 600,
+    respect: 18,
+    price: 600,
     tier: 1,
     requiredLevel: 3,
   },
@@ -327,10 +341,14 @@ export default [
     tag: null,
     type: "Hat",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekBrown-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekBrown-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekBrown-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekBrown-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekBrown-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekBrown-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekBrown-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekBrown-f-icon.png",
     respect: 19,
     price: 700,
     tier: 1,
@@ -345,10 +363,14 @@ export default [
     tag: null,
     type: "Pants",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20trousers%2FUrbanOlive-m.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20trousers%2FUrbanOlive-f.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20trousers%2FUrbanOlive-m-icon.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20trousers%2FUrbanOlive-f-icon.webp",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20trousers%2FUrbanOlive-m.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20trousers%2FUrbanOlive-f.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20trousers%2FUrbanOlive-m-icon.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FOlive%20trousers%2FUrbanOlive-f-icon.webp",
     respect: 23,
     price: 150,
     tier: 1,
@@ -363,10 +385,14 @@ export default [
     tag: "Office",
     type: "Pants",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FCamel%20Pants%2FCamelPants-m.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FCamel%20Pants%2FCamelPants-f.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FCamel%20Pants%2FCamelPants-f-icon.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FCamel%20Pants%2FCamelPants-m-icon-icon.webp",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FCamel%20Pants%2FCamelPants-m.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FCamel%20Pants%2FCamelPants-f.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FCamel%20Pants%2FCamelPants-f-icon.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FCamel%20Pants%2FCamelPants-m-icon-icon.webp",
     respect: 24,
     price: 160,
     tier: 1,
@@ -381,16 +407,20 @@ export default [
     tag: "Sport",
     type: "Pants",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FShort%20Chic%2FShortChic-m.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FShort%20Chic%2FShortChic-f.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FShort%20Chic%2FShortChic-m-icon.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FShort%20Chic%2FShortChic-f-icon.webp",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FShort%20Chic%2FShortChic-m.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FShort%20Chic%2FShortChic-f.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FShort%20Chic%2FShortChic-m-icon.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FCommon%2FShort%20Chic%2FShortChic-f-icon.webp",
     respect: 25,
     price: 155,
     tier: 1,
     requiredLevel: 4,
   },
-  
+
   {
     clothing_id: 20,
     name: {
@@ -400,10 +430,14 @@ export default [
     tag: "Office",
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Classic-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Classic-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Classic-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Classic-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Classic-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Classic-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Classic-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Classic-f-icon.png",
     respect: 45,
     price: 300,
     tier: 2,
@@ -418,10 +452,14 @@ export default [
     tag: null,
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2F4%2FBody%2FPinkluxe-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/PinkLuxe-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/PinkLuxe-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/PinkLuxe-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2F4%2FBody%2FPinkluxe-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/PinkLuxe-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/PinkLuxe-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/PinkLuxe-f-icon.png",
     respect: 46,
     price: 315,
     tier: 2,
@@ -436,10 +474,14 @@ export default [
     tag: "Office",
     type: "Shoes",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Boots_m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Boots-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Boots-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Boots-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Boots_m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Boots-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Boots-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Boots-f-icon.png",
     respect: 38,
     price: 600,
     tier: 2,
@@ -454,10 +496,14 @@ export default [
     tag: null,
     type: "Shoes",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/PunkStep-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/PunkStep-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/PunkStep-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/PunkStep-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/PunkStep-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/PunkStep-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/PunkStep-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/PunkStep-f-icon.png",
     respect: 40,
     price: 650,
     tier: 2,
@@ -480,8 +526,8 @@ export default [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Accessories/Workaholic-m-icon.png",
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Accessories/Workaholic-f-icon.png",
-      respect: 78,
-      price: 1200,
+    respect: 78,
+    price: 1200,
     tier: 3,
     requiredLevel: 7,
   },
@@ -494,10 +540,14 @@ export default [
     tag: "Casual",
     type: "Accessory",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/SilverEarring-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/SilverEarring-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/SilverEarring-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/SilverEarring-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/SilverEarring-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/SilverEarring-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/SilverEarring-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Accessories/SilverEarring-f-icon.png",
     respect: 80,
     price: 1400,
     tier: 3,
@@ -512,10 +562,14 @@ export default [
     tag: "Office",
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/WhiteCollar-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/WhiteCollar-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/WhiteCollar-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/WhiteCollar-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/WhiteCollar-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/WhiteCollar-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/WhiteCollar-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/WhiteCollar-f-icon.png",
     respect: 72,
     price: 1700,
     tier: 3,
@@ -530,10 +584,14 @@ export default [
     tag: null,
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/MotorSoul-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/MotorSoul-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/MotorSoul-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/MotorSoul-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/MotorSoul-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/MotorSoul-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/MotorSoul-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/MotorSoul-f-icon.png",
     respect: 80,
     price: 2000,
     tier: 3,
@@ -548,10 +606,14 @@ export default [
     tag: null,
     type: "Pants",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Legs/GreyClassic-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Legs/GreyClassic-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Legs/GreyClassic-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Legs/GreyClassic-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Legs/GreyClassic-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Legs/GreyClassic-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Legs/GreyClassic-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Legs/GreyClassic-f-icon.png",
     respect: 69,
     price: 2500,
     tier: 3,
@@ -566,15 +628,18 @@ export default [
     tag: "Casual",
     type: "Pants",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Rocker-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Rocker-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Rocker-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Rocker-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Rocker-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Rocker-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Rocker-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Rocker-f-icon.png",
     respect: 72,
     price: 2600,
     tier: 3,
     requiredLevel: 9,
-    
   },
 
   {
@@ -586,19 +651,21 @@ export default [
     tag: null,
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/CorporateSky-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/CorporateSky-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/CorporateSky-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/CorporateSky-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/CorporateSky-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/CorporateSky-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/CorporateSky-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/CorporateSky-f-icon.png",
     respect: 114,
     price: 3800,
     tier: 4,
     requiredLevel: 10,
     effect: {
-    profit_hourly_percent: [
-      { param: "mood", value: 2 },    
-      
-    ],}
+      profit_hourly_percent: [{ param: "mood", value: 2 }],
+    },
   },
   {
     clothing_id: 31,
@@ -609,19 +676,23 @@ export default [
     tag: null,
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/RockySpirit-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/RockySpirit-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/RockySpirit-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/RockySpirit-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/RockySpirit-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/RockySpirit-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/RockySpirit-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/RockySpirit-f-icon.png",
     respect: 120,
     price: 4200,
     tier: 4,
     requiredLevel: 10,
     effect: {
-    profit_hourly_percent: [
-      { param: "hungry", value: 2 },    // Голод увеличивается на 5% в час (например, еда)
-    
-    ],}
+      profit_hourly_percent: [
+        { param: "hungry", value: 2 }, // Голод увеличивается на 5% в час (например, еда)
+      ],
+    },
   },
   {
     clothing_id: 32,
@@ -632,10 +703,14 @@ export default [
     tag: null,
     type: "Hat",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyDark-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyDark-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyDark-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyDark-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyDark-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyDark-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyDark-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyDark-f-icon.png",
     respect: 105,
     price: 5800,
     tier: 4,
@@ -650,15 +725,18 @@ export default [
     tag: null,
     type: "Hat",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Head/SharpFinishDark-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Head/SharpFinishDark-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2F2%2FHead%2FSharpFinishDark-m-icon-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Head/SharpFinishDark-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Head/SharpFinishDark-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Head/SharpFinishDark-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2F2%2FHead%2FSharpFinishDark-m-icon-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Head/SharpFinishDark-f-icon.png",
     respect: 107,
     price: 5900,
     tier: 4,
     requiredLevel: 11,
-    
   },
   {
     clothing_id: 34,
@@ -669,21 +747,21 @@ export default [
     tag: null,
     type: "Pants",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/IndigoDepth-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/IndigoDepth-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/IndigoDepth-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/IndigoDepth-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/IndigoDepth-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/IndigoDepth-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/IndigoDepth-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/IndigoDepth-f-icon.png",
     respect: 110,
     price: 8600,
     tier: 4,
     requiredLevel: 12,
     effect: {
-    profit_hourly_percent: [
-      { param: "mood", value: 3 },   
-       
-      
-    ],}
-    
+      profit_hourly_percent: [{ param: "mood", value: 3 }],
+    },
   },
   {
     clothing_id: 35,
@@ -694,19 +772,23 @@ export default [
     tag: "Sport",
     type: "Pants",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/BlackShorts-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/BlackShorts-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/BlackShorts-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/BlackShorts-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/BlackShorts-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/BlackShorts-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/BlackShorts-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Legs/BlackShorts-f-icon.png",
     respect: 112,
     price: 9500,
     tier: 4,
     requiredLevel: 12,
     effect: {
-    profit_hourly_percent: [
-      { param: "hungry", value: 3 },    // Голод увеличивается на 5% в час (например, еда)
-    
-    ],}
+      profit_hourly_percent: [
+        { param: "hungry", value: 3 }, // Голод увеличивается на 5% в час (например, еда)
+      ],
+    },
   },
   {
     clothing_id: 36,
@@ -717,19 +799,21 @@ export default [
     tag: null,
     type: "Shoes",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/BlackLoafers-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/BlackLoafers-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/BlackLoafers-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/BlackLoafers-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/BlackLoafers-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/BlackLoafers-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/BlackLoafers-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/BlackLoafers-f-icon.png",
     respect: 100,
     price: 12000,
     tier: 4,
     requiredLevel: 13,
     effect: {
-    profit_hourly_percent: [
-      { param: "mood", value: 5 },    
-      
-    ],}
+      profit_hourly_percent: [{ param: "mood", value: 5 }],
+    },
   },
   {
     clothing_id: 37,
@@ -740,19 +824,23 @@ export default [
     tag: "Sport",
     type: "Shoes",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Dayglow-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Dayglow-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Dayglow-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Dayglow-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Dayglow-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Dayglow-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Dayglow-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Shoes/Dayglow-f-icon.png",
     respect: 105,
     price: 13000,
     tier: 4,
     requiredLevel: 13,
     effect: {
-    profit_hourly_percent: [
-      { param: "hungry", value: 5 },    // Голод увеличивается на 5% в час (например, еда)
-    
-    ],}
+      profit_hourly_percent: [
+        { param: "hungry", value: 5 }, // Голод увеличивается на 5% в час (например, еда)
+      ],
+    },
   },
   {
     clothing_id: 38,
@@ -763,10 +851,14 @@ export default [
     tag: null,
     type: "Hat",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekAshen-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekAshen-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekAshen-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekAshen-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekAshen-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekAshen-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekAshen-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Head/UltraSleekAshen-f-icon.png",
     respect: 150,
     price: 19000,
     tier: 5,
@@ -781,10 +873,14 @@ export default [
     tag: null,
     type: "Hat",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyAshen-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyAshen-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyAshen-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyAshen-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyAshen-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyAshen-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyAshen-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Head/SassyAshen-f-icon.png",
     respect: 155,
     price: 22000,
     tier: 5,
@@ -799,18 +895,21 @@ export default [
     tag: null,
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/SilkenDarkness-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/SilkenDarkness-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/SilkenDarkness-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/SilkenDarkness-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/SilkenDarkness-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/SilkenDarkness-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/SilkenDarkness-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/SilkenDarkness-f-icon.png",
     respect: 162,
     price: 29000,
     tier: 5,
     requiredLevel: 15,
     effect: {
-    profit_hourly_percent: [
-      { param: "mood", value: 10 }, 
-    ],}
+      profit_hourly_percent: [{ param: "mood", value: 10 }],
+    },
   },
   {
     clothing_id: 41,
@@ -821,18 +920,21 @@ export default [
     tag: null,
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/Black-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/Black-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/Black-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/Black-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/Black-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/Black-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/Black-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Body/Black-f-icon.png",
     respect: 170,
     price: 32000,
     tier: 5,
     requiredLevel: 15,
     effect: {
-    profit_hourly_percent: [
-      { param: "hungry", value: 10 }, 
-    ],}
+      profit_hourly_percent: [{ param: "hungry", value: 10 }],
+    },
   },
   {
     clothing_id: 42,
@@ -843,18 +945,21 @@ export default [
     tag: "Office",
     type: "Pants",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/DarkElegance-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/DarkElegance-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/DarkElegance-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/DarkElegance-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/DarkElegance-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/DarkElegance-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/DarkElegance-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/DarkElegance-f-icon.png",
     respect: 155,
     price: 43000,
     tier: 5,
     requiredLevel: 16,
     effect: {
-    profit_hourly_percent: [
-      { param: "mood", value: 10 }, 
-    ],}
+      profit_hourly_percent: [{ param: "mood", value: 10 }],
+    },
   },
   {
     clothing_id: 43,
@@ -865,18 +970,21 @@ export default [
     tag: "Office",
     type: "Pants",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Aquamarine-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Aquamarine-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Aquamarine-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Aquamarine-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Aquamarine-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Aquamarine-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Aquamarine-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Legs/Aquamarine-f-icon.png",
     respect: 160,
     price: 55000,
     tier: 5,
     requiredLevel: 15,
     effect: {
-    profit_hourly_percent: [
-      { param: "mood", value: 10 }, 
-    ],}
+      profit_hourly_percent: [{ param: "mood", value: 10 }],
+    },
   },
   {
     clothing_id: 44,
@@ -887,19 +995,21 @@ export default [
     tag: null,
     type: "Shoes",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/Shoes-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/Shoes-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/Shoes-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/Shoes-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/Shoes-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/Shoes-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/Shoes-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/Shoes-f-icon.png",
     respect: 142,
     price: 65000,
     tier: 5,
     requiredLevel: 17,
     effect: {
-    profit_hourly_percent: [
-      { param: "mood", value: 10 },    
-      
-    ],}
+      profit_hourly_percent: [{ param: "mood", value: 10 }],
+    },
   },
   {
     clothing_id: 45,
@@ -910,18 +1020,21 @@ export default [
     tag: null,
     type: "Shoes",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/SneakersRed-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/SneakersRed-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/SneakersRed-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/SneakersRed-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/SneakersRed-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/SneakersRed-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/SneakersRed-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Shoes/SneakersRed-f-icon.png",
     respect: 180,
     price: 80000,
     tier: 5,
     requiredLevel: 17,
     effect: {
-    profit_hourly_percent: [
-      { param: "hungry", value: 10 }, 
-    ],}
+      profit_hourly_percent: [{ param: "hungry", value: 10 }],
+    },
   },
   {
     clothing_id: 46,
@@ -932,15 +1045,18 @@ export default [
     tag: null,
     type: "Accessory",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Accessories/KingChain-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Accessories/KingChain-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Accessories/KingChain-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Accessories/KingChain-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Accessories/KingChain-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Accessories/KingChain-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Accessories/KingChain-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/5/Accessories/KingChain-f-icon.png",
     respect: 270,
     price: 100000,
     tier: 5,
     requiredLevel: 18,
-    
   },
   {
     clothing_id: 47,
@@ -951,10 +1067,14 @@ export default [
     tag: null,
     type: "Accessory",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Accessories/Minimal-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Accessories/Minimal-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Accessories/Minimal-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Accessories/Minimal-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Accessories/Minimal-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Accessories/Minimal-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Accessories/Minimal-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Accessories/Minimal-f-icon.png",
     respect: 300,
     price: 180000,
     tier: 5,
@@ -969,10 +1089,14 @@ export default [
     tag: "Sport",
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Softness-f-icon.png",
     respect: 30,
     price: 0,
     tier: 2,
@@ -987,10 +1111,14 @@ export default [
     tag: "Sport",
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Pioneer-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Pioneer-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Pioneer-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Pioneer-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Pioneer-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Pioneer-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Pioneer-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Pioneer-f-icon.png",
     respect: 30,
     price: 0,
     tier: 2,
@@ -1004,21 +1132,22 @@ export default [
     },
     tag: "Sport",
     type: "Top",
-   
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FUncommon%2FFan%2FFan-m.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FUncommon%2FFan%2FFan-f.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FUncommon%2FFan%2FFan-m-icon.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FUncommon%2FFan%2FFan-f-icon.webp",
+
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FUncommon%2FFan%2FFan-m.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FUncommon%2FFan%2FFan-f.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FUncommon%2FFan%2FFan-m-icon.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FUncommon%2FFan%2FFan-f-icon.webp",
     respect: 55,
     price: 0,
     tier: 3,
-    requiredLevel: 0, 
+    requiredLevel: 0,
     effects: {
-    
-      profit_hourly_percent: [
-        { param: "hungry", value: 10 }, 
-      ], 
-    }
+      profit_hourly_percent: [{ param: "hungry", value: 10 }],
+    },
   },
   {
     clothing_id: 51,
@@ -1037,8 +1166,8 @@ export default [
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Body/WhiteTShirt-m-icon.png",
     female_icon:
       "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/1/Body/WhiteTShirt-f-icon.png",
-      respect: 30,
-      price: 0,
+    respect: 30,
+    price: 0,
     tier: 2,
     requiredLevel: 0,
   },
@@ -1051,10 +1180,14 @@ export default [
     tag: null,
     type: "Pants",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/UrbanCamo_m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/UrbanCamo_f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/UrbanCamo_m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/UrbanCamo_f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/UrbanCamo_m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/UrbanCamo_f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/UrbanCamo_m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Legs/UrbanCamo_f-icon.png",
     respect: 150,
     price: 10000,
     tier: 2,
@@ -1069,10 +1202,14 @@ export default [
     tag: "Casual",
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Navy-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Navy-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Navy-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Navy-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Navy-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Navy-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Navy-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Navy-f-icon.png",
     respect: 100,
     price: 8000,
     tier: 2,
@@ -1087,10 +1224,14 @@ export default [
     tag: null,
     type: "Shoes",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/NavyForce-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/NavyForce-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/NavyForce-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/NavyForce-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/NavyForce-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/NavyForce-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/NavyForce-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Shoes/NavyForce-f-icon.png",
     respect: 120,
     price: 15000,
     tier: 2,
@@ -1105,14 +1246,21 @@ export default [
     tag: null,
     type: "Hat",
     effect: {
-      profit_per_tick_fixed: [{
-        param:  'energy',
-        value: 10, }, 
-      ],},
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_head.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_head.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_head_icon.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_hair_icon.png",
+      profit_per_tick_fixed: [
+        {
+          param: "energy",
+          value: 10,
+        },
+      ],
+    },
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_head.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_head.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_head_icon.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_hair_icon.png",
     respect: 1500,
     price: 15000,
     tier: 5,
@@ -1127,14 +1275,21 @@ export default [
     tag: null,
     type: "Top",
     effect: {
-      profit_per_tick_fixed: [{
-        param:  'energy',
-        value: 30, }, 
-      ],},
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_top.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_top.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_top_icon.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_top_icon.webp",
+      profit_per_tick_fixed: [
+        {
+          param: "energy",
+          value: 30,
+        },
+      ],
+    },
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_top.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_top.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_top_icon.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_top_icon.webp",
     respect: 5000,
     price: 15000,
     tier: 5,
@@ -1149,14 +1304,21 @@ export default [
     tag: null,
     type: "Pants",
     effect: {
-      profit_per_tick_fixed: [{
-        param:  'energy',
-        value: 20, }, 
-      ],},
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_jeans.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_jeans.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_jeans_icon.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_jeans_icon.webp",
+      profit_per_tick_fixed: [
+        {
+          param: "energy",
+          value: 20,
+        },
+      ],
+    },
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_jeans.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_jeans.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_jeans_icon.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_jeans_icon.webp",
     respect: 3500,
     price: 15000,
     tier: 5,
@@ -1171,14 +1333,21 @@ export default [
     tag: null,
     type: "Shoes",
     effect: {
-      profit_per_tick_fixed: [{
-        param:  'energy',
-        value: 40, }, 
-      ],},
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_shue.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_shue.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_shue_icon.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_shue_icon.webp",
+      profit_per_tick_fixed: [
+        {
+          param: "energy",
+          value: 40,
+        },
+      ],
+    },
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_shue.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_shue.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_shue_icon.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_shue_icon.webp",
     respect: 8000,
     price: 15000,
     tier: 5,
@@ -1193,14 +1362,21 @@ export default [
     tag: null,
     type: "Accessory",
     effect: {
-      profit_per_tick_fixed: [{
-        param:  'energy',
-        value: 15, }, 
-      ],},
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_acs.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_acs.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_acs_icon.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_head_icon.webp",
+      profit_per_tick_fixed: [
+        {
+          param: "energy",
+          value: 15,
+        },
+      ],
+    },
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_acs.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_acs.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_m_acs_icon.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FBrilliant%20Steve%2FAplle_f_head_icon.webp",
     respect: 4000,
     price: 15000,
     tier: 2,
@@ -1216,10 +1392,14 @@ export default [
     tag: "Sport",
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Red-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Red-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Red-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Red-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Red-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Red-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Red-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/2/Body/Red-f-icon.png",
     respect: 500,
     is_premium: true,
     price: 20,
@@ -1235,10 +1415,14 @@ export default [
     tag: "Office",
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Revolutionary-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Revolutionary-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Revolutionary-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Revolutionary-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Revolutionary-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Revolutionary-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Revolutionary-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/Revolutionary-f-icon.png",
     respect: 1500,
     is_premium: true,
     price: 30,
@@ -1254,10 +1438,14 @@ export default [
     tag: "Sport",
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/RedDanger-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/RedDanger-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/RedDanger-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/RedDanger-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/RedDanger-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/RedDanger-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/RedDanger-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/3/Body/RedDanger-f-icon.png",
     respect: 800,
     is_premium: true,
     price: 25,
@@ -1273,17 +1461,21 @@ export default [
     tag: null,
     type: "Top",
     effect: null,
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/ChicagoRed-m.png",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/ChicagoRed-f.png",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/ChicagoRed-m-icon.png",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/ChicagoRed-f-icon.png",
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/ChicagoRed-m.png",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/ChicagoRed-f.png",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/ChicagoRed-m-icon.png",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes/4/Body/ChicagoRed-f-icon.png",
     respect: 2500,
     is_premium: true,
     price: 35,
     tier: 1,
     requiredLevel: 0,
   },
-    {
+  {
     clothing_id: 64,
     name: {
       ru: "Зачес",
@@ -1292,14 +1484,21 @@ export default [
     tag: null,
     type: "Hat",
     effect: {
-      profit_per_tick_fixed: [{
-        param:  'mood',
-        value: 10, }, 
-      ],},
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hm.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hf_icon.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hm.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hf.webp",
+      profit_per_tick_fixed: [
+        {
+          param: "mood",
+          value: 10,
+        },
+      ],
+    },
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hm.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hf_icon.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hm.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hf.webp",
     respect: 1500,
     price: 15000,
     tier: 5,
@@ -1314,14 +1513,21 @@ export default [
     tag: null,
     type: "Top",
     effect: {
-      profit_per_tick_fixed: [{
-        param:  'mood',
-        value: 30, }, 
-      ],},
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cm-cion.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cf_iocn.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cm.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cf.webp",
+      profit_per_tick_fixed: [
+        {
+          param: "mood",
+          value: 30,
+        },
+      ],
+    },
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cm-cion.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cf_iocn.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cm.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Cf.webp",
     respect: 5000,
     price: 15000,
     tier: 5,
@@ -1336,14 +1542,21 @@ export default [
     tag: null,
     type: "Pants",
     effect: {
-      profit_per_tick_fixed: [{
-        param:  'mood',
-        value: 20, }, 
-      ],},
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pm_icon.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pf_icon.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pm.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pf.webp",
+      profit_per_tick_fixed: [
+        {
+          param: "mood",
+          value: 20,
+        },
+      ],
+    },
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pm_icon.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pf_icon.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pm.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Pf.webp",
     respect: 3500,
     price: 15000,
     tier: 5,
@@ -1358,18 +1571,24 @@ export default [
     tag: null,
     type: "Shoes",
     effect: {
-      profit_per_tick_fixed: [{
-        param:  'mood',
-        value: 40, }, 
-      ],},
-    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sm_icon.webp",
-    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sf_icon.webp",
-    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sm.webp",
-    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sf.webp",
+      profit_per_tick_fixed: [
+        {
+          param: "mood",
+          value: 40,
+        },
+      ],
+    },
+    male_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sm_icon.webp",
+    female_link:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sf_icon.webp",
+    male_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sm.webp",
+    female_icon:
+      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_sf.webp",
     respect: 8000,
     price: 15000,
     tier: 5,
     requiredLevel: 1,
   },
-  
 ]

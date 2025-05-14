@@ -20,7 +20,7 @@ const schema = new mongoose.Schema(
     },
     product_type: {
         type: String,
-        enum: ["clothes", "shelf", "boost", "autoclaim", "spin"],
+        enum: ["clothes", "shelf", "boost", "autoclaim", "spin", "skill"],
         required: true
     },
     status: {

@@ -74,7 +74,7 @@ export default [
       en: "Accelerates current learning. Can only be applied to one current learning process",
     },
     duration: null,
-    type: "learn-speed-20",
+    type: "learn-speed-15",
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D1%83%D1%81%D0%BA%D0%BE%D1%80-25.png",
   },
   {
@@ -86,7 +86,7 @@ export default [
       en: "Accelerates current learning. Can only be applied to one current learning process",
     },
     duration: null,
-    type: "learn-speed-50",
+    type: "learn-speed-25",
     link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/icons%2F%D1%83%D1%81%D0%BA%D0%BE%D1%80-50.png",
   },
 ];

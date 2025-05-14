@@ -61,17 +61,17 @@ export const useBoost = async (req, res) => {
         case "relax-massage":
           operationResult = await useRelaxMassage(userParameters, session);
           break;
-        case "learn-speed-20":
+        case "learn-speed-15":
+          skillId = parseInt(req.query.skillId);
+          if (!skillId) throw new Error("skillId is incorrect");
+          console.log(skillId, sub_type);
+          operationResult = await useLearnSpeed(req.userId, skillId, sub_type, 15, session);
+          break;
+        case "learn-speed-25":
           skillId = parseInt(req.query.skillId);
           if (!skillId) throw new Error("skillId is incorrect");
           console.log(skillId, sub_type);
           operationResult = await useLearnSpeed(req.userId, skillId, sub_type, 25, session);
-          break;
-        case "learn-speed-50":
-          skillId = parseInt(req.query.skillId);
-          if (!skillId) throw new Error("skillId is incorrect");
-          console.log(skillId, sub_type);
-          operationResult = await useLearnSpeed(req.userId, skillId, sub_type, 50, session);
           break;
         default:
           throw new Error("Unknown boost type");

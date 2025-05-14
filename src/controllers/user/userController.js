@@ -254,6 +254,8 @@ export const getShopItems = async (req, res) => {
     const clothingClean = (
       await Clothing.find({}, { _id: false }, { sort: { tier: 1 } })
     ).filter((item) => !clothes.map((c) => c.id).includes(item.clothing_id))
+
+    // console.log(clothingClean.filter(item => item.is_premium == true))
     const shelfClean = (await ShelfItemModel.find({}, { _id: false })).filter(
       (item) => {
         const alreadyHasIt = shelf.map((c) => c.id).includes(item.id)
@@ -635,7 +637,7 @@ export const requestStarsPaymentLink = async (req, res) => {
     if (productType === "clothes") {
       product = await Clothing.findOne({ clothing_id: id })
       name = product.name[lang]
-      description = product.description[lang]
+      description = lang === 'en' ? '13th Floor - Personage Clothing' : 'Одежда для персонажа';
       title = name
       amount = product.price
     }
@@ -643,7 +645,7 @@ export const requestStarsPaymentLink = async (req, res) => {
     if (productType === "shelf") {
       product = await ShelfItemModel.findOne({ id: id })
       name = product.name[lang]
-      description = product.description[lang]
+      description = product.description[lang] || ''
       title = name
       amount = product.cost.stars
     }
@@ -659,13 +661,13 @@ export const requestStarsPaymentLink = async (req, res) => {
         en: "An attempt to play the wheel!",
       }[lang]
       title = name
-      amount = 50
+      amount = 15
     }
 
     const autoclaimDurationToPrice = {
-      6: 35,
-      10: 50,
-      18: 100,
+      6: 10,
+      10: 15,
+      18: 40,
     }
 
     if (productType === "autoclaim") {

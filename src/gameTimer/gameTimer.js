@@ -309,10 +309,10 @@ const dbUpdateQueue = new Queue('db-updates', {
     password: process.env.REDIS_PASSWORD 
   },
   defaultJobOptions: {
-    attempts: 3, // Retry on transient failures
+    attempts: 1, // Retry on transient failures
     backoff: { type: 'fixed', delay: 100 }, // Exponential backoff
     removeOnComplete: { count: 100 }, // Keep only the 1000 most recent completed jobs
-    removeOnFail: { count: 1 }, // Keep only the 1000 most recent failed jobs
+    removeOnFail: { count: 100 }, // Keep only the 1000 most recent failed jobs
   },
 });
 
@@ -997,11 +997,19 @@ const mergeEffects = (target, source) => {
 
 const calculatePeriodCosts = (baseParameters, combinedEffects, durationSeconds, costConfig, costBlackList, userParameters, totalDurationSeconds, processType) => {
   const finalCosts = {};
+  // Map of stat capacities for percentage-based threshold calculations
+  const statCapacities = {
+    mood: 100, // Mood is a percentage
+    hungry: 100, // Hungry is a percentage
+    energy: userParameters.energy_capacity || 100, // Energy capacity for threshold
+  };
+
   Object.entries(costConfig).forEach(([key, baseValue]) => {
     if (costBlackList.includes(key)) return;
     log.debug(colors.cyan(`Starting cost calc for ${key}: baseValue=${baseValue}`));
     let adjustedValue = Number(baseValue) || 0;
 
+    // Apply cost decrease effect
     const decreaseKey = `${key}_cost_decrease`;
     const decreaseValue = combinedEffects[decreaseKey];
     if (decreaseValue) {
@@ -1018,6 +1026,20 @@ const calculatePeriodCosts = (baseParameters, combinedEffects, durationSeconds, 
       const ratePerSecond = adjustedValue / totalDurationSeconds;
       cost = ratePerSecond * durationSeconds;
       log.debug(colors.magenta(`Cost for ${key}: ${ratePerSecond.toFixed(4)}/s * ${durationSeconds}s = ${cost.toFixed(4)}`));
+    }
+
+    // Apply cant_fall_below_percent effect
+    const cantFallBelowEffects = combinedEffects.cant_fall_below_percent?.filter(effect => effect.param === key) || [];
+    if (cantFallBelowEffects.length > 0) {
+      const maxThresholdPercent = Math.max(...cantFallBelowEffects.map(effect => effect.value || 0));
+      const minStatValue = (maxThresholdPercent / 100) * statCapacities[key]; // Minimum value for the stat
+      const currentStatValue = Number(userParameters[key]) || 0;
+      const maxAllowableCost = Math.max(0, currentStatValue - minStatValue);
+
+      if (cost > maxAllowableCost) {
+        log.info(colors.blue(`Capped ${key} cost due to cant_fall_below_percent: ${cost.toFixed(4)} -> ${maxAllowableCost.toFixed(4)}, minStat=${minStatValue.toFixed(2)}`));
+        cost = maxAllowableCost;
+      }
     }
 
     finalCosts[key] = Number(cost.toFixed(10));

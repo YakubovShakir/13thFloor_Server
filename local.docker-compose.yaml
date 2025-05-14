@@ -2,19 +2,19 @@ networks:
   default:
 
 services:
-  tx-daemon:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: node ./src/daemons/tonAffiliateDaemon.js
-    depends_on:
-      database:
-        condition: service_healthy  # Wait for MongoDB to be healthy
-      redis:
-        condition: service_healthy  # Wait for Redis to be healthy
-    networks:
-      - default
-    restart: unless-stopped
+  # tx-daemon:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   command: node ./src/daemons/tonAffiliateDaemon.js
+  #   depends_on:
+  #     database:
+  #       condition: service_healthy  # Wait for MongoDB to be healthy
+  #     redis:
+  #       condition: service_healthy  # Wait for Redis to be healthy
+  #   networks:
+  #     - default
+  #   restart: unless-stopped
 
   database:
     image: mongo:5

@@ -64,6 +64,8 @@ const ShelfItem = new mongoose.Schema({
   cost: {
     coins: { type: Number, default: 0 },
     stars: { type: Number, default: 0 },
+    coinsOld: { type: Number, default: 0 },
+    starsOld: { type: Number, default: 0 },
   },
   link: { type: String, required: true },
   type: {

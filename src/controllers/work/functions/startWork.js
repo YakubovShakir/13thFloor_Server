@@ -109,9 +109,9 @@ export const checkCanStopWork = async (userId) => {
     await process.deleteOne({ id: userId, type_id: work.work_id });
 
     // Update user parameters
-    user.mood = Math.max(0, user.mood - moodCost);
-    user.hungry = Math.max(0, user.hungry - hungryCost);
-    user.energy = Math.max(0, user.energy - energyCost);
+    // user.mood = Math.max(0, user.mood - moodCost);
+    // user.hungry = Math.max(0, user.hungry - hungryCost);
+    // user.energy = Math.max(0, user.energy - energyCost);
 
     await recalcValuesByParameters(user, { coinsReward: workProcess.reward_at_the_end });
     await upUserExperience(userId, work.experience_reward);
