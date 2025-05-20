@@ -1484,21 +1484,14 @@ export default [
     tag: null,
     type: "Hat",
     effect: {
-      profit_per_tick_fixed: [
-        {
-          param: "mood",
-          value: 10,
-        },
-      ],
-    },
-    male_link:
-      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hm.webp",
-    female_link:
-      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hf_icon.webp",
-    male_icon:
-      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hm.webp",
-    female_icon:
-      "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hf.webp",
+      profit_per_tick_fixed: [{
+        param:  'mood',
+        value: 10, }, 
+      ],},
+    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hm_icon.webp",
+    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hf_icon.webp",
+    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hm.webp",
+    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2FPsycho%2FPsixo_Hf.webp",
     respect: 1500,
     price: 15000,
     tier: 5,
