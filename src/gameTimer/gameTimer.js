@@ -475,10 +475,84 @@ const operationMap = {
     };
     const profitConfig = { coins: 0 };
     const now = moment();
-    const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.updatedAt), "seconds");
+    const diffSeconds = now.diff(moment(process.user_parameters_updated_at || process.createdAt), "seconds");
     const processDurationSeconds = now.diff(moment(process.createdAt), "seconds");
     const totalDurationSeconds = baseParameters.duration * 60;
     const actualDurationSeconds = calculateDuration(baseParameters.duration, durationDecreasePercentage);
+
+    // Check for stale process
+  if (processDurationSeconds >= actualDurationSeconds && !process.user_parameters_updated_at) {
+    log.warn(colors.yellow(`Stale process detected, finalizing immediately`), { processId, processDurationSeconds, actualDurationSeconds });
+
+    // Apply final rewards and costs as if the process completed at actualDurationSeconds
+    const nekoBoostMultiplier = await getNekoBoostMultiplier(userParametersId, session);
+    const baseCoinsReward = (baseParameters.coins_in_hour / 3600) * (baseParameters.duration * 60);
+    const coinsReward = baseCoinsReward * nekoBoostMultiplier;
+
+    await operationMap.updateUserBalance({ id: userParametersId, amount: coinsReward }, session);
+    await operationMap.updateUserExperience({ id: userParametersId, amount: baseParameters.experience_reward }, session);
+
+    // Calculate costs for the entire duration
+    const costConfig = {
+      mood: baseParameters.mood_cost_per_minute || 0,
+      hungry: baseParameters.hungry_cost_per_minute || 0,
+      energy: baseParameters.energy_cost_per_minute || 0,
+    };
+    let combinedEffects = {};
+    if (process.effects && process.type !== "boost") mergeEffects(combinedEffects, process.effects);
+
+    // Fetch shelf and clothing effects (same as original)
+    const shelfItems = Object.values(user.shelf).filter(Boolean);
+    if (shelfItems.length > 0) {
+      const shelf = await ShelfItemModel.find({ id: { $in: shelfItems } }, null, { session });
+      shelf.forEach((item) => {
+        if (item.effects) mergeEffects(combinedEffects, item.effects);
+      });
+    }
+    if (userClothing) {
+      const clothesItems = [userClothing.hat, userClothing.top, userClothing.pants, userClothing.shoes, userClothing.accessories]
+        .filter(item => item !== null && item !== undefined);
+      if (clothesItems.length > 0) {
+        const clothing = await Clothing.find({ clothing_id: { $in: clothesItems } }, null, { session });
+        clothing.forEach((item) => {
+          if (item.effects) mergeEffects(combinedEffects, item.effects);
+        });
+      }
+    }
+
+    const periodCosts = calculatePeriodCosts(baseParameters, combinedEffects, actualDurationSeconds, costConfig, [], userParameters, totalDurationSeconds, "work");
+
+    // Check if user has sufficient resources
+    const hasSufficientResources = Object.keys(periodCosts).every(key => {
+      const available = Math.floor(userParameters[key] || 0);
+      const cost = Math.floor(periodCosts[key] || 0);
+      const ok = available >= cost;
+      if (!ok) log.warn(colors.yellow(`Insufficient ${key}: ${available} < ${cost}`));
+      return ok;
+    });
+
+    if (hasSufficientResources) {
+      Object.keys(periodCosts).forEach((key) => {
+        userParameters[key] = Math.max(0, userParameters[key] - periodCosts[key]);
+      });
+      await userParameters.save({ session });
+    } else {
+      log.info(colors.yellow(`Stale process ended - insufficient resources`), {
+        userId: userParametersId,
+        processId,
+        costs: periodCosts,
+        available: { mood: userParameters.mood, hungry: userParameters.hungry, energy: userParameters.energy },
+      });
+    }
+
+    await gameProcess.deleteOne({ _id: processId }, { session });
+    log.info(colors.green(`Stale process completed and deleted`), {
+      userId: userParametersId,
+      coinsReward,
+      experience: baseParameters.experience_reward,
+    });
+    return;
+  }
 
     const periodCosts = calculatePeriodCosts(baseParameters, combinedEffects, diffSeconds, costConfig, [], userParameters, totalDurationSeconds, "work");
     const periodProfits = calculatePeriodProfits(baseParameters, combinedEffects, diffSeconds, profitConfig, [], userParameters, totalDurationSeconds);
