@@ -1751,18 +1751,6 @@ const txScanConfig = {
 };
 
 // Export Schedulers
-export const WorkProcess = genericProcessScheduler("work", workProcessConfig);
-export const TrainingProccess = genericProcessScheduler("training", trainingProcessConfig);
-export const SleepProccess = genericProcessScheduler("sleep", sleepProcessConfig);
-export const SkillProccess = genericProcessScheduler("skill", skillProcessConfig);
-export const FoodProccess = genericProcessScheduler("food", foodProcessConfig);
-export const BoostProccess = genericProcessScheduler("boost", boostProcessConfig);
-export const AutoclaimProccess = processIndependentScheduler("autoclaim", autoclaimProcessConfig);
-export const NftScanProcess = processIndependentScheduler("nft_scan", nftScanConfig);
-export const TxScanProcess = processIndependentScheduler("TX_SCANNER", txScanConfig);
-export const RefsRecalsProcess = processIndependentScheduler("investment_level_checks", investmentLevelsProcessConfig);
-export const SpinScanProcess = processIndependentScheduler("spin_scan", spinScanConfig);
-export const LevelUpdate = processIndependentScheduler("level_scan", levelScanConfig);
 
 // Utility to format memory usage in MB
 const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
@@ -1853,7 +1841,7 @@ const shutdown = async (signal) => {
   }
 };
 
-async function cleanupStaleProcesses(session) {
+async function cleanupStaleProcesses() {
   const now = moment();
   const processes = await gameProcess.find({}, null, { session });
 
@@ -1863,25 +1851,25 @@ async function cleanupStaleProcesses(session) {
     let actualDurationSeconds;
 
     if (process.type === "work") {
-      const baseParameters = await Work.findOne({ work_id: process.baseParametersId }, null, { session });
+      const baseParameters = await Work.findOne({ work_id: process.baseParametersId }, null);
       if (!baseParameters) continue;
       actualDurationSeconds = process.target_duration_in_seconds || (baseParameters.duration * 60);
     } else if (process.type === "training") {
-      const baseParameters = await TrainingParameters.findOne({ level: process.baseParametersId }, null, { session });
+      const baseParameters = await TrainingParameters.findOne({ level: process.baseParametersId }, null);
       if (!baseParameters) continue;
       actualDurationSeconds = process.target_duration_in_seconds || ((baseParameters.duration || 1) * 60);
     } else if (process.type === "sleep") {
-      const baseParameters = await LevelsParameters.findOne({ level: process.baseParametersId }, null, { session });
+      const baseParameters = await LevelsParameters.findOne({ level: process.baseParametersId }, null);
       if (!baseParameters) continue;
       actualDurationSeconds = process.target_duration_in_seconds || (baseParameters.sleep_duration * 60);
     } else if (process.type === "skill") {
       actualDurationSeconds = process.target_duration_in_seconds || process.base_duration_in_seconds || 60;
     } else if (process.type === "food") {
-      const baseParameters = await Food.findOne({ food_id: process.baseParametersId }, null, { session });
+      const baseParameters = await Food.findOne({ food_id: process.baseParametersId }, null);
       if (!baseParameters) continue;
       actualDurationSeconds = process.target_duration_in_seconds || ((baseParameters.duration * 60) || 60);
     } else if (process.type === "boost") {
-      const baseParameters = await Boost.findOne({ boost_id: process.baseParametersId }, null, { session });
+      const baseParameters = await Boost.findOne({ boost_id: process.baseParametersId }, null);
       if (!baseParameters) continue;
       actualDurationSeconds = process.target_duration_in_seconds || ((baseParameters.duration * 60) || 60);
     } else {
@@ -1908,6 +1896,20 @@ async function cleanupStaleProcesses(session) {
 }
 
 
+cleanupStaleProcesses().then(() => {
+  const WorkProcess = genericProcessScheduler("work", workProcessConfig);
+  const TrainingProccess = genericProcessScheduler("training", trainingProcessConfig);
+  const SleepProccess = genericProcessScheduler("sleep", sleepProcessConfig);
+  const SkillProccess = genericProcessScheduler("skill", skillProcessConfig);
+  const FoodProccess = genericProcessScheduler("food", foodProcessConfig);
+  const BoostProccess = genericProcessScheduler("boost", boostProcessConfig);
+  const AutoclaimProccess = processIndependentScheduler("autoclaim", autoclaimProcessConfig);
+  const NftScanProcess = processIndependentScheduler("nft_scan", nftScanConfig);
+  const TxScanProcess = processIndependentScheduler("TX_SCANNER", txScanConfig);
+  const RefsRecalsProcess = processIndependentScheduler("investment_level_checks", investmentLevelsProcessConfig);
+  const SpinScanProcess = processIndependentScheduler("spin_scan", spinScanConfig);
+  const LevelUpdate = processIndependentScheduler("level_scan", levelScanConfig);
+})
 
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
