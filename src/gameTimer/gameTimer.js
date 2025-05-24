@@ -309,10 +309,10 @@ const dbUpdateQueue = new Queue('db-updates', {
     password: process.env.REDIS_PASSWORD 
   },
   defaultJobOptions: {
-    attempts: 1, // Retry on transient failures
-    backoff: { type: 'fixed', delay: 100 }, // Exponential backoff
-    removeOnComplete: { count: 100 }, // Keep only the 1000 most recent completed jobs
-    removeOnFail: { count: 100 }, // Keep only the 1000 most recent failed jobs
+    attempts: 3, // Retry on transient failures
+    backoff: { type: 'fixed', delay: 1000 }, // Exponential backoff
+    removeOnComplete: { count: 10000 }, // Keep only the 1000 most recent completed jobs
+    removeOnFail: { count: 10000 }, // Keep only the 1000 most recent failed jobs
   },
 });
 
