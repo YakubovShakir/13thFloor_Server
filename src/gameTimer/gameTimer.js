@@ -1764,6 +1764,18 @@ const txScanConfig = {
 };
 
 // Export Schedulers
+const WorkProcess = genericProcessScheduler("work", workProcessConfig);
+const TrainingProccess = genericProcessScheduler("training", trainingProcessConfig);
+const SleepProccess = genericProcessScheduler("sleep", sleepProcessConfig);
+const SkillProccess = genericProcessScheduler("skill", skillProcessConfig);
+const FoodProccess = genericProcessScheduler("food", foodProcessConfig);
+const BoostProccess = genericProcessScheduler("boost", boostProcessConfig);
+const AutoclaimProccess = processIndependentScheduler("autoclaim", autoclaimProcessConfig);
+const NftScanProcess = processIndependentScheduler("nft_scan", nftScanConfig);
+const TxScanProcess = processIndependentScheduler("TX_SCANNER", txScanConfig);
+const RefsRecalsProcess = processIndependentScheduler("investment_level_checks", investmentLevelsProcessConfig);
+const SpinScanProcess = processIndependentScheduler("spin_scan", spinScanConfig);
+const LevelUpdate = processIndependentScheduler("level_scan", levelScanConfig);
 
 // Utility to format memory usage in MB
 const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
@@ -1854,18 +1866,7 @@ const shutdown = async (signal) => {
   }
 };
 
-const WorkProcess = genericProcessScheduler("work", workProcessConfig);
-const TrainingProccess = genericProcessScheduler("training", trainingProcessConfig);
-const SleepProccess = genericProcessScheduler("sleep", sleepProcessConfig);
-const SkillProccess = genericProcessScheduler("skill", skillProcessConfig);
-const FoodProccess = genericProcessScheduler("food", foodProcessConfig);
-const BoostProccess = genericProcessScheduler("boost", boostProcessConfig);
-const AutoclaimProccess = processIndependentScheduler("autoclaim", autoclaimProcessConfig);
-const NftScanProcess = processIndependentScheduler("nft_scan", nftScanConfig);
-const TxScanProcess = processIndependentScheduler("TX_SCANNER", txScanConfig);
-const RefsRecalsProcess = processIndependentScheduler("investment_level_checks", investmentLevelsProcessConfig);
-const SpinScanProcess = processIndependentScheduler("spin_scan", spinScanConfig);
-const LevelUpdate = processIndependentScheduler("level_scan", levelScanConfig);
+
 
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
