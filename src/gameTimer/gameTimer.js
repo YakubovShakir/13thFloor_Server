@@ -429,10 +429,8 @@ const operationMap = {
   completeFoodProcess: async (params, session) => {
     log.info(`Food process completed`, { userId: userParameters.id, profits });
   },
-  javascript
 
-Копировать
-processWork: async (params, session) => {
+  processWork: async (params, session) => {
     const { processId, userParametersId, baseParametersId } = params;
     const process = await gameProcess.findOne({ _id: processId }, null, { session });
     const userParameters = await UserParameters.findOne({ id: userParametersId }, null, { session });
@@ -796,7 +794,7 @@ processWork: async (params, session) => {
 
     process.user_parameters_updated_at = now.toDate();
     await process.save({ session });
-  }
+  },
 
   processAutoclaim: async (params, session) => {
     const { investmentType, userId } = params;
