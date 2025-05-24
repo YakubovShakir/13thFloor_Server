@@ -1853,6 +1853,62 @@ const shutdown = async (signal) => {
   }
 };
 
+async function cleanupStaleProcesses(session) {
+  const now = moment();
+  const processes = await gameProcess.find({}, null, { session });
+
+  for (const process of processes) {
+    const createdAt = moment(process.createdAt || now);
+    const processDurationSeconds = now.diff(createdAt, "seconds");
+    let actualDurationSeconds;
+
+    if (process.type === "work") {
+      const baseParameters = await Work.findOne({ work_id: process.baseParametersId }, null, { session });
+      if (!baseParameters) continue;
+      actualDurationSeconds = process.target_duration_in_seconds || (baseParameters.duration * 60);
+    } else if (process.type === "training") {
+      const baseParameters = await TrainingParameters.findOne({ level: process.baseParametersId }, null, { session });
+      if (!baseParameters) continue;
+      actualDurationSeconds = process.target_duration_in_seconds || ((baseParameters.duration || 1) * 60);
+    } else if (process.type === "sleep") {
+      const baseParameters = await LevelsParameters.findOne({ level: process.baseParametersId }, null, { session });
+      if (!baseParameters) continue;
+      actualDurationSeconds = process.target_duration_in_seconds || (baseParameters.sleep_duration * 60);
+    } else if (process.type === "skill") {
+      actualDurationSeconds = process.target_duration_in_seconds || process.base_duration_in_seconds || 60;
+    } else if (process.type === "food") {
+      const baseParameters = await Food.findOne({ food_id: process.baseParametersId }, null, { session });
+      if (!baseParameters) continue;
+      actualDurationSeconds = process.target_duration_in_seconds || ((baseParameters.duration * 60) || 60);
+    } else if (process.type === "boost") {
+      const baseParameters = await Boost.findOne({ boost_id: process.baseParametersId }, null, { session });
+      if (!baseParameters) continue;
+      actualDurationSeconds = process.target_duration_in_seconds || ((baseParameters.duration * 60) || 60);
+    } else {
+      continue;
+    }
+
+    if (processDurationSeconds >= actualDurationSeconds) {
+      // Call the appropriate process function to finalize
+      const params = {
+        processId: process._id,
+        userParametersId: process.userParametersId,
+        baseParametersId: process.baseParametersId,
+        subType: process.subType,
+      };
+      if (process.type === "work") await operationMap.processWork(params, session);
+      else if (process.type === "training") await operationMap.processTraining(params, session);
+      else if (process.type === "sleep") await operationMap.processSleep(params, session);
+      else if (process.type === "skill") await operationMap.processSkill(params, session);
+      else if (process.type === "food") await operationMap.processFood(params, session);
+      else if (process.type === "boost") await operationMap.processBoost(params, session);
+      log.info(colors.green(`Cleaned up stale ${process.type} process`), { processId: process._id });
+    }
+  }
+}
+
+
+
 process.on("SIGTERM", () => shutdown("SIGTERM"));
 process.on("SIGINT", () => shutdown("SIGINT"));
 
