@@ -613,7 +613,7 @@ const itemsPoolRaw = [
   },
 
   {
-    id: 64,
+    id: 68,
     type: "clothes",
     chance_premium: 3,
     chance_daily: 3,
@@ -624,7 +624,7 @@ const itemsPoolRaw = [
   },
   
   {
-    id: 65,
+    id: 69,
     type: "clothes",
     chance_premium: 15,
     chance_daily: 0,
@@ -634,7 +634,7 @@ const itemsPoolRaw = [
     },
   },
   {
-    id: 66,
+    id: 70,
     type: "clothes",
     chance_premium: 15,
     chance_daily: 0,
@@ -644,7 +644,7 @@ const itemsPoolRaw = [
     },
   },
   {
-    id: 67,
+    id: 71,
     type: "clothes",
     chance_premium: 15,
     chance_daily: 0,

@@ -1584,4 +1584,94 @@ export default [
     tier: 5,
     requiredLevel: 1,
   },
+   {
+    clothing_id: 68,
+    name: {
+      ru: "Прическа клана",
+      en: "Clan hairstyle",
+    },
+    tag: null,
+    type: "Hat",
+    effect: {
+      profit_per_tick_fixed: [{
+     
+        param:  'energy',
+        value: 10, }, 
+      ],},
+    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%BF%D1%80%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0-%D0%BD%D0%B0%D1%80%D1%83%D1%82%D0%BE.webp",
+    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%BD%D0%B0%D1%80%D1%83%D1%82%D0%BE-%D0%B6%D0%B5%D0%BD.webp",
+    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%BC%D1%83%D0%B6-%D0%BF%D1%80%D0%B8%D1%87.webp",
+    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%B6%D0%B5%D0%BD-%D0%BF%D1%80%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0.webp",
+    respect: 1500,
+    price: 15000,
+    tier: 5,
+    requiredLevel: 1,
+  },
+  {
+    clothing_id: 69,
+    name: {
+      ru: "Куртка шиноби",
+      en: "Shinobi Jacket",
+    },
+    tag: null,
+    type: "Top",
+    effect: {
+      profit_per_tick_fixed: [{
+        param:  'energy',
+        value: 30, }, 
+      ],},
+    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%BD%D0%B0%D1%80%D1%83%D1%82%D0%BE%20%D0%BC.png",
+    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%BD%D0%B0%D1%80%D1%83%D1%82%D0%BE%20%D0%BA%D0%BE%D1%84%D1%82%D0%B0%20%D0%B6%D0%B5%D0%BD.png",
+    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%BA%D1%83%D1%80%D1%82%D0%BA%D0%B0-%D0%BC.webp",
+    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%B6%D0%B5%D0%BD-%D0%BA%D1%83%D1%80%D1%82%D0%BA%D0%B0.webp",
+    respect: 5000,
+    price: 15000,
+    tier: 5,
+    requiredLevel: 1,
+  },
+  {
+    clothing_id: 70,
+    name: {
+      ru: "Штаны ниндзя",
+      en: "Ninja pants",
+    },
+    tag: null,
+    type: "Pants",
+    effect: {
+      profit_per_tick_fixed: [{
+        param:  'energy',
+        value: 20, }, 
+      ],},
+    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%BD%D0%B0%D1%80%D1%83%D1%82%D0%BE-%D1%88%D1%82%D0%B0%D0%BD%D1%8B-%D0%BC.webp",
+    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%BD%D0%B0%D1%80%D1%83%D1%82%D0%BE-%D1%88%D1%82%D0%B0%D0%BD%D1%8B-%D0%B6%D0%B5%D0%BD.webp",
+    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D1%88%D1%82%D0%B0%D0%BD%D1%8B-%D0%BC.webp",
+    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%B6%D0%B5%D0%BD-%D1%88%D1%82%D0%B0%D0%BD%D1%8B.webp",
+    respect: 3500,
+    price: 15000,
+    tier: 5,
+    requiredLevel: 1,
+  },
+  {
+    clothing_id: 71,
+    name: {
+      ru: "Сапоги наемника",
+      en: "Mercenary's Boots",
+    },
+    tag: null,
+    type: "Shoes",
+    effect: {
+      profit_per_tick_fixed: [{
+        param:  'energy',
+        value: 40, }, 
+      ],},
+    male_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%BD%D0%B8%D0%BD%D0%B4%D0%B7%D1%8F-%D0%BE%D0%B1%D1%83%D0%B2%D1%8C-%D0%BC%D1%83%D0%B6%D1%81%D0%BA%D0%B0%D1%8F.webp",
+    female_link: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%BD%D0%B0%D1%80%D1%83%D1%82%D0%BE%20%D0%BE%D0%B1%D1%83%D0%B2%D1%8C%20%D0%B6.png",
+    male_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%B1%D0%BE%D1%82%D1%8B-%D0%BC.webp",
+    female_icon: "https://d8bddedf-ac40-4488-8101-05035bb63d25.selstorage.ru/clothes%2FDonate%2Fninja%2F%D0%B6%D0%B5%D0%BD-%D0%B1%D0%BE%D1%82%D1%8B.webp",
+    respect: 8000,
+    price: 15000,
+    tier: 5,
+    requiredLevel: 1,
+  },
+  
 ]
