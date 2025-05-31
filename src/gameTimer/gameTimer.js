@@ -1095,12 +1095,17 @@ const genericProcessScheduler = (processType, processConfig) => {
   const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`;
 
   const scheduler = cron.schedule(cronSchedule, async () => {
-    let processes
+    let cursor = null;
+    let processesCount = 0;
+
     try {
       log.info(`${processType} process scheduler started iteration`);
 
-      processes = gameProcess.find({ type: processType }).lean().cursor(); // Add .lean()
-      await processInBatches(processes, 10, async(process) => {
+      // Create the cursor
+      cursor = gameProcess.find({ type: processType }).lean().cursor();
+
+      // Process in batches
+      await processInBatches(cursor, 10, async (process) => {
         const params = {
           processId: process._id,
           userParametersId: process.id,
@@ -1108,23 +1113,29 @@ const genericProcessScheduler = (processType, processConfig) => {
           subType: process.sub_type,
         };
         try {
-           await queueDbUpdate(
-          operationName,
-          params,
-          `${processType} full cycle for process ${process._id}`,
-          process.id
-        );
-        } catch(err) {
+          await queueDbUpdate(
+            operationName,
+            params,
+            `${processType} full cycle for process ${process._id}`,
+            process.id
+          );
+        } catch (err) {
           log.warning(`Error in process [${operationName}]: `, err.message);
         }
-      })
+        processesCount++; // Increment counter
+      });
 
-      log.info(`${processType} process scheduler finished iteration`, { processesCount: processes.length });
+      log.info(`${processType} process scheduler finished iteration`, { processesCount });
     } catch (e) {
       log.error(`Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
     } finally {
-      if(processes) {
-        await processes.close();
+      // Close cursor if it exists and is not already closed
+      if (cursor) {
+        try {
+          await cursor.close();
+        } catch (err) {
+          log.debug(`Error closing cursor for ${processType}:`, err.message);
+        }
       }
     }
   }, { scheduled: false });
