@@ -40,12 +40,10 @@ import { UserSpins } from "../models/user/userSpinsModel.js";
 import heapdump from 'heapdump'
 
 // Memory leak detection configuration
-const MEMORY_THRESHOLD_PERCENT = 20; // Warn if heapUsed grows by 20% since last check
-const SNAPSHOT_INTERVAL_MS = 300000; // 5 minutes for heap snapshots
+const RSS_THRESHOLD_PERCENT = 15; // Warn if RSS grows by 15% since last check
 const CHECK_INTERVAL_MS = 60000; // Check every 60 seconds
-let lastHeapUsed = null;
+let lastRss = null;
 
-// Global flags to prevent cron overlaps
 const schedulerFlags = {
   work: false,
   training: false,
