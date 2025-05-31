@@ -1479,7 +1479,7 @@ const spinScanConfig = {
   cronSchedule: "*/10 * * * * *", // Runs every 10 seconds
   durationFunction: async () => {
     try {
-      const users = await UserParameters.find({}, { id: 1, tz: 1 });
+      const users = await UserParameters.find({}, { id: 1 });
       let totalUsersAwarded = 0;
 
       await processInBatches(users, 5, async (user) => {
