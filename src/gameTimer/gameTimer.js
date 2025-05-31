@@ -1099,7 +1099,7 @@ const genericProcessScheduler = (processType, processConfig) => {
     try {
       log.info(`${processType} process scheduler started iteration`);
 
-      processes = gameProcess.find({ type: processType }).lean().cursor(); // Add .lean()
+      processes = await gameProcess.find({ type: processType }).lean().cursor(); // Add .lean()
       for(const process of processes) {
         const params = {
           processId: process._id,
