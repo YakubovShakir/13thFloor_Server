@@ -1,20 +1,28 @@
-
-# Указываем базовый образ
+# Use the Alpine-based Node.js 22 image
 FROM node:22-alpine
 
-# Устанавливаем рабочую директорию
+# Install python3 and build tools using apk
+RUN apk update && apk add --no-cache \
+    python3 \
+    py3-pip \
+    build-base \
+    && rm -rf /var/cache/apk/*
+
+# Set Python for node-gyp
+ENV PYTHON=/usr/bin/python3
+RUN npm config set python /usr/bin/python3
+
+# Set working directory
 WORKDIR /usr/src/backend
 
-# Копируем package.json и package-lock.json
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
-RUN apt-get update && apt-get install -y python3
-
-# Устанавливаем зависимости
+# Install dependencies
 RUN npm install
 
-# Копируем остальные файлы проекта
+# Copy the rest of the project files
 COPY . .
 
-# Команда для запуска приложения
+# Command to run the application
 CMD ["npm", "start"]
