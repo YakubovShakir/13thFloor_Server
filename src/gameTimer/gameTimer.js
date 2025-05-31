@@ -1215,47 +1215,58 @@ const processInBatches = async (items, batchSize, processFn) => {
 
 export const autoclaimProcessConfig = {
   processType: "autoclaim",
-  cronSchedule: "*/1 * * * * *",
+  cronSchedule: "*/10 * * * * *", // Reduced frequency to every 10 seconds
   durationFunction: async () => {
-    if (schedulerFlags.autoclaim === true) return;
-    let cursor
+    let cursor;
     try {
+      if (schedulerFlags.autoclaim) return;
       schedulerFlags.autoclaim = true;
       log.info(`Autoclaim process scheduler started iteration`);
 
       const now = new Date();
-      // Use a cursor to stream Autoclaims
-      cursor = Autoclaims.find({ expiresAt: { $gt: now } }).lean().cursor();
+      // Use a cursor with lean and batch size
+      cursor = Autoclaims.find({ expiresAt: { $gt: now } })
+        .lean()
+        .cursor({ batchSize: 100 });
 
       let usersEligible = 0;
 
+      // Process in batches to reduce memory pressure
+      for await(const autoclaim of cursor) {
+        try {
+          const userId = autoclaim.userId;
+          const investmentType = autoclaim.investmentType;
+          log.debug(`Queuing transaction for autoclaim: user ${userId}, type ${investmentType}`);
+          await queueDbUpdate(
+            "processAutoclaim",
+            { investmentType, userId },
+            `Autoclaim claim for ${investmentType}, user ${userId}`,
+            userId
+          );
+          usersEligible++;
+        } catch (e) {
+          log.error(`Error queuing autoclaim for user ${autoclaim.userId}`, {
+            error: e.message,
+            stack: e.stack,
+          });
+        }
+      }
+
       if (usersEligible === 0) {
         log.info("No active autoclaims found");
-        return;
+      } else {
+        log.info(`Autoclaim process scheduler finished iteration`, { usersEligible });
       }
-
-      for await(const autoclaim of cursor) {
-        const userId = autoclaim.userId;
-        const investmentType = autoclaim.investmentType;
-        console.log('Queuing transaction for autoclaim');
-        await queueDbUpdate(
-          "processAutoclaim",
-          { investmentType, userId },
-          `Autoclaim claim for ${investmentType}, user ${userId}`,
-          userId
-        );
-        usersEligible++;
-      }
-
-      log.info(`Autoclaim process scheduler finished iteration`, {
-        usersEligible,
-      });
     } catch (e) {
       log.error("Error in autoclaim process", { error: e.message, stack: e.stack });
     } finally {
       schedulerFlags.autoclaim = false;
-      if(cursor) {
-        await cursor.close();
+      if (cursor) {
+        try {
+          await cursor.close();
+        } catch (e) {
+          log.warn("Error closing cursor", { error: e.message });
+        }
       }
     }
   },
@@ -1278,36 +1289,70 @@ const investmentLevelsProcessConfig = {
   processType: "investment_level_checks",
   cronSchedule: "*/15 * * * * *",
   durationFunction: async () => {
-    let usersWithRefs
+    let cursor;
     try {
-      if (schedulerFlags.investment_level_checks === true) return;
+      if (schedulerFlags.investment_level_checks) return;
       schedulerFlags.investment_level_checks = true;
       log.info(`investment_level_checks process scheduler started iteration`);
-      usersWithRefs = await Referal.aggregate([
+
+      // Use a cursor with lean for efficiency
+      cursor = Referal.aggregate([
         { $group: { _id: "$refer_id", referral_count: { $sum: 1 } } },
         { $project: { refer_id: "$_id", referral_count: 1 } },
-      ]).cursor();
+      ]).cursor({ batchSize: 100 }); // Set batch size for memory control
 
-      for await (const user of usersWithRefs) {
-      
-        const userDoc = await User.findOne({ id: user.refer_id });
-        if (userDoc) {
-          const currentLevel = userDoc.investment_levels.game_center;
-          const calculatedLevel = calculateGamecenterLevel(user.referral_count);
-          if (calculatedLevel > currentLevel) {
-            userDoc.investment_levels.game_center = calculatedLevel;
-            await userDoc.save();
-            log.info(`Updated game_center level`, { userId: user.refer_id, newLevel: calculatedLevel });
+      // Process in batches to reduce memory pressure
+      await processInBatches(cursor, 5, async (user) => {
+        const session = await mongoose.startSession();
+        try {
+          session.startTransaction();
+
+          // Use lean to reduce memory usage
+          const userDoc = await User.findOne({ id: user.refer_id }, null, { session }).lean();
+          if (userDoc) {
+            const currentLevel = userDoc.investment_levels.game_center;
+            const calculatedLevel = calculateGamecenterLevel(user.referral_count);
+            if (calculatedLevel > currentLevel) {
+              // Update within transaction
+              await User.updateOne(
+                { id: user.refer_id },
+                { $set: { "investment_levels.game_center": calculatedLevel } },
+                { session }
+              );
+              log.info(`Updated game_center level`, {
+                userId: user.refer_id,
+                newLevel: calculatedLevel,
+              });
+            }
           }
+
+          await session.commitTransaction();
+        } catch (e) {
+          await session.abortTransaction();
+          log.error(`Error processing user ${user.refer_id}`, {
+            error: e.message,
+            stack: e.stack,
+          });
+        } finally {
+          await session.endSession();
         }
-      
-      }
+      });
+
       log.info("investment_level_checks iterated all users");
     } catch (e) {
-      log.error("Error in investment_level_checks process", { error: e.message, stack: e.stack });
+      log.error("Error in investment_level_checks process", {
+        error: e.message,
+        stack: e.stack,
+      });
     } finally {
       schedulerFlags.investment_level_checks = false;
-      await usersWithRefs.close();
+      if (cursor) {
+        try {
+          await cursor.close();
+        } catch (e) {
+          log.warn("Error closing cursor", { error: e.message });
+        }
+      }
     }
   },
   Model: User,
