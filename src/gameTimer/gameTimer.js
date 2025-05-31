@@ -37,56 +37,13 @@ import Queue from 'bull';
 import winston from "winston";
 import Autoclaims from "../models/investments/autoclaimsModel.js";
 import { UserSpins } from "../models/user/userSpinsModel.js";
-import diagnosticsChannel from 'diagnostics_channel';
+import heapdump from 'heapdump'
 
 // Memory leak detection configuration
 const MEMORY_THRESHOLD_PERCENT = 20; // Warn if heapUsed grows by 20% since last check
 const SNAPSHOT_INTERVAL_MS = 300000; // 5 minutes for heap snapshots
 const CHECK_INTERVAL_MS = 60000; // Check every 60 seconds
 let lastHeapUsed = null;
-
-// Function to check for potential memory leaks
-const checkForMemoryLeaks = () => {
-  const memoryUsage = process.memoryUsage();
-  const currentHeapUsed = memoryUsage.heapUsed;
-
-  if (lastHeapUsed !== null) {
-    const heapGrowthPercent = calculatePercentageChange(currentHeapUsed, lastHeapUsed);
-    const trend = determineTrend(heapGrowthPercent, CHECK_INTERVAL_MS / (1000 * 60 * 60));
-
-    if (heapGrowthPercent > MEMORY_THRESHOLD_PERCENT && trend.includes('GROWING')) {
-      log.warn(colors.yellow('Potential memory leak detected'), {
-        heapUsed: formatMemoryUsage(currentHeapUsed),
-        heapGrowthPercent: `${heapGrowthPercent}%`,
-        trend,
-      });
-
-      // Generate a heap snapshot for debugging
-      const snapshotPath = `./heapdump-${Date.now()}.heapsnapshot`;
-      heapdump.writeSnapshot(snapshotPath, (err) => {
-        if (err) {
-          log.error(colors.red('Failed to write heap snapshot'), { error: err.message });
-        } else {
-          log.warn(colors.yellow(`Heap snapshot written to ${snapshotPath}`));
-        }
-      });
-    }
-  }
-
-  lastHeapUsed = currentHeapUsed;
-};
-
-// Subscribe to diagnostics_channel for GC events (optional, for deeper insights)
-diagnosticsChannel.channel('v8.gc').subscribe((data) => {
-  if (data.type === 'minor' || data.type === 'major') {
-    const memoryUsage = process.memoryUsage();
-    log.debug(colors.cyan('Garbage collection event'), {
-      gcType: data.type,
-      heapUsed: formatMemoryUsage(memoryUsage.heapUsed),
-      rss: formatMemoryUsage(memoryUsage.rss),
-    });
-  }
-});
 
 // Global flags to prevent cron overlaps
 const schedulerFlags = {
@@ -1144,38 +1101,46 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
 
 const customDurationProcessTypes = ["autoclaim", "investment_level_checks", "nft_scan"];
 
+// Wrap cron schedulers to track allocations
+const wrapScheduler = (scheduler, processType) => {
+  const originalFn = scheduler.fn;
+  scheduler.fn = async () => {
+    await trackAllocations(processType, originalFn, { processType });
+  };
+  return scheduler;
+};
+
+// Update genericProcessScheduler to track allocations
 const genericProcessScheduler = (processType, processConfig) => {
   const { cronSchedule, Model, getTypeSpecificParams } = processConfig;
   const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`;
 
   const scheduler = cron.schedule(cronSchedule, async () => {
+    await trackAllocations(processType, async () => {
+      try {
+        log.info(`${processType} process scheduler started iteration`);
 
-    try {
-      log.info(`${processType} process scheduler started iteration`);
+        const processes = await gameProcess.find({ type: processType }).lean();
+        for (const process of processes) {
+          const params = {
+            processId: process._id,
+            userParametersId: process.id,
+            baseParametersId: process.type_id,
+            subType: process.sub_type,
+          };
+          await queueDbUpdateWithTracking(
+            operationName,
+            params,
+            `${processType} full cycle for process ${process._id}`,
+            process.id
+          );
+        }
 
-      const processes = await gameProcess.find({ type: processType }).lean(); // Add .lean()
-      for(const process of processes) {
-        const params = {
-          processId: process._id,
-          userParametersId: process.id,
-          baseParametersId: process.type_id,
-          subType: process.sub_type,
-        };
-        await queueDbUpdate(
-          operationName,
-          params,
-          `${processType} full cycle for process ${process._id}`,
-          process.id
-        );
+        log.info(`${processType} process scheduler finished iteration`, { processesCount: processes.length });
+      } catch (e) {
+        log.error(`Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
       }
-
-      log.info(`${processType} process scheduler finished iteration`, { processesCount: processes.length });
-    } catch (e) {
-      log.error(`Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
-    } finally {
-      // Always release the lock
-      await releaseLock(lockKey);
-    }
+    }, { processType });
   }, { scheduled: false });
 
   scheduler.name = processType;
@@ -1883,26 +1848,138 @@ const determineTrend = (percentageChange, elapsedHours) => {
   return percentageChange >= 0 ? "GROWING RAPIDLY" : "DECREASING RAPIDLY";
 };
 
-// Function to log memory usage
-// Integrate with your existing memory logging
-const logMemoryUsage = () => {
+// Wrap queueDbUpdate to track allocations
+const queueDbUpdateWithTracking = async (operationType, params, description, userId = null) => {
+  return trackAllocations('queueDbUpdate', async () => {
+    if (!operationMap[operationType]) {
+      throw new Error(`Unknown operation type: ${operationType} for ${description}`);
+    }
+    const jobData = { operationType, params, description, userId };
+    log.debug(`Enqueuing job for ${description}`, { jobData });
+    const job = await dbUpdateQueue.add(jobData);
+    return job.id;
+  }, { operationType, description, userId });
+};
+
+// Wrapper to track allocations for specific operations
+const trackAllocations = async (operationName, operationFn, context = {}) => {
+  const profile = profiler.startProfiling(`${operationName}-${Date.now()}`, true);
+  try {
+    const result = await operationFn();
+    const profileData = await profile.stop();
+    
+    // Analyze profile for large allocations
+    const largeAllocations = profileData.nodes
+      .filter(node => node.callFrame.functionName && node.allocationSize > 1000000) // >1MB
+      .map(node => ({
+        function: node.callFrame.functionName,
+        file: node.callFrame.url,
+        size: (node.allocationSize / 1024 / 1024).toFixed(2) + ' MB',
+      }));
+
+    if (largeAllocations.length > 0) {
+      log.warn(colors.yellow(`Large allocations detected in ${operationName}`), {
+        context,
+        allocations: largeAllocations,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    return result;
+  } catch (err) {
+    log.error(colors.red(`Error in ${operationName}`), { error: err.message, context });
+    throw err;
+  } finally {
+    profile.stop(); // Ensure profile is stopped
+  }
+};
+
+// Wrap queueDbUpdate to track allocations
+const queueDbUpdateWithTracking = async (operationType, params, description, userId = null) => {
+  return trackAllocations('queueDbUpdate', async () => {
+    if (!operationMap[operationType]) {
+      throw new Error(`Unknown operation type: ${operationType} for ${description}`);
+    }
+    const jobData = { operationType, params, description, userId };
+    log.debug(`Enqueuing job for ${description}`, { jobData });
+    const job = await dbUpdateQueue.add(jobData);
+    return job.id;
+  }, { operationType, description, userId });
+};
+
+// Check for memory leaks
+const checkForMemoryLeaks = async () => {
   const memoryUsage = process.memoryUsage();
-  const elapsedTime = (Date.now() - startTime) / (1000 * 60 * 60); // Elapsed time in hours
+  const currentRss = memoryUsage.rss;
+
+  if (lastRss !== null) {
+    const rssGrowthPercent = calculatePercentageChange(currentRss, lastRss);
+    const trend = determineTrend(rssGrowthPercent, CHECK_INTERVAL_MS / (1000 * 60 * 60));
+
+    if (rssGrowthPercent > RSS_THRESHOLD_PERCENT && trend.includes('GROWING')) {
+      const queueStats = await dbUpdateQueue.count();
+      const activeSchedulers = Object.entries(schedulerFlags)
+        .filter(([_, active]) => active)
+        .map(([name]) => name);
+
+      log.warn(colors.yellow('Potential memory leak detected'), {
+        rss: formatMemoryUsage(currentRss),
+        rssGrowthPercent: `${rssGrowthPercent}%`,
+        trend,
+        queueStats: {
+          waiting: queueStats.waiting,
+          active: queueStats.active,
+          completed: queueStats.completed,
+          failed: queueStats.failed,
+        },
+        activeSchedulers,
+        timestamp: new Date().toISOString(),
+      });
+
+      // Generate heap snapshot
+      const snapshotPath = `./heapdump-leak-${Date.now()}.heapsnapshot`;
+      heapdump.writeSnapshot(snapshotPath, (err) => {
+        if (err) {
+          log.error(colors.red('Failed to write heap snapshot'), { error: err.message });
+        } else {
+          log.warn(colors.yellow(`Heap snapshot written to ${snapshotPath}`));
+        }
+      });
+    }
+  }
+
+  lastRss = currentRss;
+};
+
+// Updated logMemoryUsage
+const logMemoryUsage = async () => {
+  const memoryUsage = process.memoryUsage();
+  const elapsedTime = (Date.now() - startTime) / (1000 * 60 * 60);
   const elapsedMs = Date.now() - startTime;
 
-  // Existing memory logging
+  if (!initialMemoryUsage && elapsedMs >= WARMUP_PERIOD_MS) {
+    initialMemoryUsage = { ...memoryUsage };
+  }
+
+  const queueStats = await dbUpdateQueue.count();
   log.warn('Memory Usage Report', {
     rss: formatMemoryUsage(memoryUsage.rss),
     heapTotal: formatMemoryUsage(memoryUsage.heapTotal),
     heapUsed: formatMemoryUsage(memoryUsage.heapUsed),
     external: formatMemoryUsage(memoryUsage.external),
     arrayBuffers: formatMemoryUsage(memoryUsage.arrayBuffers),
+    queueStats: {
+      waiting: queueStats.waiting,
+      active: queueStats.active,
+    },
+    activeSchedulers: Object.entries(schedulerFlags)
+      .filter(([_, active]) => active)
+      .map(([name]) => name),
+    timestamp: new Date().toISOString(),
   });
 
-  // Check for leaks
-  checkForMemoryLeaks();
+  await checkForMemoryLeaks();
 
-  // Existing change and trend reporting
   if (previousMemoryUsage) {
     const changes = {
       rss: calculatePercentageChange(memoryUsage.rss, previousMemoryUsage.rss),
