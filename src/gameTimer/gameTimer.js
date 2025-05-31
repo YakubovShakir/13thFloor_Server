@@ -1215,7 +1215,7 @@ const processInBatches = async (items, batchSize, processFn) => {
 
 export const autoclaimProcessConfig = {
   processType: "autoclaim",
-  cronSchedule: "*/1 * * * * *",
+  cronSchedule: "*/5 * * * * *",
   durationFunction: async () => {
     if (schedulerFlags.autoclaim === true) return;
     let cursor
