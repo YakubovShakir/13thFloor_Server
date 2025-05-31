@@ -1115,7 +1115,7 @@ const genericProcessScheduler = (processType, processConfig) => {
           process.id
         );
         } catch(err) {
-          log.error(`Error in process [${operationName}]: `, err.message);
+          log.warning(`Error in process [${operationName}]: `, err.message);
         }
       })
 
