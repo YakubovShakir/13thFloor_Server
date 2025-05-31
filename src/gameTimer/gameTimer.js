@@ -1437,8 +1437,6 @@ const syncShelfInventory = async (userId, nftItemIds) => {
     await session.abortTransaction();
     log.error(`Error syncing inventory for ${userId}`, { error: error.message });
     return { added: [], removed: [] };
-  } finally {
-    session.endSession();
   }
 };
 
@@ -1447,22 +1445,26 @@ const nftScanConfig = {
   cronSchedule: "*/10 * * * * *",
   durationFunction: async () => {
     try {
-      if(schedulerFlags.nft_scan === true) return;
+      if (schedulerFlags.nft_scan === true) return;
       schedulerFlags.nft_scan = true;
       log.info("NFT-scanner process scheduler started iteration");
-      const usersWithWallets = await User.find({ tonWalletAddress: { $ne: null } });
 
-      for (const user of usersWithWallets) {
+      // Use a cursor to stream Users
+      const cursor = User.find({ tonWalletAddress: { $ne: null } }).lean().cursor();
+      let totalUsers = 0;
+
+      for await (const user of cursor) {
         const nftItemIds = user.tonWalletAddress ? await getWhitelistedNftsFromWallet(user.tonWalletAddress) : [];
         await syncShelfInventory(user.id, nftItemIds);
         await new Promise((resolve) => setTimeout(resolve, 1000));
+        totalUsers++;
       }
 
-      log.info("NFT-scanner process scheduler finished iteration", { totalUsers: usersWithWallets.length });
+      log.info("NFT-scanner process scheduler finished iteration", { totalUsers });
     } catch (e) {
       log.error("Error in NFT scan process", { error: e.message, stack: e.stack });
     } finally {
-       schedulerFlags.nft_scan = false;
+      schedulerFlags.nft_scan = false;
     }
   },
   Model: User,
