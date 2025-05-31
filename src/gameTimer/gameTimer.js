@@ -1215,7 +1215,7 @@ const processInBatches = async (items, batchSize, processFn) => {
 
 export const autoclaimProcessConfig = {
   processType: "autoclaim",
-  cronSchedule: "*/10 * * * * *", // Reduced frequency to every 10 seconds
+  cronSchedule: "*/5 * * * * *", // Reduced frequency to every 10 seconds
   durationFunction: async () => {
     let cursor;
     try {
