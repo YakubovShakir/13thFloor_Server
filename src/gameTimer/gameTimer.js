@@ -903,10 +903,11 @@ export const queueDbUpdate = async (operationType, params, description, userId =
   return job.id;
 };
 
-dbUpdateQueue.process(10, async (job) => {
+dbUpdateQueue.process(3, async (job) => {
   const { operationType, params, description, userId } = job.data || {};
-  const session = await mongoose.startSession();
+  let session
   try {
+    session = await mongoose.startSession();
     session.startTransaction();
     if (!operationType) {
       throw new Error(`Missing operationType in job data for ${description}`);
@@ -923,7 +924,9 @@ dbUpdateQueue.process(10, async (job) => {
     log.error(colors.red(`DB update failed: ${description}`), { error: error.message, stack: error.stack });
     throw error; // Bull will handle retries based on attempts
   } finally {
-    session.endSession();
+    if(session) {
+      await session.endSession();
+    }
   }
 });
 
