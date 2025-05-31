@@ -62,13 +62,13 @@ const schedulerFlags = {
 
 export const withTransaction = async (operation, session, maxRetries = 1, retryDelay = 1500) => {
   try {
-      const result = await operation(session);
+    const result = await operation(session);
 
-      await session.commitTransaction();
-      return result; // Return whatever the operation returns
-    } catch (error) {
-      log.debug(`Operation [${operation}] failed`, error)
-    }
+    await session.commitTransaction();
+    return result; // Return whatever the operation returns
+  } catch (error) {
+    log.debug(`Operation [${operation}] failed`, error)
+  }
 };
 
 export const recalcValuesByParameters = async (
@@ -112,7 +112,7 @@ export const recalcValuesByParameters = async (
     }
 
     if (adjustedCoinsReward !== 0) {
-      await operationMap.updateUserBalance({ id: userParameters.id, amount: adjustedCoinsReward}, session); // Already uses withTransaction
+      await operationMap.updateUserBalance({ id: userParameters.id, amount: adjustedCoinsReward }, session); // Already uses withTransaction
       console.log(`[recalcValuesByParameters] balance updated with amount ${adjustedCoinsReward}`);
     }
 
@@ -269,10 +269,10 @@ const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) => {
 
 // Centralized queue for all DB updates
 const dbUpdateQueue = new Queue('db-updates', {
-  redis: { 
-    host: process.env.REDIS_HOST || 'redis-test', 
-    port: process.env.REDIS_PORT, 
-    password: process.env.REDIS_PASSWORD 
+  redis: {
+    host: process.env.REDIS_HOST || 'redis-test',
+    port: process.env.REDIS_PORT,
+    password: process.env.REDIS_PASSWORD
   },
   limiter: { max: 10, duration: 3000 },
   defaultJobOptions: {
@@ -379,7 +379,7 @@ const operationMap = {
       : await Skill.findOne({ skill_id: skillId }, null, { session });
 
     if (!process || !userParameters || !skill) {
-     return
+      return
     }
 
     if (subType === "constant_effects") {
@@ -405,7 +405,7 @@ const operationMap = {
     const userClothing = await UserClothing.findOne({ user_id: userParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters || !user) {
-     return
+      return
     }
 
     let durationDecreasePercentage = 0;
@@ -598,7 +598,7 @@ const operationMap = {
     const userClothing = await UserClothing.findOne({ user_id: userParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters || !user) {
-     return
+      return
     }
 
     let durationDecreasePercentage = 0;
@@ -659,7 +659,7 @@ const operationMap = {
       : await Skill.findOne({ skill_id: baseParametersId }, null, { session });
 
     if (!process || !userParameters || !skill) {
-     return
+      return
     }
 
     const now = moment();
@@ -723,7 +723,7 @@ const operationMap = {
     const baseParameters = await Boost.findOne({ boost_id: baseParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters) {
-     return
+      return
     }
     log.warn(`${colors.cyanBright('Applied energy restore from tonic-drink')}`, {
       user_id: userParametersId,
@@ -901,7 +901,7 @@ dbUpdateQueue.process(3, async (job) => {
     log.error(colors.red(`DB update failed: ${description}`), { error: error.message, stack: error.stack });
     throw error; // Bull will handle retries based on attempts
   } finally {
-    if(session) {
+    if (session) {
       await session.endSession();
     }
   }
@@ -1080,7 +1080,7 @@ const genericProcessScheduler = (processType, processConfig) => {
       log.info(`${processType} process scheduler started iteration`);
 
       const processes = await gameProcess.find({ type: processType }).lean(); // Add .lean()
-      for(const process of processes) {
+      for (const process of processes) {
         const params = {
           processId: process._id,
           userParametersId: process.id,
@@ -1228,7 +1228,13 @@ export const autoclaimProcessConfig = {
       cursor = Autoclaims.find({ expiresAt: { $gt: now } }).lean().cursor();
 
       let usersEligible = 0;
-      await processInBatches(cursor, 5, async (autoclaim) => {
+
+      if (usersEligible === 0) {
+        log.info("No active autoclaims found");
+        return;
+      }
+
+      for await (const autoclaim of cursor) {
         const userId = autoclaim.userId;
         const investmentType = autoclaim.investmentType;
         console.log('Queuing transaction for autoclaim');
@@ -1239,11 +1245,6 @@ export const autoclaimProcessConfig = {
           userId
         );
         usersEligible++;
-      });
-
-      if (usersEligible === 0) {
-        log.info("No active autoclaims found");
-        return;
       }
 
       log.info(`Autoclaim process scheduler finished iteration`, {
@@ -1253,7 +1254,7 @@ export const autoclaimProcessConfig = {
       log.error("Error in autoclaim process", { error: e.message, stack: e.stack });
     } finally {
       schedulerFlags.autoclaim = false;
-      if(cursor) {
+      if (cursor) {
         await cursor.close();
       }
     }
@@ -1284,11 +1285,9 @@ const investmentLevelsProcessConfig = {
       const usersWithRefs = await Referal.aggregate([
         { $group: { _id: "$refer_id", referral_count: { $sum: 1 } } },
         { $project: { refer_id: "$_id", referral_count: 1 } },
-      ]);
+      ]).cursor();
 
-      await processInBatches(usersWithRefs, 5, async (user) => {
-        const userDoc = await User.findOne({ id: user.refer_id });
-        if (userDoc) {
+      for await (const user of usersWithRefs) {
           const currentLevel = userDoc.investment_levels.game_center;
           const calculatedLevel = calculateGamecenterLevel(user.referral_count);
           if (calculatedLevel > currentLevel) {
@@ -1296,9 +1295,7 @@ const investmentLevelsProcessConfig = {
             await userDoc.save();
             log.info(`Updated game_center level`, { userId: user.refer_id, newLevel: calculatedLevel });
           }
-        }
-      });
-
+      }
       log.info("investment_level_checks iterated all users");
     } catch (e) {
       log.error("Error in investment_level_checks process", { error: e.message, stack: e.stack });
@@ -1737,7 +1734,7 @@ const txScanConfig = {
   cronSchedule: "*/10 * * * * *",
   durationFunction: async () => {
     try {
-      if(schedulerFlags.TX_SCANNER === true) return;
+      if (schedulerFlags.TX_SCANNER === true) return;
       schedulerFlags.TX_SCANNER = true;
       await verifyAndTransferTransactions();
       await unlockExpiredLocks();
@@ -1879,7 +1876,7 @@ const logMemoryUsage = () => {
   previousMemoryUsage = { ...memoryUsage };
 };
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor', { maxPoolSize: 5 })
+mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor', { maxPoolSize: 10 })
   .then(() => {
     // Start game process schedulers
     Object.entries(gameTimer).forEach(([name, scheduler]) => {
