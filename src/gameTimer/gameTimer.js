@@ -37,7 +37,6 @@ import Queue from 'bull';
 import winston from "winston";
 import Autoclaims from "../models/investments/autoclaimsModel.js";
 import { UserSpins } from "../models/user/userSpinsModel.js";
-import memwatch from 'mem'
 
 // Global flags to prevent cron overlaps
 const schedulerFlags = {
