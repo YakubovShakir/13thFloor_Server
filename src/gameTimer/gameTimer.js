@@ -1099,21 +1099,25 @@ const genericProcessScheduler = (processType, processConfig) => {
     try {
       log.info(`${processType} process scheduler started iteration`);
 
-      processes = await gameProcess.find({ type: processType }).lean().cursor(); // Add .lean()
-      for(const process of processes) {
+      processes = gameProcess.find({ type: processType }).lean().cursor(); // Add .lean()
+      await processInBatches(processes, 10, async(process) => {
         const params = {
           processId: process._id,
           userParametersId: process.id,
           baseParametersId: process.type_id,
           subType: process.sub_type,
         };
-        await queueDbUpdate(
+        try {
+           await queueDbUpdate(
           operationName,
           params,
           `${processType} full cycle for process ${process._id}`,
           process.id
         );
-      }
+        } catch(err) {
+          log.error(`Error in process [${operationName}]: `, err.message);
+        }
+      })
 
       log.info(`${processType} process scheduler finished iteration`, { processesCount: processes.length });
     } catch (e) {
