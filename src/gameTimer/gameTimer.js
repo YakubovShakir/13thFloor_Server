@@ -284,16 +284,6 @@ export const gameCenterLevelRequirements = {
   35: 4325070,
 }
 
-// Redis lock utility
-const acquireLock = async (lockKey, ttlMs = 30000) => {
-  const result = await redis.set(lockKey, 'locked', 'PX', ttlMs, 'NX');
-  return result === 'OK'; // Returns true if lock was acquired
-};
-
-const releaseLock = async (lockKey) => {
-  await redis.del(lockKey);
-};
-
 const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) => {
   const decreaseFactor = durationDecreasePercentage / 100;
   const totalSeconds = baseDurationMinutes * 60;
@@ -1101,21 +1091,11 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
 const customDurationProcessTypes = ["autoclaim", "investment_level_checks", "nft_scan"];
 
 const genericProcessScheduler = (processType, processConfig) => {
-  const { cronSchedule, Model, getTypeSpecificParams } = processConfig;
-  const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`;
-  const lockKey = `lock:${processType}`;
-
   const scheduler = cron.schedule(cronSchedule, async () => {
-    // Attempt to acquire lock
-    const lockAcquired = await acquireLock(lockKey, 30000); // 30-second lock TTL
-    if (!lockAcquired) {
-      return;
-    }
-
     try {
       log.info(`${processType} process scheduler started iteration`);
 
-      const processes = await gameProcess.find({ type: processType });
+      const processes = await gameProcess.find({ type: processType }).lean(); // Add .lean()
       await Promise.all(processes.map(async (process) => {
         const params = {
           processId: process._id,
@@ -1149,20 +1129,12 @@ const processIndependentScheduler = (processType, processConfig) => {
   const lockKey = `lock:${processType}`;
 
   const scheduler = cron.schedule(cronSchedule, async () => {
-    // Attempt to acquire lock
-    const lockAcquired = await acquireLock(lockKey, 30000); // 30-second lock TTL
-    if (!lockAcquired) {
-      return;
-    }
-
     try {
       await durationFunction();
       log.info(`${processType} process scheduler finished iteration`);
     } catch (e) {
       log.error(`Error in ${processType} Process:`, { error: e.message, stack: e.stack });
     } finally {
-      // Always release the lock
-      await releaseLock(lockKey);
     }
   }, { scheduled: false });
 
@@ -1262,14 +1234,14 @@ export const autoclaimProcessConfig = {
   cronSchedule: "*/1 * * * * *",
   durationFunction: async () => {
     if (schedulerFlags.autoclaim === true) return;
-
+    let cursor
     try {
       schedulerFlags.autoclaim = true;
       log.info(`Autoclaim process scheduler started iteration`);
 
       const now = new Date();
       // Use a cursor to stream Autoclaims
-      const cursor = Autoclaims.find({ expiresAt: { $gt: now } }).lean().cursor();
+      cursor = Autoclaims.find({ expiresAt: { $gt: now } }).lean().cursor();
 
       let usersEligible = 0;
       await processInBatches(cursor, 5, async (autoclaim) => {
@@ -1297,6 +1269,9 @@ export const autoclaimProcessConfig = {
       log.error("Error in autoclaim process", { error: e.message, stack: e.stack });
     } finally {
       schedulerFlags.autoclaim = false;
+      if(cursor) {
+        await cursor.close();
+      }
     }
   },
   Model: Autoclaims,
