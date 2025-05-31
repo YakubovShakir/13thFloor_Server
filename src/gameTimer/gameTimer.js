@@ -1832,6 +1832,9 @@ let initialMemoryUsage = null;
 let previousMemoryUsage = null;
 const startTime = Date.now(); // Record start time for elapsed time calculation
 
+// Function to format memory usage in MB
+const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+
 // Function to calculate percentage change
 const calculatePercentageChange = (current, previous) => {
   if (!previous || previous === 0) return 0;
