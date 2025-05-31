@@ -1094,7 +1094,7 @@ const genericProcessScheduler = (processType, processConfig) => {
   const { cronSchedule, Model, getTypeSpecificParams } = processConfig;
   const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`;
 
-  const scheduler = cron.schedule(processConfig.cronSchedule, async () => {
+  const scheduler = cron.schedule(cronSchedule, async () => {
 
     try {
       log.info(`${processType} process scheduler started iteration`);
