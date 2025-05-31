@@ -1825,7 +1825,7 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor', { m
 
     // Start memory usage logging every 5 minutes
     const memoryLogScheduler = cron.schedule(
-      "*/30 * * * * *",
+      "*/5 * * * * *",
       () => {
         logMemoryUsage();
       },
