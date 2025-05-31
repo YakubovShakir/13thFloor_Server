@@ -1483,7 +1483,8 @@ const spinScanConfig = {
       let totalUsersAwarded = 0;
 
       await processInBatches(users, 5, async (user) => {
-        const userTz = user.tz || moment.tz.guess(); // Fallback to guessed timezone
+        const userObj = await User.findOne({ id: user.id }, { tz: 1 })
+        const userTz = userObj.tz || moment.tz.guess(); // Fallback to guessed timezone
         const midnightTodayInTz = moment.tz(userTz).startOf("day"); // Midnight today in user's timezone
 
         // Find all unused daily spins for this user
