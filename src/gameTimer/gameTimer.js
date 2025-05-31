@@ -37,6 +37,56 @@ import Queue from 'bull';
 import winston from "winston";
 import Autoclaims from "../models/investments/autoclaimsModel.js";
 import { UserSpins } from "../models/user/userSpinsModel.js";
+import diagnosticsChannel from 'diagnostics_channel';
+
+// Memory leak detection configuration
+const MEMORY_THRESHOLD_PERCENT = 20; // Warn if heapUsed grows by 20% since last check
+const SNAPSHOT_INTERVAL_MS = 300000; // 5 minutes for heap snapshots
+const CHECK_INTERVAL_MS = 60000; // Check every 60 seconds
+let lastHeapUsed = null;
+
+// Function to check for potential memory leaks
+const checkForMemoryLeaks = () => {
+  const memoryUsage = process.memoryUsage();
+  const currentHeapUsed = memoryUsage.heapUsed;
+
+  if (lastHeapUsed !== null) {
+    const heapGrowthPercent = calculatePercentageChange(currentHeapUsed, lastHeapUsed);
+    const trend = determineTrend(heapGrowthPercent, CHECK_INTERVAL_MS / (1000 * 60 * 60));
+
+    if (heapGrowthPercent > MEMORY_THRESHOLD_PERCENT && trend.includes('GROWING')) {
+      log.warn(colors.yellow('Potential memory leak detected'), {
+        heapUsed: formatMemoryUsage(currentHeapUsed),
+        heapGrowthPercent: `${heapGrowthPercent}%`,
+        trend,
+      });
+
+      // Generate a heap snapshot for debugging
+      const snapshotPath = `./heapdump-${Date.now()}.heapsnapshot`;
+      heapdump.writeSnapshot(snapshotPath, (err) => {
+        if (err) {
+          log.error(colors.red('Failed to write heap snapshot'), { error: err.message });
+        } else {
+          log.warn(colors.yellow(`Heap snapshot written to ${snapshotPath}`));
+        }
+      });
+    }
+  }
+
+  lastHeapUsed = currentHeapUsed;
+};
+
+// Subscribe to diagnostics_channel for GC events (optional, for deeper insights)
+diagnosticsChannel.channel('v8.gc').subscribe((data) => {
+  if (data.type === 'minor' || data.type === 'major') {
+    const memoryUsage = process.memoryUsage();
+    log.debug(colors.cyan('Garbage collection event'), {
+      gcType: data.type,
+      heapUsed: formatMemoryUsage(memoryUsage.heapUsed),
+      rss: formatMemoryUsage(memoryUsage.rss),
+    });
+  }
+});
 
 // Global flags to prevent cron overlaps
 const schedulerFlags = {
@@ -1834,18 +1884,14 @@ const determineTrend = (percentageChange, elapsedHours) => {
 };
 
 // Function to log memory usage
+// Integrate with your existing memory logging
 const logMemoryUsage = () => {
   const memoryUsage = process.memoryUsage();
   const elapsedTime = (Date.now() - startTime) / (1000 * 60 * 60); // Elapsed time in hours
   const elapsedMs = Date.now() - startTime;
 
-  // Set initialMemoryUsage after warmup period
-  if (!initialMemoryUsage && elapsedMs >= WARMUP_PERIOD_MS) {
-    initialMemoryUsage = { ...memoryUsage };
-  }
-
-  // Log current memory usage
-  log.warn("Memory Usage Report", {
+  // Existing memory logging
+  log.warn('Memory Usage Report', {
     rss: formatMemoryUsage(memoryUsage.rss),
     heapTotal: formatMemoryUsage(memoryUsage.heapTotal),
     heapUsed: formatMemoryUsage(memoryUsage.heapUsed),
@@ -1853,7 +1899,10 @@ const logMemoryUsage = () => {
     arrayBuffers: formatMemoryUsage(memoryUsage.arrayBuffers),
   });
 
-  // Log changes since last run
+  // Check for leaks
+  checkForMemoryLeaks();
+
+  // Existing change and trend reporting
   if (previousMemoryUsage) {
     const changes = {
       rss: calculatePercentageChange(memoryUsage.rss, previousMemoryUsage.rss),
@@ -1871,11 +1920,10 @@ const logMemoryUsage = () => {
       arrayBuffers: changes.arrayBuffers >= 0 ? `INCREASED ${changes.arrayBuffers}%` : `DECREASED ${Math.abs(changes.arrayBuffers)}%`,
     };
 
-    log.warn("MEMORY USAGE CHANGE REPORT (SINCE LAST)", changeReport);
+    log.warn('MEMORY USAGE CHANGE REPORT (SINCE LAST)', changeReport);
   }
 
-  // Log changes since initial run and trend (only after warmup)
-  if (initialMemoryUsage) {
+  if (initialMemoryUsage && elapsedMs >= WARMUP_PERIOD_MS) {
     const initialChanges = {
       rss: calculatePercentageChange(memoryUsage.rss, initialMemoryUsage.rss),
       heapTotal: calculatePercentageChange(memoryUsage.heapTotal, initialMemoryUsage.heapTotal),
@@ -1893,13 +1941,8 @@ const logMemoryUsage = () => {
     };
 
     log.warn(`MEMORY USAGE SINCE LAUNCH (${elapsedTime.toFixed(2)} HOURS)`, initialChangeReport);
-  } else {
-    log.info("Waiting for warmup period before setting initial memory baseline", {
-      remainingSeconds: ((WARMUP_PERIOD_MS - elapsedMs) / 1000).toFixed(1),
-    });
   }
 
-  // Update previous memory usage
   previousMemoryUsage = { ...memoryUsage };
 };
 
