@@ -1822,19 +1822,6 @@ const determineTrend = (percentageChange, elapsedHours) => {
   return percentageChange >= 0 ? "GROWING RAPIDLY" : "DECREASING RAPIDLY";
 };
 
-// Wrap queueDbUpdate to track allocations
-const queueDbUpdateWithTracking = async (operationType, params, description, userId = null) => {
-  return trackAllocations('queueDbUpdate', async () => {
-    if (!operationMap[operationType]) {
-      throw new Error(`Unknown operation type: ${operationType} for ${description}`);
-    }
-    const jobData = { operationType, params, description, userId };
-    log.debug(`Enqueuing job for ${description}`, { jobData });
-    const job = await dbUpdateQueue.add(jobData);
-    return job.id;
-  }, { operationType, description, userId });
-};
-
 // Wrapper to track allocations for specific operations
 const trackAllocations = async (operationName, operationFn, context = {}) => {
   const profile = profiler.startProfiling(`${operationName}-${Date.now()}`, true);
