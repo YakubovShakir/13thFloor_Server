@@ -62,10 +62,7 @@ const schedulerFlags = {
 };
 
 export const withTransaction = async (operation, session, maxRetries = 1, retryDelay = 1500) => {
-  let retryCount = 0;
-
-  while (retryCount < maxRetries) {
-    try {
+  try {
       const result = await operation(session);
 
       await session.commitTransaction();
@@ -74,32 +71,9 @@ export const withTransaction = async (operation, session, maxRetries = 1, retryD
       if (session) {
         await session.abortTransaction();
       }
-
-      if (error.name === "MongoServerError" && error.code === 112) {
-        retryCount++;
-        if (retryCount < maxRetries) {
-          log.warn(
-            colors.yellow(`WriteConflict detected, retrying (${retryCount}/${maxRetries})`),
-            { error: error.message }
-          );
-          await new Promise((resolve) => setTimeout(resolve, retryDelay * retryCount)); // Exponential delay
-          continue;
-        } else {
-          log.error(
-            colors.red(`Max retries (${maxRetries}) reached for WriteConflict`),
-            { error: error.message, stack: error.stack }
-          );
-          throw new Error(`Failed after ${maxRetries} retries due to WriteConflict: ${error.message}`);
-        }
-      } else {
-        log.error(
-          colors.red(`Transaction failed`),
-          { error: error.message, stack: error.stack }
-        );
-        throw error;
-      }
+    } finally {
+      await session.close();
     }
-  }
 };
 
 export const recalcValuesByParameters = async (
