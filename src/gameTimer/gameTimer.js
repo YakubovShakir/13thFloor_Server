@@ -1319,6 +1319,8 @@ const investmentLevelsProcessConfig = {
   cronSchedule: "*/15 * * * * *",
   durationFunction: async () => {
     try {
+      if (schedulerFlags.investment_level_checks === true) return;
+      schedulerFlags.investment_level_checks = true;
       log.info(`investment_level_checks process scheduler started iteration`);
       const usersWithRefs = await Referal.aggregate([
         { $group: { _id: "$refer_id", referral_count: { $sum: 1 } } },
@@ -1341,6 +1343,8 @@ const investmentLevelsProcessConfig = {
       log.info("investment_level_checks iterated all users");
     } catch (e) {
       log.error("Error in investment_level_checks process", { error: e.message, stack: e.stack });
+    } finally {
+      schedulerFlags.investment_level_checks = false;
     }
   },
   Model: User,
@@ -1376,8 +1380,8 @@ const getWhitelistedNftsFromWallet = async (walletAddress) => {
 };
 
 const syncShelfInventory = async (userId, nftItemIds) => {
-  const session = await mongoose.startSession();
   try {
+    const session = await mongoose.startSession();
     session.startTransaction();
 
     const inventory = await UserCurrentInventory.findOne({ user_id: userId }, null, { session }) ||
@@ -1438,19 +1442,13 @@ const syncShelfInventory = async (userId, nftItemIds) => {
   }
 };
 
-let isRunning = false;
-
 const nftScanConfig = {
   processType: "nft_scan",
   cronSchedule: "*/10 * * * * *",
   durationFunction: async () => {
-    const lockKey = `lock:nft_scan`;
-    const lockAcquired = await acquireLock(lockKey, 30000); // 30-second lock TTL
-    if (!lockAcquired) {
-      return;
-    }
-
     try {
+      if(schedulerFlags.nft_scan === true) return;
+      schedulerFlags.nft_scan = true;
       log.info("NFT-scanner process scheduler started iteration");
       const usersWithWallets = await User.find({ tonWalletAddress: { $ne: null } });
 
@@ -1464,7 +1462,7 @@ const nftScanConfig = {
     } catch (e) {
       log.error("Error in NFT scan process", { error: e.message, stack: e.stack });
     } finally {
-      await releaseLock(lockKey);
+       schedulerFlags.nft_scan = false;
     }
   },
   Model: User,
@@ -1473,16 +1471,19 @@ const nftScanConfig = {
 
 const spinScanConfig = {
   processType: "spin_scan",
-  cronSchedule: "1 * * * * *", // Runs every 10 seconds
+  cronSchedule: "1 * * * * *",
   durationFunction: async () => {
     try {
-      const users = await UserParameters.find({}, { id: 1 });
+      if (schedulerFlags.spin_scan === true) return;
+      schedulerFlags.spin_scan = true;
+      // Use a cursor to stream UserParameters
+      const cursor = UserParameters.find({}, { id: 1 }).lean().cursor();
       let totalUsersAwarded = 0;
 
-      await processInBatches(users, 5, async (user) => {
-        const userObj = await User.findOne({ id: user.id }, { tz: 1 })
+      await processInBatches(cursor, 5, async (user) => {
+        const userObj = await User.findOne({ id: user.id }, { tz: 1 });
         const userTz = userObj?.tz || moment.tz.guess(); // Fallback to guessed timezone
-        const midnightTodayInTz = moment.tz(userTz).startOf("day"); // Midnight today in user's timezone
+        const midnightTodayInTz = moment.tz(userTz).startOf("day"); //Convert the date and time to user's timezone (05:20 PM +07 on Saturday, May 31, 2025)
 
         // Find all unused daily spins for this user
         const unusedSpins = await UserSpins.find({
@@ -1527,7 +1528,7 @@ const spinScanConfig = {
           const newSpin = new UserSpins({
             user_id: user.id,
             type: "daily",
-            is_used: false,
+            is_used: grok
           });
           await newSpin.save();
           totalUsersAwarded += 1;
@@ -1538,15 +1539,17 @@ const spinScanConfig = {
       log.info("Spin checker process scheduler finished iteration", { totalUsersAwarded });
     } catch (err) {
       log.error("Error processing spin giveaways", { error: err.message, stack: err.stack });
+    } finally {
+      schedulerFlags.spin_scan = false;
     }
-  },
+  }
 };
 
 const levelScanConfig = {
   processType: "level_scan",
   cronSchedule: "*/1 * * * * *",
   durationFunction: async () => {
-    if(schedulerFlags.level_scan === true) return;
+    if (schedulerFlags.level_scan === true) return;
 
     try {
       schedulerFlags.level_scan = true;
@@ -1773,12 +1776,14 @@ const txScanConfig = {
   cronSchedule: "*/10 * * * * *",
   durationFunction: async () => {
     try {
-      console.log("Server wallet address:", RECEIVING_WALLET_ADDRESS);
+      if(schedulerFlags.TX_SCANNER === true) return;
+      schedulerFlags.TX_SCANNER = true;
       await verifyAndTransferTransactions();
       await unlockExpiredLocks();
     } catch (error) {
-      console.error("Failed to initialize server wallet:", error);
-      process.exit(1);
+      log.debug(`Error in tx_scan: ${error.message}`);
+    } finally {
+      schedulerFlags.TX_SCANNER = false;
     }
   }
 };
@@ -1823,9 +1828,23 @@ const gameTimer = {
   },
 };
 
+// Store previous memory usage to compare changes
+let previousMemoryUsage = null;
+
+// Function to format memory usage in MB
+const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+
+// Function to calculate percentage change
+const calculatePercentageChange = (current, previous) => {
+  if (!previous || previous === 0) return 0;
+  return (((current - previous) / previous) * 100).toFixed(2);
+};
+
 // Function to log memory usage
 const logMemoryUsage = () => {
   const memoryUsage = process.memoryUsage();
+  
+  // Log current memory usage
   log.warn("Memory Usage Report", {
     rss: formatMemoryUsage(memoryUsage.rss),
     heapTotal: formatMemoryUsage(memoryUsage.heapTotal),
@@ -1833,6 +1852,31 @@ const logMemoryUsage = () => {
     external: formatMemoryUsage(memoryUsage.external),
     arrayBuffers: formatMemoryUsage(memoryUsage.arrayBuffers),
   });
+
+  // Log changes if previous data exists
+  if (previousMemoryUsage) {
+    const changes = {
+      rss: calculatePercentageChange(memoryUsage.rss, previousMemoryUsage.rss),
+      heapTotal: calculatePercentageChange(memoryUsage.heapTotal, previousMemoryUsage.heapTotal),
+      heapUsed: calculatePercentageChange(memoryUsage.heapUsed, previousMemoryUsage.heapUsed),
+      external: calculatePercentageChange(memoryUsage.external, previousMemoryUsage.external),
+      arrayBuffers: calculatePercentageChange(memoryUsage.arrayBuffers, previousMemoryUsage.arrayBuffers),
+    };
+
+    // Determine direction (INCREASED or DECREASED)
+    const changeReport = {
+      rss: changes.rss >= 0 ? `INCREASED ${changes.rss}%` : `DECREASED ${Math.abs(changes.rss)}%`,
+      heapTotal: changes.heapTotal >= 0 ? `INCREASED ${changes.heapTotal}%` : `DECREASED ${Math.abs(changes.heapTotal)}%`,
+      heapUsed: changes.heapUsed >= 0 ? `INCREASED ${changes.heapUsed}%` : `DECREASED ${Math.abs(changes.heapUsed)}%`,
+      external: changes.external >= 0 ? `INCREASED ${changes.external}%` : `DECREASED ${Math.abs(changes.external)}%`,
+      arrayBuffers: changes.arrayBuffers >= 0 ? `INCREASED ${changes.arrayBuffers}%` : `DECREASED ${Math.abs(changes.arrayBuffers)}%`,
+    };
+
+    log.warn("MEMORY USAGE CHANGE REPORT", changeReport);
+  }
+
+  // Update previous memory usage
+  previousMemoryUsage = { ...memoryUsage };
 };
 
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor', { maxPoolSize: 5 })
