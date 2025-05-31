@@ -1091,7 +1091,11 @@ const calculatePeriodProfits = (baseParameters, combinedEffects, diffSeconds, pr
 const customDurationProcessTypes = ["autoclaim", "investment_level_checks", "nft_scan"];
 
 const genericProcessScheduler = (processType, processConfig) => {
+  const { cronSchedule, Model, getTypeSpecificParams } = processConfig;
+  const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`;
+
   const scheduler = cron.schedule(cronSchedule, async () => {
+
     try {
       log.info(`${processType} process scheduler started iteration`);
 
