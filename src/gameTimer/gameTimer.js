@@ -1261,27 +1261,18 @@ export const autoclaimProcessConfig = {
   processType: "autoclaim",
   cronSchedule: "*/1 * * * * *",
   durationFunction: async () => {
-    const lockKey = `lock:autoclaim`;
-    const lockAcquired = await acquireLock(lockKey, 30000); // 30-second lock TTL
-    if (!lockAcquired) {
-      return;
-    }
+    if (schedulerFlags.autoclaim === true) return;
 
     try {
+      schedulerFlags.autoclaim = true;
       log.info(`Autoclaim process scheduler started iteration`);
 
       const now = new Date();
-      const usersWithAutoclaim = await Autoclaims.find({
-        expiresAt: { $gt: now },
-      });
-      log.info('Users with autoclaim', usersWithAutoclaim);
+      // Use a cursor to stream Autoclaims
+      const cursor = Autoclaims.find({ expiresAt: { $gt: now } }).lean().cursor();
 
-      if (usersWithAutoclaim.length === 0) {
-        log.info("No active autoclaims found");
-        return;
-      }
-
-      await processInBatches(usersWithAutoclaim, 5, async (autoclaim) => {
+      let usersEligible = 0;
+      await processInBatches(cursor, 5, async (autoclaim) => {
         const userId = autoclaim.userId;
         const investmentType = autoclaim.investmentType;
         console.log('Queuing transaction for autoclaim');
@@ -1291,15 +1282,21 @@ export const autoclaimProcessConfig = {
           `Autoclaim claim for ${investmentType}, user ${userId}`,
           userId
         );
+        usersEligible++;
       });
 
+      if (usersEligible === 0) {
+        log.info("No active autoclaims found");
+        return;
+      }
+
       log.info(`Autoclaim process scheduler finished iteration`, {
-        usersEligible: usersWithAutoclaim.length,
+        usersEligible,
       });
     } catch (e) {
       log.error("Error in autoclaim process", { error: e.message, stack: e.stack });
     } finally {
-      await releaseLock(lockKey);
+      schedulerFlags.autoclaim = false;
     }
   },
   Model: Autoclaims,
@@ -1549,30 +1546,58 @@ const levelScanConfig = {
   processType: "level_scan",
   cronSchedule: "*/1 * * * * *",
   durationFunction: async () => {
-    const levelParameters = await LevelsParameters.find({})
-    const userParameters = await UserParameters.find({ })
+    if(schedulerFlags.level_scan === true) return;
 
-    for(const userParam of userParameters) {
-      // Find the highest level where user's experience meets or exceeds the requirement
-      let newLevel = userParam.level;
-      for (const level of levelParameters.sort((a, b) => a.level - b.level)) {
-        if (userParam.experience >= level.experience_required) {
-          newLevel = level.level;
-          userParam.energy_capacity = level.energy_capacity;
-        } else {
-          break; // Exit loop as soon as experience is less than required
+    try {
+      schedulerFlags.level_scan = true;
+      log.info("Level scan process started iteration");
+
+      // Fetch level parameters once and sort in memory
+      const levelParameters = await LevelsParameters.find({}).lean();
+      const sortedLevels = levelParameters.sort((a, b) => a.level - b.level);
+
+      // Use a cursor to stream UserParameters
+      const cursor = UserParameters.find({}).lean().cursor();
+
+      let processedUsers = 0;
+      for await (const userParam of cursor) {
+        // Find the highest level where user's experience meets or exceeds the requirement
+        let newLevel = userParam.level;
+        let newEnergyCapacity = userParam.energy_capacity;
+
+        for (const level of sortedLevels) {
+          if (userParam.experience >= level.experience_required) {
+            newLevel = level.level;
+            newEnergyCapacity = level.energy_capacity;
+          } else {
+            break; // Exit loop as soon as experience is less than required
+          }
+        }
+
+        // Update user level if changed
+        if (newLevel !== userParam.level) {
+          log.info(`[levelScanConfig] Updating ${userParam.id} level ${userParam.level}->${newLevel}`);
+          await UserParameters.updateOne(
+            { id: userParam.id },
+            { $set: { level: newLevel, energy_capacity: newEnergyCapacity } }
+          ).exec();
+        }
+
+        processedUsers++;
+        // Optional: Add a small delay every 100 users to prevent CPU spikes
+        if (processedUsers % 100 === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 10));
         }
       }
-      
-      // Update user level if changed
-      if (newLevel !== userParam.level) {
-        console.log(`[levelScanConfig] Updating ${userParam.id} level ${userParam.level}->${newLevel}`);
-        userParam.level = newLevel;
-        await userParam.save();
-      }
+
+      log.info("Level scan process finished iteration", { processedUsers });
+    } catch (err) {
+      log.error("Error in level_scan process", { error: err.message, stack: err.stack });
+    } finally {
+      schedulerFlags.level_scan = false;
     }
-  }
-}
+  },
+};
 
 async function openWallet(mnemonic, testnet) {
   const keyPair = await mnemonicToPrivateKey(mnemonic);
