@@ -309,10 +309,10 @@ const dbUpdateQueue = new Queue('db-updates', {
     password: process.env.REDIS_PASSWORD 
   },
   defaultJobOptions: {
-    attempts: 3, // Retry on transient failures
+    attempts: 1, // Retry on transient failures
     backoff: { type: 'fixed', delay: 1000 }, // Exponential backoff
-    removeOnComplete: { count: 10000 }, // Keep only the 1000 most recent completed jobs
-    removeOnFail: { count: 10000 }, // Keep only the 1000 most recent failed jobs
+    removeOnComplete: { count: 100 }, // Keep only the 1000 most recent completed jobs
+    removeOnFail: { count: 100 }, // Keep only the 1000 most recent failed jobs
   },
 });
 
@@ -1484,7 +1484,7 @@ const spinScanConfig = {
 
       await processInBatches(users, 5, async (user) => {
         const userObj = await User.findOne({ id: user.id }, { tz: 1 })
-        const userTz = userObj.tz || moment.tz.guess(); // Fallback to guessed timezone
+        const userTz = userObj?.tz || moment.tz.guess(); // Fallback to guessed timezone
         const midnightTodayInTz = moment.tz(userTz).startOf("day"); // Midnight today in user's timezone
 
         // Find all unused daily spins for this user
