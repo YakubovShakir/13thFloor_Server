@@ -10,8 +10,6 @@ RUN apk update && apk add --no-cache \
 
 # Set Python for node-gyp
 ENV PYTHON=/usr/bin/python3
-RUN npm config set python /usr/bin/python3
-
 # Set working directory
 WORKDIR /usr/src/backend
 
