@@ -274,7 +274,7 @@ const dbUpdateQueue = new Queue('db-updates', {
     port: process.env.REDIS_PORT, 
     password: process.env.REDIS_PASSWORD 
   },
-  limiter: { max: 10, duration: 3000 },
+  limiter: { max: 15, duration: 3000 },
   defaultJobOptions: {
     attempts: 1, // Retry on transient failures
     backoff: { type: 'fixed', delay: 1000 }, // Exponential backoff
