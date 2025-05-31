@@ -8,6 +8,8 @@ WORKDIR /usr/src/backend
 # Копируем package.json и package-lock.json
 COPY package*.json ./
 
+RUN apt-get update && apt-get install -y python3
+
 # Устанавливаем зависимости
 RUN npm install
 
