@@ -1802,9 +1802,6 @@ export const RefsRecalsProcess = processIndependentScheduler("investment_level_c
 export const SpinScanProcess = processIndependentScheduler("spin_scan", spinScanConfig);
 export const LevelUpdate = processIndependentScheduler("level_scan", levelScanConfig);
 
-// Utility to format memory usage in MB
-const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
-
 const gameTimer = {
   FoodProccess,
   SkillProccess,
