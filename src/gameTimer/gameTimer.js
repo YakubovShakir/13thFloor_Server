@@ -1476,7 +1476,7 @@ const nftScanConfig = {
 
 const spinScanConfig = {
   processType: "spin_scan",
-  cronSchedule: "*/10 * * * * *", // Runs every 10 seconds
+  cronSchedule: "1 * * * * *", // Runs every 10 seconds
   durationFunction: async () => {
     try {
       const users = await UserParameters.find({}, { id: 1 });
