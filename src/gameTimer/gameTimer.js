@@ -1831,6 +1831,7 @@ const gameTimer = {
 let initialMemoryUsage = null;
 let previousMemoryUsage = null;
 const startTime = Date.now(); // Record start time for elapsed time calculation
+const WARMUP_PERIOD_MS = 30000; // 30 seconds warmup period
 
 // Function to format memory usage in MB
 const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
@@ -1841,11 +1842,11 @@ const calculatePercentageChange = (current, previous) => {
   return (((current - previous) / previous) * 100).toFixed(2);
 };
 
-// Function to determine trend based on percentage change since launch
+// Function to determine trend based on percentage change since initial
 const determineTrend = (percentageChange, elapsedHours) => {
   const changePerHour = elapsedHours > 0 ? percentageChange / elapsedHours : percentageChange;
-  if (Math.abs(changePerHour) < 1) return "STABLE";
-  if (changePerHour < 5) return percentageChange >= 0 ? "GROWING SLOWLY" : "DECREASING SLOWLY";
+  if (Math.abs(changePerHour) < 2) return "STABLE"; // Increased threshold for stability
+  if (changePerHour < 10) return percentageChange >= 0 ? "GROWING SLOWLY" : "DECREASING SLOWLY"; // Adjusted threshold
   return percentageChange >= 0 ? "GROWING RAPIDLY" : "DECREASING RAPIDLY";
 };
 
@@ -1853,9 +1854,10 @@ const determineTrend = (percentageChange, elapsedHours) => {
 const logMemoryUsage = () => {
   const memoryUsage = process.memoryUsage();
   const elapsedTime = (Date.now() - startTime) / (1000 * 60 * 60); // Elapsed time in hours
+  const elapsedMs = Date.now() - startTime;
 
-  // Initialize initialMemoryUsage on first run
-  if (!initialMemoryUsage) {
+  // Set initialMemoryUsage after warmup period
+  if (!initialMemoryUsage && elapsedMs >= WARMUP_PERIOD_MS) {
     initialMemoryUsage = { ...memoryUsage };
   }
 
@@ -1889,24 +1891,30 @@ const logMemoryUsage = () => {
     log.warn("MEMORY USAGE CHANGE REPORT (SINCE LAST)", changeReport);
   }
 
-  // Log changes since initial run and trend
-  const initialChanges = {
-    rss: calculatePercentageChange(memoryUsage.rss, initialMemoryUsage.rss),
-    heapTotal: calculatePercentageChange(memoryUsage.heapTotal, initialMemoryUsage.heapTotal),
-    heapUsed: calculatePercentageChange(memoryUsage.heapUsed, initialMemoryUsage.heapUsed),
-    external: calculatePercentageChange(memoryUsage.external, initialMemoryUsage.external),
-    arrayBuffers: calculatePercentageChange(memoryUsage.arrayBuffers, initialMemoryUsage.arrayBuffers),
-  };
+  // Log changes since initial run and trend (only after warmup)
+  if (initialMemoryUsage) {
+    const initialChanges = {
+      rss: calculatePercentageChange(memoryUsage.rss, initialMemoryUsage.rss),
+      heapTotal: calculatePercentageChange(memoryUsage.heapTotal, initialMemoryUsage.heapTotal),
+      heapUsed: calculatePercentageChange(memoryUsage.heapUsed, initialMemoryUsage.heapUsed),
+      external: calculatePercentageChange(memoryUsage.external, initialMemoryUsage.external),
+      arrayBuffers: calculatePercentageChange(memoryUsage.arrayBuffers, initialMemoryUsage.arrayBuffers),
+    };
 
-  const initialChangeReport = {
-    rss: `${initialChanges.rss >= 0 ? '+' : ''}${initialChanges.rss}% (${determineTrend(initialChanges.rss, elapsedTime)})`,
-    heapTotal: `${initialChanges.heapTotal >= 0 ? '+' : ''}${initialChanges.heapTotal}% (${determineTrend(initialChanges.heapTotal, elapsedTime)})`,
-    heapUsed: `${initialChanges.heapUsed >= 0 ? '+' : ''}${initialChanges.heapUsed}% (${determineTrend(initialChanges.heapUsed, elapsedTime)})`,
-    external: `${initialChanges.external >= 0 ? '+' : ''}${initialChanges.external}% (${determineTrend(initialChanges.external, elapsedTime)})`,
-    arrayBuffers: `${initialChanges.arrayBuffers >= 0 ? '+' : ''}${initialChanges.arrayBuffers}% (${determineTrend(initialChanges.arrayBuffers, elapsedTime)})`,
-  };
+    const initialChangeReport = {
+      rss: `${initialChanges.rss >= 0 ? '+' : ''}${initialChanges.rss}% (${determineTrend(initialChanges.rss, elapsedTime)})`,
+      heapTotal: `${initialChanges.heapTotal >= 0 ? '+' : ''}${initialChanges.heapTotal}% (${determineTrend(initialChanges.heapTotal, elapsedTime)})`,
+      heapUsed: `${initialChanges.heapUsed >= 0 ? '+' : ''}${initialChanges.heapUsed}% (${determineTrend(initialChanges.heapUsed, elapsedTime)})`,
+      external: `${initialChanges.external >= 0 ? '+' : ''}${initialChanges.external}% (${determineTrend(initialChanges.external, elapsedTime)})`,
+      arrayBuffers: `${initialChanges.arrayBuffers >= 0 ? '+' : ''}${initialChanges.arrayBuffers}% (${determineTrend(initialChanges.arrayBuffers, elapsedTime)})`,
+    };
 
-  log.warn(`MEMORY USAGE SINCE LAUNCH (${elapsedTime.toFixed(2)} HOURS)`, initialChangeReport);
+    log.warn(`MEMORY USAGE SINCE LAUNCH (${elapsedTime.toFixed(2)} HOURS)`, initialChangeReport);
+  } else {
+    log.info("Waiting for warmup period before setting initial memory baseline", {
+      remainingSeconds: ((WARMUP_PERIOD_MS - elapsedMs) / 1000).toFixed(1),
+    });
+  }
 
   // Update previous memory usage
   previousMemoryUsage = { ...memoryUsage };
