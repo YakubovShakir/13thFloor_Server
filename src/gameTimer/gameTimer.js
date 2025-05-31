@@ -1095,12 +1095,12 @@ const genericProcessScheduler = (processType, processConfig) => {
   const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`;
 
   const scheduler = cron.schedule(cronSchedule, async () => {
-
+    let processes
     try {
       log.info(`${processType} process scheduler started iteration`);
 
-      const processes = await gameProcess.find({ type: processType }).lean(); // Add .lean()
-      await Promise.all(processes.map(async (process) => {
+      processes = gameProcess.find({ type: processType }).lean().cursor(); // Add .lean()
+      for(const process of processes) {
         const params = {
           processId: process._id,
           userParametersId: process.id,
@@ -1113,14 +1113,15 @@ const genericProcessScheduler = (processType, processConfig) => {
           `${processType} full cycle for process ${process._id}`,
           process.id
         );
-      }));
+      }
 
       log.info(`${processType} process scheduler finished iteration`, { processesCount: processes.length });
     } catch (e) {
       log.error(`Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
     } finally {
-      // Always release the lock
-      await releaseLock(lockKey);
+      if(processes) {
+        await processes.close();
+      }
     }
   }, { scheduled: false });
 
