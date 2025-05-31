@@ -1827,11 +1827,10 @@ const gameTimer = {
   },
 };
 
-// Store previous memory usage to compare changes
+// Store initial and previous memory usage
+let initialMemoryUsage = null;
 let previousMemoryUsage = null;
-
-// Function to format memory usage in MB
-const formatMemoryUsage = (bytes) => `${(bytes / 1024 / 1024).toFixed(2)} MB`;
+const startTime = Date.now(); // Record start time for elapsed time calculation
 
 // Function to calculate percentage change
 const calculatePercentageChange = (current, previous) => {
@@ -1839,10 +1838,24 @@ const calculatePercentageChange = (current, previous) => {
   return (((current - previous) / previous) * 100).toFixed(2);
 };
 
+// Function to determine trend based on percentage change since launch
+const determineTrend = (percentageChange, elapsedHours) => {
+  const changePerHour = elapsedHours > 0 ? percentageChange / elapsedHours : percentageChange;
+  if (Math.abs(changePerHour) < 1) return "STABLE";
+  if (changePerHour < 5) return percentageChange >= 0 ? "GROWING SLOWLY" : "DECREASING SLOWLY";
+  return percentageChange >= 0 ? "GROWING RAPIDLY" : "DECREASING RAPIDLY";
+};
+
 // Function to log memory usage
 const logMemoryUsage = () => {
   const memoryUsage = process.memoryUsage();
-  
+  const elapsedTime = (Date.now() - startTime) / (1000 * 60 * 60); // Elapsed time in hours
+
+  // Initialize initialMemoryUsage on first run
+  if (!initialMemoryUsage) {
+    initialMemoryUsage = { ...memoryUsage };
+  }
+
   // Log current memory usage
   log.warn("Memory Usage Report", {
     rss: formatMemoryUsage(memoryUsage.rss),
@@ -1852,7 +1865,7 @@ const logMemoryUsage = () => {
     arrayBuffers: formatMemoryUsage(memoryUsage.arrayBuffers),
   });
 
-  // Log changes if previous data exists
+  // Log changes since last run
   if (previousMemoryUsage) {
     const changes = {
       rss: calculatePercentageChange(memoryUsage.rss, previousMemoryUsage.rss),
@@ -1862,7 +1875,6 @@ const logMemoryUsage = () => {
       arrayBuffers: calculatePercentageChange(memoryUsage.arrayBuffers, previousMemoryUsage.arrayBuffers),
     };
 
-    // Determine direction (INCREASED or DECREASED)
     const changeReport = {
       rss: changes.rss >= 0 ? `INCREASED ${changes.rss}%` : `DECREASED ${Math.abs(changes.rss)}%`,
       heapTotal: changes.heapTotal >= 0 ? `INCREASED ${changes.heapTotal}%` : `DECREASED ${Math.abs(changes.heapTotal)}%`,
@@ -1871,8 +1883,27 @@ const logMemoryUsage = () => {
       arrayBuffers: changes.arrayBuffers >= 0 ? `INCREASED ${changes.arrayBuffers}%` : `DECREASED ${Math.abs(changes.arrayBuffers)}%`,
     };
 
-    log.warn("MEMORY USAGE CHANGE REPORT", changeReport);
+    log.warn("MEMORY USAGE CHANGE REPORT (SINCE LAST)", changeReport);
   }
+
+  // Log changes since initial run and trend
+  const initialChanges = {
+    rss: calculatePercentageChange(memoryUsage.rss, initialMemoryUsage.rss),
+    heapTotal: calculatePercentageChange(memoryUsage.heapTotal, initialMemoryUsage.heapTotal),
+    heapUsed: calculatePercentageChange(memoryUsage.heapUsed, initialMemoryUsage.heapUsed),
+    external: calculatePercentageChange(memoryUsage.external, initialMemoryUsage.external),
+    arrayBuffers: calculatePercentageChange(memoryUsage.arrayBuffers, initialMemoryUsage.arrayBuffers),
+  };
+
+  const initialChangeReport = {
+    rss: `${initialChanges.rss >= 0 ? '+' : ''}${initialChanges.rss}% (${determineTrend(initialChanges.rss, elapsedTime)})`,
+    heapTotal: `${initialChanges.heapTotal >= 0 ? '+' : ''}${initialChanges.heapTotal}% (${determineTrend(initialChanges.heapTotal, elapsedTime)})`,
+    heapUsed: `${initialChanges.heapUsed >= 0 ? '+' : ''}${initialChanges.heapUsed}% (${determineTrend(initialChanges.heapUsed, elapsedTime)})`,
+    external: `${initialChanges.external >= 0 ? '+' : ''}${initialChanges.external}% (${determineTrend(initialChanges.external, elapsedTime)})`,
+    arrayBuffers: `${initialChanges.arrayBuffers >= 0 ? '+' : ''}${initialChanges.arrayBuffers}% (${determineTrend(initialChanges.arrayBuffers, elapsedTime)})`,
+  };
+
+  log.warn(`MEMORY USAGE SINCE LAUNCH (${elapsedTime.toFixed(2)} HOURS)`, initialChangeReport);
 
   // Update previous memory usage
   previousMemoryUsage = { ...memoryUsage };
