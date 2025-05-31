@@ -1142,7 +1142,7 @@ const processIndependentScheduler = (processType, processConfig) => {
       await durationFunction();
       log.info(`${processType} process scheduler finished iteration`);
     } catch (e) {
-      log.error(`Error in ${processType} Process:`, { error: e.message, stack: e.stack });
+      log.warning(`Error in ${processType} Process:`, { error: e.message, stack: e.stack });
     } finally {
     }
   }, { scheduled: false });
