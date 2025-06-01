@@ -274,7 +274,7 @@ const dbUpdateQueue = new Queue('db-updates', {
     port: process.env.REDIS_PORT, 
     password: process.env.REDIS_PASSWORD 
   },
-  limiter: { max: 10, duration: 10000 },
+  limiter: { max: 100, duration: 10000 },
   defaultJobOptions: {
     attempts: 1, // Retry on transient failures
     removeOnComplete: { count: 100 }, // Keep only the 1000 most recent completed jobs
@@ -882,7 +882,7 @@ export const queueDbUpdate = async (operationType, params, description, userId =
 const userLocks = new Map();
 
 // Process jobs with reduced concurrency
-dbUpdateQueue.process(50, async (job) => {
+dbUpdateQueue.process(100, async (job) => {
   const { operationType, params, description, userId } = job.data || {};
   let session;
   let lock;
