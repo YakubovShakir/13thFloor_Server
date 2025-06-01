@@ -877,7 +877,7 @@ const queueDbUpdate = async (operationType, params, description, userId = null) 
 const userLocks = new Map();
 
 // Process jobs with reduced concurrency
-dbUpdateQueue.process(100, async (job) => {
+dbUpdateQueue.process(10, async (job) => {
   const { operationType, params, description, userId } = job.data || {};
   let session;
   let lock;
