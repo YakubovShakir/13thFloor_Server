@@ -893,7 +893,7 @@ dbUpdateQueue.process(1, async (job) => {
 
 
     // Process all jobs for this user in a single transaction
-      const { operationType: opType, params: opParams, description: opDesc } = currentJob.data;
+      const { operationType: opType, params: opParams, description: opDesc } = job.data;
       const operation = operationMap[opType];
       if (!operation) {
         throw new Error(`No implementation for operationType ${opType} in ${opDesc}`);
