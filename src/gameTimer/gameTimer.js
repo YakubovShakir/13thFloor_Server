@@ -877,7 +877,7 @@ const queueDbUpdate = async (operationType, params, description, userId = null) 
 const userLocks = new Map();
 
 // Process jobs with reduced concurrency
-dbUpdateQueue.process(10, async (job) => {
+dbUpdateQueue.process(1, async (job) => {
   const { operationType, params, description, userId } = job.data || {};
   let session;
   let lock;
@@ -887,26 +887,12 @@ dbUpdateQueue.process(10, async (job) => {
       throw new Error(`Missing operationType or userId in job data for ${description}`);
     }
 
-    // Acquire lock for userId to prevent parallel updates
-    while (userLocks.has(userId)) {
-      await new Promise(resolve => setTimeout(resolve, 100)); // Wait for lock release
-    }
-    userLocks.set(userId, true);
-    lock = userId;
-
     // Start session and transaction
     session = await mongoose.startSession();
     session.startTransaction();
 
-    // Fetch and process all pending jobs for this userId
-    const jobs = [job]; // Start with current job
-    const additionalJobs = await dbUpdateQueue.getWaiting().then(jobs =>
-      jobs.filter(j => j.data?.userId === userId && j.id !== job.id)
-    );
-    jobs.push(...additionalJobs);
 
     // Process all jobs for this user in a single transaction
-    for (const currentJob of jobs) {
       const { operationType: opType, params: opParams, description: opDesc } = currentJob.data;
       const operation = operationMap[opType];
       if (!operation) {
@@ -919,7 +905,6 @@ dbUpdateQueue.process(10, async (job) => {
         log.error('Error removing', err)
       }
       log.info(colors.green(`DB update completed: ${opDesc}`));
-    }
 
     await session.commitTransaction();
   } catch (error) {
