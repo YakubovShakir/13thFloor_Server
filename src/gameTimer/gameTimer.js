@@ -878,28 +878,62 @@ export const queueDbUpdate = async (operationType, params, description, userId =
   const job = await dbUpdateQueue.add(jobData);
   return job.id;
 };
-dbUpdateQueue.process(5, async (job) => {
+// In-memory lock to prevent parallel updates to the same user
+const userLocks = new Map();
+
+// Process jobs with reduced concurrency
+dbUpdateQueue.process(50, async (job) => {
   const { operationType, params, description, userId } = job.data || {};
-  let session
+  let session;
+  let lock;
+
   try {
+    if (!operationType || !userId) {
+      throw new Error(`Missing operationType or userId in job data for ${description}`);
+    }
+
+    // Acquire lock for userId to prevent parallel updates
+    while (userLocks.has(userId)) {
+      await new Promise(resolve => setTimeout(resolve, 100)); // Wait for lock release
+    }
+    userLocks.set(userId, true);
+    lock = userId;
+
+    // Start session and transaction
     session = await mongoose.startSession();
     session.startTransaction();
-    if (!operationType) {
-      throw new Error(`Missing operationType in job data for ${description}`);
+
+    // Fetch and process all pending jobs for this userId
+    const jobs = [job]; // Start with current job
+    const additionalJobs = await dbUpdateQueue.getWaiting().then(jobs =>
+      jobs.filter(j => j.data?.userId === userId && j.id !== job.id)
+    );
+    jobs.push(...additionalJobs);
+
+    // Process all jobs for this user in a single transaction
+    for (const currentJob of jobs) {
+      const { operationType: opType, params: opParams, description: opDesc } = currentJob.data;
+      const operation = operationMap[opType];
+      if (!operation) {
+        throw new Error(`No implementation for operationType ${opType} in ${opDesc}`);
+      }
+      await operation(opParams, session);
+      log.info(colors.green(`DB update completed: ${opDesc}`));
     }
-    const operation = operationMap[operationType];
-    if (!operation) {
-      throw new Error(`No implementation for operationType ${operationType} in ${description}`);
-    }
-    await operation(params, session);
-    log.info(colors.green(`DB update completed: ${JSON.stringify(job.data)}`));
+
+    await session.commitTransaction();
   } catch (error) {
-    await session.abortTransaction();
+    if (session) {
+      await session.abortTransaction();
+    }
     log.error(colors.red(`DB update failed: ${description}`), { error: error.message, stack: error.stack });
-    throw error; // Bull will handle retries based on attempts
+    throw error; // Bull handles retries
   } finally {
-    if(session) {
+    if (session) {
       await session.endSession();
+    }
+    if (lock) {
+      userLocks.delete(lock); // Release lock
     }
   }
 });
@@ -1072,31 +1106,33 @@ const genericProcessScheduler = (processType, processConfig) => {
   const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`;
 
   const scheduler = cron.schedule(cronSchedule, async () => {
-
     try {
       log.info(`${processType} process scheduler started iteration`);
-
-      const processes = gameProcess.find({ type: processType }).lean().cursor(); // Add .lean()
-      for await (const process of processes) {
+      const processes = await gameProcess.find({ type: processType }).lean();
+      for (const process of processes) {
         const params = {
           processId: process._id,
           userParametersId: process.id,
           baseParametersId: process.type_id,
           subType: process.sub_type,
         };
+        const jobData = {
+          operationType: operationName,
+          params,
+          description: `${processType} full cycle for process ${process._id}`,
+          userId: process.id, // userParametersId
+        };
         await queueDbUpdate(
           operationName,
-          params,
-          `${processType} full cycle for process ${process._id}`,
+          jobData,
+          jobData.description,
           process.id
         );
+        log.debug(`Queued job size: ${JSON.stringify(jobData).length} bytes`);
       }
-
       log.info(`${processType} process scheduler finished iteration`, { processesCount: processes.length });
     } catch (e) {
       log.error(`Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
-    } finally {
-
     }
   }, { scheduled: false });
 
@@ -1116,7 +1152,7 @@ const processIndependentScheduler = (processType, processConfig) => {
       log.error(`Error in ${processType} Process:`, { error: e.message, stack: e.stack });
     } finally {
     }
-  }, { scheduled: false });
+  }, { scheduled: true });
 
   scheduler.name = processType;
   return scheduler;
