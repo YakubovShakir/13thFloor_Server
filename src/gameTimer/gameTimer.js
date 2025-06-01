@@ -274,11 +274,10 @@ const dbUpdateQueue = new Queue('db-updates', {
     port: process.env.REDIS_PORT, 
     password: process.env.REDIS_PASSWORD 
   },
-  limiter: { max: 100, duration: 10000 },
   defaultJobOptions: {
     attempts: 1, // Retry on transient failures
-    removeOnComplete: { count: 100 }, // Keep only the 1000 most recent completed jobs
-    removeOnFail: { count: 100 }, // Keep only the 1000 most recent failed jo
+    removeOnComplete: { count: 250 }, // Keep only the 1000 most recent completed jobs
+    removeOnFail: { count: 250 }, // Keep only the 1000 most recent failed jo
   },
 });
 
