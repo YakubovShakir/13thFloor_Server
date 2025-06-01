@@ -268,11 +268,11 @@ const dbUpdateQueue = new Queue('db-updates', {
     port: process.env.REDIS_PORT, 
     password: process.env.REDIS_PASSWORD 
   },
-  limiter: { max: 10, duration: 10000 },
+  limiter: { max: 10, duration: 5000 },
   defaultJobOptions: {
-    attempts: 1, // Retry on transient failures
-    removeOnComplete: { count: 100 }, // Keep only the 1000 most recent completed jobs
-    removeOnFail: { count: 100 }, // Keep only the 1000 most recent failed jo
+    attempts: 3, // Retry on transient failures
+    removeOnComplete: { count: 1000 }, // Keep only the 1000 most recent completed jobs
+    removeOnFail: { count: 1000 }, // Keep only the 1000 most recent failed jo
   },
 });
 
@@ -899,14 +899,9 @@ dbUpdateQueue.process(1, async (job) => {
         throw new Error(`No implementation for operationType ${opType} in ${opDesc}`);
       }
       await operation(opParams, session);
-      try {
-        await currentJob.remove();
-      } catch(err) {
-        log.error('Error removing', err)
-      }
       log.info(colors.green(`DB update completed: ${opDesc}`));
 
-    await session.commitTransaction();
+      await session.commitTransaction();
   } catch (error) {
     if (session) {
       await session.abortTransaction();
