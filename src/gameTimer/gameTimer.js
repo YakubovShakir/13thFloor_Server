@@ -913,7 +913,11 @@ dbUpdateQueue.process(10, async (job) => {
         throw new Error(`No implementation for operationType ${opType} in ${opDesc}`);
       }
       await operation(opParams, session);
-      await currentJob.remove();
+      try {
+        await currentJob.remove();
+      } catch(err) {
+        log.error('Error removing', err)
+      }
       log.info(colors.green(`DB update completed: ${opDesc}`));
     }
 
