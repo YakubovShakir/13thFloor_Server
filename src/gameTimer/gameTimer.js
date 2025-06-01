@@ -38,12 +38,6 @@ import winston from "winston";
 import Autoclaims from "../models/investments/autoclaimsModel.js";
 import { UserSpins } from "../models/user/userSpinsModel.js";
 
-// Memory leak detection configuration
-const MEMORY_THRESHOLD_PERCENT = 20; // Warn if heapUsed grows by 20% since last check
-const SNAPSHOT_INTERVAL_MS = 300000; // 5 minutes for heap snapshots
-const CHECK_INTERVAL_MS = 60000; // Check every 60 seconds
-let lastHeapUsed = null;
-
 // Global flags to prevent cron overlaps
 const schedulerFlags = {
   work: false,
@@ -274,10 +268,11 @@ const dbUpdateQueue = new Queue('db-updates', {
     port: process.env.REDIS_PORT, 
     password: process.env.REDIS_PASSWORD 
   },
+  limiter: { max: 10, duration: 10000 },
   defaultJobOptions: {
     attempts: 1, // Retry on transient failures
-    removeOnComplete: { count: 250 }, // Keep only the 1000 most recent completed jobs
-    removeOnFail: { count: 250 }, // Keep only the 1000 most recent failed jo
+    removeOnComplete: { count: 100 }, // Keep only the 1000 most recent completed jobs
+    removeOnFail: { count: 100 }, // Keep only the 1000 most recent failed jo
   },
 });
 
@@ -868,7 +863,8 @@ const operationMap = {
   },
 };
 
-export const queueDbUpdate = async (operationType, params, description, userId = null) => {
+
+const queueDbUpdate = async (operationType, params, description, userId = null) => {
   if (!operationMap[operationType]) {
     throw new Error(`Unknown operation type: ${operationType} for ${description}`);
   }
@@ -1105,33 +1101,31 @@ const genericProcessScheduler = (processType, processConfig) => {
   const operationName = `process${processType.charAt(0).toUpperCase() + processType.slice(1)}`;
 
   const scheduler = cron.schedule(cronSchedule, async () => {
+
     try {
       log.info(`${processType} process scheduler started iteration`);
-      const processes = await gameProcess.find({ type: processType }).lean();
-      for (const process of processes) {
+
+      const processes = gameProcess.find({ type: processType }).lean().cursor(); // Add .lean()
+      for await (const process of processes) {
         const params = {
           processId: process._id,
           userParametersId: process.id,
           baseParametersId: process.type_id,
           subType: process.sub_type,
         };
-        const jobData = {
-          operationType: operationName,
-          params,
-          description: `${processType} full cycle for process ${process._id}`,
-          userId: process.id, // userParametersId
-        };
         await queueDbUpdate(
           operationName,
-          jobData,
-          jobData.description,
+          params,
+          `${processType} full cycle for process ${process._id}`,
           process.id
         );
-        log.debug(`Queued job size: ${JSON.stringify(jobData).length} bytes`);
       }
+
       log.info(`${processType} process scheduler finished iteration`, { processesCount: processes.length });
     } catch (e) {
       log.error(`Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
+    } finally {
+
     }
   }, { scheduled: true });
 
@@ -1304,7 +1298,7 @@ export const autoclaimProcessConfig = {
   Model: Autoclaims,
   getTypeSpecificParams: () => ({}),
   start() {
-    this.task = cron.schedule(this.cronSchedule, this.durationFunction, { scheduled: false });
+    this.task = cron.schedule(this.cronSchedule, this.durationFunction, { scheduled: true });
     this.task.start();
     log.info(`Started ${this.processType} process`);
   },
@@ -1420,8 +1414,9 @@ const getWhitelistedNftsFromWallet = async (walletAddress) => {
 };
 
 const syncShelfInventory = async (userId, nftItemIds) => {
+  let session
   try {
-    const session = await mongoose.startSession();
+    session = await mongoose.startSession();
     session.startTransaction();
 
     const inventory = await UserCurrentInventory.findOne({ user_id: userId }, null, { session }) ||
@@ -1589,7 +1584,7 @@ const spinScanConfig = {
 
 const levelScanConfig = {
   processType: "level_scan",
-  cronSchedule: "*/5 * * * * *",
+  cronSchedule: "*/1 * * * * *",
   durationFunction: async () => {
     if (schedulerFlags.level_scan === true) return;
 
