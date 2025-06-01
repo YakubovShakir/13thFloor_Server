@@ -274,7 +274,7 @@ const dbUpdateQueue = new Queue('db-updates', {
     port: process.env.REDIS_PORT, 
     password: process.env.REDIS_PASSWORD 
   },
-  limiter: { max: 20, duration: 3000 },
+  limiter: { max: 10, duration: 10000 },
   defaultJobOptions: {
     attempts: 1, // Retry on transient failures
     removeOnComplete: { count: 100 }, // Keep only the 1000 most recent completed jobs
@@ -1300,7 +1300,7 @@ const investmentLevelsProcessConfig = {
       ]).cursor({ batchSize: 100 }); // Set batch size for memory control
 
       // Process in batches to reduce memory pressure
-      await processInBatches(cursor, 5, async (user) => {
+      await processInBatches(cursor, 1 , async (user) => {
         const session = await mongoose.startSession();
         try {
           session.startTransaction();
