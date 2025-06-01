@@ -878,9 +878,9 @@ export const queueDbUpdate = async (operationType, params, description, userId =
   const job = await dbUpdateQueue.add(jobData);
   return job.id;
 };
-
-dbUpdateQueue.process(1, async (job) => {
+dbUpdateQueue.process(5, async (job) => {
   const { operationType, params, description, userId } = job.data || {};
+
   try {
     const session = await mongoose.startSession();
     session.startTransaction();
