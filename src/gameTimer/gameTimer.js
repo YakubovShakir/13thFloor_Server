@@ -1097,8 +1097,9 @@ const genericProcessScheduler = (processType, processConfig) => {
     } catch (e) {
       log.error(`Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
     } finally {
-      // Always release the lock
-      await releaseLock(lockKey);
+      if(global.gc){
+        global.gc();
+      }
     }
   }, { scheduled: false });
 
