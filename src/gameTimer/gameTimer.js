@@ -879,7 +879,7 @@ export const queueDbUpdate = async (operationType, params, description, userId =
   return job.id;
 };
 
-dbUpdateQueue.process(3, async (job) => {
+dbUpdateQueue.process(10, async (job) => {
   const { operationType, params, description, userId } = job.data || {};
   let session
   try {
@@ -893,7 +893,6 @@ dbUpdateQueue.process(3, async (job) => {
       throw new Error(`No implementation for operationType ${operationType} in ${description}`);
     }
     await operation(params, session);
-    await session.commitTransaction();
     log.info(colors.green(`DB update completed: ${JSON.stringify(job.data)}`));
   } catch (error) {
     await session.abortTransaction();
