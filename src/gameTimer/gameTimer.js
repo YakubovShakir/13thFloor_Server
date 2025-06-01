@@ -1134,7 +1134,7 @@ const genericProcessScheduler = (processType, processConfig) => {
     } catch (e) {
       log.error(`Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
     }
-  }, { scheduled: false });
+  }, { scheduled: true });
 
   scheduler.name = processType;
   return scheduler;
