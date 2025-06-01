@@ -880,9 +880,9 @@ export const queueDbUpdate = async (operationType, params, description, userId =
 };
 dbUpdateQueue.process(5, async (job) => {
   const { operationType, params, description, userId } = job.data || {};
-
+  let session
   try {
-    const session = await mongoose.startSession();
+    session = await mongoose.startSession();
     session.startTransaction();
     if (!operationType) {
       throw new Error(`Missing operationType in job data for ${description}`);
