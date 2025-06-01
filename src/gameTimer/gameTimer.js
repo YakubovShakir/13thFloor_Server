@@ -1590,7 +1590,7 @@ const spinScanConfig = {
 
 const levelScanConfig = {
   processType: "level_scan",
-  cronSchedule: "*/1 * * * * *",
+  cronSchedule: "*/5 * * * * *",
   durationFunction: async () => {
     if (schedulerFlags.level_scan === true) return;
 
