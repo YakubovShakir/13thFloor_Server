@@ -879,11 +879,10 @@ export const queueDbUpdate = async (operationType, params, description, userId =
   return job.id;
 };
 
-dbUpdateQueue.process(10, async (job) => {
+dbUpdateQueue.process(1, async (job) => {
   const { operationType, params, description, userId } = job.data || {};
-  let session
   try {
-    session = await mongoose.startSession();
+    const session = await mongoose.startSession();
     session.startTransaction();
     if (!operationType) {
       throw new Error(`Missing operationType in job data for ${description}`);
@@ -1077,8 +1076,8 @@ const genericProcessScheduler = (processType, processConfig) => {
     try {
       log.info(`${processType} process scheduler started iteration`);
 
-      const processes = await gameProcess.find({ type: processType }).lean(); // Add .lean()
-      for(const process of processes) {
+      const processes = gameProcess.find({ type: processType }).lean().cursor(); // Add .lean()
+      for await (const process of processes) {
         const params = {
           processId: process._id,
           userParametersId: process.id,
@@ -1097,9 +1096,7 @@ const genericProcessScheduler = (processType, processConfig) => {
     } catch (e) {
       log.error(`Error in ${processType} scheduler:`, { error: e.message, stack: e.stack });
     } finally {
-      if(global.gc){
-        global.gc();
-      }
+
     }
   }, { scheduled: false });
 
@@ -1303,6 +1300,7 @@ const investmentLevelsProcessConfig = {
       // Process in batches to reduce memory pressure
       await processInBatches(cursor, 1 , async (user) => {
         const session = await mongoose.startSession();
+        
         try {
           session.startTransaction();
 
