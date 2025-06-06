@@ -268,9 +268,9 @@ const dbUpdateQueue = new Queue('db-updates', {
     port: process.env.REDIS_PORT, 
     password: process.env.REDIS_PASSWORD 
   },
-  limiter: { max: 10, duration: 5000 },
+  limiter: { max: 10, duration: 100000 },
   defaultJobOptions: {
-    attempts: 3, // Retry on transient failures
+    attempts: 1, // Retry on transient failures
     removeOnComplete: { count: 1000 }, // Keep only the 1000 most recent completed jobs
     removeOnFail: { count: 1000 }, // Keep only the 1000 most recent failed jo
   },
@@ -870,7 +870,7 @@ const queueDbUpdate = async (operationType, params, description, userId = null) 
   }
   const jobData = { operationType, params, description, userId };
   log.debug(`Enqueuing job for ${description}`, { jobData });
-  const job = await dbUpdateQueue.add(jobData);
+  const job = await dbUpdateQueue.add(jobData, { priority: Date.now() }); Queue
   return job.id;
 };
 // In-memory lock to prevent parallel updates to the same user
@@ -1219,7 +1219,6 @@ const processInBatches = async (items, batchSize, processFn) => {
   for (let i = 0; i < items.length; i += batchSize) {
     const batch = items.slice(i, i + batchSize);
     await Promise.all(batch.map(processFn));
-    await new Promise(resolve => setTimeout(resolve, 100));
   }
 };
 
@@ -1467,10 +1466,14 @@ const nftScanConfig = {
       let totalUsers = 0;
 
       for await (const user of cursor) {
+       try {
         const nftItemIds = user.tonWalletAddress ? await getWhitelistedNftsFromWallet(user.tonWalletAddress) : [];
+        await new Promise((resolve) => setTimeout(resolve, 150));
         await syncShelfInventory(user.id, nftItemIds);
-        await new Promise((resolve) => setTimeout(resolve, 1000));
         totalUsers++;
+       } catch(err) {
+        log.warn('Error syncing nfts: ', err)
+       }
       }
 
       log.info("NFT-scanner process scheduler finished iteration", { totalUsers });
