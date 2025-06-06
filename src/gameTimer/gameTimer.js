@@ -1371,7 +1371,7 @@ const investmentLevelsProcessConfig = {
 };
 
 const getWhitelistedNftsFromWallet = async (walletAddress) => {
-  const limit = 1000;
+  const limit = 350;
   let offset = 0;
   let allNfts = [];
   let hasMore = true;
@@ -1388,7 +1388,7 @@ const getWhitelistedNftsFromWallet = async (walletAddress) => {
       allNfts = allNfts.concat(nftItems.map(nft => normalizeAddress(nft.address)));
       offset += limit;
       hasMore = nftItems.length === limit;
-      await new Promise((resolve) => setTimeout(resolve, 250))
+      await new Promise((resolve) => setTimeout(resolve, 1000))
     }
 
     return [...new Set(allNfts.filter(address => nftMap[address] !== undefined).map(address => nftMap[address]))];
@@ -1399,14 +1399,9 @@ const getWhitelistedNftsFromWallet = async (walletAddress) => {
 };
 
 const syncShelfInventory = async (userId, nftItemIds) => {
-  let session
   try {
-    session = await mongoose.startSession();
-    session.startTransaction();
-
-    const inventory = await UserCurrentInventory.findOne({ user_id: userId }, null, { session }) ||
-      await UserCurrentInventory.create([{ user_id: userId, shelf: [] }], { session });
-    const user = await User.findOne({ id: userId }, null, { session });
+    const inventory = await UserCurrentInventory.findOne({ user_id: userId }, null)
+    const user = await User.findOne({ id: userId }, null);
 
     // Current shelf items
     const currentShelf = inventory.shelf || [];
@@ -1451,10 +1446,8 @@ const syncShelfInventory = async (userId, nftItemIds) => {
       );
     }
 
-    await session.commitTransaction();
     return { added: itemsToAdd, removed: itemsToRemove };
   } catch (error) {
-    await session.abortTransaction();
     log.error(`Error syncing inventory for ${userId}`, { error: error.message });
     return { added: [], removed: [] };
   }
@@ -1569,7 +1562,7 @@ const spinScanConfig = {
 
 const levelScanConfig = {
   processType: "level_scan",
-  cronSchedule: "*/1 * * * * *",
+  cronSchedule: "*/5 * * * * *",
   durationFunction: async () => {
     if (schedulerFlags.level_scan === true) return;
 
