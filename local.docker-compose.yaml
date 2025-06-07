@@ -55,6 +55,19 @@ services:
       - default
     restart: unless-stopped
 
+  game-timer:
+    build:
+      context: .
+    environment:
+      - NODE_ENV=test
+      - MONGO_URI=mongodb://databaseTest:27017/Floor?replicaSet=rs0
+      - REDIS_HOST=redis-test
+      - REDIS_PASSWORD=redis_password
+    command: ["npm", "run", "gameTimer"]
+    instances: 5
+    networks:
+      - default
+
 volumes:
   db-floor:
   redis-data:

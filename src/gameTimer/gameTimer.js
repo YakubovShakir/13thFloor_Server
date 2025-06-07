@@ -56,13 +56,13 @@ const schedulerFlags = {
 
 export const withTransaction = async (operation, session, maxRetries = 1, retryDelay = 1500) => {
   try {
-      const result = await operation(session);
+    const result = await operation(session);
 
-      await session.commitTransaction();
-      return result; // Return whatever the operation returns
-    } catch (error) {
-      log.debug(`Operation [${operation}] failed`, error)
-    }
+    await session.commitTransaction();
+    return result; // Return whatever the operation returns
+  } catch (error) {
+    log.debug(`Operation [${operation}] failed`, error)
+  }
 };
 
 export const recalcValuesByParameters = async (
@@ -106,7 +106,7 @@ export const recalcValuesByParameters = async (
     }
 
     if (adjustedCoinsReward !== 0) {
-      await operationMap.updateUserBalance({ id: userParameters.id, amount: adjustedCoinsReward}, session); // Already uses withTransaction
+      await operationMap.updateUserBalance({ id: userParameters.id, amount: adjustedCoinsReward }, session); // Already uses withTransaction
       console.log(`[recalcValuesByParameters] balance updated with amount ${adjustedCoinsReward}`);
     }
 
@@ -263,10 +263,10 @@ const calculateDuration = (baseDurationMinutes, durationDecreasePercentage) => {
 
 // Centralized queue for all DB updates
 const dbUpdateQueue = new Queue('db-updates', {
-  redis: { 
-    host: process.env.REDIS_HOST || 'redis-test', 
-    port: process.env.REDIS_PORT, 
-    password: process.env.REDIS_PASSWORD 
+  redis: {
+    host: process.env.REDIS_HOST || 'redis-test',
+    port: process.env.REDIS_PORT,
+    password: process.env.REDIS_PASSWORD
   },
   limiter: { max: 10, duration: 10000 },
   defaultJobOptions: {
@@ -372,7 +372,7 @@ const operationMap = {
       : await Skill.findOne({ skill_id: skillId }, null, { session });
 
     if (!process || !userParameters || !skill) {
-     return
+      return
     }
 
     if (subType === "constant_effects") {
@@ -398,7 +398,7 @@ const operationMap = {
     const userClothing = await UserClothing.findOne({ user_id: userParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters || !user) {
-     return
+      return
     }
 
     let durationDecreasePercentage = 0;
@@ -591,7 +591,7 @@ const operationMap = {
     const userClothing = await UserClothing.findOne({ user_id: userParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters || !user) {
-     return
+      return
     }
 
     let durationDecreasePercentage = 0;
@@ -652,7 +652,7 @@ const operationMap = {
       : await Skill.findOne({ skill_id: baseParametersId }, null, { session });
 
     if (!process || !userParameters || !skill) {
-     return
+      return
     }
 
     const now = moment();
@@ -716,7 +716,7 @@ const operationMap = {
     const baseParameters = await Boost.findOne({ boost_id: baseParametersId }, null, { session });
 
     if (!process || !userParameters || !baseParameters) {
-     return
+      return
     }
     log.warn(`${colors.cyanBright('Applied energy restore from tonic-drink')}`, {
       user_id: userParametersId,
@@ -877,22 +877,24 @@ const queueDbUpdate = async (operationType, params, description, userId = null) 
 const userLocks = new Map();
 
 // Process jobs with reduced concurrency
-dbUpdateQueue.process(10, async (job) => {
-  const { operationType, params, description, userId } = job.data || {};
-  let session;
-  let lock;
+if (process.env.NODE_ENV === 'worker') {
+  console.log('WORKER')
+  dbUpdateQueue.process(10, async (job) => {
+    const { operationType, params, description, userId } = job.data || {};
+    let session;
+    let lock;
 
-  try {
-    if (!operationType || !userId) {
-      throw new Error(`Missing operationType or userId in job data for ${description}`);
-    }
+    try {
+      if (!operationType || !userId) {
+        throw new Error(`Missing operationType or userId in job data for ${description}`);
+      }
 
-    // Start session and transaction
-    session = await mongoose.startSession();
-    session.startTransaction();
+      // Start session and transaction
+      session = await mongoose.startSession();
+      session.startTransaction();
 
 
-    // Process all jobs for this user in a single transaction
+      // Process all jobs for this user in a single transaction
       const { operationType: opType, params: opParams, description: opDesc } = job.data;
       const operation = operationMap[opType];
       if (!operation) {
@@ -902,29 +904,30 @@ dbUpdateQueue.process(10, async (job) => {
       log.info(colors.green(`DB update completed: ${opDesc}`));
 
       await session.commitTransaction();
-  } catch (error) {
-    if (session) {
-      await session.abortTransaction();
+    } catch (error) {
+      if (session) {
+        await session.abortTransaction();
+      }
+      log.error(colors.red(`DB update failed: ${description}`), { error: error.message, stack: error.stack });
+      throw error; // Bull handles retries
+    } finally {
+      if (session) {
+        await session.endSession();
+      }
+      if (lock) {
+        userLocks.delete(lock); // Release lock
+      }
     }
-    log.error(colors.red(`DB update failed: ${description}`), { error: error.message, stack: error.stack });
-    throw error; // Bull handles retries
-  } finally {
-    if (session) {
-      await session.endSession();
-    }
-    if (lock) {
-      userLocks.delete(lock); // Release lock
-    }
-  }
-});
+  });
 
-dbUpdateQueue.on('completed', (job) => {
-  log.info(colors.green(`DB update job completed`), { jobId: job.id, description: job.data.description });
-});
+  dbUpdateQueue.on('completed', (job) => {
+    log.info(colors.green(`DB update job completed`), { jobId: job.id, description: job.data.description });
+  });
 
-dbUpdateQueue.on('failed', (job, err) => {
-  log.error(colors.red(`DB update job failed after retries`), { jobId: job.id, description: job.data.description, error: err.message });
-});
+  dbUpdateQueue.on('failed', (job, err) => {
+    log.error(colors.red(`DB update job failed after retries`), { jobId: job.id, description: job.data.description, error: err.message });
+  });
+}
 
 const TONCENTER_API_KEY = process.env.TONCENTER_API_KEY;
 const TONCENTER_API_URL = "https://toncenter.com/api/v2";
@@ -1241,7 +1244,7 @@ export const autoclaimProcessConfig = {
       let usersEligible = 0;
 
       // Process in batches to reduce memory pressure
-      for await(const autoclaim of cursor) {
+      for await (const autoclaim of cursor) {
         try {
           const userId = autoclaim.userId;
           const investmentType = autoclaim.investmentType;
@@ -1311,9 +1314,9 @@ const investmentLevelsProcessConfig = {
       ]).cursor({ batchSize: 100 }); // Set batch size for memory control
 
       // Process in batches to reduce memory pressure
-      await processInBatches(cursor, 1 , async (user) => {
+      await processInBatches(cursor, 1, async (user) => {
         const session = await mongoose.startSession();
-        
+
         try {
           session.startTransaction();
 
@@ -1465,14 +1468,14 @@ const nftScanConfig = {
       let totalUsers = 0;
 
       for await (const user of cursor) {
-       try {
-        const nftItemIds = user.tonWalletAddress ? await getWhitelistedNftsFromWallet(user.tonWalletAddress) : [];
-        await new Promise((resolve) => setTimeout(resolve, 150));
-        await syncShelfInventory(user.id, nftItemIds);
-        totalUsers++;
-       } catch(err) {
-        log.warn('Error syncing nfts: ', err)
-       }
+        try {
+          const nftItemIds = user.tonWalletAddress ? await getWhitelistedNftsFromWallet(user.tonWalletAddress) : [];
+          await new Promise((resolve) => setTimeout(resolve, 150));
+          await syncShelfInventory(user.id, nftItemIds);
+          totalUsers++;
+        } catch (err) {
+          log.warn('Error syncing nfts: ', err)
+        }
       }
 
       log.info("NFT-scanner process scheduler finished iteration", { totalUsers });
@@ -1793,7 +1796,7 @@ const txScanConfig = {
   cronSchedule: "*/10 * * * * *",
   durationFunction: async () => {
     try {
-      if(schedulerFlags.TX_SCANNER === true) return;
+      if (schedulerFlags.TX_SCANNER === true) return;
       schedulerFlags.TX_SCANNER = true;
       await verifyAndTransferTransactions();
       await unlockExpiredLocks();
@@ -1803,43 +1806,6 @@ const txScanConfig = {
       schedulerFlags.TX_SCANNER = false;
     }
   }
-};
-
-// Export Schedulers
-export const WorkProcess = genericProcessScheduler("work", workProcessConfig);
-export const TrainingProccess = genericProcessScheduler("training", trainingProcessConfig);
-export const SleepProccess = genericProcessScheduler("sleep", sleepProcessConfig);
-export const SkillProccess = genericProcessScheduler("skill", skillProcessConfig);
-export const FoodProccess = genericProcessScheduler("food", foodProcessConfig);
-export const BoostProccess = genericProcessScheduler("boost", boostProcessConfig);
-export const AutoclaimProccess = processIndependentScheduler("autoclaim", autoclaimProcessConfig);
-export const NftScanProcess = processIndependentScheduler("nft_scan", nftScanConfig);
-export const TxScanProcess = processIndependentScheduler("TX_SCANNER", txScanConfig);
-export const RefsRecalsProcess = processIndependentScheduler("investment_level_checks", investmentLevelsProcessConfig);
-export const SpinScanProcess = processIndependentScheduler("spin_scan", spinScanConfig);
-export const LevelUpdate = processIndependentScheduler("level_scan", levelScanConfig);
-
-const gameTimer = {
-  FoodProccess,
-  SkillProccess,
-  TrainingProccess,
-  WorkProcess,
-  SleepProccess,
-  BoostProccess,
-  AutoclaimProccess,
-  RefsRecalsProcess,
-  NftScanProcess,
-  TxScanProcess,
-  SpinScanProcess,
-  LevelUpdate,
-  stopAll() {
-    Object.values(this).forEach((scheduler) => {
-      if (scheduler && typeof scheduler.stop === "function") {
-        scheduler.stop();
-        log.info(`Stopped ${scheduler.name || "unknown"} process`);
-      }
-    });
-  },
 };
 
 // Store initial and previous memory usage
@@ -1935,15 +1901,28 @@ const logMemoryUsage = () => {
   previousMemoryUsage = { ...memoryUsage };
 };
 
+if (process.env.NODE_ENV !== 'worker') {
+  // Export Schedulers
+  const WorkProcess = genericProcessScheduler("work", workProcessConfig);
+  const TrainingProccess = genericProcessScheduler("training", trainingProcessConfig);
+  const SleepProccess = genericProcessScheduler("sleep", sleepProcessConfig);
+  const SkillProccess = genericProcessScheduler("skill", skillProcessConfig);
+  const FoodProccess = genericProcessScheduler("food", foodProcessConfig);
+  const BoostProccess = genericProcessScheduler("boost", boostProcessConfig);
+  const AutoclaimProccess = processIndependentScheduler("autoclaim", autoclaimProcessConfig);
+  const NftScanProcess = processIndependentScheduler("nft_scan", nftScanConfig);
+  const TxScanProcess = processIndependentScheduler("TX_SCANNER", txScanConfig);
+  const RefsRecalsProcess = processIndependentScheduler("investment_level_checks", investmentLevelsProcessConfig);
+  const SpinScanProcess = processIndependentScheduler("spin_scan", spinScanConfig);
+  const LevelUpdate = processIndependentScheduler("level_scan", levelScanConfig);
+}
+
 mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor', { maxPoolSize: 10 })
   .then(() => {
     // Start game process schedulers
-    Object.entries(gameTimer).forEach(([name, scheduler]) => {
-      if (typeof scheduler.start === "function") {
-        scheduler.start();
-        log.info(`Started ${name} process`);
-      }
-    });
+    if (process.env.NODE_ENV !== 'worker') {
+      console.log('NOT WORKER')
+    }
 
     // Log initial memory usage
     logMemoryUsage();
@@ -1957,14 +1936,6 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor', { m
       { scheduled: true }
     );
 
-    // Ensure memory log scheduler stops on shutdown
-    const originalStopAll = gameTimer.stopAll;
-    gameTimer.stopAll = function () {
-      originalStopAll.call(this);
-      memoryLogScheduler.stop();
-      log.info("Stopped memory usage logging");
-    };
-
     log.info("Memory logging scheduler started");
   })
   .catch((err) => {
@@ -1975,7 +1946,6 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/Floor', { m
 // Graceful Shutdown with Promise-based mongoose.connection.close()
 const shutdown = async (signal) => {
   log.info(`Received ${signal}, shutting down...`);
-  gameTimer.stopAll();
   try {
     await mongoose.connection.close();
     log.info("MongoDB connection closed");

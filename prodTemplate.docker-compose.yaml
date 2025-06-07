@@ -1,148 +1,231 @@
-version: "3.8"
-
 networks:
-  app-network:
+  prod-network:
     driver: bridge
 
 services:
-  app:
+  app-prod:
     build:
       context: ./frontend
     environment:
-      - NODE_ENV=test
+      - NODE_ENV=production
     ports:
-      - "4026:80"
+      - "127.0.0.1:4026:80"
     networks:
-      - app-network
+      - prod-network
 
-  backend:
+  backend-prod:
     build:
       context: ./backend
     environment:
-      - NODE_ENV=test
-      - MONGO_URI=mongodb://databaseTest:27017/Floor?replicaSet=rs0
-      - REDIS_HOST=redis-test # Explicitly set for consistency
-      - REDIS_PASSWORD=redis_password # Add password for Redis
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://database-prod:27017/${MONGO_DB_NAME}?replicaSet=rs0&directConnection=true
+      - REDIS_HOST=redis-prod
+      - REDIS_PASSWORD=redis_password_prod
+      - ELASTICSEARCH_HOSTS=http://elasticsearch-prod:9200
     ports:
-      - "3026:3000"
+      - "127.0.0.1:3026:3000"
     depends_on:
-      databaseTest:
+      database-prod:
         condition: service_healthy
-      redis-test:
-        condition: service_healthy # Ensure Redis is ready
+      redis-prod:
+        condition: service_healthy
+      elasticsearch-prod:
+        condition: service_healthy
     networks:
-      - app-network
+      - prod-network
 
-  game-timer:
+  game-timer-prod:
     build:
       context: ./backend
     environment:
-      - NODE_ENV=test
-      - MONGO_URI=mongodb://databaseTest:27017/Floor?replicaSet=rs0
-      - REDIS_HOST=redis-test
-      - REDIS_PASSWORD=redis_password
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://database-prod:27017/${MONGO_DB_NAME}?replicaSet=rs0&directConnection=true
+      - REDIS_PORT=6379
+      - REDIS_HOST=redis-prod
+      - REDIS_PASSWORD=redis_password_prod
     command: ["npm", "run", "gameTimer"]
     depends_on:
-      databaseTest:
+      database-prod:
         condition: service_healthy
-      redis-test:
+      redis-prod:
         condition: service_healthy
     networks:
-      - app-network
+      - prod-network
 
-  databaseTest:
+  worker-prod:
+    build:
+      context: ./backend
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://database-prod:27017/${MONGO_DB_NAME}?replicaSet=rs0&directConnection=true
+      - REDIS_PORT=6379
+      - REDIS_HOST=redis-prod
+      - REDIS_PASSWORD=redis_password_prod
+    command: ["npm", "run", "worker"]
+    depends_on:
+      database-prod:
+        condition: service_healthy
+      redis-prod:
+        condition: service_healthy
+    networks:
+      - prod-network
+
+  database-prod:
     image: mongo:5
     volumes:
-      - db-floor-tests:/data/db
+      - db-floor-prod:/data/db
       - ./restore-folder:/data/restore
     ports:
-      - "127.0.0.1:27018:27017"
+      - "127.0.0.1:27017:27017"
     command: mongod --replSet rs0 --bind_ip 0.0.0.0
+    environment:
+      - MONGO_INITDB_DATABASE=${MONGO_DB_NAME}
     healthcheck:
-      test: ["CMD", "mongo", "--eval", "db.runCommand('ping').ok"]
+      test: ["CMD", "mongo", "--host", "localhost", "--port", "27017", "--eval", "db.runCommand('ping').ok"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
     networks:
-      - app-network
+      - prod-network
 
-  bot:
+  bot-prod:
     build:
       context: ./bot
+    environment:
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://database-prod:27017/${MONGO_DB_NAME}?replicaSet=rs0&directConnection=true
     ports:
-      - "127.0.0.1:4444:4444"
+      - "127.0.0.1:4445:4444"
+    depends_on:
+      database-prod:
+        condition: service_healthy
     networks:
-      - app-network
+      - prod-network
 
-  portainer:
+  portainer-prod:
     image: portainer/portainer-ce:latest
     ports:
       - "127.0.0.1:9000:9000"
       - "127.0.0.1:8000:8000"
     volumes:
-      - portainer_data:/data
+      - portainer_data_prod:/data
     networks:
-      - app-network
+      - prod-network
+      - default
 
-  portainer-agent:
+  portainer-agent-prod:
     image: portainer/agent:2.21.5
-    container_name: portainer_agent
+    container_name: portainer_agent_prod
     restart: always
     ports:
-      - "127.0.0.1:9001:9001"
+      - "127.0.0.1:9003:9001"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
       - /:/host
     networks:
-      - app-network
+      - prod-network
+      - default
 
-  mongo-init-replica:
+  mongo-backup-prod:
     image: mongo:5
+    volumes:
+      - ./prod_dumps:/dumps
+    environment:
+      - MONGO_HOST=database-prod
+      - MONGO_PORT=27017
+      - MONGO_DB_NAME=Floor
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        apt-get update && apt-get install -y cron && \
+        echo "Cron installed" && \
+        mkdir -p /etc/crontabs && \
+        echo "Directory /etc/crontabs created" && \
+        echo "0,30 * * * * mongodump --host $${MONGO_HOST} --port $${MONGO_PORT} --db $${MONGO_DB_NAME} --out /dumps/$$(date +'%Y-%m-%d_%H-%M-%S') && find /dumps -type d -mtime +7 -exec rm -rf {} \\;" > /etc/crontabs/root && \
+        echo "Cron job written to /etc/crontabs/root" && \
+        cron -f -L 15
     depends_on:
-      databaseTest:
+      database-prod:
         condition: service_healthy
     networks:
-      - app-network
-    command: >
-      bash -c "sleep 10 && mongo --host databaseTest:27017 --eval 'rs.initiate({_id: \"rs0\", members: [{_id: 0, host: \"databaseTest:27017\"}]})' || echo 'Replica set already initialized'"
-    restart: on-failure
+      - prod-network
 
-  tx-daemon:
+  tx-daemon-prod:
     build:
       context: ./backend
     environment:
-      - NODE_ENV=test
-      - MONGO_URI=mongodb://databaseTest:27017/Floor?replicaSet=rs0
-      - REDIS_HOST=redis-test
+      - NODE_ENV=production
+      - MONGO_URI=mongodb://database-prod:27017/${MONGO_DB_NAME}?replicaSet=rs0&directConnection=true
       - REDIS_PORT=6379
-      - REDIS_PASSWORD=redis_password
+      - REDIS_HOST=redis-prod
+      - REDIS_PASSWORD=redis_password_prod
     command: ["node", "./src/daemons/tonAffiliateDaemon.js"]
     depends_on:
-      databaseTest:
+      database-prod:
         condition: service_healthy
-      redis-test:
+      redis-prod:
         condition: service_healthy
     networks:
-      - app-network
+      - prod-network
 
-  redis-test:
+  redis-prod:
     image: redis:7
     volumes:
-      - redis-data:/data
+      - redis-data-prod:/data
     ports:
-      - "6379:6379"
-    command: redis-server --requirepass redis_password --bind 0.0.0.0
+      - "127.0.0.1:6380:6379"
+    command: redis-server --requirepass redis_password_prod --bind 0.0.0.0
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "redis_password", "ping"]
+      test: ["CMD", "redis-cli", "-h", "localhost", "-a", "redis_password_prod", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - app-network
+      - prod-network
     restart: unless-stopped
 
+  elasticsearch-prod:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    environment:
+      - discovery.type=single-node
+    volumes:
+      - elasticsearch-data-prod:/usr/share/elasticsearch/data
+    ports:
+      - "127.0.0.1:9201:9200"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    networks:
+      - prod-network
+
+  kibana-prod:
+    image: docker.elastic.co/kibana/kibana:7.10.0
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch-prod:9200
+      - ELASTICSEARCH_USERNAME=elastic
+    ports:
+      - "127.0.0.1:5602:5601"
+    depends_on:
+      elasticsearch-prod:
+        condition: service_healthy
+    networks:
+      - prod-network
+
+  website:
+    build:
+      context: ./website
+    restart: always
+    ports:
+      - "127.0.0.1:3003:80"
+    networks:
+      - prod-network
+
 volumes:
-  db-floor-tests:
-  portainer_data:
-  redis-data:
+  db-floor-prod:
+  portainer_data_prod:
+  redis-data-prod:
+  elasticsearch-data-prod:

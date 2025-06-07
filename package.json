@@ -4,11 +4,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --max-old-space-size=4024 ./src/server.js ",
+    "start": "node --max-old-space-size=2048 ./src/server.js ",
     "devGameTimer": "nodemon ./src/gameTimer/gameTimer.js",
-    "gameTimer": "node --expose-gc --max-old-space-size=4024 ./src/gameTimer/gameTimer.js",
+    "gameTimer": "node --max-old-space-size=4024 ./src/gameTimer/gameTimer.js",
     "dev": "nodemon ./src/server.js",
-    "swagger": "node ./src/swagger.js"
+    "swagger": "node ./src/swagger.js",
+    "worker": "NODE_ENV=worker node --max-old-space-size=2048 ./src/gameTimer/gameTimer.js"
   },
   "author": "",
   "license": "ISC",
