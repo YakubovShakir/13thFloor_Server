@@ -870,7 +870,7 @@ const queueDbUpdate = async (operationType, params, description, userId = null) 
   }
   const jobData = { operationType, params, description, userId };
   log.debug(`Enqueuing job for ${description}`, { jobData });
-  const job = await dbUpdateQueue.add(jobData);
+  const job = await dbUpdateQueue.add(jobData, { priority: Date.now() });
   return job.id;
 };
 // In-memory lock to prevent parallel updates to the same user
