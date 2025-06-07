@@ -1387,7 +1387,6 @@ const getWhitelistedNftsFromWallet = async (walletAddress) => {
       allNfts = allNfts.concat(nftItems.map(nft => normalizeAddress(nft.address)));
       offset += limit;
       hasMore = nftItems.length === limit;
-      await new Promise((resolve) => setTimeout(resolve, 1000))
     }
 
     return [...new Set(allNfts.filter(address => nftMap[address] !== undefined).map(address => nftMap[address]))];
